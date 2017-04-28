@@ -1,0 +1,2 @@
+# wg-serverless
+Serverless WG
