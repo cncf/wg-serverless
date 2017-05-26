@@ -17,4 +17,8 @@ For more information, see this collaborative [document](https://docs.google.com/
   * Identifying areas where we’d like to see some harmonization or interop work
 * Create a white/position-paper on Serverless in relation to Cloud Native.
 
+## Communications
+
+We have google group for e-mail communications: [cncf-wg-serverless](https://groups.google.com/forum/#!forum/cncf-wg-serverless)
+
 ## Meeting Minutes
