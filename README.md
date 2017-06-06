@@ -18,3 +18,6 @@ For more information, see this collaborative [document](https://docs.google.com/
 * Create a white/position-paper on Serverless in relation to Cloud Native.
 
 ## Meeting Minutes
+
+The minutes from our calls are available
+[here](https://docs.google.com/document/d/1OVF68rpuPK5shIHILK9JOqlZBbfe91RNzQ7u_P7YCDE/edit#).
