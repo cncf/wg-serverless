@@ -27,7 +27,31 @@ Join our Google Group: cncf-wg-serverless@googlegroups.com
 * [Function spec definition - high level def’n](https://docs.google.com/document/d/1BZDifLyZ8l5TZiokFnV_l1LHeugejflaNqzU-Ga4psg/edit#heading=h.nezw7xf3s4im)
 * [Where is this heading? Next steps for FaaS](https://docs.google.com/document/d/1X4v06SfTH-A5AdC5yWpq9KRgdSP8XSSlpjy3KPdoZfU/edit)
 
+## Meeting Time
+The Serverless Working Group meets on the 1st and 3rd Thursday of every month at 9AM PT (USA Pacific):
+
+Join from PC, Mac, Linux, iOS or Android: https://zoom.us/j/893315636
+
+Or iPhone one-tap (US Toll):  +14086380968,893315636# or +16465588656,893315636#
+
+Or Telephone:
+    Dial: +1 408 638 0968 (US Toll) or +1 646 558 8656 (US Toll)
+    +1 855 880 1246 (US Toll Free)
+    +1 877 369 0926 (US Toll Free)
+    Meeting ID: 893 315 636
+    International numbers available: https://zoom.us/zoomconference?m=nNv_PhN6J6o-1aAlnHVERVZ0H4v1E-tm
+    
+NOTE: Please use *6 to mute/un-mute your phone during the call.
+    
+**Next meeting: July 5yh
+    
+Here is a public Google calendar so you can add the meetings to your calendar: https://goo.gl/eyutah
+
+Here is a link to a World Time Zone Converter [here] (https://github.com/kubernetes/community/blob/master/sig-cluster-ops/README.md#meetings)
+
 ## Meeting Minutes
 
 The minutes from our calls are available
 [here](https://docs.google.com/document/d/1OVF68rpuPK5shIHILK9JOqlZBbfe91RNzQ7u_P7YCDE/edit#).
+
+Recording from our calls are available [here] (https://www.youtube.com/playlist?list=PLj6h78yzYM2Ph7YoBIgsZNW_RGJvNlFOt).
