@@ -47,11 +47,11 @@ NOTE: Please use *6 to mute/un-mute your phone during the call.
     
 Here is a public Google calendar so you can add the meetings to your calendar: https://goo.gl/eyutah
 
-Here is a link to a World Time Zone Converter [here] (https://github.com/kubernetes/community/blob/master/sig-cluster-ops/README.md#meetings)
+Here is a link to a World Time Zone Converter [here](https://github.com/kubernetes/community/blob/master/sig-cluster-ops/README.md#meetings)
 
 ## Meeting Minutes
 
 The minutes from our calls are available
 [here](https://docs.google.com/document/d/1OVF68rpuPK5shIHILK9JOqlZBbfe91RNzQ7u_P7YCDE/edit#).
 
-Recording from our calls are available [here] (https://www.youtube.com/playlist?list=PLj6h78yzYM2Ph7YoBIgsZNW_RGJvNlFOt).
+Recording from our calls are available [here](https://www.youtube.com/playlist?list=PLj6h78yzYM2Ph7YoBIgsZNW_RGJvNlFOt).
