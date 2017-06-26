@@ -43,7 +43,7 @@ Or Telephone:
     
 NOTE: Please use *6 to mute/un-mute your phone during the call.
     
-**Next meeting: July 5yh
+**Next meeting: July 5th**
     
 Here is a public Google calendar so you can add the meetings to your calendar: https://goo.gl/eyutah
 
