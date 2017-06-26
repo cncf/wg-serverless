@@ -19,11 +19,11 @@ Join our Google Group: cncf-wg-serverless@googlegroups.com
   * Identifying areas where we’d like to see some harmonization or interop work
 * Create a white/position-paper on Serverless in relation to Cloud Native.
 
-## Inital White/Position Papper Sections
+## Inital White/Position Paper Sections
 * [Terminology](https://docs.google.com/document/d/1iFCrNz7q7Fh4t4RzmPXwzsH4ZfIyrVAhTKxE5oHT09Y/edit)
+* [Where serverless fits in relative to PaaS and container orchestration](https://docs.google.com/document/d/1cXLaPxArpst1YNE9acuDW7tf1Gs6NTfohEpqif75qMI/edit)
 * [Scope of the space as it exists today (today’s offerings)](https://docs.google.com/document/d/1FZSiVqlqTY6gtHfZzdUIMrPPgK_PHHDqwJdqhOztx_I/edit)
 * [Common use cases and patterns (between existing implementations?)](https://docs.google.com/document/d/13W-ggMjZefvfAUiuRaRunSGiEloVW0BI3XmdBm7kTII/edit)
-* [Where serverless fits in relative to PaaS and container orchestration](https://docs.google.com/document/d/1cXLaPxArpst1YNE9acuDW7tf1Gs6NTfohEpqif75qMI/edit)
 * [Function spec definition - high level def’n](https://docs.google.com/document/d/1BZDifLyZ8l5TZiokFnV_l1LHeugejflaNqzU-Ga4psg/edit#heading=h.nezw7xf3s4im)
 * [Where is this heading? Next steps for FaaS](https://docs.google.com/document/d/1X4v06SfTH-A5AdC5yWpq9KRgdSP8XSSlpjy3KPdoZfU/edit)
 
