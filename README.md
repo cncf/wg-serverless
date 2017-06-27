@@ -19,6 +19,10 @@ Join our Google Group: cncf-wg-serverless@googlegroups.com
   * Identifying areas where we’d like to see some harmonization or interop work
 * Create a white/position-paper on Serverless in relation to Cloud Native.
 
+## Communications
+
+We have google group for e-mail communications: [cncf-wg-serverless](https://groups.google.com/forum/#!forum/cncf-wg-serverless)
+
 ## Inital White/Position Paper Sections
 * [Terminology](https://docs.google.com/document/d/1iFCrNz7q7Fh4t4RzmPXwzsH4ZfIyrVAhTKxE5oHT09Y/edit)
 * [Where serverless fits in relative to PaaS and container orchestration](https://docs.google.com/document/d/1cXLaPxArpst1YNE9acuDW7tf1Gs6NTfohEpqif75qMI/edit)
