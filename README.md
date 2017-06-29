@@ -51,7 +51,7 @@ NOTE: Please use *6 to mute/un-mute your phone during the call.
     
 Here is a public Google calendar so you can add the meetings to your calendar: https://goo.gl/eyutah
 
-Here is a link to a World Time Zone Converter [here](http://www.thetimezoneconverter.com/?t=9:00%20am&tz=San%20Francisco&)
+Here is a link to a World Time Zone Converter here http://www.thetimezoneconverter.com/?t=9:00%20am&tz=San%20Francisco&
 
 ## Meeting Minutes
 
