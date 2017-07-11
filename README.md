@@ -46,8 +46,6 @@ Or Telephone:
     International numbers available: https://zoom.us/zoomconference?m=nNv_PhN6J6o-1aAlnHVERVZ0H4v1E-tm
     
 NOTE: Please use *6 to mute/un-mute your phone during the call.
-    
-**Next meeting: July 6th**
     
 Here is a public Google calendar so you can add the meetings to your calendar: https://goo.gl/eyutah
 
