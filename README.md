@@ -4,7 +4,7 @@ The CNCF Serverless Working Group is exploring the intersection of cloud native 
 
 The TOC sponsor of this WG is Ken Owens.
 
-For more information, see this collaborative [document](https://docs.google.com/document/d/1L9n9tkGuGtj7Ap9dVRes9RVscSoXeKsF3k-d2hJcDlg/edit).
+For more information, see this collaborative [document](https://goo.gl/udD8Fx).
 
 Join our Google Group: cncf-wg-serverless@googlegroups.com
 
