@@ -54,3 +54,6 @@ The minutes from our calls are available
 [here](https://docs.google.com/document/d/1OVF68rpuPK5shIHILK9JOqlZBbfe91RNzQ7u_P7YCDE/edit#).
 
 Recording from our calls are available [here](https://www.youtube.com/playlist?list=PLj6h78yzYM2Ph7YoBIgsZNW_RGJvNlFOt).
+
+Some of the presentations made during the calls can be found
+[here](presentations).
