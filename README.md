@@ -6,7 +6,7 @@ The TOC sponsor of this WG is Ken Owens.
 
 For more information, see this collaborative [document](https://goo.gl/udD8Fx).
 
-Join our Google Group: cncf-wg-serverless@googlegroups.com
+Join our Google Group: [cncf-wg-serverless](https://groups.google.com/forum/#!forum/cncf-wg-serverless)
 
 ## Goals
 
