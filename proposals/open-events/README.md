@@ -40,9 +40,9 @@ Version 0.3 - 2017/09/20
 
   - Producers can put additional key/value pairs separate from data.  This avoids having to deserialized data when used in an event pipe.
 
-## Examples
+# Examples
 
-### Google Cloud Functions (WIP)
+## Google Cloud Functions (WIP)
 
 ```json
 {
@@ -61,13 +61,13 @@ Version 0.3 - 2017/09/20
 
 ```
 
-### Microsoft Event Grid (WIP)
+## Microsoft Event Grid (WIP)
 
-### AWS Lambda (WIP)
+## AWS Lambda (WIP)
 
-### IBM (WIP)
+## IBM (WIP)
 
-### Serverless Inc. Event Gateway (WIP)
+## Serverless Inc. Event Gateway (WIP)
 
 ```json
 {
@@ -84,5 +84,3 @@ Version 0.3 - 2017/09/20
   "data": {}
 }
 ```
-
-## Comments
