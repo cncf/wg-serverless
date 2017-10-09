@@ -67,6 +67,52 @@ Version 0.3 - 2017/09/20
 
 ## IBM (WIP)
 
+For all auditable resource activities (e.g., CRUD+ APIs), IBM Cloud has moved to using an international standard Cloud Auditing Data Federation (CADF) event format as standardized at the Digital Mgmt. Task Force (DMTF).  See [https://www.dmtf.org/standards/cadf](https://www.dmtf.org/standards/cadf).  It is fully compliant with all Security auditing standards, including ISO27000 series, PCI, etc.
+
+It also considers many common event needs:
+- data extensibility (via attachements, extended JSON fields, profiles, tagging).
+- event tagging (including geolocation)
+- metric events
+- extensible Cloud-neutral taxonimies for resource, action and outcomes
+- std. model for event observation/reporting
+- UUID for federated resource ID
+- ISO timestamps
+- event signing
+
+It includes support for JSON (as well as legacy XML); here is a sample pseudo-event:
+```json
+{
+  "typeURI": "http://schemas.dmtf.org/cloud/audit/1.0/event", 
+  "id": "myscheme://mydomain/event/id/1234", 
+  "eventType": "activity", 
+  "eventTime": "2012-03-22T13:00:00-04:00", 
+  "action": "create", 
+  "outcome": "success", 
+  "initiator": {
+    "id": "myuuid://location.org/resource/0001",
+    "typeURI": "..." 
+  },
+  "target": {
+    "id": "myuuid://location.org/resource/0099",
+    "typeURI": "..."
+    },
+  "observer": {
+    "id": "myuuid://location.org/resource/0321",
+    "typeURI": "..."
+    },
+  # optional
+  "reporterchain": [
+  { 
+    "role": "observer", 
+    "reporterTime": "2012-08-22T23:00:00-02:00", 
+    "reporterId”: "..."
+  },
+  ...
+  ]
+}
+```
+more detailed CADF event examples forthcoming (specific to IBM Cloud and its extensions).
+
 ## Serverless Inc. Event Gateway (WIP)
 
 ```json
