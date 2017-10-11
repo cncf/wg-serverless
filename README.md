@@ -8,6 +8,8 @@ For more information, see this collaborative [document](https://goo.gl/udD8Fx).
 
 Join our Google Group: [cncf-wg-serverless](https://groups.google.com/forum/#!forum/cncf-wg-serverless)
 
+Chat with us on the CNCF Slack in the #serverless channel: [https://slack.cncf.io/](https://slack.cncf.io/)
+
 ## Goals
 
 * Provide clarity for ourselves and consumers w.r.t. what this topic is all about:
@@ -22,6 +24,8 @@ Join our Google Group: [cncf-wg-serverless](https://groups.google.com/forum/#!fo
 ## Communications
 
 We have google group for e-mail communications: [cncf-wg-serverless](https://groups.google.com/forum/#!forum/cncf-wg-serverless)
+
+And a #serverless Slack channel: https://slack.cncf.io/
 
 ## Whitepaper
 
