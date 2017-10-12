@@ -13,6 +13,8 @@
 
 In a cloud-native and serverless world the communication between services and functions is done through events and messages, the following document propose a common way to describe and publish an event (the event message and protocol), and a common way to consume an event (the Event API).
 
+This common definition can allow function portability across platforms and interactions between services on different platforms. 
+
 This document is based on the [Cloud-Native Event Mapping (CNEM)](https://docs.google.com/document/d/1dFfnWnbRDTvGwpwaBsvXRlw0ZyL3xYl7iXhYqbAPJjk/edit?usp=sharing) paper
 
 ![cloudevents](cloudevents.png)
@@ -126,7 +128,7 @@ It can be accomplished by simply writing a serverless function which listens on 
 
 - the event message content is very similar in both proposals, the key difference is that open-events suggests two layers of serialization, the HTTP body is of type JSON, and the data can be of different type (e.g. XML, protobuf, bin, ..), while this proposal suggest to put all metadata in headers (e.g. HTTP, AMQP, etc.). The challanges with open-events approach are:
   - it forces us to unmarshal the events twice, say a message is encoded with binary format like avro/protobuf/flatbuffers.. instead of using it as is we must encode/decode the json followed by encode/decode to/from base64 followed by decode to the language struct this will take significant amount of CPU/overhead.    
-  - it adds complexity: e.g. an existing event source that just send an HTTP body need to re-format the message and embed the body as a nested object under the event, also cant use postman or other tools as-is. in this proposal each layer can add metadata headers without reformatting the body
+  - it adds complexity: e.g. an existing event source that just send an HTTP body need to re-format the message and embed the body as a nested object under the event, also cant use postman or other tools as-is. in this proposal each layer or intermidiate gateway can add metadata headers without reformatting the body
   - every change to the metadata require advancing event schema version vs simply adding a new header 
   - we can decide to allow both approaches to coexist, a user can choose if he wants double serialization or not (it wont impact the consumer API just the performance/complexity), note the Consumer API **AsJson()** method can generate a serialized version 
 - in this proposal, there are few additional metadata elements, e.g.:
