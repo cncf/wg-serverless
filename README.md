@@ -52,8 +52,11 @@ Here is a public Google calendar so you can add the meetings to your calendar: h
 
 Here is a link to a World Time Zone Converter here http://www.thetimezoneconverter.com/?t=9:00%20am&tz=San%20Francisco&
 
-**CNCF/Kube-Con BOF** :
-There will be a BOF/F2F at CNCF/Kube-Con on Dec 6, 2017 from 8pm-10pm
+## In Person Meetings
+
+**KubeCon + CloudNativeCon Austin**:
+
+There will be a Serverless working group meeting at KubeCon + CloudNativeCon Austin on Dec 6, 2017 from 8pm-10pm
 in Meeting Room 1, located on Level 1 of the Austin Convention Center.
 See the
 [meeting minutes doc](https://docs.google.com/document/d/1OVF68rpuPK5shIHILK9JOqlZBbfe91RNzQ7u_P7YCDE/edit?ts=5995cedc#)
