@@ -1,5 +1,10 @@
 ![open-events-logo](https://camo.githubusercontent.com/29c3e2db43706896fb614fbffae34ef031e5343e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f73657276616e742d6173736574732f696d672f6c6f676f312e706e67)
 
+
+**UPDATE 12/6/17:** This effort has been moved to a Google Document.  For the latest version of the specification, please go here: http://bit.ly/2zUUVju
+
+
+
 # Introduction
 
 OpenEvents is a specification for a common, vendor-neutral format for event data.
