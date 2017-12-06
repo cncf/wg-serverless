@@ -32,6 +32,10 @@ And a #serverless Slack channel: https://slack.cncf.io/
 The current version of the whitepaper can be found 
 [here](https://goo.gl/udD8Fx).
 
+## OpenEvents
+
+Proposed [specification](https://docs.google.com/document/d/1PaoxJZEbEfo_OTdML5phAFlXhljq3HYtcZAN6FqPt3E/edit)
+
 ## Meeting Time
 The Serverless Working Group meets on the 1st and 3rd Thursday of every month at 9AM PT (USA Pacific):
 
