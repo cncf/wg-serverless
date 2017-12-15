@@ -14,7 +14,9 @@ Version 0.3 - 2017/09/20
 
 # Schema
 
-- **eventId** - *string* - ID of the event.  Can be specified by the producer.  The semantics of this string are explicitly undefined to ease the implementation of producers (e.g. a database commit ID).
+- **eventId** - *urn as string* - ID of the event.  The id should be a urn (rfc8141) so that the context of the event can be namespaced making the eventId unique. The nss part (rfc8141#2.2) should be specific to the generator. The semantics of the r-component (rfc8141#2.3.1) are explicitly undefined to ease the implementation of producers (e.g. a database commit ID). q and f components (rfc8141#2.3.2 and 2.3.3) should be avoided. 
+
+- **eventGenerator** - *uri as string* - Generator of the event, either a urn or url, provided the url is stable. This is to assist consumers discover the meaning of terms used throughout the message (eg relevance, format and meaning of eventType, resource.type, attributes etc). If a urn consumers will need to know how to resolve to a url.
 
 - **eventType** - *string* - Type of the event (e.g. `customer.created`).  Producers can specify the format of this, dependening on their service.  This specification does not (yet) enforce a type format (up for discussion).  We are also discussing putting the type version in here as well.
 
