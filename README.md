@@ -37,24 +37,28 @@ The current version of the whitepaper can be found
 Proposed [specification](https://docs.google.com/document/d/1PaoxJZEbEfo_OTdML5phAFlXhljq3HYtcZAN6FqPt3E/edit)
 
 ## Meeting Time
+
 The Serverless Working Group meets on the 1st and 3rd Thursday of every month at 9AM PT (USA Pacific):
 
-Join from PC, Mac, Linux, iOS or Android: https://zoom.us/j/893315636
+Join from PC, Mac, Linux, iOS or Android: https://zoom.us/my/cncfserverlesswg
 
-Or iPhone one-tap (US Toll):  +14086380968,893315636# or +16465588656,893315636#
+Or iPhone one-tap :
+
+    US: +16465588656,,3361029682#  or +16699006833,,3361029682# 
 
 Or Telephone:
-    Dial: +1 408 638 0968 (US Toll) or +1 646 558 8656 (US Toll)
-    +1 855 880 1246 (US Toll Free)
-    +1 877 369 0926 (US Toll Free)
-    Meeting ID: 893 315 636
-    International numbers available: https://zoom.us/zoomconference?m=nNv_PhN6J6o-1aAlnHVERVZ0H4v1E-tm
-    
-NOTE: Please use *6 to mute/un-mute your phone during the call.
-    
-Here is a public Google calendar so you can add the meetings to your calendar: https://goo.gl/eyutah
 
-Here is a link to a World Time Zone Converter here http://www.thetimezoneconverter.com/?t=9:00%20am&tz=San%20Francisco&
+    Dial: 
+        US: +1 646 558 8656 (US Toll) or +1 669 900 6833 (US Toll)
+        or +1 855 880 1246 (Toll Free) or +1 877 369 0926 (Toll Free)
+
+Meeting ID: 336 102 9682
+
+International numbers available: https://zoom.us/zoomconference?m=QpOqQYfTzY_Gbj9_8jPtsplp1pnVUKDr
+
+NOTE: Please use *6 to mute/un-mute your phone during the call.
+
+World Time Zone Converter: http://www.thetimezoneconverter.com/?t=9:00%20am&tz=San%20Francisco&
 
 ## In Person Meetings
 
