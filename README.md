@@ -62,13 +62,7 @@ World Time Zone Converter: http://www.thetimezoneconverter.com/?t=9:00%20am&tz=S
 
 ## In Person Meetings
 
-**KubeCon + CloudNativeCon Austin**:
-
-There will be a Serverless working group meeting at KubeCon + CloudNativeCon Austin on Dec 6, 2017 from 8pm-10pm
-in Meeting Room 3, located on Level 1 of the Austin Convention Center.
-See the
-[meeting minutes doc](https://docs.google.com/document/d/1OVF68rpuPK5shIHILK9JOqlZBbfe91RNzQ7u_P7YCDE/edit?ts=5995cedc#)
-for links to the proposed topics and list of people planning to attend.
+None planned at this time.
 
 ## Meeting Minutes
 
