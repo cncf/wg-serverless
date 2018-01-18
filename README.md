@@ -38,7 +38,7 @@ Proposed [specification](https://docs.google.com/document/d/1PaoxJZEbEfo_OTdML5p
 
 ## Meeting Time
 
-The Serverless Working Group meets on the 1st and 3rd Thursday of every month at 9AM PT (USA Pacific):
+The Serverless Working Group meets every Thursday at 9AM PT (USA Pacific):
 
 Join from PC, Mac, Linux, iOS or Android: https://zoom.us/my/cncfserverlesswg
 
