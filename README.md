@@ -32,9 +32,9 @@ And a #serverless Slack channel: https://slack.cncf.io/
 The current version of the whitepaper can be found 
 [here](https://goo.gl/udD8Fx).
 
-## OpenEvents
+## CloudEvents
 
-Proposed [specification](https://docs.google.com/document/d/1PaoxJZEbEfo_OTdML5phAFlXhljq3HYtcZAN6FqPt3E/edit)
+Proposed [specification](https://github.com/cloudevents/spec)
 
 ## Meeting Time
 
