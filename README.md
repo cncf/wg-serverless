@@ -1,38 +1,29 @@
 # CNCF Serverless WG
 
-The CNCF Serverless Working Group is exploring the intersection of cloud
-native and serverless technology.
+The original intent of the CNCF Serverless Working Group was to explore the
+intersection of cloud native and serverless technology. As a result of that
+work the following documents were produced:
+* [A Whitepaper](https://docs.google.com/document/d/1UjW8bt5O8QBgQRILJVKZJej_IuNnxl20AJu9wA8wcdI/edit#)
+* [Serverless Landscape](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0)
+
+Since then the CNCF TOC agreed to have the working group continue its work
+and develop the
+[CloudEvents](https://github.com/cloudevents/spec/blob/master/spec.md)
+specification. That work is being done in a separate github repo:
+[CloudEvents](https://github.com/cloudevents/spec).
+
+Additional work streams can be suggested, see the proposal directory's
+[README](proposals/README.md) for more information.
 
 The TOC sponsor of this WG is Ken Owens.
-
-For more information, see this collaborative [document](https://goo.gl/udD8Fx).
-
-Join our Google Group:
-[cncf-wg-serverless](https://groups.google.com/forum/#!forum/cncf-wg-serverless)
-
-Chat with us on the CNCF Slack in the #serverless channel:
-[https://slack.cncf.io/](https://slack.cncf.io/)
-
-## Goals
-
-* Provide clarity for ourselves and consumers w.r.t. what this topic is all
-about:
-  * Define common terminology
-  * Define the scope of the space as it exists today - over time this may change
-  * Identify common use cases and patterns between existing implementations
-  * Identify where serverless fits in relative to PaaS and container
-    orchestration
-* Identify potential next steps for the community (may or may not happen
-  within CNCF):
-  * Identifying areas where we’d like to see some harmonization or interop work
-* Create a whitepaper on Serverless in relation to Cloud Native.
 
 ## Communications
 
 We have google group for e-mail communications:
 [cncf-wg-serverless](https://groups.google.com/forum/#!forum/cncf-wg-serverless)
 
-And a #serverless Slack channel: https://slack.cncf.io/
+And a #serverless Slack channel:
+[https://slack.cncf.io/](https://slack.cncf.io/)
 
 ## Whitepaper
 
