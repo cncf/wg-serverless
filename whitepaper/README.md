@@ -216,7 +216,7 @@ Examples include:
 
 There are three primary development and deployment models that most application developers might consider when looking for a platform to host their cloud-native applications. Each model has its own set of differing implementations (whether an open source project, hosted platform, or on-premises product). These three models are commonly built upon container technology for its density, performance, isolation, and packaging features, but containerization is not a requirement.
 
-In order of increasing abstraction away from the actual infrastructure that is running their code, and toward a greater focus on only the business logic that’s developed, they are Container Orchestration (or Containers-as-a-Service), Platform-as-a-Service, and Serverless (Functions-as-a-Service).* *All of these approaches provide a way to deploy cloud-native application, but they prioritize different functional and non-functional aspects based on their intended developer audience and workload type. The following section lists some of the key characteristics of each.
+In order of increasing abstraction away from the actual infrastructure that is running their code, and toward a greater focus on only the business logic that’s developed, they are Container Orchestration (or Containers-as-a-Service), Platform-as-a-Service, and Serverless (Functions-as-a-Service). All of these approaches provide a way to deploy cloud-native application, but they prioritize different functional and non-functional aspects based on their intended developer audience and workload type. The following section lists some of the key characteristics of each.
 
 Keep in mind that no single approach is a silver bullet for all cloud-native development and deployment challenges. It’s important to match the needs of your particular workload against the benefits and drawbacks of each of these common cloud-native development technologies. It’s also important to consider that subcomponents of your application may be more suitable for one approach versus another, so a hybrid approach is possible.
 
@@ -542,11 +542,11 @@ When creating a function, providing its metadata (as described later under funct
 
 * Warm startup - function that has minimal number of instances at any time, such that the "first" event received has a warm start since the function is already deployed and is ready to serve the event (as opposed to a cold start where the function gets deployed on the first invocation by an “incoming” event) 
 
-A user can **Publish **a function, this will create a new version (copy of the "latest" version), the published version may be tagged/labeled or have aliases, see more below. 
+A user can **Publish** a function, this will create a new version (copy of the "latest" version), the published version may be tagged/labeled or have aliases, see more below. 
 
 A user may want to **Execute/Invoke** a function directly (bypass the event source or API gateway) for debug and development processes. A user may specify invocation parameters such as desired version, Sync/Async operation, Verbosity level, etc. 
 
-Users may want to obtain function **Statistics **(e.g. number of invocations, average runtime, average delay, failures, retries, etc.), statistics can be the current metric values or a time-series of values (e.g. stored in Prometheus or cloud provider facility such as AWS Cloud Watch).
+Users may want to obtain function **Statistics** (e.g. number of invocations, average runtime, average delay, failures, retries, etc.), statistics can be the current metric values or a time-series of values (e.g. stored in Prometheus or cloud provider facility such as AWS Cloud Watch).
 
 Users may want to retrive function **Log **data. This may be filtered by severity level and/or time range, and/or content. The Log data is per function, it include events such as function creation and deletion, explicit errors, warnings, or debug messages, and optionally the Stdout or Stderr of a function. It would be prefered to have one log entry per invocation or a way to associate log entries with a specific invocation (to allow simpler tracking of the function execution flow).
 
@@ -554,7 +554,7 @@ Users may want to retrive function **Log **data. This may be filtered by severit
 
 A Function may have multiple versions, providing the user the ability to run different level of codes such as beta/production, A/B testing etc. When using versioning, the function version is "latest" by default, the “latest” version can be updated and modified, potentially triggering a new build process on every such change. 
 
-Once a user wants to freeze a version he will use a **Publish **operation that will create a new version with potential tags or aliases (e.g. "beta", “production”) to be used when configuring an event source, so an event or API call can be routed to a specific function version. Non-latest function versions are immutable (their code and all or some of the function spec) and cannot be changed once published; functions cannot be “un-published” instead they should be deleted. 
+Once a user wants to freeze a version he will use a **Publish** operation that will create a new version with potential tags or aliases (e.g. "beta", “production”) to be used when configuring an event source, so an event or API call can be routed to a specific function version. Non-latest function versions are immutable (their code and all or some of the function spec) and cannot be changed once published; functions cannot be “un-published” instead they should be deleted. 
 
 Note that most implementations today do not allow function branching/fork (updating an old version code) since it complicates the implementation and usage, but this may be desired in the future.
 
@@ -652,7 +652,7 @@ Functions can be invoked from different event sources depending on the different
 
 4. **Batch Jobs** e.g. ETL jobs, distributed deep learning, HPC simulation 
 
-    * Jobs are scheduled or submitted to a queue, and processed at run time using **multiple **function instances in **parallel**, each handling one or more portion of the working set (a task)
+    * Jobs are scheduled or submitted to a queue, and processed at run time using multiple function instances in parallel, each handling one or more portion of the working set (a task)
 
     * The job is complete when all the parallel workers successfully completed all the computation tasks
 
@@ -710,19 +710,19 @@ Serverless function definitions may contain the following specifications and met
 
 Function frameworks may include the following metadata for functions:
 
-* **Version**** **- each function version should have a unique identifier, in addition versions can be labeled using one or more aliases (e.g. "latest", “production”, “beta”). API gateways and event sources would route traffic/events to a specific function version.
+* **Version**- each function version should have a unique identifier, in addition versions can be labeled using one or more aliases (e.g. "latest", “production”, “beta”). API gateways and event sources would route traffic/events to a specific function version.
 
 * **Environment Variables** - the user may specify Environment variables that will be provided to the function at runtime. Environment variables can also be derived from secrets and encrypted content, or derived from platform variables (e.g. like Kubernetes EnvVar definition). Environment variables enable developers to control function behavior and parameters without the need to modify code and/or rebuild the function allowing better developer experience and function reuse. 
 
 * **Execution Role** - the function should run under a specific user or role identity that grants and audits its access to platform resources.
 
-* **Resources **- define the required or maximum hardware resources such as Memory and CPU used by the function.
+* **Resources**- define the required or maximum hardware resources such as Memory and CPU used by the function.
 
-* **Timeout **- specify the maximum time a function call can run until it is terminated by the platform.
+* **Timeout**- specify the maximum time a function call can run until it is terminated by the platform.
 
 * **Failure Log (Dead Letter Queue)** - a path to a queue or stream that will store the list of failed function executions with appropriate details.
 
-* **Network Policy **- the network domain and policy assigned to the function (for the function to communicate with external services/resources).
+* **Network Policy**- the network domain and policy assigned to the function (for the function to communicate with external services/resources).
 
 * **Execution Semantics** - specifies how the functions should be executed (e.g. at least once, at most once, exactly once per event).
 
@@ -868,7 +868,7 @@ Serverless architectures provide an exciting new deployment option for cloud nat
 
 However, serverless technology is not a perfect fit for all cases and careful consideration should be given to when it is appropriate.Short-lived, event-driven processing is driving early adoption and use cases for businesses that expect a high rate of change with unpredictable capacity and infrastructure needs are emerging. See the [Additional References](#heading=h.nkn4basctyj) section for more reading material and insights into serverless computing.
 
-The CNCF Servleress Working Group, in partnership with [Redpoint Ventures](http://www.redpoint.com/), recently published a a [Serverless Landscape](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0). It illustrates some of the major erverless projects, tooling and services that are available in the ecosystem. It is not intended to represent a comprehensive, fully inclusive serverless ecosystem, nor is it an endorsement, rather just an overview of the landscape.. It is expected that owners of each will provide updates in an attempt to keep it up to date.
+The CNCF Servleress Working Group, in partnership with [Redpoint Ventures](http://www.redpoint.com/), recently published a a [Serverless Landscape](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0). It illustrates some of the major serverless projects, tooling and services that are available in the ecosystem. It is not intended to represent a comprehensive, fully inclusive serverless ecosystem, nor is it an endorsement, rather just an overview of the landscape.. It is expected that owners of each will provide updates in an attempt to keep it up to date.
 
 # Next Steps for the CNCF
 
