@@ -2,9 +2,10 @@
 
 The original intent of the CNCF Serverless Working Group was to explore the
 intersection of cloud native and serverless technology. As a result of that
-work the following documents were produced:
-* [A Whitepaper](https://docs.google.com/document/d/1UjW8bt5O8QBgQRILJVKZJej_IuNnxl20AJu9wA8wcdI/edit#)
-* [Serverless Landscape](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0)
+work the following artifacts were produced:
+
+* [A Whitepaper](#whitepaper)
+* [Landscape](#landscape)
 
 Since then the CNCF TOC agreed to have the working group continue its work
 and develop the
@@ -25,10 +26,16 @@ We have google group for e-mail communications:
 And a #serverless Slack channel:
 [https://slack.cncf.io/](https://slack.cncf.io/)
 
+## Landscape
+
+![Serverless Landscape](https://github.com/cncf/landscape/blob/master/serverless/CloudNativeLandscape_Serverless_latest.png)
+
+You can open up suggestions and issues with the landscape here: https://github.com/cncf/landscape (see [sheet](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0))
+
 ## Whitepaper
 
 The current version of the whitepaper can be found 
-[here](https://goo.gl/udD8Fx).
+[here](https://github.com/cncf/wg-serverless/tree/master/whitepaper).
 
 ## CloudEvents
 

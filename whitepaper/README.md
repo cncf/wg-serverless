@@ -1,4 +1,4 @@
-# Abstract
+# CNCF Serverless Whitepaper v1.0
 
 This paper describes a new model of cloud native computing enabled by emerging "serverless" architectures and their supporting platforms. It defines what serverless computing is, highlights use cases and successful examples of serverless computing, and shows how serverless computing differs from (and interrelates with) other cloud application development models such as Infrastructure-as-a-Service (IaaS), Platform-as-a-Service (PaaS), and container orchestration or Containers-as-a-Service (CaaS). 
 
@@ -6,11 +6,9 @@ This paper includes a logical description of the mechanics of a generic serverle
 
 It closes with a set of recommendations for the CNCF on how to advance the adoption of serverless computing for cloud-native computing.
 
-**WG Chair/TOC Sponsor:**
+**WG Chair/TOC Sponsor:** Ken Owens (Mastercard)
 
-Ken Owens (Mastercard)
-
-**WG Members** (alphabetical by last name):
+**Authors** (alphabetical by last name):
 
 Sarah Allen (Google), Chris Aniszczyk (CNCF), Ben Browning (Red Hat), Lee Calcote (SolarWinds), Amir Chaudhry (Docker), Doug Davis (IBM), Louis Fourie (Huawei), Antonio Gulli (Google), Yaron Haviv (iguazio), Daniel Krook (IBM), Orit Nissan-Messing (iguazio), Chris Munns (AWS), Ken Owens (Mastercard), Mark Peek (VMWare), Cathy Zhang (Huawei)
 
@@ -39,11 +37,9 @@ A serverless computing platform may provide one or both of the following:
 1. Functions-as-a-Service (FaaS), which typically provides event-driven computing.Developers run and manage application code with functions that are triggered by events or HTTP requests. Developers deploy small units of code to the FaaS, which are executed as needed as discrete actions, scaling without the need to manage servers or any other underlying infrastructure.
 2. Backend-as-a-Service (BaaS), which are third-party API-based services that replace core subsets of functionality in an application. Because those APIs are provided as a service that auto-scales and operates transparently, this appears to the developer to be serverless.
 
- 
-
 Serverless products or platforms deliver the following benefits to developers:
 
-1.  **Zero Server Ops**: Serverless dramatically changes the cost model of running software applications through eliminating the overhead involved in the maintenance of server resources. 
+1. **Zero Server Ops**: Serverless dramatically changes the cost model of running software applications through eliminating the overhead involved in the maintenance of server resources. 
 
     * **No provisioning, updating, and managing server infrastructure.** Managing servers, virtual machines and containers is a significant overhead expense for companies when one includes headcount, tools, training, and time. Serverless vastly reduces this kind of expense.
 
@@ -54,7 +50,6 @@ Serverless products or platforms deliver the following benefits to developers:
 ## A short history of serverless technology
 
 While the idea of an on-demand, or "pay as you go," model can be traced back to 2006 and a platform called Zimki, one of the first uses of the term serverless is from Iron.io in 2012 with their IronWorker product, a container-based distributed work-on-demand platform.
-
 
 There have since been more serverless implementations in both public and private cloud. First there were BaaS offerings, such as Parse in 2011 and Firebase in 2012 (acquired by Facebook and Google, respectively). In November 2014, [AWS Lambda](https://aws.amazon.com/lambda/) was launched, and early 2016 saw announcements for [IBM OpenWhisk on Bluemix](https://www.ibm.com/cloud-computing/bluemix/openwhisk) (now IBM Cloud Functions, with the core open source project governed as [Apache OpenWhisk](http://openwhisk.incubator.apache.org/)), [Google Cloud Functions](https://cloud.google.com/functions/), and [Microsoft Azure Cloud Functions](https://azure.microsoft.com/en-us/services/functions/). [Huawei Function Stage](http://www.huaweicloud.com/product/functionstage.html) launched in 2017. There are also numerous open source serverless frameworks. Each of the frameworks, both public and private, have unique sets of language runtimes and services for handling events and processing data. 
 
