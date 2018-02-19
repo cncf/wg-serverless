@@ -34,7 +34,7 @@ Servers are still required to run a serverless platform. The **provider** will n
 
 A serverless computing platform may provide one or both of the following:
 
-1. Functions-as-a-Service (FaaS), which typically provides event-driven computing.Developers run and manage application code with functions that are triggered by events or HTTP requests. Developers deploy small units of code to the FaaS, which are executed as needed as discrete actions, scaling without the need to manage servers or any other underlying infrastructure.
+1. Functions-as-a-Service (FaaS), which typically provides event-driven computing. Developers run and manage application code with functions that are triggered by events or HTTP requests. Developers deploy small units of code to the FaaS, which are executed as needed as discrete actions, scaling without the need to manage servers or any other underlying infrastructure.
 2. Backend-as-a-Service (BaaS), which are third-party API-based services that replace core subsets of functionality in an application. Because those APIs are provided as a service that auto-scales and operates transparently, this appears to the developer to be serverless.
 
 Serverless products or platforms deliver the following benefits to developers:
