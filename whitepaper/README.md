@@ -173,9 +173,9 @@ Examples include:
 
 * [Australian census ported to a serverless architecture shows speed of development, cost improvements, and autoscaling](https://medium.com/serverless-stories/challenge-accepted-building-a-better-australian-census-site-with-serverless-architecture-c5d3ad836bfa).
 
-* ["How I cut my AWS bill by 90% by going serverless](https://medium.freecodecamp.org/how-i-cut-my-aws-bill-by-90-35c937596f0c)[." ](https://medium.freecodecamp.org/how-i-cut-my-aws-bill-by-90-35c937596f0c)
+* ["How I cut my AWS bill by 90% by going serverless."](https://medium.freecodecamp.org/how-i-cut-my-aws-bill-by-90-35c937596f0c)
 
-* AutoDesk example: ["Costs a small fraction (~1%) of the traditional cloud approach](https://www.infoq.com/news/2016/08/serverless-autodesk)[."](https://www.infoq.com/news/2016/08/serverless-autodesk)
+* AutoDesk example: ["Costs a small fraction (~1%) of the traditional cloud approach."](https://www.infoq.com/news/2016/08/serverless-autodesk)
 
 * Online coding/education (exam, test, etc.) runs exercise code in an event-driven environment, and provides feedback to the user based on a comparison with expected results for that exercise. The serverless platform runs the answer-checking on demand and scale as needed, paying for only the time during which code is running.
 
@@ -861,9 +861,9 @@ States and associated information need to be saved in some persistent storage fo
 
 Serverless architectures provide an exciting new deployment option for cloud native workloads. As we saw in the [Serverless Workloads section](#heading=h.rr6of6jc01cx) there are certain use cases where serverless technology provides major benefits over other cloud hosting technologies. 
 
-However, serverless technology is not a perfect fit for all cases and careful consideration should be given to when it is appropriate.Short-lived, event-driven processing is driving early adoption and use cases for businesses that expect a high rate of change with unpredictable capacity and infrastructure needs are emerging. See the [Additional References](#heading=h.nkn4basctyj) section for more reading material and insights into serverless computing.
+However, serverless technology is not a perfect fit for all cases and careful consideration should be given to when it is appropriate. Short-lived, event-driven processing is driving early adoption and use cases for businesses that expect a high rate of change with unpredictable capacity and infrastructure needs are emerging. See the [Additional References](#heading=h.nkn4basctyj) section for more reading material and insights into serverless computing.
 
-The CNCF Serverless Working Group, in partnership with [Redpoint Ventures](http://www.redpoint.com/), recently published a a [Serverless Landscape](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0). It illustrates some of the major serverless projects, tooling and services that are available in the ecosystem. It is not intended to represent a comprehensive, fully inclusive serverless ecosystem, nor is it an endorsement, rather just an overview of the landscape.. It is expected that owners of each will provide updates in an attempt to keep it up to date.
+The CNCF Serverless Working Group, in partnership with [Redpoint Ventures](http://www.redpoint.com/), recently published a [Serverless Landscape](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0). It illustrates some of the major serverless projects, tooling and services that are available in the ecosystem. It is not intended to represent a comprehensive, fully inclusive serverless ecosystem, nor is it an endorsement, rather just an overview of the landscape. It is expected that owners of each will provide updates in an attempt to keep it up to date.
 
 # Next Steps for the CNCF
 
