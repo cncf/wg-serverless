@@ -543,7 +543,7 @@ A user may want to **Execute/Invoke** a function directly (bypass the event sour
 
 Users may want to obtain function **Statistics** (e.g. number of invocations, average runtime, average delay, failures, retries, etc.), statistics can be the current metric values or a time-series of values (e.g. stored in Prometheus or cloud provider facility such as AWS Cloud Watch).
 
-Users may want to retrive function **Log **data. This may be filtered by severity level and/or time range, and/or content. The Log data is per function, it include events such as function creation and deletion, explicit errors, warnings, or debug messages, and optionally the Stdout or Stderr of a function. It would be prefered to have one log entry per invocation or a way to associate log entries with a specific invocation (to allow simpler tracking of the function execution flow).
+Users may want to retrive function **Log **data. This may be filtered by severity level and/or time range, and/or content. The Log data is per function, it include events such as function creation and deletion, explicit errors, warnings, or debug messages, and optionally the Stdout or Stderr of a function. It would be preferred to have one log entry per invocation or a way to associate log entries with a specific invocation (to allow simpler tracking of the function execution flow).
 
 ### Function Versioning and Aliases
 
@@ -863,7 +863,7 @@ Serverless architectures provide an exciting new deployment option for cloud nat
 
 However, serverless technology is not a perfect fit for all cases and careful consideration should be given to when it is appropriate.Short-lived, event-driven processing is driving early adoption and use cases for businesses that expect a high rate of change with unpredictable capacity and infrastructure needs are emerging. See the [Additional References](#heading=h.nkn4basctyj) section for more reading material and insights into serverless computing.
 
-The CNCF Servleress Working Group, in partnership with [Redpoint Ventures](http://www.redpoint.com/), recently published a a [Serverless Landscape](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0). It illustrates some of the major serverless projects, tooling and services that are available in the ecosystem. It is not intended to represent a comprehensive, fully inclusive serverless ecosystem, nor is it an endorsement, rather just an overview of the landscape.. It is expected that owners of each will provide updates in an attempt to keep it up to date.
+The CNCF Serverless Working Group, in partnership with [Redpoint Ventures](http://www.redpoint.com/), recently published a a [Serverless Landscape](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0). It illustrates some of the major serverless projects, tooling and services that are available in the ecosystem. It is not intended to represent a comprehensive, fully inclusive serverless ecosystem, nor is it an endorsement, rather just an overview of the landscape.. It is expected that owners of each will provide updates in an attempt to keep it up to date.
 
 # Next Steps for the CNCF
 
