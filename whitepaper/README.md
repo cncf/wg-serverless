@@ -51,7 +51,7 @@ Serverless products or platforms deliver the following benefits to developers:
 
 While the idea of an on-demand, or "pay as you go," model can be traced back to 2006 and a platform called Zimki, one of the first uses of the term serverless is from Iron.io in 2012 with their IronWorker product, a container-based distributed work-on-demand platform.
 
-There have since been more serverless implementations in both public and private cloud. First there were BaaS offerings, such as Parse in 2011 and Firebase in 2012 (acquired by Facebook and Google, respectively). In November 2014, [AWS Lambda](https://aws.amazon.com/lambda/) was launched, and early 2016 saw announcements for [IBM OpenWhisk on Bluemix](https://www.ibm.com/cloud-computing/bluemix/openwhisk) (now IBM Cloud Functions, with the core open source project governed as [Apache OpenWhisk](http://openwhisk.incubator.apache.org/)), [Google Cloud Functions](https://cloud.google.com/functions/), and [Microsoft Azure Cloud Functions](https://azure.microsoft.com/en-us/services/functions/). [Huawei Function Stage](http://www.huaweicloud.com/product/functionstage.html) launched in 2017. There are also numerous open source serverless frameworks. Each of the frameworks, both public and private, have unique sets of language runtimes and services for handling events and processing data. 
+There have since been more serverless implementations in both public and private cloud. First there were BaaS offerings, such as Parse in 2011 and Firebase in 2012 (acquired by Facebook and Google, respectively). In November 2014, [AWS Lambda](https://aws.amazon.com/lambda/) was launched, and early 2016 saw announcements for [IBM OpenWhisk on Bluemix](https://www.ibm.com/cloud-computing/bluemix/openwhisk) (now IBM Cloud Functions, with the core open source project governed as [Apache OpenWhisk](http://openwhisk.incubator.apache.org/)), [Google Cloud Functions](https://cloud.google.com/functions/), and [Microsoft Azure Functions](https://azure.microsoft.com/services/functions/). [Huawei Function Stage](http://www.huaweicloud.com/product/functionstage.html) launched in 2017. There are also numerous open source serverless frameworks. Each of the frameworks, both public and private, have unique sets of language runtimes and services for handling events and processing data. 
 
 These are just a few examples; for a more complete and up-to-date list see the [Serverless Landscape](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0) document. The [Detail View: Serverless Processing Model](#heading=h.vli9umq7mfhe) section contains more detail about the entire FaaS model.
 
@@ -725,7 +725,7 @@ Function frameworks may include the following metadata for functions:
 
 Some serverless frameworks allow a user to specify the input/output data resources used by the function, this enables developer simplicity, performance (data connections are preserved between executions, data can be pre-fetched, etc.), and better security (data resources credentials are part of the context not the code).
 
-Bound data can be in the form of files, objects, records, messages etc., the function spec may include an array of data binding definitions, each specifying the data resource, its credentials and usage parameters. Data binding can refer to event data (e.g. the DB key is derived from the event "username" field), see more in: [https://docs.microsoft.com/en-us/azure/azure-functions/functions-triggers-bindings](https://docs.microsoft.com/en-us/azure/azure-functions/functions-triggers-bindings).
+Bound data can be in the form of files, objects, records, messages etc., the function spec may include an array of data binding definitions, each specifying the data resource, its credentials and usage parameters. Data binding can refer to event data (e.g. the DB key is derived from the event "username" field), see more in: [https://docs.microsoft.com/azure/azure-functions/functions-triggers-bindings](https://docs.microsoft.com/azure/azure-functions/functions-triggers-bindings).
 
 ## Function Input 
 
@@ -769,7 +769,7 @@ Examples of event source structures:
 
 * [http://docs.aws.amazon.com/lambda/latest/dg/eventsources.html](http://docs.aws.amazon.com/lambda/latest/dg/eventsources.html)
 
-* [https://docs.microsoft.com/en-us/azure/azure-functions/functions-triggers-bindings](https://docs.microsoft.com/en-us/azure/azure-functions/functions-triggers-bindings)
+* [https://docs.microsoft.com/azure/azure-functions/functions-triggers-bindings](https://docs.microsoft.com/azure/azure-functions/functions-triggers-bindings)
 
 * [https://cloud.google.com/functions/docs/concepts/events-triggers](https://cloud.google.com/functions/docs/concepts/events-triggers)
 
