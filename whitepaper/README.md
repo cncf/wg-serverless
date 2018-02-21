@@ -901,6 +901,8 @@ With respect to what, if anything, the CNCF should consider doing in this space,
 
 * Provide guidance on how to evaluate functional and nonfunctional characteristics of serverless architectures relative to CaaS or PaaS. This could take the form of a decision tree or recommend a set of tools from within the CNCF project family.
 
+* Provide guidance on serverless security topics such as: secure serverless development guidelines, hardening serverless deployments, adequate security logging and monitoring as well as relevant tools & procedures (see [The Ten Most Critical Security Risks in Serverless Architectures](https://www.puresec.io/hubfs/SAS-Top10-2018/PureSec%20-%20SAS%20Top%2010%20-%202018.pdf)).
+
 * Begin a process for CNCF outputs (for the suggested documents referenced above), such as from this Serverless Working Group and the Storage Working Groups, to live on as Markdown files in GitHub where they can be collaboratively maintained over time, which is particularly important given the speed of innovation in this space.
 
 # Appendix A: Glossary
@@ -1000,4 +1002,6 @@ The following references are provided for those looking for additional resources
 * [The Serverless Guide](https://serverless.github.io/guide/) authored by the community, curated by Serverless, Inc.
 
 * [Microservice Orchestration for Serverless Computing](https://conferences.oreilly.com/oscon/oscon-tx/public/schedule/detail/61681) by Cathy Zhang, Louis Fourie
+
+* [The Ten Most Critical Security Risks in Serverless Architectures](https://www.puresec.io/hubfs/SAS-Top10-2018/PureSec%20-%20SAS%20Top%2010%20-%202018.pdf) by PureSec
 
