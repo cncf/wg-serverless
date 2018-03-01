@@ -1,5 +1,8 @@
 # CNCF Serverless Whitepaper v1.0
 
+The current version of the whitepaper can be found 
+[here].(https://github.com/cncf/wg-serverless/blob/master/whitepaper/cncf_serverless_whitepaper_v1.0.pdf)
+
 This paper describes a new model of cloud native computing enabled by emerging "serverless" architectures and their supporting platforms. It defines what serverless computing is, highlights use cases and successful examples of serverless computing, and shows how serverless computing differs from (and interrelates with) other cloud application development models such as Infrastructure-as-a-Service (IaaS), Platform-as-a-Service (PaaS), and container orchestration or Containers-as-a-Service (CaaS). 
 
 This paper includes a logical description of the mechanics of a generic serverless platform with an associated programming model and message format, but it does not prescribe a standard. It introduces several industry serverless platforms and their capabilities, but it does not recommend a particular implementation.
