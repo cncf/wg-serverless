@@ -30,7 +30,11 @@ And a #serverless Slack channel:
 
 ![Serverless Landscape](https://github.com/cncf/landscape/blob/master/serverless/CloudNativeLandscape_Serverless_latest.png)
 
-You can open up suggestions and issues with the landscape here: https://github.com/cncf/landscape (see [sheet](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0))
+You can open up suggestions and issues with the landscape here: https://github.com/cncf/landscape.
+
+## Interactive Landscape
+
+Please see the new interactive [version](https://landscape.cncf.io/grouping=landscape&landscape=serverless) of the landscape. The easy-to-remember URL is [s.cncf.io](https://s.cncf.io).
 
 ## Whitepaper
 
