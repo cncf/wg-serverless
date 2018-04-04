@@ -546,7 +546,7 @@ A user may want to **Execute/Invoke** a function directly (bypass the event sour
 
 Users may want to obtain function **Statistics** (e.g. number of invocations, average runtime, average delay, failures, retries, etc.), statistics can be the current metric values or a time-series of values (e.g. stored in Prometheus or cloud provider facility such as AWS Cloud Watch).
 
-Users may want to retrive function **Log **data. This may be filtered by severity level and/or time range, and/or content. The Log data is per function, it include events such as function creation and deletion, explicit errors, warnings, or debug messages, and optionally the Stdout or Stderr of a function. It would be preferred to have one log entry per invocation or a way to associate log entries with a specific invocation (to allow simpler tracking of the function execution flow).
+Users may want to retrive function **Log** data. This may be filtered by severity level and/or time range, and/or content. The Log data is per function, it include events such as function creation and deletion, explicit errors, warnings, or debug messages, and optionally the Stdout or Stderr of a function. It would be preferred to have one log entry per invocation or a way to associate log entries with a specific invocation (to allow simpler tracking of the function execution flow).
 
 ### Function Versioning and Aliases
 
@@ -588,7 +588,7 @@ Different types of event sources includes:
 
 * Scheduled events - Enables invocation of functions on regular intervals.
 
-While the data provided per event could vary between the different event sources, the event structure should be generic with the ability to encapsulate specific information with respect to the event source (details under [Event data and metadata](#heading=h.279ka65)).
+While the data provided per event could vary between the different event sources, the event structure should be generic with the ability to encapsulate specific information with respect to the event source (details under [Event data and metadata](#event-data-and-metadata)).
 
 ## Function Requirements
 
@@ -734,7 +734,7 @@ Bound data can be in the form of files, objects, records, messages etc., the fun
 
 Function input includes event data and metadata, and may include a context object.
 
-### Event data and metadata 
+### Event data and metadata
 
 Event details should be passed to the function handler, different events may have varying metadata, so it would be desirable for functions to be able to determine the type of event and easily parse the common and event specific metadata. 
 
@@ -942,7 +942,7 @@ Mapping between event sources and the the specific Functions that are meant to b
 
 **Event Data**
 
-Information pertaining to the Event that occurred. See [Event data and metadata](#heading=h.279ka65) for more information.
+Information pertaining to the Event that occurred. See [Event data and metadata](#event-data-and-metadata) for more information.
 
 **Event Source**
 
