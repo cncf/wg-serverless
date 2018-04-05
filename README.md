@@ -18,6 +18,9 @@ Additional work streams can be suggested, see the proposal directory's
 
 The TOC sponsor of this WG is Ken Owens.
 
+### Non-Goals
+Identify one serverless project to rule them all.
+
 ## Communications
 
 We have google group for e-mail communications:
