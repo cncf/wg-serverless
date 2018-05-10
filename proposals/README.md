@@ -12,7 +12,7 @@ If the work stream extends the scope of the Working Group beyond what the
 TOC has previously agreed to, then the request might need to be taken to
 the TOC after the Working Group has agreed to it.
 
-## Status
+## Proposed Work Streams
 
 ### Events
 
@@ -20,4 +20,14 @@ At this moment the group decided to move forward with `open-events`
 leveraging `Cloudevents` and `Open-CADF-events` content as input. The
 on-going work for the current spec is hosted at
 [https://github.com/cloudevents/spec](https://github.com/cloudevents/spec).
+
+### Orchestration / Workflows / Chaining
+
+### Function Signatures
+
+### APIs for accessing CloudEvents
+
+### CE Client SDK
+
+See: https://github.com/cloudevents/spec/issues/205
 
