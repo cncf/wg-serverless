@@ -46,6 +46,8 @@ See: https://github.com/cloudevents/spec/issues/205
 
 Functions generate logs which are stored in the underline platform (e.g. Kubernetes logs, AWS Cloud watch, Azure App insight, elastic search..). each serverless platform has its own way of writing to a log. If we had a common way/api for logging it could have made functions portable AND allow simple integration between log services and function platform providers.
 
+See details in [function logging](function-logging.md)
+
 Nuclio as an example adopted Ubers' ZAP (https://github.com/uber-go/zap) interface which has great performance, support both structured and unstructured logs, and log hierarchies. 
 Having such an abstraction also allowed us to integrate with multiple log services (HTTP, Console, Kubernetes, iguazio CDP, Azure App insights) w/o changing the function implementation.
 
