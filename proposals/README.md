@@ -41,3 +41,28 @@ Some examples can be seen in [function-signatures-examples.md](function-signatur
 
 See: https://github.com/cloudevents/spec/issues/205
 
+
+### Common function logging, observing, and monitoring 
+
+Functions generate logs which are stored in the underline platform (e.g. Kubernetes logs, AWS Cloud watch, Azure App insight, elastic search..). each serverless platform has its own way of writing to a log. If we had a common way/api for logging it could have made functions portable AND allow simple integration between log services and function platform providers.
+
+See proposal details in [function logging](function-logging.md)
+
+In addition to logs standardizing and integrating other APIs for custom metrics counting and tracing can simplify developer work. 
+
+### Common function model 
+
+Each platform today has its own function spec file/API which describe the desired function resources, environment variables, triggers, etc [e.g. nuclio function spec doc]( https://github.com/nuclio/nuclio/blob/master/docs/reference/function-configuration/function-configuration-reference.md). This means deploying function on a new platform require adapting your deployment scripts or logic every time you shift providers.
+
+It is even a greater burden in many cases since the function configuration may depend on external resources such as databases, API gateways, message queues, etc.
+
+some efforts like AWS SAML or Serverless.com tried to deliver higher level abstraction which has a potential of delivering a common/cross-platform model, yet the such efforts may require participation from the platform providers and agreement on such a common model.
+
+### Common Serverless Benchmark framework 
+
+Users often try to compare Serverless frameworks on performance, which is faster and in what use-case, rather than having each vendor define their own benchmark which may be biased towards their own implementation it would be great to have a common standard like [SPECvirt]( https://en.wikipedia.org/wiki/SPECvirt) or [YCSB (NoSQL Benchmark)]( https://en.wikipedia.org/wiki/YCSB).
+
+Performance benchmarks may include aspects of throughput, latency, scalability, cost/performance, cold/warm start, etc. There may be various use cases with different performance behaviors such as small HTTP requests, stream processing, image processing (each may have different bottleneck between network, data, CPU).
+
+Nuclio team made a small step in that direction with simple request latency & throughput benchmark which can be used to benchmark various serverless platforms [see the link]( https://github.com/nuclio/nuclio/blob/master/docs/tasks/benchmarking.md)
+
