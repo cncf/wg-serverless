@@ -21,13 +21,21 @@ leveraging `Cloudevents` and `Open-CADF-events` content as input. The
 on-going work for the current spec is hosted at
 [https://github.com/cloudevents/spec](https://github.com/cloudevents/spec).
 
-### Orchestration / Workflows / Chaining
+### Workflows / Function Composition
 
-The way functions are orchestrated, workflows are built and chaining functions were deemed to be not in scope for CloudEvents, but maybe in scope for the Serverless working group.
+Many serverless applications are not a simple function triggered by a single event, instead they are composed of a function workflow/graph with events and functions interleaved together. 
 
-There are issues such as the [correlation id](https://github.com/cloudevents/spec/pull/128), [event history/ chaining](https://github.com/cloudevents/spec/issues/204), [event nesting](https://github.com/cloudevents/spec/issues/72) and concerns regarding encryption/ signed content/ integrity that do need this to be defined. There are increasing number of question regarding who is allowed to modify a CloudEvent, how an event is forwarded and so on.
+A user needs a standard way to specify their serverless use case workflow. For example, one use case could be "do image enhancement and then face recognition on a photo when a photo is uploaded onto the cloud storage (photo storage event happens)." Another IoT use case could be “do motion analysis” when a motion detection event is received, then depending on the result of the analysis function, either “trigger the house alarm plus call to the police department” or just “send the motion image to the house owner.” 
 
-Having a field in CloudEvents that is to be used for say correlation, but no clear specification for who uses that field and what that field contains is not ideal.
+A user’s workflow may involve both events and functions. For example, in a workflow, the user can specify what combination of events trigger what functions, those functions are executed in sequence or in parallel, what information is passed from one function to the next function, whether the next step function execution needs to wait for another event to happen. 
+
+Some information discussed in the CloudEvents, such as the [correlation id](https://github.com/cloudevents/spec/pull/128), is associated with a usecase workflow and do need to be specified in the workflow specification. While we wrok on workflow specification, we might find out that some attributes are missing in the CloudEvents. 
+
+### Event Orchestration / Chaining
+
+The way events are orchestrated and chaining functions were deemed to be not in scope for CloudEvents, but maybe in scope for the Serverless working group.
+
+There are issues such as [event history/ chaining](https://github.com/cloudevents/spec/issues/204), [event nesting](https://github.com/cloudevents/spec/issues/72) that do need this to be defined. There are increasing number of question regarding who is allowed to modify a CloudEvent, how an event is forwarded and so on.
 
 ### Function Signatures
 
