@@ -23,8 +23,8 @@ Identify one serverless project to rule them all.
 
 ## Communications
 
-We have google group for e-mail communications:
-[cncf-wg-serverless](https://groups.google.com/forum/#!forum/cncf-wg-serverless)
+The mailing list for e-mail communications:
+[cncf-wg-serverless](mailto:cncf-wg-serverless@lists.cncf.io)
 
 And a #serverless Slack channel:
 [https://slack.cncf.io/](https://slack.cncf.io/)
