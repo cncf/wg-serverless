@@ -47,7 +47,7 @@ The current version of the whitepaper can be found
 
 ## CloudEvents
 
-Proposed [specification](https://github.com/cloudevents/spec)
+Please see https://cloudevents.io/.
 
 ## Meeting Time
 
