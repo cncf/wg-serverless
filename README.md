@@ -4,7 +4,7 @@ The original intent of the CNCF Serverless Working Group was to explore the
 intersection of cloud native and serverless technology. As a result of that
 work the following artifacts were produced:
 
-* [A Whitepaper](#whitepaper)
+* [A Serverless Overview Whitepaper](#serverless-overview-whitepaper)
 * [Landscape](#landscape)
 
 Since then the CNCF TOC agreed to have the working group continue its work
@@ -40,10 +40,10 @@ You can open up suggestions and issues with the landscape here: https://github.c
 
 Please see the new interactive [version](https://landscape.cncf.io/grouping=landscape&landscape=serverless) of the landscape. The easy-to-remember URL is [s.cncf.io](https://s.cncf.io).
 
-## Whitepaper
+## Serverless Overview Whitepaper
 
 The current version of the whitepaper can be found 
-[here](https://github.com/cncf/wg-serverless/tree/master/whitepaper).
+[here](https://github.com/cncf/wg-serverless/tree/master/whitepapers/serverless-overview).
 
 ## CloudEvents
 
