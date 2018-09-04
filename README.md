@@ -56,7 +56,7 @@ Proposed [specification](https://github.com/cloudevents/spec)
 
 ## Workflow
 
-Proposed [specification](https://github.com/cncf/wg-serverless/workflow/spec)
+Proposed [specification](https://github.com/cncf/wg-serverless/blob/master/workflow/spec/spec.md)
 
 ## Meeting Time
 

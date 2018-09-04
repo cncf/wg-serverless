@@ -13,8 +13,8 @@ This document is a working draft.
 - [Introduction](#Introduction)
 - [Use Case Examples](#Use Case Examples)
 - [Functional Scope](#Functional Scope)
-- [Workflow Model](#Wokrflow Model)
-- [Workflow Specification](#Wokrflow Specification)
+- [Workflow Model](#Workflow Model)
+- [Workflow Specification](#Workflow Specification)
 
 # Introduction #
 
@@ -48,13 +48,13 @@ there will be a motion event. If there is no motion event, then it is a false
 alarm. If a motion event is received, face recognition is done. If it is a
 family member, it is a false alarm. Otherwise a text and email with the face
 image are sent to the two contacts on file. Then it will wait for response
-from the contacts. 
+from the contacts.
 ---If there is no response within the predefined time period, it will initiate
 an auto-call to the customer and do voice recognition to get the customer’s
 response. If the customer’s response is OK, it is a false alarm. If the
 customer’s response is NOT OK or the customer gives the wrong secret code,
 a notification message is sent to the Emergency Services (fire, police and
-ambulance). 
+ambulance).
 ---If a response is received within the predefined time period, natural language
 processing on the response will be initiated. If the response is OK, it is a
 false alarm. If the response is NOT OK or the customer gives the wrong secret
@@ -163,7 +163,7 @@ transcoding services. This could be a notification event, etc. When either of
 results present in the event. When all the events **‘Ev3’**, **‘Ev4’** and
 **‘Ev5’** are received, the flow ends.
 
-## Loan Approval With a Long-Running Service Use Case##
+## Loan Approval With a Long-Running Service Use Case ##
 
 A loan approval process begins when a user submits an online form. Then it
 performs some steps such as validating customer details, etc. At a certain
@@ -180,7 +180,7 @@ long-running service.
 
 ![](media/230e5bf02f18561af9a7ba11c80032bd.png)
 
-## Translation Service Evaluation Use Case##
+## Translation Service Evaluation Use Case ##
 
 In case of Artificial Intelligence services, specific service has different
 characteristics, strength, and weakness among providers. As an
@@ -325,15 +325,13 @@ complex applications involving many cloud functions and multiple events.
 At high level, the Function Workflow specification consists of two parts:
 trigger definitions and state definitions.
 
-``` JSON
-"trigger-defs": {
-   TRIGGER-DEFINITION
-},
-
-"states": {
-   STATE-DEFINITION
-}
-```
+	"trigger-defs": {
+		TRIGGER-DEFINITION
+	},
+	
+	"states": {
+		STATE-DEFINITION
+	}
 
 The trigger-defs field (Optional, only required if there are events associated
 with the workflow) is an array of event triggers associated with a Function
@@ -346,8 +344,6 @@ Workflow.
 
 The following is an example of a Function Workflow in JSON format, which
 involves an Event State and the triggers for this Event State:
-
-{
 
 	"trigger-defs": {
 		"OBS-EVENT": {
@@ -398,11 +394,8 @@ involves an Event State and the triggers for this Event State:
 			"type": END
 		}
 	]
-}
 
 The following is another example of a Function Workflow with an Operation State:
-
-{ 
 
 	"states": {
 		"STATE-ALARM-NOTIFY": {
@@ -420,19 +413,17 @@ The following is another example of a Function Workflow with an Operation State:
 			"next-state": "STATE-END"
 		}
 	}
-}
 
 ## Trigger Definition(TRIGGER-DEFINITION) ##
 
 The TRIGGER-DEFINITION consists of one or more event triggers. 
 
 An event trigger is defined in JSON as shown below.
-``` JSON
-"EVENT-NAME": {
-   "source": CloudEvent source UUID
-   "correlation-token": a path string to an identification label field in the event message
-}
-```
+
+	"EVENT-NAME": {
+		"source": CloudEvent source UUID
+		"correlation-token": a path string to an identity label field in the event message
+		}	
 
 The "EVENT-NAME” is used by the EVENTS-EXPRESSION in an Event state.
 Note that the event itself is defined according to the [CloudEvents Specification]
@@ -450,23 +441,23 @@ in the event message must be specified.
 
 ## State Definition(STATE-DEFINITION) ##
 ### Event State ###
-``` JSON
-"STATE-NAME": {
-	"type": EVENT,
-	"start": Boolean,
-	"events": [
-	     {
-			"event-expression": EVENTS-EXPRESSION,
-			"timeout": TIMEOUT-VALUE,
-			"action-mode": ACTION-MODE,
-			"actions": [
-				ACTION-DEFINITION,
-			],
-			"next-state": STATE-NAME
-		}
-	]
-}
-```
+
+	"STATE-NAME": {
+		"type": EVENT,
+		"start": Boolean,
+		"events": [
+			{
+				"event-expression": EVENTS-EXPRESSION,
+				"timeout": TIMEOUT-VALUE,
+				"action-mode": ACTION-MODE,
+				"actions": [
+					ACTION-DEFINITION,
+				],
+				"next-state": STATE-NAME
+			}
+		]
+	}
+
 An Event State will have the "type" field set to value "EVENT".
 
 If the "start" field (Optional) is true, this is the start state. This must be
@@ -499,20 +490,19 @@ after all the actions for the matching event have been successfully executed.
 **ACTION-DEFINITION**
 
 This is defined in JSON as shown below.
-``` JSON
-{ 
-	"function": FUNCTION-NAME,
-	"timeout": TIMEOUT-VALUE,
-	"retry": [
-		{ 
-			"match": RESULT-VALUE,
-			"retry-interval": INTERVAL-VALUE,
-			"max-retry": MAX-RETRY,
-			"next-state": STATE-NAME
-		}
-	],
-}
-```
+
+	{ 
+		"function": FUNCTION-NAME,
+		"timeout": TIMEOUT-VALUE,
+		"retry": [
+			{ 
+				"match": RESULT-VALUE,
+				"retry-interval": INTERVAL-VALUE,
+				"max-retry": MAX-RETRY,
+				"next-state": STATE-NAME
+			}
+		],
+	}
 
 The "function" field specifies the function that must be invoked.
 
@@ -530,20 +520,18 @@ The "next-state" field specifies the name of the next state to transition to
 when exceeding max-retry limit.
 
 ### Operation State
-``` JSON
-"STATE-NAME": {
 
-	"type": OPERATION,
-	"start": Boolean,
-		{
-			"action-mode": ACTION-MODE,
-			"actions": [
-				ACTION-DEFINITION,
-			],
-			"next-state": STATE-NAME
-		}
-}
-```
+	"STATE-NAME": {
+		"type": OPERATION,
+		"start": Boolean,
+			{
+				"action-mode": ACTION-MODE,
+				"actions": [
+					ACTION-DEFINITION,
+				],
+				"next-state": STATE-NAME
+			}
+	}
 
 The field "action-mode" specifies whether functions are executed in sequence or
 in parallel and could either be SEQUENTIAL or PARALLEL.
@@ -557,60 +545,57 @@ after all the actions for the matching event have been successfully executed.
 
 ### Switch State
 
-``` JSON
-"STATE-NAME": {
-
-	"type": SWITCH,
-	"start": Boolean,
-	"choices": [
-		{
-			"path": PAYLOAD-PATH,
-			"value": VALUE,
-			"operator": COMPARISON-OPERATOR,
-			"next-state": STATE-NAME
-		},
-		{ 
-			"Not": {
+	"STATE-NAME": {
+		"type": SWITCH,
+		"start": Boolean,
+		"choices": [
+			{
 				"path": PAYLOAD-PATH,
 				"value": VALUE,
-				"operator": COMPARISON-OPERATOR
+				"operator": COMPARISON-OPERATOR,
+				"next-state": STATE-NAME
 			},
-			"next-state": STATE-NAME
-		},
-		{
-			"And": [
-				{
+			{ 
+				"Not": {
 					"path": PAYLOAD-PATH,
 					"value": VALUE,
 					"operator": COMPARISON-OPERATOR
 				},
-				{
-					"path": PAYLOAD-PATH,
-					"value": VALUE,
-					"operator": COMPARISON-OPERATOR
-				}
-			],
-			"next-state": STATE-NAME
-		},
-		{
-			"Or": [
-				{
-					"path": PAYLOAD-PATH,
-					"value": VALUE,
-					"operator": COMPARISON-OPERATOR
-				},
-				{
-					"path": PAYLOAD-PATH,
-					"value": VALUE,
-					"operator": COMPARISON-OPERATOR
-				}
-			],
-			"next-state": STATE-NAME
-		},
-	],
-	"default": STATE-NAME
-}
-```
+				"next-state": STATE-NAME
+			},
+			{
+				"And": [
+					{
+						"path": PAYLOAD-PATH,
+						"value": VALUE,
+						"operator": COMPARISON-OPERATOR
+					},
+					{
+						"path": PAYLOAD-PATH,
+						"value": VALUE,
+						"operator": COMPARISON-OPERATOR
+					}
+				],
+				"next-state": STATE-NAME
+			},
+			{
+				"Or": [
+					{
+						"path": PAYLOAD-PATH,
+						"value": VALUE,
+						"operator": COMPARISON-OPERATOR
+					},
+					{
+						"path": PAYLOAD-PATH,
+						"value": VALUE,
+						"operator": COMPARISON-OPERATOR
+					}
+				],
+				"next-state": STATE-NAME
+			},
+		],
+		"default": STATE-NAME
+	}
 
 The "choices" field defines an ordered set of Match Rules against the input data
 to this state, and the next state to transition to for each match.
@@ -641,15 +626,13 @@ The order of evaluation is form the top to the bottom, and if a match happens,
 go to “next-state” and ignore the rest of condition.
 
 ### Delay State
-``` JSON
-"STATE-NAME": {
 
-	"type": DELAY,
-	"start": Boolean,
-	"time-delay": TIME-VALUE,
-	"next-state": STATE-NAME
-}
-```
+	"STATE-NAME": {
+		"type": DELAY,
+		"start": Boolean,
+		"time-delay": TIME-VALUE,
+		"next-state": STATE-NAME
+	}
 
 The "time-delay" field specifies a time delay. The TIME-VALUE is the amount of
 time in seconds to delay in this state. This must be a positive integer.
@@ -658,16 +641,14 @@ The "next-state" field specifies the name of the next state to transition to.
 STATE-NAME must be a valid State name within the Function Workflow.
 
 ### End State
-``` JSON
-"STATE-NAME": {
 
-	"type": END,
-	"status": STATUS
-}
+	"STATE-NAME": {
+		"type": END,
+		"status": STATUS
+	}
 
 The “status” field specifies the workflow termination status: SUCCESS or
 FAILURE.
-```
 
 ### PARALLEL State
 
@@ -690,26 +671,25 @@ to a state within a branch of a Parallel state.
 
 The Parallel state generates an output array in which each element is the output
 for a branch. The elements of the output array need not be of the same type.
-``` JSON
-"STATE-NAME": {
 
-	"type": PARALLEL,
-	"start": Boolean,
-	"branches": {
-		BRANCH-NAME {
-			"states": {
-				STATE-DEFINITION
+	"STATE-NAME": {
+		"type": PARALLEL,
+		"start": Boolean,
+		"branches": {
+			BRANCH-NAME {
+				"states": {
+					STATE-DEFINITION
+				}
+			},
+			BRANCH-NAME {
+				"states": {
+					STATE-DEFINITION
+				}
 			}
 		},
-		BRANCH-NAME {
-			"states": {
-				STATE-DEFINITION
-			}
-		}
-	},
-	"next-state": "STATE-NAME"
-}
-```
+		"next-state": "STATE-NAME"
+	}
+
 The "branches" field is a list of branches that are executed concurrently. Each
 named branch has a list of "states". The "next-state" field for each
 of the states within a branch must either be valid state name within that
@@ -816,44 +796,43 @@ input {“value1: String}
 output String
 
 CNCF Function Workflow Language
-``` JSON
-  "states": {
-    "HelloWorld": {
-      "start": true,		
-      "type": OPERATION,
-      "action-mode": Sequential,
-      "actions": [
-        {
-          "function": “hello”
-        }
-      ],
-      "next-state": "UpdateArg"
-    },
-    "UpdateArg": {
-      "start": false,		
-      "type": OPERATION,
-      "action-mode": Sequential,
-      "InputPath":"$.payload",
-      "ResultPath":"$.ifttt.value1",
-      "OutputPath":"$.ifttt",
-      "actions": [
-      ],
-      "next-state": "SaveResult"
-    },
-    "SaveResult": {
-      "start": false,		
-      "type": OPERATION,
-      "action-mode": Sequential,
-      "actions": [
-          "function": “save_result”
-      ],
-      "next-state": "STAE_END"
-    },
-    "STATE-END": {
-      "type": END
-    }
-  }
-```
+
+	"states": {
+		"HelloWorld": {
+			"start": true,		
+			"type": OPERATION,
+			"action-mode": Sequential,
+			"actions": [
+				{
+					"function": “hello”
+				}
+			],
+			"next-state": "UpdateArg"
+		},
+		"UpdateArg": {
+			"start": false,		
+			"type": OPERATION,
+			"action-mode": Sequential,
+			"InputPath":"$.payload",
+			"ResultPath":"$.ifttt.value1",
+			"OutputPath":"$.ifttt",
+			"actions": [
+			],
+			"next-state": "SaveResult"
+		},
+		"SaveResult": {
+			"start": false,		
+			"type": OPERATION,
+			"action-mode": Sequential,
+			"actions": [
+				"function": “save_result”
+			],
+			"next-state": "STAE_END"
+		},
+		"STATE-END": {
+			"type": END
+		}
+	}
 
 ![](media/04e21cfd16be62f9c650d7f15561a449.png)
 
