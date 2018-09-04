@@ -11,10 +11,10 @@ This document is a working draft.
 
 # Table of Contents #
 - [Introduction](#Introduction)
-- [Use Case Examples](#Use Case Examples)
-- [Functional Scope](#Functional Scope)
-- [Workflow Model](#Workflow Model)
-- [Workflow Specification](#Workflow Specification)
+- [Use Case Examples](#Use-Case-Examples)
+- [Functional Scope](#Functional-Scope)
+- [Workflow Model](#Workflow-Model)
+- [Workflow Specification](#Workflow-Specification)
 
 # Introduction #
 
@@ -650,7 +650,7 @@ STATE-NAME must be a valid State name within the Function Workflow.
 The “status” field specifies the workflow termination status: SUCCESS or
 FAILURE.
 
-### PARALLEL State
+### Parallel State
 
 The Parallel state consists of a number of states that are executed in parallel.
 A Parallel state has a number of branches that execute concurrently. Each branch
