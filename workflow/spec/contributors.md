@@ -28,8 +28,3 @@ some way, please add your information via pull request.
   
 * **WSO2**
   * Chathura Ekanayake
-
-  
-
-  
- 	
