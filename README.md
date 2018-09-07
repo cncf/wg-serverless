@@ -17,7 +17,7 @@ In addition to [CloudEvents](https://github.com/cloudevents/spec/blob/master/spe
 specification, the Serverless WG has agreed to form a sub working group to
 work on a separate stream called "Event Function Workflow". This work is
 being done in the github repo:
-[Workflow](https://github.com/cncf/wg-serverless/workflow/spec/blob/master/spec.md).
+[Workflow](https://github.com/cncf/wg-serverless/tree/master/workflow/spec).
 
 Additional work streams can be suggested, see the proposal directory's
 [README](proposals/README.md) for more information.
