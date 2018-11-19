@@ -38,7 +38,7 @@ And a #serverless Slack channel:
 
 ## Landscape
 
-![Serverless Landscape](https://github.com/cncf/landscape/blob/master/serverless/CloudNativeLandscape_Serverless_latest.png)
+![Serverless Landscape](https://landscape.cncf.io/images/serverless.png)
 
 You can open up suggestions and issues with the landscape here: https://github.com/cncf/landscape.
 

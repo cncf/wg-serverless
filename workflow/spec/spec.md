@@ -152,7 +152,7 @@ validate metadata file (E.g. make sure the source video file exists), analyze
 the source video file and finally pass the results of the analysis to
 **‘State2’**.
 
-**‘State2’**executes function **‘F2’**. Function **‘F2’** queues the video file
+**‘State2’** executes function **‘F2’**. Function **‘F2’** queues the video file
 to different transcoding services (specified in the metadata) and then
 transitions to **‘State3’**.
 
