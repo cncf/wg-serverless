@@ -1,3 +1,6 @@
+# THIS PROPOSAL IS BEING WORKED ON [HERE](https://github.com/cloudevents/spec)
+# This document is kept around for posterity
+
 # Cloud-Native Events 
 
 **In This Document**
