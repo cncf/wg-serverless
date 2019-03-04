@@ -92,7 +92,7 @@ Non-HTTP-centric and non-elastic scale workloads that weren’t good fits for an
 
 This section describes existing and emerging workloads and use cases where serverless architectures excels. It also includes details on early results, patterns, and best practices distilled from early success stories.
 
-Each of these scenarios show how serverless architectures have addressed a technical problem where it would be inefficient or impossible with Iaas, PaaS, or CaaS. These examples:
+Each of these scenarios show how serverless architectures have addressed a technical problem where it would be inefficient or impossible with IaaS, PaaS, or CaaS. These examples:
 
 * Solved a brand new problem efficiently where an on-demand model wasn’t available
 
