@@ -838,7 +838,7 @@ In the serverless domain, use cases fall into one of the following categories:
 
 A user needs a way to specify their serverless use case or workflow. For example, one use case could be "do face recognition on a photo when a photo is uploaded onto the cloud storage (photo storage event happens)." Another IoT use case could be “do motion analysis” when a motion detection event is received, then depending on the result of the analysis function, either “trigger the house alarm plus call to the police department” or just “send the motion image to the house owner.” Refer to the use cases section for more detailed information.
 
-AWS provides "step function" primitives (state machine based primitives) for the user to specify its workflow, but step function does not allow specification of what event/events triggering what functions in the workflow. Please refer to [https://aws.amazon.com/step-functions/](https://aws.amazon.com/step-functions/). 
+AWS provides "step function" primitives (state machine based primitives) for the user to specify its workflow, but Step Functions does not allow specification of what event/events will trigger what functions in the workflow. Please refer to [https://aws.amazon.com/step-functions/](https://aws.amazon.com/step-functions/). 
 
 The following graph is an example of a user’s workflow that involves events and functions. Using such a function graph, the user can easily specify the interaction between events and functions as well as how information can be passed between functions in the workflow.
 
@@ -859,6 +859,12 @@ Pass State	This state injects event data in-between two states.
 Delay/Wait State	This state causes the workflow execution to delay for a specified duration or until a specified time/date.
 
 States and associated information need to be saved in some persistent storage for failure recovery. In some use cases, the user may want information from one state to be passed to the next state. This information could be part of the function execution result or part of input data associated with an event trigger. An information filter needs to be defined at each state to filter out the information that needs to be passed between states. 
+
+In addition to providing a way to specify function interaction (often with a visual representation of the resulting workflow) and managing function orchestration, a workflow tool might provide visibility into the state of running "workflow instances" and a means of fixing issues leading to workflow instances that cannot progress to the next step. The flow of a workflow instance from one function to another can otherwise be difficult to monitor and manage.
+
+The workflow tool might also provide historic data from all prior executions of the workflow, documenting which branches were taken, which data was referenced for a decision to take a certain branch, and so on. This data can be used as an audit log (for example, in industries with strict regulatory requirements) or to analyze and improve performance of the multi-function workflow.
+
+Esentri, a software consultancy, [built a proof-of-concept with Fn Project and Zeebe to demonstrate how to orchestrate serverless functions with a horizontally-scalable workflow engine](https://www.esentri.com/zeebe-and-fn-project-integrated-a-proof-of-concept/).
 
 # Conclusion
 
