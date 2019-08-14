@@ -157,11 +157,11 @@ the source video file and finally pass the results of the analysis to
 to different transcoding services (specified in the metadata) and then
 transitions to **'State3'**.
 
-Events **'Ev3'**, **'Ev4'** and **'Ev5**' are all event completion events from the
-transcoding services. This could be a notification event, etc. When either of
-**'Ev3'**, **'Ev4'** or **'Ev5'** is received, **'State3'** executes function
-**'F3'** which updates a database with success/failure depending upon the
-results present in the event. When all the events **'Ev3'**, **'Ev4'** and
+Events **'Ev3'**, **'Ev4'** and **'Ev5**' are all event completion events from
+the transcoding services. This could be a notification event, etc. When either
+of **'Ev3'**, **'Ev4'** or **'Ev5'** is received, **'State3'** executes
+function **'F3'** which updates a database with success/failure depending upon
+the results present in the event. When all the events **'Ev3'**, **'Ev4'** and
 **'Ev5'** are received, the flow ends.
 
 ### Loan Approval With a Long-Running Service Use Case
@@ -198,7 +198,8 @@ that the student has the cat.
 
 The flow translates this ambiguous sentence into another language once, and
 translate it back to English again. Then, the user compares the original
-ambiguous sentence with the final result to see if the ambiguous semantics is retained.
+ambiguous sentence with the final result to see if the ambiguous semantics
+is retained.
 
 The following diagram illustrates the basic flow for the translation service.
 
@@ -207,17 +208,17 @@ The following diagram illustrates the basic flow for the translation service.
 Flow:
 
 1. Parallel branch for AWS
-    - Sequence of Action: [ translate forward &rarr; translate backward &rarr; post
-        result to slack ]
+    - Sequence of Action: [ translate forward &rarr; translate backward &rarr;
+      post result to slack ]
 2. Parallel branch for Azure
-    - Sequence of Action: [ translate forward &rarr; translate backward &rarr; post
-        result to slack ]
+    - Sequence of Action: [ translate forward &rarr; translate backward &rarr;
+      post result to slack ]
 3. Parallel branch for GCP
-    - Sequence of Action: [ translate forward &rarr; translate backward &rarr; post
-        result to slack ]
+    - Sequence of Action: [ translate forward &rarr; translate backward &rarr;
+      post result to slack ]
 4. Parallel branch for IBM
-    - Sequence of Action: [ translate forward &rarr; translate backward &rarr; post
-        result to slack ]
+    - Sequence of Action: [ translate forward &rarr; translate backward &rarr;
+      post result to slack ]
 
 ## Functional Scope
 
@@ -421,9 +422,12 @@ An event trigger is defined in JSON as shown below.
 ```
 
 The "EVENT-NAME" is used by the EVENTS-EXPRESSION in an Event state.
-Note that the event itself is defined according to the [CloudEvents Specification](https://cloudevents.io/). The workflow only has a reference to the event name.
+Note that the event itself is defined according to the
+[CloudEvents Specification](https://cloudevents.io/). The workflow only has a
+reference to the event name.
 
-The field "source" specifies the event source UUID that identifies an event source.
+The field "source" specifies the event source UUID that identifies an event
+source.
 The field "correlation-token" specifies a path string to an identification label
 field in the event message that is used to correlate this event to other events
 associated with the same application workflow instance. For different events,
@@ -477,8 +481,9 @@ workflow will transit to end state.
 The field "action-mode" specifies whether functions are executed in sequence or
 in parallel and could either be SEQUENTIAL or PARALLEL.
 
-The "actions" field is a list of [ACTION-DEFINITION](#action-definition-(action-definition)) constructs that specify
-the list of functions to be performed when the event that matches the
+The "actions" field is a list of
+[ACTION-DEFINITION](#action-definition-(action-definition)) constructs that
+specify the list of functions to be performed when the event that matches the
 event-expression is received.
 
 The "next-state" field specifies the name of the next state to transition to
@@ -504,12 +509,15 @@ This is defined in JSON as shown below.
 ```
 
 - The "function" field specifies the function that must be invoked.
-- The "timeout" field specifies the maximum amount of time in seconds to wait for
-  the completion of the function's execution. This must be a positive integer. The
-  function timer is started when the request is sent to the invoked function.
+- The "timeout" field specifies the maximum amount of time in seconds to wait
+  for the completion of the function's execution. This must be a positive
+  integer.
+  The function timer is started when the request is sent to the invoked
+  function.
 - The "retry" field specifies how the result from a function is to be handled.
 - The "match" field specifies the matching value for the result.
-- The "retry-interval" and "max-retry" fields are used in case of an error result.
+- The "retry-interval" and "max-retry" fields are used in case of an error
+  result.
 - The "next-state" field specifies the name of the next state to transition to
   when exceeding max-retry limit.
 
@@ -527,8 +535,8 @@ This is defined in JSON as shown below.
   }
 ```
 
-- The field "action-mode" specifies whether functions are executed in sequence or
-  in parallel and could either be SEQUENTIAL or PARALLEL.
+- The field "action-mode" specifies whether functions are executed in sequence
+  or in parallel and could either be SEQUENTIAL or PARALLEL.
 - The "actions" field is a list of ACTION-DEFINITION constructs that specify the
   list of functions to be performed when the event that matches the
   event-expression is received.
@@ -591,8 +599,8 @@ This is defined in JSON as shown below.
   }
 ```
 
-- The "choices" field defines an ordered set of Match Rules against the input data
-to this state, and the next state to transition to for each match.
+- The "choices" field defines an ordered set of Match Rules against the input
+  data to this state, and the next state to transition to for each match.
 - The "path" field is a JSON Path that selects the value of the input data to
   be matched.
 - The "value" field is the matching value.
@@ -761,7 +769,8 @@ Each Filter has three kinds of path filters
 #### Example
 
 Compose the following two function "hello" and "save_result".
-The second function "save_result" cannot take the first function "hello" output as input.
+The second function "save_result" cannot take the first function "hello"
+output as input.
 
 - Function "hello":
 input {"name": String}
