@@ -28,3 +28,8 @@ some way, please add your information via pull request.
   
 * **WSO2**
   * Chathura Ekanayake
+  
+* **RedHat**
+    * Ruben Romero Montes
+    * Tihomir Surdilovic
+    
