@@ -1,9 +1,21 @@
-# Workflow - Version 0.1
+# Serverless Workflow Specification
 
 ## Abstract
 
-Workflow is a vendor-neutral specification for defining the format/primitives
-that the users can use to specify/describe their serverless application flow.
+Serverless applications are becoming increasingly complex. Nowdays they have to coordinate, manage, and define
+the execution order (steps) for countless functions triggered by as many events.
+
+When we are dealing with large number of functions, managing their execution is not a simpler task. 
+For example we have to coordinate functions and event triggers, orchestrate function execution (sequential,  parallel, 
+in branches depending on different event triggers), etc.
+
+Workflows have become key components of serverless applications as they excel at orchestration and coordination
+of their functional flow. 
+
+The goal of the Serverless Workflow sub-group is to come up with a standard way for users to specify their serverless application workflow, as well as help facilitate 
+portability of serverless applications across different vendor platforms.
+
+Serverless Workflow is a vendor-neutral and portable specification which meets these goals.
 
 ## Status of this document
 
@@ -12,759 +24,950 @@ This document is a working draft.
 ## Table of Contents
 
 - [Introduction](#Introduction)
-- [Use Case Examples](#Use-Case-Examples)
+- [Use Cases](#Use-Cases)
+- [Specification Details](#Specification-Details)
+    - [Workflow Model](#Workflow-Model)
+    - [Workflow Definition](#Workflow-Definition)
+- [Examples](#Examples)
 
-  -[Home Monitoring Use Case](#Home-Monitoring-Use-Case)
-  
-  -[Loan Approval Use Case](#Loan-Approval-Use-Case)
-  
-  -[Employee Travel Booking Use Case](#Employee-Travel-Booking-Use-Case)
-  
-  -[Streaming Video-on-Demand Use Case](#Streaming-Video-on-Demand-Use-Case)
-  
-  -[Loan Approval With a Long-Running Service Use Case](#Loan-Approval-With-a-Long-Running-Service-Use-Case)
-  
-  -[Translation Service Evaluation Use Case](#Translation-Service-Evaluation-Use-Case)
-- [Functional Scope](#Functional-Scope)
-- [Workflow Model](#Workflow-Model)
-- [Workflow Specification](#Workflow-Specification)
-
-  -[Trigger definitions](#Trigger-definitions)
-  
-  -[Action definitions](#Action-definitions)
-  
-  -[State definitions](#State-definitions)
-  
-  -[Information Passing](#Information-Passing)
-  
-  -[Filter Mechanism](#Filter-Mechanism)
-  
-  -[Example](#Example)
-  
-  -[Errors](#Errors)
 
 ## Introduction
 
-Many serverless applications are not a simple function triggered by a single
-event, instead they are composed of multiple steps of function execution with
-functions in different steps triggered by different events. If a step involves
-multiple functions, the functions in that step might execute in sequence or in
-parallel or in branches depending on different event triggers. In order for a
-serverless platform to execute a serverless application's function workflow
-correctly, the application developer needs to provide a workflow specification.
+Serverless Workflow can be used to:
 
-The goal of the Serverless Workflow sub-group is to come up with a standard way
-for the users to specify their serverless application workflow to help
-facilitate portability of the Serverless application across different vendors'
-platforms.
+* **Orchestrate serverless application logic**: serverless applications are typicall event-driven and can be 
+very hard to manage. Serverless Workflow groups the application events and functions into a coherent unit and 
+simplifies orchestration of the app logic.
+* **Define and coordinate application control flow**: allow the users to define the execution/operation
+control flow and how/which functions are to be invoked on arrival of events.
+* **Define and manage application data flow**: allows the users to define how data is passed and filtered from incoming events to states, 
+rom states to functions, from one function to another function, and from one state to another state.
 
-This specification will meet the above goals as it describes a complete
-contract such that a given event timeline and workflow always produces the same
-set of side-effects.
+### Functional Scope
+Serverless Workflow allows users to:
 
-## Use Case Examples
-
-### Home Monitoring Use Case
-
-A home security and monitoring system involves exterior door open sensor,
-window open sensor, exterior motion detectors, etc. in the house. The system
-could work as follows.
-
-1. When the door open or window open is triggered, it will wait to see whether
-there will be a motion event. If there is no motion event, then it is a false
-alarm. If a motion event is received, face recognition is done. If it is a
-family member, it is a false alarm. Otherwise a text and email with the face
-image are sent to the two contacts on file. Then it will wait for response
-from the contacts.
----If there is no response within the predefined time period, it will initiate
-an auto-call to the customer and do voice recognition to get the customer's
-response. If the customer's response is OK, it is a false alarm. If the
-customer's response is NOT OK or the customer gives the wrong secret code,
-a notification message is sent to the Emergency Services (fire, police and
-ambulance).
----If a response is received within the predefined time period, natural language
-processing on the response will be initiated. If the response is OK, it is a
-false alarm. If the response is NOT OK or the customer gives the wrong secret
-code, a notification message is sent to the Emergency Services (fire, police
-and ambulance).
-
-1. When the motion sensor is triggered, face recognition is done. If it is a
-family member, it is a false alarm. Otherwise it will wait to see whether there
-will be a door open or window open event. If there is no door open or window
-open event, then it is a false alarm. If a door/window open event is received,
-a text and email message with the face image are sent to the two contacts on
-file. Then it will wait for response from the contacts.
----If there is no response within the predefined time period, it will initiate
-an auto-call to the customer and do voice recognition to get the customer's
-response. If the customer's response is OK, it is a false alarm. If the
-customer's response is NOT OK or the customer gives the wrong secret code,
-a notification message is sent to the Emergency Services (fire, police and
-ambulance).
----If a response is received within the predefined time period, natural language
-processing on the response will be initiated. If the response is OK, it is a
-false alarm. If the response is NOT OK or the customer gives the wrong secret
-code, a notification message is sent to the Emergency Services (fire, police
-and ambulance).
-
-The following diagram shows the flow for a basic home monitoring application
-
-![home monitoring diagram](media/fed3443623fefd0797f9177871caa0c6.png)
-
-### Loan Approval Use Case
-
-Every loan approval process begins with a customer entering his/her particulars
-along with the desired loan information. This information is typically entered
-via the web and the resulting form data is then stored in a DB or storage.
-
-The following diagram shows the flow for a basic loan approval application.
-
-![loan approval diagram](media/7fcc00c21ebfe7e410c906fdb6151ca1.png)
-
-**'Ev1'** illustrates the resulting storage or DB event.
-**'Ev1'** causes **'State1'** to invoke function **'F1'**. Function **'F1'**
-sends an email to an approving authority (Manager) and the flow transitions
-to **'State2'**. The approving authority reaches a decision (based upon credit
-scores and other factors) and updates the decision via storage/DB/API GW.
-
-**'Ev2'** illustrates the decision event.**'Ev2'** causes the flow to
-transition to **'State3'**.
-
-**'State3'** invokes function '**F2'** (loan approval function) if **'Ev2'**
-indicated loan approval or function **'F3'** (loan rejection function) if
-**'Ev2'** indicated loan rejection. After executing either **'F2'** or **'F3'**,
-the flow transitions to **'End'** state.
-
-### Employee Travel Booking Use Case
-
-The following diagram shows the basic flow for an employee travel booking.
-
-![employee travel booking diagram](media/0926bf43d40b471a0c97304e347be8ab.png)
-
-The flow waits in **'State1'** waiting for an event. **'Ev1'** is typically
-a storage or DB event when an employee submits the travel request form. Upon
-receiving **'Ev1'**, **'State1'** executes function **'F1'** and transitions to
-**'State2'**.
-
-In **'State2'**, the flow is waiting for an approval / rejection event
-**'Ev2'** from the employee's manager. **'Ev2'** could be a storage/DB/API GW
-event depending on the implementation. Upon receiving **'Ev2'**, the workflow
-transitions to the next state **'Approved ?'**.
-
-In this state, the flow checks the results of **'Ev2'**. If **'Ev2'** result
-is "Reject", the flow ends. If **'Ev2'** result is "**Approved**", then the
-flow transitions to **'State3'**.
-
-**'State3'** invokes multiple functions **'F2'** and **'F3'** to check the
-prices of various airlines. Once **'F2'** and **'F3'** complete, the flow
-transitions to **'State4'** with the results of **'F2'** and **'F3'**
-
-In **'State4'**, function **'F4'** is invoked. **'F4'** does a comparison of the
-results obtained from **'State3'**. In addition to price, other factors such as
-time may be considered in evaluating the best flight. Once **'F4'** completes,
-the flow transitions to **'State5'**.
-
-**'State5'** invoked **'F5'** which completes the travel booking. After **'F5'**
-completes the flow ends.
-
-### Streaming Video-on-Demand Use Case
-
-The following diagram illustrates the basic flow for streaming VOD.
-
-![streaming VoD diagram](media/50e0bfccc80074c9681f943027c0e963.png)
-
-**'Ev1'** occurs when video with metadata has been uploaded to storage. This
-causes **'State1'** to invoke the ingestion function **'F1'** and transition to
-**'State2'**. Function **'F1'** is responsible for parsing the metadata file,
-validate metadata file (E.g. make sure the source video file exists), analyze
-the source video file and finally pass the results of the analysis to
-**'State2'**.
-
-**'State2'** executes function **'F2'**. Function **'F2'** queues the video file
-to different transcoding services (specified in the metadata) and then
-transitions to **'State3'**.
-
-Events **'Ev3'**, **'Ev4'** and **'Ev5**' are all event completion events from
-the transcoding services. This could be a notification event, etc. When either
-of **'Ev3'**, **'Ev4'** or **'Ev5'** is received, **'State3'** executes
-function **'F3'** which updates a database with success/failure depending upon
-the results present in the event. When all the events **'Ev3'**, **'Ev4'** and
-**'Ev5'** are received, the flow ends.
-
-### Loan Approval With a Long-Running Service Use Case
-
-A loan approval process begins when a user submits an online form. Then it
-performs some steps such as validating customer details, etc. At a certain
-stage, it is necessary to perform a background check on the customer, which is
-done by invoking an external service. This service can take a long time to
-complete (e.g. 2 days). Until this step is completed, the flow can continue
-performing other steps in the process and waits when the results of background
-check is required. Once the background check is completed, that service sends
-back the results with a correlation Id, which is used by the runtime to inject
-the message into the correct process instance.
-
-The following diagram illustrates the basic flow for the loan approval
-long-running service.
-
-![loan approval long-running service](media/230e5bf02f18561af9a7ba11c80032bd.png)
-
-### Translation Service Evaluation Use Case
-
-In case of Artificial Intelligence services, specific service has different
-characteristics, strength, and weakness among providers. As an
-example, this use case presents translation service evaluation flow among
-providers using an ambiguous sentence.
-
-In order to evaluate Translation Service in each provider, the flow uses an
-ambiguous sentence:
-
-> The professor lectures to the student with the cat
-
-It may be that the professor is lecturing with the cat, or
-that the student has the cat.
-
-The flow translates this ambiguous sentence into another language once, and
-translate it back to English again. Then, the user compares the original
-ambiguous sentence with the final result to see if the ambiguous semantics
-is retained.
-
-The following diagram illustrates the basic flow for the translation service.
-
-![translation service](media/073a6d60f69df8bac37286a235c17ca4.png)
-
-Flow:
-
-1. Parallel branch for AWS
-    - Sequence of Action: [ translate forward &rarr; translate backward &rarr;
-      post result to slack ]
-2. Parallel branch for Azure
-    - Sequence of Action: [ translate forward &rarr; translate backward &rarr;
-      post result to slack ]
-3. Parallel branch for GCP
-    - Sequence of Action: [ translate forward &rarr; translate backward &rarr;
-      post result to slack ]
-4. Parallel branch for IBM
-    - Sequence of Action: [ translate forward &rarr; translate backward &rarr;
-      post result to slack ]
-
-## Functional Scope
-
-Function Workflow is used to orchestrate cloud functions into a coordinated
-micro-service application. Each function in the Function Workflow may be driven
-by events from a wide variety of sources. Function Workflow groups the functions
-and trigger events into a coherent unit and describe the execution of cloud
-functions and information passing in a prescribed manner. Specifically Function
-Workflow permits the user to:
-
-1. Define the steps/states and workflow involved in a serverless application.
-2. Define which functions are involved in each step.
-3. Define which event or combination of events trigger the function or
-    functions.
-4. Define how to arrange those functions to execute in sequence or in parallel
-    if multiple functions are triggered.
-5. Specify how information is filtered and passed from the event to the
-    function or between functions or between states.
+1. Define and orchestrate steps/states involved in a serverless application.
+2. Define which functions are executed in each step.
+3. Define which event or combination of events trigger function execution.
+4. Define function execution behavior (sequential, parallel, etc).
+5. Specify information filtering throughout the execution of the serverless workflow.
 6. Define error conditions with retries.
-7. If a function is triggered by two or more events, define what label/key
-    should be used to correlate those events to the same function workflow
-    instance.
+7. If a function is triggered by two or more events, define what label/key should be used to correlate those events to the same serverless workflow instance.
 
-The following is an example of a user's Function Workflow that involves events
-and functions. Using such a Function Workflow, the user can easily specify the
-interaction between events and functions as well as how information can be
-passed in the workflow.
+Following example illustrates a Serverless Workflow that involves events
+and functions. It specifies the interaction between events, states and functions to be invoked.
 
-![Function workflow diagram](media/58265cad4415d262d5378f1ebe3f877d.png)
+<p align="center">
+<img src="media/sample-serverless-workflow1.png" with="400px" height="260px" alt="Serverless Workflow Diagram"/>
+</p>
 
-Function Workflow allows the user to define rendezvous points (states) to wait
-for predefined events before executing one or more cloud functions and
-progressing through the Function Workflow.
+## Use Cases
+You can find different Serverless Workflow usescases [here](spec-usecases.md)
 
-## Workflow Model
+## Specification Details
 
-Function Workflow can be viewed as a collection of states and the transitions
-and branching between these states, and each state could have associated events
-and/or functions. Function Workflow may be invoked from a CLI command or
-triggered dynamically on arrival of an event from an event source. An event from
-an event source may also be associated with a specific state within a Function
-Workflow. These states within a Function Workflow will wait on the arrival of an
-event or events from one or more event sources before performing their
-associated action and progressing to the next state. Additional workflow
-functionality includes:
+In sections below we describe all each section of the Serverless Workflow in details. We first show properties in table format, 
+and you can also click on the "Click to view JSON Schema" to see the detailed definision defines with [JSON Schema](https://json-schema.org/).
 
-- Results from a cloud function can be used to initiate retry operations or
-    determine which function to execute next or which state to transition to.
+You can find the entire schema document [here](schema/serverless-workflow-schema-01.json). Please note just like this document, this is also
+work in progress.
 
-- Function Workflow provides a way to filter and transform the JSON event
-    payload as it progresses through the Function Workflow.
+### Workflow Model
+Serverless Workflow can be viewed as a collection of states and the transitions and branching between these states.
+Each state could have associated events and/or functions. Serverless Workflow may be invoked from a CLI command or triggered dynamically upon arrival of events from event sources. 
+An event from an event source may also be associated with a specific state within a Serverless Workflow. 
+States within a Serverless Workflow can wait on the arrival of an event or events from one or more event sources before performing their associated action and progressing to the next state. 
+Additional workflow functionality includes:
 
-- Function Workflow provides a way for the application developer to specify a
-    unique field in the event that can be used to correlate events from the
-    event sources to the same function workflow instance
+* Results from a cloud function can be used to initiate retry operations or determine which function to execute next or which state to transition to.
 
-A Function Workflow can be naturally modeled as a state machine. The following
-is a list of states provided by the definition/specification of a Function
-Workflow. The specification of a workflow is called a workflow template. The
-instantiation of the workflow template is called a workflow instance.
+* Provide a way to filter and transform the JSON event payload as it progresses through the Serverless Workflow.
 
-- **Event State**: Used to wait for events from event sources and
-    then to invoke one or more functions to run in sequence or in parallel.
+* Provide a way for the application developer to specify a unique field in the event that can be used to correlate events from the event sources to the same serverless workflow instance
 
-- **Operation State**: Allows one or more functions to run in sequence
-    or in parallel without waiting for any event.
+A Serverless Workflow can be naturally modeled as a state machine. 
+Specification of a workflow is called a workflow template. 
+Instantiation of the workflow template is called a workflow instance.
 
-- **Switch State**: Permits transitions to multiple other states (eg.
-    Different function results in the previous state trigger
-    branching/transition to different next states).
+Serverless Workflow definition/specification provides following list of states:
 
-- **Delay State**: Causes the workflow execution to delay for a
-    specified duration or until a specified time/date.
+* **[Event State](#Event-State)**: Used to wait for events from event sources and then to invoke one or more functions to run in sequence or in parallel.
 
-- **End State**: Terminates the workflow with Fail/Success.
+* **[Operation State](#Operation-State)**: Allows one or more functions to run in sequence or in parallel without waiting for any event.
 
-- **Parallel State**: Allows a number of states to execute in
-    parallel.
+* **[Switch State](#Switch-State)**: Permits transitions to multiple other states (eg. Different function results in the previous state trigger branching/transition to different next states).
 
-Function Workflow is described by a Workflow Specification which is
-described in the following section.
+* **[Delay State](#Delay-State)**: Causes the workflow execution to delay for a specified duration or until a specified time/date.
 
-## Workflow Specification
+* **[Parallel State](#Parallel-State)**: Allows a number of states to execute in parallel.
 
-The Function Workflow specification defines the behavior and operation of a
-Function Workflow. The Function Workflow specification constructs should allow
-the user to define the execution of functions as triggered by the arrival of
-events. It should be sufficiently flexible to cover a wide range of
-micro-service applications, from a simple invocation of one cloud function to
-complex applications involving many cloud functions and multiple events.
+* **[End State](#End-State)**: Terminates the workflow with Fail/Success.
 
-At high level, the Function Workflow specification consists of two parts:
-trigger definitions and state definitions.
+### Workflow Definition
+
+Here we define details of the Serverless Workflow definitions:
+
+| Parameter | Description | Type | Required |
+| --- | --- |  --- | --- |
+| name | Workflow name | string |yes |
+| exec-status |Workflow execution status | string |no |
+| [trigger-defs](#Trigger-Definition) |Array of workflow triggers | array | no |
+| [states](#State-Definition) | Array of workflow states | array | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+<p>
 
 ```json
 {
-  "trigger-defs" : [],
-  "states": []
-}
-```
-
-The trigger-defs array (only required if there are events associated
-with the workflow) is an array of event triggers associated with a Function
-Workflow. If there are multiple events involved in an application workflow, a
-correlation-token, which is used to correlate an event with other events for
-same workflow instance, must be specified in that event trigger.
-
-The states array (required) is an array of states associated with a Function
-Workflow.
-
-The following is an example of a Function Workflow in JSON format, which
-involves an Event State and the triggers for this Event State:
-
-```json
-{  
-   "trigger-defs":[  
-      {  
-         "name":"OBS-EVENT",
-         "source":"CloudEvent source",
-         "eventID":"CloudEvent eventID",
-         "correlation-token":"A path string to an identification label field in the event message"
-      },
-      {  
-         "name":"TIMER-EVENT",
-         "source":"CloudEvent source",
-         "eventID":"CloudEvent eventID",
-         "correlation-token":"A path string to an identification label field in the event message"
-      }
-   ],
-   "states":[  
-      {  
-         "name":"STATE-OBS",
-         "start":true,
-         "type":"EVENT",
-         "events":[  
-            {  
-               "event-expression":"boolean expression 1 of triggering events",
-               "action-mode":"Sequential or Parallel",
-               "actions":[  
-                  {  
-                     "function":"function name 1"
-                  },
-                  {  
-                     "function":"function name 2"
-                  }
-               ],
-               "next-state":"STATE-END"
-            },
-            {  
-               "event-expression":"boolean expression 2 of triggering events",
-               "action-mode":"Sequential or Parallel",
-               "actions":[  
-                  {  
-                     "function":"function name 3"
-                  },
-                  {  
-                     "function":"function name 4"
-                  }
-               ],
-               "next-state":"STATE-END"
+    "$id": "https://wg-serverless.org/workflow.schema",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Vendor-neutral and portable specification that standardizes the definition of serverless application flows",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Workflow name"
+        },
+        "exec-status": {
+            "type" : "string",
+            "enum": ["SYS.Timeout", "SYS.Fail", "SYS.Success", "SYS.InvalidParameter"],
+            "description": "Execution status"
+        },
+        "trigger-defs": {
+            "type": "array",
+            "description": "Trigger Definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#definitions/triggerevent"
             }
-         ]
-      },
-      {  
-         "name":"SATATE-END",
-         "type":"END"
-      }
-   ]
-}
-```
-
-The following is another example of a Function Workflow with an Operation State:
-
-```json
-{  
-   "states":[  
-      {  
-         "name":"STATE-ALARM-NOTIFY",
-         "start":true,
-         "type":"OPERATION",
-         "action-mode":"Sequential or Parallel",
-         "actions":[  
-            {  
-               "function":"function name 1"
-            },
-            {  
-               "function":"function name 2"
+        },
+        "states": {
+            "type": "array",
+            "description": "State Definitions",
+            "items": {
+                "type": "object",
+                "anyOf": [
+                    { "$ref": "#definitions/delaystate" },
+                    { "$ref": "#definitions/endstate" },
+                    { "$ref": "#definitions/eventstate" },
+                    { "$ref": "#definitions/operationstate" },
+                    { "$ref": "#definitions/parallelstate" },
+                    { "$ref": "#definitions/switchstate" }
+                ]
             }
-         ],
-         "next-state":"STATE-END"
-      }
-   ]
+        }
+    },
+    "required": ["name", "states"]
 }
 ```
 
-### Trigger definitions
+</p>
+</details>
 
-The trigger-defs array consists of one or more event triggers.
+### Trigger Definition
 
-An event trigger is defined in JSON as shown below.
+Triggers define incoming events which can be associated with invocation of one or more states.
+If there are multiple events involved in an application workflow, a correlation-token, which is used to correlate an event with other 
+events for same workflow instance, must be specified in that event trigger.
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name | Unique trigger name | string |yes |
+| source |CloudEvent source | string | yes |
+| type |CloudEvent type | string | yes |
+| correlation-token | path used for event correlation | string | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
 
 ```json
-{  
-   "trigger-defs":[  
-      {  
-         "name":"EVENT-NAME",
-         "source":"CloudEvent source",
-         "eventID":"CloudEvent eventID",
-         "correlation-token":"A path string to an identification label field in the event message"
-      }
-   ]
+{
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Trigger unique name"
+        },
+        "source": {
+            "type": "string",
+            "description": "CloudEvent source"
+        },
+        "type": {
+            "type": "string",
+            "description": "CloudEvent type"
+        },
+        "correlation-token": {
+            "type": "string",
+            "description": "Path used for event correlation."
+        }
+    },
+    "required": ["name", "source", "type"]
 }
 ```
 
-- The **"name"** field is used by the EVENTS-EXPRESSION in an Event state.
-Note that the event itself is defined according to the
-[CloudEvents Specification](https://cloudevents.io/). The workflow only has a
-reference to the event name.
-- The **"source"** field specifies the event source UUID that identifies an event
-source.
-- The **"correlation-token"** field specifies a path string to an identification label
-field in the event message that is used to correlate this event to other events
-associated with the same application workflow instance. For different events,
-this token could sit in different field location of the event message.
+</details>
 
-A workflow could have a single or multiple event triggers. In case there are more than one a correlation-token specified as a JSON path
-in the event message must be specified.
+### State Definition
 
-### Action definitions
+States define building blocks of the Serverless Workflow. The specification defines six different types of states:
+- **[Event State](#Event-state)**: Used to wait for events from event sources and
+    then to invoke one or more functions to run in sequence or in parallel.
 
-This is defined in JSON as shown below.
+- **[Operation State](#Operation-State)**: Allows one or more functions to run in sequence
+    or in parallel without waiting for any event.
+
+- **[Switch State](#Switch-State)**: Permits transitions to multiple other states (eg.
+    Different function results in the previous state trigger
+    branching/transition to different next states).
+
+- **[Delay State](#Delay-State)**: Causes the workflow execution to delay for a
+    specified duration or until a specified time/date.
+
+- **[Parallel State](#Parallel-State)**: Allows a number of states to execute in
+    parallel.
+
+- **[End State](#End-State)**: Terminates the workflow with Fail/Success.
+    
+We will start defining each individual state:
+
+### <img src="media/state-icon-small.png" with="30px" height="26px"/>Event State
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name | state name (unique) | string | yes |
+| type |start type | string | yes |
+| start |Is this state a start state | boolean | no |
+| [events](#eventstate-eventdef) |Array of event | array | yes |
+ 
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+<p>
 
 ```json
-{  
-   "actions":[  
-      {  
-         "function":"FUNCTION-NAME",
-         "timeout":"TIMEOUT-VALUE",
-         "retry":[  
-            {  
-               "match":"RESULT-VALUE",
-               "retry-interval":"INTERVAL-VALUE",
-               "max-retry":"MAX-RETRY",
-               "next-state":"STATE-NAME"
+{
+    "type": "object",
+    "description": "This state is used to wait for events from event sources and then to invoke one or more functions to run in sequence or in parallel.",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Unique name of the state"
+        },
+        "type": {
+            "type" : "string",
+            "enum": ["EVENT"],
+            "description": "State type"
+        },
+        "start": {
+            "type": "boolean",
+            "default": false,
+            "description": "Is the start event"
+        },
+        "events": {
+            "type": "array",
+            "description": "Event State Definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#definitions/event"
             }
-         ]
-      }
-   ]
+        }
+    },
+    "required": ["name", "type", "events"]
 }
 ```
 
-- The **"function"** field specifies the function that must be invoked.
-- The **"timeout"** field specifies the maximum amount of time in seconds to wait
-  for the completion of the function's execution. This must be a positive
-  integer.
-  The function timer is started when the request is sent to the invoked
-  function.
-- The **"retry"** field specifies how the result from a function is to be handled.
-- The **"match"** field specifies the matching value for the result.
-- The **"retry-interval"** and **"max-retry"** fields are used in case of an error
-  result.
-- The **"next-state"** field specifies the name of the next state to transition to
-  when exceeding max-retry limit.
+</p>
+</details>
 
-### State definitions
+Event state can hold one or more events definitions, so let's define those:
 
-### Event state
+#### <a name="eventstate-eventdef"></a> Event State: Event Definitions
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| event-expression |Expression used to associate trigger-defs with event state  | string | yes |
+| timeout |Time period to wait for the events in the event-expression | string | no |
+| action-mode |Specifies if functions are executed in sequence of parallel | string | no |
+| [actions](#Action-Definition) |Array of actions | array | yes |
+| next-state|Next state to transition to after all the actions for the matching event have been successfully executed | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
-{  
-   "states":[  
-      {  
-         "name":"STATE-NAME",
-         "type":"EVENT",
-         "start":true,
-         "events":[  
-            {  
-               "event-expression":"EVENTS-EXPRESSION",
-               "timeout":"TIMEOUT-VALUE",
-               "action-mode":"ACTION-MODE",
-               "actions":[  
-               ],
-               "next-state":"STATE-NAME"
+{
+    "type": "object",
+    "description": "Event associated with a State",
+    "properties": {
+        "event-expression": {
+            "type": "string",
+            "description": "Boolean expression which consists of one or more Event operands and the Boolean operators"
+        },
+        "timeout": {
+            "type": "string",
+            "description": "Specifies the time period waiting for the events in the event-expression"
+        },
+        "action-mode": {
+            "type" : "string",
+            "enum": ["SEQUENTIAL", "PARALLEL"],
+            "description": "Specifies whether functions are executed in sequence or in parallel"
+        },
+        "actions": {
+            "type": "array",
+            "description": "Action Definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#definitions/action"
             }
-         ]
-      }
-   ]
+        },
+        "next-state": {
+            "type": "string",
+            "description": "Name of the next state to transition to after all the actions for the matching event have been successfully executed"
+        }
+    },
+    "required": ["event-expression", "actions", "next-state"]
 }
 ```
 
-An Event State will have the "type" field set to value "EVENT".
+</details>
 
-- The **"start"** field defines that this is a start state.  It is an optional field (false by default).
-is false.
-- The **"events"** field is composed of one or more event structs associated with
-the event state.
-- The **"event-expression"** field is a Boolean expression which consists of one or
-more Event operands and the Boolean operators. For example, an EVENTS-EXPRESSION
-could be "Event1 or Event2". The first event that arrives and matches the
-EVENTS-EXPRESSION will cause all actions for this state to be executed followed
-by a transition to the next state.
-- The **"timeout"** field specifies the time period waiting for the events in the
-EVENTS-EXPRESSION. If the events do not come within the timeout period, the
-workflow will transit to end state.
-- The **"action-mode"** field specifies whether functions are executed in sequence or
-in parallel and could either be SEQUENTIAL or PARALLEL.
-- The **"actions"** field is a list of
-[Action definitions](#action-definitions) constructs that
-specify the list of functions to be performed when the event that matches the
-event-expression is received.
-- The **"next-state"** field specifies the name of the next state to transition to
-after all the actions for the matching event have been successfully executed.
+The event expression attribute is used to associate this event state with one or more trigger events. 
 
-### Operation state
+Note that each event definition has a "next-state" property, which is used to idetify the state which 
+should get executed after this event completes (value should be the unique name of a state).
+
+Each event state's event definition includes one or more actions. Let's define these actions now:
+
+#### Action Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| [function](#Function-Definition) |Function to be invoked | object | yes |
+| timeout |Max amount of time in seconds to wait for the completion of the function's execution | integer | no |
+| [retry](#Retry-Definition) |Defines if funtion execution needs a retry | object | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
-{  
-   "states":[  
-      {  
-         "name":"STATE-NAME",
-         "type":"OPERATION",
-         "start":true,
-         "action-mode":"ACTION-MODE",
-         "actions":[  
-         ],
-         "next-state":"STATE-NAME"
-      }
-   ]
+{
+    "type": "object",
+    "description": "Action Definition",
+    "properties": {
+        "function": {
+            "$ref": "#definitions/function",
+            "description": "Function to be invoked"
+        },
+        "timeout": {
+            "type": "integer",
+            "default":"0",
+            "minimum": 0,
+            "description": "Specifies the maximum amount of time in seconds to wait for the completion of the function's execution. This must be a positive integer. The function timer is started when the request is sent to the invoked function"
+        },
+        "retry": {
+            "type": "object",
+            "$ref": "#definitions/retry",
+            "description": "Specifies how the result from a function is to be handled"
+        }
+    },
+    "required": ["function"]
 }
 ```
 
-- The **"action-mode"** field specifies whether functions are executed in sequence
-  or in parallel and could either be SEQUENTIAL or PARALLEL.
-- The **"actions"** field is a list of [Action definitions](#action-definitions) constructs that specify the
-  list of functions to be performed when the event that matches the
-  event-expression is received.
-- The **"next-state"** field specifies the name of the next state to transition to
-  after all the actions for the matching event have been successfully executed.
+</details>
 
-### Switch state
+An action defines a collection of functions that are to be invoked when this action is triggered.
+It also defines a timeout wait period if one is needed, as well as a retry definition, so lets look at those now:
+
+
+#### Function Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name |Function name | string | yes |
+| type |Function type. Implementors may define custom types. | string | yes |
+| parameters |Function parameters | object | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
-{  
-   "states":[  
-      {  
-         "name":"STATE-NAME",
-         "type":"SWITCH",
-         "start":true,
-         "choices":[  
-            {  
-               "path":"PAYLOAD-PATH",
-               "value":"VALUE",
-               "operator":"COMPARISON-OPERATOR",
-               "next-state":"STATE-NAME"
-            },
-            {  
-               "Not":{  
-                  "path":"PAYLOAD-PATH",
-                  "value":"VALUE",
-                  "operator":"COMPARISON-OPERATOR"
-               },
-               "next-state":"STATE-NAME"
-            },
-            {  
-               "And":[  
-                  {  
-                     "path":"PAYLOAD-PATH",
-                     "value":"VALUE",
-                     "operator":"COMPARISON-OPERATOR"
-                  },
-                  {  
-                     "path":"PAYLOAD-PATH",
-                     "value":"VALUE",
-                     "operator":"COMPARISON-OPERATOR"
-                  }
-               ],
-               "next-state":"STATE-NAME"
-            },
-            {  
-               "Or":[  
-                  {  
-                     "path":"PAYLOAD-PATH",
-                     "value":"VALUE",
-                     "operator":"COMPARISON-OPERATOR"
-                  },
-                  {  
-                     "path":"PAYLOAD-PATH",
-                     "value":"VALUE",
-                     "operator":"COMPARISON-OPERATOR"
-                  }
-               ],
-               "next-state":"STATE-NAME"
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Function name"
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of function to implement. Implementors may define custom types here."
+    },
+    "parameters": {
+      "type": "object",
+      "description": "Function parameters"
+    }
+  },
+  "required": ["name", "type"]
+}
+```
+
+</details>
+
+The function name is a string that can evaluate to a call and execution of a serverless function. Implementors
+can define how this string maps to their actual function call(s). Functions can have a type
+as well as define parameters (key/value pairs).
+
+#### Retry Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| match |Result matching value | string | yes |
+| retry-interval |Interval value for retry | integer | no |
+| max-retry |Max retry value | integer | no |
+| next-state |Name of the next state to transition to when exceeding max-retry limit | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "Retry Definition",
+    "properties": {
+        "match": {
+            "type": "string",
+            "description": "Specifies the matching value for the result"
+        },
+        "retry-interval": {
+            "type": "integer",
+            "default":"0",
+            "minimum": 0,
+            "description": "Specifies retry interval"
+        },
+        "max-retry": {
+            "type": "integer",
+            "default":"0",
+            "minimum": 0,
+            "description": "Specifies the max retry"
+        },
+        "next-state": {
+            "type": "string",
+            "description": "Name of the next state to transition to when exceeding max-retry limit"
+        }
+    },
+    "required": ["match", "next-state"]
+}
+```
+
+</details>
+
+### <img src="media/state-icon-small.png" with="30px" height="26px"/>Operation State
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name |State name | string | yes |
+| type |State type | string | yes |
+| start |Is this event a start | boolean | no |
+| action-mode |Should actions be executed sequentially or in parallel | string | yes |
+| [actions](#Action-Definition) |Array of actions | array | yes |
+| next-state |State to transition to after all the actions have been successfully executed | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "This state allows one or more functions to run in sequence or in parallel without waiting for any event.",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Unique name of the state"
+        },
+        "type": {
+            "type" : "string",
+            "enum": ["OPERATION"],
+            "description": "State type"
+        },
+        "start": {
+            "type": "boolean",
+            "default": false,
+            "description": "Is the start event"
+        },
+        "action-mode": {
+            "type" : "string",
+            "enum": ["SEQUENTIAL", "PARALLEL"],
+            "description": "Specifies whether actions are executed in sequence or in parallel."
+        },
+        "actions": {
+            "type": "array",
+            "description": "Actions Definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#definitions/action"
             }
-         ],
-         "default":"STATE-NAME"
-      }
-   ]
+        },
+        "next-state": {
+            "type": "string",
+            "description": "Name of the next state to transition to after all the actions have been successfully executed"
+        }
+    },
+    "required": ["name", "action-mode", "actions", "type", "next-state"]
 }
 ```
 
-- The **"choices"** field defines an ordered set of Match Rules against the input
-  data to this state, and the next state to transition to for each match.
-- The **"path"** field is a JSON Path that selects the value of the input data to
-  be matched.
-- The **"value"** field is the matching value.
-- The **"operator"** field specifies how the input data is compared with the
-  value, such as "EQ", "LT", "LTEQ", "GT", "GTEQ",
-  "StrEQ", "StrLT", "StrLTEQ", "StrGT", "StrGTEQ" .
-- The **"next-state"** field specifies the name of the next state to transition to
-  if there is a value match.
-- The **"Not"** field must be a single Match Rule that must not contain
-  "next-state" fields.
-- The **"And**" or "Or" field must be non-empty arrays of Match Rules that must
-  not themselves contain "next-state" fields.
-- The **"default"** field specifies the name of the next state if there is no match
-  for any choices value.
-- The order of evaluation is from the top to the bottom, and if a match happens,
-  go to **"next-state"** and ignore the rest of condition.
+</details>
 
-#### Delay state
+Unlike Event states, Operation states do not wait for an incoming trigger event. When they 
+are invoked, their set of actions are executed in SEQUENTIAL, or PARALALLEL modes. Once these 
+actions execute, a transition to "next state" happens.
+
+
+### <img src="media/state-icon-small.png" with="30px" height="26px"/>Switch State
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name |State name | string | yes |
+| type |State type | string | yes |
+| start |Is this event a start | boolean | no | 
+| [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
+| default |Name of the next state if there is no match for any choices value | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
-{  
-   "states":[  
-      {  
-         "name":"STATE-NAME",
-         "type":"DELAY",
-         "start":true,
-         "time-delay":"TIME-VALUE",
-         "next-state":"STATE-NAME"
-      }
-   ]
-}
-```
-
-- The **"time-delay"** field specifies a time delay. The TIME-VALUE is the amount of
-time in seconds to delay in this state. This must be a positive integer.
-- The **"next-state"** field specifies the name of the next state to transition to.
-STATE-NAME must be a valid State name within the Function Workflow.
-
-#### End State
-
-```json
-{  
-   "states":[  
-      {  
-         "name":"STATE-NAME",
-         "type":"END",
-         "status": "STATUS"
-      }
-   ]
-}
-```
-
-- The **"status"** field specifies the workflow termination status: SUCCESS or
-FAILURE.
-
-#### Parallel state
-
-The Parallel state consists of a number of states that are executed in parallel.
-A Parallel state has a number of branches that execute concurrently. Each branch
-has a list of states with one state as the start state. Each branch continues
-its execution until it reaches a state that has no next state within the branch.
-When all branches have completed execution, the parallel state will transit to
-its next state. This is in essence the nesting of a set of states within a
-Parallel state.
-
-A Parallel state is defined by a state type Parallel and includes an array of
-parallel branches, each of which has its own separate states. Each branch
-receives a copy of the Parallel state's input data. Any type of state may be
-used in a branch except an END state.
-
-"next-state" transitions for states within a branch can only be to other states
-in that branch. In addition, states outside a Parallel state cannot transition
-to a state within a branch of a Parallel state.
-
-The Parallel state generates an output array in which each element is the output
-for a branch. The elements of the output array need not be of the same type.
-
-```json
-{  
-   "states":[  
-      {  
-         "name":"STATE-NAME",
-         "type":"PARALLEL",
-         "start": true,
-         "branches":[  
-            {  
-               "name":"BRANCH-NAME1",
-               "states":[  
-
-               ]
-            },
-            {  
-               "name":"BRANCH-NAME2",
-               "states":[  
-
-               ]
+{
+    "type": "object",
+    "description": "Permits transitions to other states based on criteria matching.",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Unique name of the state"
+        },
+        "type": {
+            "type" : "string",
+            "enum": ["SWITCH"],
+            "description": "State type"
+        },
+        "start": {
+            "type": "boolean",
+            "default": false,
+            "description": "Is the start event"
+        },
+        "choices": {
+            "type": "array",
+            "description": "Defines an ordered set of Match Rules against the input data to this state",
+            "items": {
+                "type": "object",
+                "anyOf": [
+                    { "$ref": "#definitions/singlechoice" },
+                    { "$ref": "#definitions/andchoice" },
+                    { "$ref": "#definitions/notchoice" },
+                    { "$ref": "#definitions/orchoice" }
+                ]
             }
-         ],
-         "next-state":"STATE-NAME"
-      }
-   ]
+        },
+        "default": {
+            "type": "string",
+            "description": "Specifies the name of the next state if there is no match for any choices value"
+        }
+    },
+    "required": ["name", "type", "choices", "default"]
 }
 ```
 
-- The **"branches"** field is a list of branches that are executed concurrently. Each
-named branch has a list of "states". The "next-state" field for each
-of the states within a branch must either be valid state name within that
-branch, or be absent to indicate that the state terminates execution of the
-branch. The branch execution starts at the state within the branch that has
-"start": true.
-- The **"next-state"** field for the Parallel state itself specifies the
-name of the next state to transition to after all branches have completed
-execution. STATE-NAME must be a valid State name within the Function
-Workflow, but it must not be a state within the Parallel state itself.
+</details>
+
+Switch states can be viewed as gateways. They define matching choices which then define which state should be 
+triggered next upon successful match.
+
+#### <a name="switch-state-choices"></a>Switch State: Choices
+
+Switch states can be viewed as gateways. They define matching choices which then define which state should be 
+triggered next upon successful match.
+
+There are found types of choices defined:
+
+* [Single Choice](#switch-state-single-choice)
+* [And Choice](#switch-state-and-choice)
+* [Not Choice](#switch-state-not-choice)
+* [Or Choice](#switch-state-or-choice)
+
+
+##### <a name="switch-state-single-choice"></a>Switch State Choices: Single Choice
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| single |List of choices | array | yes |
+| next-state |Name of state to transition to if there is valid match(es) | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "Single Choice",
+    "properties": {
+        "single": {
+            "type": "array",
+            "description": "List of choices",
+            "items": {
+                "path": {
+                    "type": "string",
+                    "description": "JSON Path that selects the data input value to be matched"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "Matching value"
+                },
+                "operator": {
+                    "type" : "string",
+                    "enum": ["EQ", "LT", "LTEQ", "GT", "GTEQ", "StrEQ", "StrLT", "StrLTEQ", "StrGT", "StrGTEQ"],
+                    "description": "Specifies how data input is compared with the value"
+                }
+            }
+        },
+        "next-state": {
+            "type": "string",
+            "description": "Specifies the name of the next state to transition to if there is a value match"
+        }
+    },
+    "required": ["single", "next-state"]
+}
+```
+
+</details>
+
+##### <a name="switch-state-and-choice"></a>Switch State Choices: And Choice
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| and |List of choices | array | yes |
+| next-state |Name of state to transition to if there is valid match(es) | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "And Choice",
+    "properties": {
+        "and": {
+            "type": "array",
+            "description": "List of choices",
+            "items": {
+                "path": {
+                    "type": "string",
+                    "description": "JSON Path that selects the data input value to be matched"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "Matching value"
+                },
+                "operator": {
+                    "type" : "string",
+                    "enum": ["EQ", "LT", "LTEQ", "GT", "GTEQ", "StrEQ", "StrLT", "StrLTEQ", "StrGT", "StrGTEQ"],
+                    "description": "Specifies how data input is compared with the value"
+                }
+            }
+        },
+        "next-state": {
+            "type": "string",
+            "description": "Specifies the name of the next state to transition to if there is a value match"
+        }
+    },
+    "required": ["and", "next-state"]
+}
+```
+
+</details>
+
+##### <a name="switch-state-not-choice"></a>Switch State Choices: Not Choice
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| not |List of choices | array | yes |
+| next-state |Name of state to transition to if there is valid match(es) | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "And Choice",
+    "properties": {
+        "not": {
+            "type": "array",
+            "description": "List of choices",
+            "items": {
+                "path": {
+                    "type": "string",
+                    "description": "JSON Path that selects the data input value to be matched"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "Matching value"
+                },
+                "operator": {
+                    "type" : "string",
+                    "enum": ["EQ", "LT", "LTEQ", "GT", "GTEQ", "StrEQ", "StrLT", "StrLTEQ", "StrGT", "StrGTEQ"],
+                    "description": "Specifies how data input is compared with the value"
+                }
+            }
+        },
+        "next-state": {
+            "type": "string",
+            "description": "Specifies the name of the next state to transition to if there is a value match"
+        }
+    },
+    "required": ["not", "next-state"]
+}
+```
+
+</details>
+
+##### <a name="switch-state-or-choice"></a>Switch State Choices: Or Choice
+
+| Parameter | Description |  Type | Required |
+| --- | --- | --- | --- |
+| or |List of choices | array | yes | 
+| next-state |Name of state to transition to if there is valid match(es) | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "And Choice",
+    "properties": {
+        "or": {
+            "type": "array",
+            "description": "List of choices",
+            "items": {
+                "path": {
+                    "type": "string",
+                    "description": "JSON Path that selects the data input value to be matched"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "Matching value"
+                },
+                "operator": {
+                    "type" : "string",
+                    "enum": ["EQ", "LT", "LTEQ", "GT", "GTEQ", "StrEQ", "StrLT", "StrLTEQ", "StrGT", "StrGTEQ"],
+                    "description": "Specifies how data input is compared with the value"
+                }                              
+            }
+        },
+        "next-state": {
+            "type": "string",
+            "description": "Specifies the name of the next state to transition to if there is a value match"
+        }
+    },
+    "required": ["or", "next-state"]
+}
+```
+</details>
+
+### <img src="media/state-icon-small.png" with="30px" height="26px"/>Delay State
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name |State name | string | yes |
+| type |State type | string | yes |
+| start |If this is a start event | boolean | no |
+| time-delay |Amount of time (seconds) to delay when in this state | integer | yes |
+| next-state |Name of the next state to transition to after the delay | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "Causes the workflow execution to delay for a specified duration",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Unique name of the state"
+        },
+        "type": {
+            "type" : "string",
+            "enum": ["DELAY"],
+            "description": "State type"
+        },
+        "start": {
+            "type": "boolean",
+            "default": false,
+            "description": "Is the start event"
+        },
+        "time-delay": {
+            "type": "integer",
+            "default":"0",
+            "minimum": 0,
+            "description": "Amount of time in seconds to delay in this state"
+        },
+        "next-state": {
+            "type": "string",
+            "description": "Name of the next state to transition to after the delay"
+        }
+    },
+    "required": ["name", "type", "time-delay", "next-state"]
+}
+```
+
+</details>
+
+Delay state simple waits for a certain amount of time before transitioning to a next state.
+
+
+### <img src="media/state-icon-small.png" with="30px" height="26px"/>Parallel State
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name |State name | string | yes | 
+| type |State type | string | yes | 
+| start |If this is a start event | boolean | no |
+| [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
+| next-state |Name of the next state to transition to after all branches have completed execution | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "Consists of a number of states that are executed in parallel",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Unique name of the state"
+        },
+        "type": {
+            "type" : "string",
+            "enum": ["PARALLEL"],
+            "description": "State type"
+        },
+        "start": {
+            "type": "boolean",
+            "default": false,
+            "description": "Is the start event"
+        },  
+        "branches": {
+            "type": "array",
+            "description": "Branch Definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#definitions/branch"
+            }
+        },
+        "next-state": {
+            "type": "string",
+            "description": "Specifies the name of the next state to transition to after all branches have completed execution"
+        }
+    },
+    "required": ["name", "type", "branches", "next-state"]
+}
+```
+
+</details>
+
+Parallel state defines a collection of branches which are to be executed in parallel.
+Each branch consists of a collection of states. It can be regarded as a sub-workflow
+which must have a start (state with "start" property set to true) and an end state which
+represents its completion.
+
+Let's define a branch now:
+
+#### <a name="parallel-state-branch"></a>Parallel State: Branch
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name |State name | string | yes |
+| [states](#State-Definition) |List of states to be executed in this branch | array | yes |
+| wait-for-completion |If workflow execution must wait for this branch to finish before continuing | boolean | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "Branch Definition",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Branch name"
+        },
+        "states": {
+            "type": "array",
+            "description": "State Definitions",
+            "items": {
+                        "type": "object",
+                        "anyOf": [
+                            { "$ref": "#definitions/delaystate" },
+                            { "$ref": "#definitions/eventstate" },
+                            { "$ref": "#definitions/operationstate" },
+                            { "$ref": "#definitions/parallelstate" },
+                            { "$ref": "#definitions/switchstate" },
+                            { "$ref": "#definitions/endstate" }
+                        ]
+                    }
+        },
+        "wait-for-completion": {
+            "type": "boolean",
+            "default": false,
+            "description": "Workflow execution must wait for this branch to finish before continuing"
+        }
+    },
+    "required": ["name", "states", "wait-for-completion"]
+}
+```
+
+</details>
+
+Each branch receives a copy of the Parallel state's input data.
+Transitions for states within a branch can only be to other states in that branch. 
+In addition, states outside a Parallel state cannot transition to a state within a branch of a Parallel state.
+The Parallel state generates an output array in which each element is the output for a branch. 
+The elements of the output array need not be of the same type.
+
+The "wait-for-completion" property allows the parallel state to manage branch executions. If this flag is set to 
+true, the branches parallel parent state must wait for this branch to finish before continuing execution.
+
+### <img src="media/state-icon-small.png" with="30px" height="26px"/>End State
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name |State name | string | yes |
+| type |State type | string | yes |
+| status |Workflow termination status | string | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "End State",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Unique name of the state"
+        },
+        "type": {
+            "type" : "string",
+            "enum": ["END"],
+            "description": "State type"
+        },
+        "status": {
+            "type" : "string",
+            "enum": ["SUCCESS", "FAILURE"],
+            "description": "Specifies the workflow termination status"
+        }
+    },
+    "required": ["name", "type"]
+}
+```
+
+</details>
+
+End state defines the ending transition of the workflow. It provides a stats of successful or failed 
+workflow execution.
 
 ### Information Passing
 
-The diagram below shows data flow through a Function Workflow that includes an
+The diagram below shows data flow through a Serverless Workflow that includes an
 Event state that invokes two serverless functions. Output data from one state is
 passed as input data to the next state. Filters are used to filter and transform
 the data on ingress to and egress from each state. Input data from a previous
@@ -783,7 +986,9 @@ received in a response from a serverless function may be transformed and
 combined with data received from a previous state before it is delivered in a
 response sent to the event source.
 
-![Async event information passing](media/e58a3f9dac9d6f68d378114e5e98ca05.png)
+<p align="center">
+<img src="media/information-passing1.png" with="400px" height="260px" alt="Async Event Diagram"/>
+</p>
 
 There may be cases where an event source such as an API gateway expects to
 receive a response from the workflow. In this case CloudEvent metadata received
@@ -791,12 +996,14 @@ in a response from a serverless function may be transformed and combined with
 data received from a previous state before it is delivered in a response sent to
 the event source as shown below.
 
-![Sync event information passing](media/3fee58bde24dd51ddcf083baee1cb8ac.png)
+<p align="center">
+<img src="media/information-passing2.png" with="400px" height="260px" alt="Sync Event Diagram"/>
+</p>
 
 ### Filter Mechanism
 
-The state machine maintains an implicit JSON data which is accessed from each
-filter as JSONPath expression '\$'.
+Serverless Workflow maintains an implicit JSON object which is accessed from each
+filter via JSONPath expression '$.'
 
 There are three kinds of filters
 
@@ -805,8 +1012,7 @@ There are three kinds of filters
 - State Filter
   - Invoked when data is passed from the previous state to the current state
   - Invoked when data is passed from the current state to the next state
-- Action Filter (Action means [Action definitions](#action-definitions) which defines Serverless
-    Function)
+- Action Filter 
   - Invoked when data is passed from the current state to the first action
   - Invoked when data is passed from an action to action
   - Invoked when data is passed from the last action to the current state
@@ -823,83 +1029,15 @@ Each Filter has three kinds of path filters
   - Specify output data of State or Action as JSONPath
   - Default value is '\$'
 
-![Sequential filter diagram](media/2f84c6c905d1b66fc780f7ca6a444435.png)
+<p align="center">
+<img src="media/filter-sequential.png" with="480px" height="270px" alt="Sequential FilterDiagram"/>
+</p>
 
-![Parallel filter diagram](media/466d322720c67a60013f516f880c302f.png)
+<p align="center">
+<img src="media/filter-parallel.png" with="480px" height="270px" alt="Parallel FilterDiagram"/>
+</p>
 
-#### Example
 
-Compose the following two function "hello" and "save_result".
-The second function "save_result" cannot take the first function "hello"
-output as input.
+## Examples
 
-- Function "hello":
-input {"name": String}
-output {"payload": String}
-- Function "save_result":
-input {"value1: String}
-output String
-
-CNCF Function Workflow Language
-
-```json
-{  
-   "states":[  
-      {  
-         "name":"HelloWorld",
-         "type":"OPERATION",
-         "start":true,
-         "action-mode":"Sequential",
-         "actions":[  
-            {  
-               "function":"hello"
-            }
-         ],
-         "next-state":"UpdateArg"
-      },
-      {  
-         "name":"UpdateArg",
-         "type":"OPERATION",
-         "start":false,
-         "action-mode":"Sequential",
-         "InputPath":"$.payload",
-         "ResultPath":"$.ifttt.value1",
-         "OutputPath":"$.ifttt",
-         "actions":[  
-
-         ],
-         "next-state":"SaveResult"
-      },
-      {  
-         "name":"SaveResult",
-         "type":"OPERATION",
-         "start":false,
-         "action-mode":"Sequential",
-         "actions":[  
-            {  
-               "function":"save_resut"
-            }
-         ],
-         "next-state":"STATE_END"
-      },
-      {  
-         "name":"STATE-END",
-         "type":"END"
-      }
-   ]
-}
-```
-
-![Hello world diagram](media/04e21cfd16be62f9c650d7f15561a449.png)
-
-### Errors
-
-The state machine returns the following predefined Error Code during runtime.
-Typically it is used in the "retry" field of [Action definitions](#action-definitions).
-
-- SYS.Timeout
-- SYS.Fail
-- SYS.MatchAny
-- SYS.Permission
-- SYS.InvalidParameter
-- SYS.FilterError
+You can find different Serverless Workflow examples [here](spec-examples.md)
