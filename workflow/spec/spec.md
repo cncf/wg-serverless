@@ -757,7 +757,7 @@ There are found types of choices defined:
 | end |If this state an end state | boolean | no |
 | next-state |Name of the next state to transition to after the delay | string | yes |
 
-<details><summary><strong>Click to view JSON Schema</strong></summary>
+<details><summary><strong>Click to view JSON Schema</strong></summary> 
 
 ```json
 {
