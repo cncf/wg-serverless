@@ -32,7 +32,6 @@ This document is a working draft.
 - [Examples](#Examples)
 - [Reference](#Reference)
 
-
 ## Introduction
 
 Serverless Workflow can be used to:
@@ -660,11 +659,10 @@ actions execute, a transition to "next state" happens.
 
 Switch states can be viewed as gateways. They define matching choices which then define which state should be 
 triggered next upon successful match.
+The current definitions of switch state defines multiple choices. And, Not, and Or choices
+define a single boolean operator which is to be applied to its elements. 
 
 #### <a name="switch-state-choices"></a>Switch State: Choices
-
-Switch states can be viewed as gateways. They define matching choices which then define which state should be 
-triggered next upon successful match.
 
 There are found types of choices defined:
 
@@ -678,7 +676,9 @@ There are found types of choices defined:
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| single |List of choices | array | yes |
+| path |Path that selects the data input value to be matched | string | yes |
+| value |Matching value | string | yes |
+| operator |Data Input comparator | string | yes |
 | [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -688,31 +688,25 @@ There are found types of choices defined:
     "type": "object",
     "description": "Single Choice",
     "properties": {
-        "single": {
-            "type": "array",
-            "description": "List of choices",
-            "items": {
-                "path": {
-                    "type": "string",
-                    "description": "JSON Path that selects the data input value to be matched"
-                },
-                "value": {
-                    "type": "string",
-                    "description": "Matching value"
-                },
-                "operator": {
-                    "type" : "string",
-                    "enum": ["EQ", "LT", "LTEQ", "GT", "GTEQ", "StrEQ", "StrLT", "StrLTEQ", "StrGT", "StrGTEQ"],
-                    "description": "Specifies how data input is compared with the value"
-                }
-            }
+        "path": {
+            "type": "string",
+            "description": "JSON Path that selects the data input value to be matched"
+        },
+        "value": {
+            "type": "string",
+            "description": "Matching value"
+        },
+        "operator": {
+            "type" : "string",  
+            "enum": ["Exists", "Equals", "LessThan", "LessThanEquals", "GreaterThan", "GreaterThanEquals"],
+            "description": "Specifies how data input is compared with the value"
         },
         "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to if there is a value match"
         }
     },
-    "required": ["single", "nextState"]
+    "required": ["path", "value", "operator", "nextState"]
 }
 ```
 
@@ -723,6 +717,9 @@ There are found types of choices defined:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | and |List of choices | array | yes |
+| path |Path that selects the data input value to be matched | string | yes |
+| value |Matching value | string | yes |
+| operator |Data Input comparator | string | yes |
 | [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -746,7 +743,7 @@ There are found types of choices defined:
                 },
                 "operator": {
                     "type" : "string",
-                    "enum": ["EQ", "LT", "LTEQ", "GT", "GTEQ", "StrEQ", "StrLT", "StrLTEQ", "StrGT", "StrGTEQ"],
+                    "enum": ["Exists", "Equals", "LessThan", "LessThanEquals", "GreaterThan", "GreaterThanEquals"],
                     "description": "Specifies how data input is compared with the value"
                 }
             }
@@ -756,7 +753,7 @@ There are found types of choices defined:
             "description": "Specifies the name of the next state to transition to if there is a value match"
         }
     },
-    "required": ["and", "nextState"]
+    "required": ["and", "path", "value", "operator", "nextState"]
 }
 ```
 
@@ -766,7 +763,10 @@ There are found types of choices defined:
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| not |List of choices | array | yes |
+| not |Choice | object | yes |
+| path |Path that selects the data input value to be matched | string | yes |
+| value |Matching value | string | yes |
+| operator |Data Input comparator | string | yes |
 | [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -774,12 +774,11 @@ There are found types of choices defined:
 ```json
 {
     "type": "object",
-    "description": "And Choice",
+    "description": "Not Choice",
     "properties": {
         "not": {
-            "type": "array",
-            "description": "List of choices",
-            "items": {
+            "type": "object",
+            "properties": {
                 "path": {
                     "type": "string",
                     "description": "JSON Path that selects the data input value to be matched"
@@ -790,7 +789,7 @@ There are found types of choices defined:
                 },
                 "operator": {
                     "type" : "string",
-                    "enum": ["EQ", "LT", "LTEQ", "GT", "GTEQ", "StrEQ", "StrLT", "StrLTEQ", "StrGT", "StrGTEQ"],
+                    "enum": ["Exists", "Equals", "LessThan", "LessThanEquals", "GreaterThan", "GreaterThanEquals"],
                     "description": "Specifies how data input is compared with the value"
                 }
             }
@@ -800,7 +799,7 @@ There are found types of choices defined:
             "description": "Specifies the name of the next state to transition to if there is a value match"
         }
     },
-    "required": ["not", "nextState"]
+    "required": ["not", "path", "value", "operator", "nextState"]
 }
 ```
 
@@ -811,6 +810,9 @@ There are found types of choices defined:
 | Parameter | Description |  Type | Required |
 | --- | --- | --- | --- |
 | or |List of choices | array | yes | 
+| path |Path that selects the data input value to be matched | string | yes |
+| value |Matching value | string | yes |
+| operator |Data Input comparator | string | yes |
 | [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -818,7 +820,7 @@ There are found types of choices defined:
 ```json
 {
     "type": "object",
-    "description": "And Choice",
+    "description": "Or Choice",
     "properties": {
         "or": {
             "type": "array",
@@ -834,7 +836,7 @@ There are found types of choices defined:
                 },
                 "operator": {
                     "type" : "string",
-                    "enum": ["EQ", "LT", "LTEQ", "GT", "GTEQ", "StrEQ", "StrLT", "StrLTEQ", "StrGT", "StrGTEQ"],
+                    "enum": ["Exists", "Equals", "LessThan", "LessThanEquals", "GreaterThan", "GreaterThanEquals"],
                     "description": "Specifies how data input is compared with the value"
                 }                              
             }
@@ -844,7 +846,7 @@ There are found types of choices defined:
             "description": "Specifies the name of the next state to transition to if there is a value match"
         }
     },
-    "required": ["or", "nextState"]
+    "required": ["or",  "path", "value", "operator", "nextState"]
 }
 ```
 </details>
@@ -1183,6 +1185,7 @@ If this property is sete to false, data access to parent's workflow should not b
 Filters are used for data flow through the workflow. This is described in detail in the [Information Passing](#Information-Passing) section.
 
 ### Transitions
+
 Serverless workflow states can have one or more incoming and outgoing transitions (from/to other states).
 Each state has a "nextState" property which is a string value that determines which 
 state to transition to. Implementors can choose to use the states "name" string property
