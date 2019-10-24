@@ -380,9 +380,8 @@ Each event state's event definition includes one or more actions. Let's define t
 | --- | --- | --- | --- |
 | [function](#Function-Definition) |Function to be invoked | object | yes |
 | timeout |Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | integer | no |
-| [retry](#Retry-Definition) |Defines if funtion execution needs a retry | object | no |
+| [retry](#Retry-Definition) |Defines if function execution needs a retry | array | no |
 | [filter](#Filter-Definition) |Action data filter | object | yes |
-
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -400,9 +399,12 @@ Each event state's event definition includes one or more actions. Let's define t
             "description": "Specifies the maximum amount of time (ISO 8601 format) to wait for the completion of the function's execution. The function timer is started when the request is sent to the invoked function"
         },
         "retry": {
-            "type": "object",
-            "$ref": "#/definitions/retry",
-            "description": "Specifies how the result from a function is to be handled"
+            "type": "array",
+            "description": "Array of retry definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/retry"
+            }
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -465,9 +467,9 @@ as well as define parameters (key/value pairs).
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | match |Result matching value | string | yes |
-| retryInterval |Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| integer | no |
-| maxRetry |Max retry value | integer | no |
-| [nextState](#Transitions) |State to transition to when exceeding maxRetry limit | string | yes |
+| interval |Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| integer | no |
+| max |Max retry value | integer | no |
+| [nextState](#Transitions) |State to transition to when exceeding max limit | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -480,11 +482,11 @@ as well as define parameters (key/value pairs).
             "type": "string",
             "description": "Specifies the matching value for the result"
         },
-        "retryInterval": {
+        "interval": {
             "type": "string",
             "description": "Specifies retry interval (ISO 8601 format)"
         },
-        "maxRetry": {
+        "max": {
             "type": "integer",
             "default":"0",
             "minimum": 0,
@@ -492,7 +494,7 @@ as well as define parameters (key/value pairs).
         },
         "nextState": {
             "type": "string",
-            "description": "State to transition to when exceeding maxRetry limit"
+            "description": "State to transition to when exceeding max limit"
         }
     },
     "required": ["match", "nextState"]
