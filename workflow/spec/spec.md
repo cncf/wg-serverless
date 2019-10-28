@@ -153,7 +153,7 @@ Here we define details of the Serverless Workflow definitions:
             "description": "Trigger Definitions",
             "items": {
                 "type": "object",
-                "$ref": "#definitions/triggerevent"
+                "$ref": "#/definitions/triggerevent"
             }
         },
         "states": {
@@ -250,6 +250,7 @@ We will start defining each individual state:
 | type |start type | string | yes |
 | end |Is this state an end state | boolean | no |
 | [events](#eventstate-eventdef) |Array of event | array | yes |
+| [filter](#Filter-Definition) |State data filter | object | yes |
  
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -278,11 +279,14 @@ We will start defining each individual state:
             "description": "Event State Definitions",
             "items": {
                 "type": "object",
-                "$ref": "#definitions/event"
+                "$ref": "#/definitions/event"
             }
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
         }
     },
-    "required": ["name", "type", "events"]
+    "required": ["name", "type", "events", "filter"]
 }
 ```
 
@@ -299,6 +303,7 @@ Event state can hold one or more events definitions, so let's define those:
 | timeout |Time period to wait for the events in the eventExpression (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | actionMode |Specifies if functions are executed in sequence of parallel | string | no |
 | [actions](#Action-Definition) |Array of actions | array | yes |
+| [filter](#Filter-Definition) |Event data filter | object | yes |
 | nextState|Next state to transition to after all the actions for the matching event have been successfully executed | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -326,15 +331,18 @@ Event state can hold one or more events definitions, so let's define those:
             "description": "Action Definitions",
             "items": {
                 "type": "object",
-                "$ref": "#definitions/action"
+                "$ref": "#/definitions/action"
             }
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
         },
         "nextState": {
             "type": "string",
             "description": "Name of the next state to transition to after all the actions for the matching event have been successfully executed"
         }
     },
-    "required": ["eventExpression", "actions", "nextState"]
+    "required": ["event-expression", "actions", "filter", "nextState"]
 }
 ```
 
@@ -354,6 +362,8 @@ Each event state's event definition includes one or more actions. Let's define t
 | [function](#Function-Definition) |Function to be invoked | object | yes |
 | timeout |Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | integer | no |
 | [retry](#Retry-Definition) |Defines if funtion execution needs a retry | object | no |
+| [filter](#Filter-Definition) |Action data filter | object | yes |
+
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -363,7 +373,7 @@ Each event state's event definition includes one or more actions. Let's define t
     "description": "Action Definition",
     "properties": {
         "function": {
-            "$ref": "#definitions/function",
+            "$ref": "#/definitions/function",
             "description": "Function to be invoked"
         },
         "timeout": {
@@ -372,11 +382,14 @@ Each event state's event definition includes one or more actions. Let's define t
         },
         "retry": {
             "type": "object",
-            "$ref": "#definitions/retry",
+            "$ref": "#/definitions/retry",
             "description": "Specifies how the result from a function is to be handled"
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
         }
     },
-    "required": ["function"]
+    "required": ["function", "filter"]
 }
 ```
 
@@ -473,6 +486,7 @@ as well as define parameters (key/value pairs).
 | end |Is this state an end state | boolean | no |
 | actionMode |Should actions be executed sequentially or in parallel | string | yes |
 | [actions](#Action-Definition) |Array of actions | array | yes |
+| [filter](#Filter-Definition) |State data filter | object | yes |
 | nextState |State to transition to after all the actions have been successfully executed | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -506,15 +520,18 @@ as well as define parameters (key/value pairs).
             "description": "Actions Definitions",
             "items": {
                 "type": "object",
-                "$ref": "#definitions/action"
+                "$ref": "#/definitions/action"
             }
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
         },
         "nextState": {
             "type": "string",
             "description": "Name of the next state to transition to after all the actions have been successfully executed"
         }
     },
-    "required": ["name", "actionMode", "actions", "type", "nextState"]
+    "required": ["name", "type", "actionMode", "actions", "filter", "nextState"]
 }
 ```
 
@@ -533,6 +550,7 @@ actions execute, a transition to "next state" happens.
 | type |State type | string | yes |
 | end |Is this state an end start | boolean | no | 
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
+| [filter](#Filter-Definition) |State data filter | object | yes |
 | default |Name of the next state if there is no match for any choices value | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -562,19 +580,22 @@ actions execute, a transition to "next state" happens.
             "items": {
                 "type": "object",
                 "anyOf": [
-                    { "$ref": "#definitions/singlechoice" },
-                    { "$ref": "#definitions/andchoice" },
-                    { "$ref": "#definitions/notchoice" },
-                    { "$ref": "#definitions/orchoice" }
+                    { "$ref": "#/definitions/singlechoice" },
+                    { "$ref": "#/definitions/andchoice" },
+                    { "$ref": "#/definitions/notchoice" },
+                    { "$ref": "#/definitions/orchoice" }
                 ]
             }
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
         },
         "default": {
             "type": "string",
             "description": "Specifies the name of the next state if there is no match for any choices value"
         }
     },
-    "required": ["name", "type", "choices", "default"]
+    "required": ["name", "type", "choices", "filter", "default"]
 }
 ```
 
@@ -777,8 +798,9 @@ There are found types of choices defined:
 | --- | --- | --- | --- |
 | name |State name | string | yes |
 | type |State type | string | yes |
-| timeDelay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
 | end |If this state an end state | boolean | no |
+| timeDelay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
+| [filter](#Filter-Definition) |State data filter | object | yes |
 | nextState |Name of the next state to transition to after the delay | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary> 
@@ -806,6 +828,9 @@ There are found types of choices defined:
             "type": "string",
             "description": "Amount of time (ISO 8601 format) to delay"
         },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
         "nextState": {
             "type": "string",
             "description": "Name of the next state to transition to after the delay"
@@ -828,7 +853,9 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 | type |State type | string | yes | 
 | end |If this state and end state | boolean | no |
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
+| [filter](#Filter-Definition) |State data filter | object | yes |
 | nextState |Name of the next state to transition to after all branches have completed execution | string | yes |
+>>>>>>> adding filter definition
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -856,15 +883,18 @@ Delay state simple waits for a certain amount of time before transitioning to a 
             "description": "Branch Definitions",
             "items": {
                 "type": "object",
-                "$ref": "#definitions/branch"
+                "$ref": "#/definitions/branch"
             }
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
         },
         "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to after all branches have completed execution"
         }
     },
-    "required": ["name", "type", "branches", "nextState"]
+    "required": ["name", "type", "branches", "filter", "nextState"]
 }
 ```
 
@@ -934,6 +964,42 @@ The elements of the output array need not be of the same type.
 
 The "waitForCompletion" property allows the parallel state to manage branch executions. If this flag is set to 
 true, the branches parallel parent state must wait for this branch to finish before continuing execution.
+
+### Filter Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| input-path |Input path (JSONPath) | string | yes |
+| result-path |Result Path (JSONPath) | string | yes |
+| output-path |Output Path (JSONPath) | string | yes |
+
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "input-path": {
+      "type": "string",
+      "description": "Select input data of either Event, State or Action as JSONPath"
+    },
+    "result-path": {
+      "type": "string",
+      "description": "Specify result JSON node of Action Output as JSONPath"
+    },
+    "output-path": {
+      "type": "string",
+      "description": "Specify output data of State or Action as JSONPath"
+    }
+  },
+  "required": ["input-path", "result-path", "output-path"]
+}
+```
+
+</details>
+
+Filters are used for data flow through the workflow. This is described in detail in the [Information Passing](#Information-Passing) section.
 
 ### Information Passing
 
