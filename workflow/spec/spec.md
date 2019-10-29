@@ -29,6 +29,7 @@ This document is a working draft.
     - [Workflow Model](#Workflow-Model)
     - [Workflow Definition](#Workflow-Definition)
 - [Examples](#Examples)
+- [Notation](#Notation)
 
 
 ## Introduction
@@ -754,7 +755,7 @@ There are found types of choices defined:
 | name |State name | string | yes |
 | type |State type | string | yes |
 | time-delay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
-| end |If this state an end state | boolean | no |
+| end |Is this state an end state | boolean | no |
 | next-state |Name of the next state to transition to after the delay | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary> 
@@ -802,7 +803,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 | --- | --- | --- | --- |
 | name |State name | string | yes | 
 | type |State type | string | yes | 
-| end |If this state and end state | boolean | no |
+| end |Is this state an end state | boolean | no |
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
 | next-state |Name of the next state to transition to after all branches have completed execution | string | yes |
 
@@ -988,6 +989,11 @@ Each Filter has three kinds of path filters
 
 You can find different Serverless Workflow examples [here](spec-examples.md)
 
+## Notation
+
+In addition to facilitating portability of the serverless workflow model, it is also important
+to facilitate portability of its notation between tooling. As part of this specification we also define
+the serverless workflow notation. Details on this can be found [here](spec-notation.md)
+
 ## Reference
 You can find a list of other languages, technologies and specifications related to workflows [here](references.md)
-
