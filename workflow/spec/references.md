@@ -4,7 +4,7 @@ State machines/Workflows have a long history in software design. This section go
 
 ### BPMN 2.0 by OMG
 
-[Business Process Modeling and Notation (BPMN)](https://www.omg.org/spec/BPMN/2.0/About-BPMN/) was designed by Object Management Group (OMG) in collaboration with companies such as . The latest version of the specification provides a rich set of constructs to define workflows in a technology agnostic way. One of the main advatages of the BPMN spec is that it defines visually how a workflow should look like and most importantely, it also defines the execution semantics of such workflows. 
+[Business Process Modeling and Notation (BPMN)](https://www.omg.org/spec/BPMN/2.0/About-BPMN/) was designed by Object Management Group (OMG) in collaboration with companies such as: IBM, Red Hat, Oracle, SAP, TIBCO, Software AG, among others. The latest version of the specification provides a rich set of constructs to define workflows in a technology agnostic way. One of the main advatages of the BPMN spec is that it defines visually how a workflow should look like and most importantely, it also defines the execution semantics of such workflows. 
 
 Workflows modeled using the BPMN specification can express a large number of use cases, covering the use cases listed in the [Serverless Workflow Specification - Use Cases](spec-usecases.md). 
 
