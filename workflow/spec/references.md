@@ -45,3 +45,9 @@ You can find the BPMN XML which can be executed in a number of Open Source and P
 ![Travel Booking Example](media/references/travel-booking-workflow.png)
 
 You can find the BPMN XML which can be executed in a number of Open Source and Propietary engines [here](media/references/travel-booking-workflow.bpmn)
+
+
+
+### Others
+
+If you know other related tools, languages, projects that can help this specification to be better, more scoped and serve a wide range of use cases please feel free to get in touch or send a PR to this section. 
