@@ -1041,3 +1041,7 @@ Each Filter has three kinds of path filters
 ## Examples
 
 You can find different Serverless Workflow examples [here](spec-examples.md)
+
+## Reference
+You can find a list of other languages, technologies and specifications related to workflows [here](references.md)
+
