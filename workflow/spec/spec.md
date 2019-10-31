@@ -104,6 +104,7 @@ Here we define details of the Serverless Workflow definitions:
 | exec-status |Workflow execution status | string |no |
 | [trigger-defs](#Trigger-Definition) |Array of workflow triggers | array | no |
 | [states](#State-Definition) | Array of workflow states | array | yes |
+| extensions | Array of workflow custom extension | array | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -169,6 +170,13 @@ Here we define details of the Serverless Workflow definitions:
                     { "$ref": "#definitions/switchstate" }
                 ]
             }
+        },
+        "extensions": {
+          "type": "array",
+          "description": "Workflow Extensions",
+          "items": {
+            "type": "object"
+          }
         }
     },
     "required": ["id", "name", "version", "starts-at", "states"]
