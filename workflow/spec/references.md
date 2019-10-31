@@ -9,21 +9,20 @@ State machines/Workflows have a long history in software design and development.
 Workflows modeled using the BPMN specification can express a large number of use cases, covering the use cases listed in the [Serverless Workflow Specification - Use Cases](spec-usecases.md). 
 
 BPMN provides the following constructs to define workflows capabiltiies:
-- Events: Emitting and catching events that are relevant to a workflow instance
-  - Catch Event
-  - Throw Event
-  - Timer
-- Messages: Enable communication between different workflow instances
-  - Throw
-  - Catch  
-- Gateways: Enable fork/join behaviours based on certain condition
-  - Exclusive
-  - Parallel
-  - Complex  
 - Tasks: Orchestrate interactions between systems and people
   - User Task 
   - Service Task
   - Business Rule Task 
+- Events: Emitting and catching events that are relevant to a workflow instance
+  - Condition Events
+  - Message Event: Enable communication between different workflow instances
+    - Throw
+    - Catch  
+  - Timer Events  
+- Gateways: Enable fork/join behaviours based on certain condition
+  - Exclusive
+  - Parallel
+  - Complex  
 - Aggregation: Provide a mechanism to deal with complexity when workflows become to large to understand
   - Embedded Sub Process
   - Call Activity
