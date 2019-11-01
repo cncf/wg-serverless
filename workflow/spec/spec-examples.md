@@ -19,7 +19,7 @@ used to access and reason over the workflow state.
                "function":"hello"
             }
          ],
-         "nextState":"UpdateArg"
+         "target":"UpdateArg"
       },
       {  
          "name":"UpdateArg",
@@ -31,7 +31,7 @@ used to access and reason over the workflow state.
          "actions":[  
 
          ],
-         "nextState":"SaveResult"
+         "target":"SaveResult"
       },
       {  
          "name":"SaveResult",
@@ -43,7 +43,11 @@ used to access and reason over the workflow state.
                "function":"save_resut"
             }
          ],
-         "nextState":"STATE_END"
+         "target":"STATE_END"
+      },
+      {  
+         "name":"STATE-END",
+         "type":"END"
       }
    ]
 }

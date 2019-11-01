@@ -158,16 +158,16 @@
             "$ref": "#/definitions/action"
           }
         },
-        "nextState": {
+        "target": {
           "type": "string",
-          "description": "Name of the next state to transition to after all the actions for the matching event have been successfully executed",
+          "description": "State to transition to after all the actions for the matching event have been successfully executed",
           "minLength": 1
         },
         "filter": {
           "$ref": "#/definitions/filter"
         }
       },
-      "required": ["eventExpression", "timeout", "nextState"]
+      "required": ["eventExpression", "timeout", "target"]
     },
     "action": {
       "type": "object",
@@ -208,9 +208,9 @@
           "minimum": 0,
           "description": "Specifies the max retry"
         },
-        "nextState": {
+        "target": {
           "type": "string",
-          "description": "Name of the next state to transition to when exceeding maxRetry limit",
+          "description": "State to transition to when exceeding max-retry limit",
           "minLength": 1
         }
       }
@@ -281,9 +281,13 @@
       "type": "object",
       "description": "Causes the workflow execution to delay for a specified duration",
       "properties": {
+        "id": {
+          "type": "string",
+          "description": "State id"
+        },
         "name": {
           "type": "string",
-          "description": "Unique name of the state"
+          "description": "State name"
         },
         "type": {
           "type": "string",
@@ -304,9 +308,9 @@
           "type": "string",
           "description": "Amount of time (ISO 8601 format) to delay"
         },
-        "nextState": {
+        "target": {
           "type": "string",
-          "description": "Name of the next state to transition to after all the delay."
+          "description": "State to transition to after all the delay."
         }
       }
     },
@@ -314,9 +318,13 @@
       "type": "object",
       "description": "This state is used to wait for events from event sources and then to invoke one or more functions to run in sequence or in parallel.",
       "properties": {
+        "id": {
+          "type": "string",
+          "description": "State id"
+        },
         "name": {
           "type": "string",
-          "description": "Unique name of the state"
+          "description": "State name"
         },
         "type": {
           "type": "string",
@@ -347,9 +355,13 @@
       "type": "object",
       "description": "This state allows one or more functions to run in sequence or in parallel without waiting for any event.",
       "properties": {
+        "id": {
+          "type": "string",
+          "description": "State id"
+        },
         "name": {
           "type": "string",
-          "description": "Unique name of the state"
+          "description": "State name"
         },
         "type": {
           "type": "string",
@@ -382,9 +394,9 @@
             "$ref": "#/definitions/action"
           }
         },
-        "nextState": {
+        "target": {
           "type": "string",
-          "description": "Name of the next state to transition to after all the actions have been successfully executed"
+          "description": "State to transition to after all the actions have been successfully executed"
         }
       }
     },
@@ -392,9 +404,13 @@
       "type": "object",
       "description": "Consists of a number of states that are executed in parallel",
       "properties": {
+        "id": {
+          "type": "string",
+          "description": "State id"
+        },
         "name": {
           "type": "string",
-          "description": "Unique name of the state"
+          "description": "State name"
         },
         "type": {
           "type": "string",
@@ -419,9 +435,9 @@
             "$ref": "#/definitions/branch"
           }
         },
-        "nextState": {
+        "target": {
           "type": "string",
-          "description": "Specifies the name of the next state to transition to after all branches have completed execution"
+          "description": "State to transition to after all branches have completed execution"
         }
       }
     },
@@ -429,9 +445,13 @@
       "type": "object",
       "description": "Permits transitions to other states based on criteria matching",
       "properties": {
+        "id": {
+          "type": "string",
+          "description": "State id"
+        },
         "name": {
           "type": "string",
-          "description": "Unique name of the state"
+          "description": "State name"
         },
         "type": {
           "type": "string",
@@ -521,9 +541,9 @@
             "$ref": "#/definitions/defaultchoice"
           }
         },
-        "nextState": {
+        "target": {
           "type": "string",
-          "description": "Specifies the name of the next state to transition to if there is a value match"
+          "description": "State to transition to if there is a value match"
         }
       }
     },
@@ -539,9 +559,9 @@
             "$ref": "#/definitions/defaultchoice"
           }
         },
-        "nextState": {
+        "target": {
           "type": "string",
-          "description": "Specifies the name of the next state to transition to if there is a value match"
+          "description": "State to transition to if there is a value match"
         }
       }
     },
@@ -557,9 +577,9 @@
             "$ref": "#/definitions/defaultchoice"
           }
         },
-        "nextState": {
+        "target": {
           "type": "string",
-          "description": "Specifies the name of the next state to transition to if there is a value match"
+          "description": "State to transition to if there is a value match"
         }
       }
     },
@@ -572,9 +592,9 @@
           "$ref": "#/definitions/defaultchoice",
           "description": "Single Choice"
         },
-        "nextState": {
+        "target": {
           "type": "string",
-          "description": "Specifies the name of the next state to transition to if there is a value match"
+          "description": "State to transition to if there is a value match"
         }
       }
     }
