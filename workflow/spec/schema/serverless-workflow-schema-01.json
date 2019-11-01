@@ -112,7 +112,7 @@
         },
         "timeout": {
           "type": "string",
-          "description": "Specifies the time period waiting for the events in the EVENTS-EXPRESSION"
+          "description": "Specifies the time period waiting for the events in the EVENTS-EXPRESSION (ISO 8601 format)"
         },
         "action-mode": {
           "type": "string",
@@ -149,10 +149,8 @@
           "$ref": "#/definitions/function"
         },
         "timeout": {
-          "type": "integer",
-          "default": "0",
-          "minimum": 0,
-          "description": "Specifies the time period waiting for the events in the EVENTS-EXPRESSION"
+          "type": "string",
+          "description": "Specifies the time period waiting for the events in the EVENTS-EXPRESSION (ISO 8601 format)"
         },
         "retry": {
           "type": "object",
@@ -173,10 +171,8 @@
           "description": "Specifies the matching value for the result"
         },
         "retry-interval": {
-          "type": "integer",
-          "default": "0",
-          "minimum": 0,
-          "description": "Specifies retry interval"
+          "type": "string",
+          "description": "Specifies retry interval (ISO 8601 format)"
         },
         "max-retry": {
           "type": "integer",
@@ -277,10 +273,8 @@
           "$ref": "#/definitions/filter"
         },
         "time-delay": {
-          "type": "integer",
-          "default": "0",
-          "minimum": 0,
-          "description": "Amount of time in seconds to delay in this state"
+          "type": "string",
+          "description": "Amount of time (ISO 8601 format) to delay"
         },
         "next-state": {
           "type": "string",

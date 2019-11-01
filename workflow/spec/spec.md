@@ -284,7 +284,7 @@ Event state can hold one or more events definitions, so let's define those:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | event-expression |Expression used to associate trigger-defs with event state  | string | yes |
-| timeout |Time period to wait for the events in the event-expression | string | no |
+| timeout |Time period to wait for the events in the event-expression (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | action-mode |Specifies if functions are executed in sequence of parallel | string | no |
 | [actions](#Action-Definition) |Array of actions | array | yes |
 | next-state|Next state to transition to after all the actions for the matching event have been successfully executed | string | yes |
@@ -302,7 +302,7 @@ Event state can hold one or more events definitions, so let's define those:
         },
         "timeout": {
             "type": "string",
-            "description": "Specifies the time period waiting for the events in the event-expression"
+            "description": "Specifies the time period waiting for the events in the event-expression (ISO 8601 format)"
         },
         "action-mode": {
             "type" : "string",
@@ -340,7 +340,7 @@ Each event state's event definition includes one or more actions. Let's define t
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | [function](#Function-Definition) |Function to be invoked | object | yes |
-| timeout |Max amount of time in seconds to wait for the completion of the function's execution | integer | no |
+| timeout |Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | integer | no |
 | [retry](#Retry-Definition) |Defines if funtion execution needs a retry | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -355,10 +355,8 @@ Each event state's event definition includes one or more actions. Let's define t
             "description": "Function to be invoked"
         },
         "timeout": {
-            "type": "integer",
-            "default":"0",
-            "minimum": 0,
-            "description": "Specifies the maximum amount of time in seconds to wait for the completion of the function's execution. This must be a positive integer. The function timer is started when the request is sent to the invoked function"
+            "type": "string",
+            "description": "Specifies the maximum amount of time (ISO 8601 format) to wait for the completion of the function's execution. The function timer is started when the request is sent to the invoked function"
         },
         "retry": {
             "type": "object",
@@ -418,7 +416,7 @@ as well as define parameters (key/value pairs).
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | match |Result matching value | string | yes |
-| retry-interval |Interval value for retry | integer | no |
+| retry-interval |Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| integer | no |
 | max-retry |Max retry value | integer | no |
 | next-state |Name of the next state to transition to when exceeding max-retry limit | string | yes |
 
@@ -434,10 +432,8 @@ as well as define parameters (key/value pairs).
             "description": "Specifies the matching value for the result"
         },
         "retry-interval": {
-            "type": "integer",
-            "default":"0",
-            "minimum": 0,
-            "description": "Specifies retry interval"
+            "type": "string",
+            "description": "Specifies retry interval (ISO 8601 format)"
         },
         "max-retry": {
             "type": "integer",
@@ -770,7 +766,7 @@ There are found types of choices defined:
 | name |State name | string | yes |
 | type |State type | string | yes |
 | start |If this is a start event | boolean | no |
-| time-delay |Amount of time (seconds) to delay when in this state | integer | yes |
+| time-delay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
 | next-state |Name of the next state to transition to after the delay | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -795,10 +791,8 @@ There are found types of choices defined:
             "description": "Is the start event"
         },
         "time-delay": {
-            "type": "integer",
-            "default":"0",
-            "minimum": 0,
-            "description": "Amount of time in seconds to delay in this state"
+            "type": "string",
+            "description": "Amount of time (ISO 8601 format) to delay"
         },
         "next-state": {
             "type": "string",
