@@ -8,11 +8,11 @@ used to access and reason over the workflow state.
 
 ```json
 {  
+   "starts-at": "HelloWorld",
    "states":[  
       {  
          "name":"HelloWorld",
          "type":"OPERATION",
-         "start":true,
          "action-mode":"Sequential",
          "actions":[  
             {  
@@ -24,7 +24,6 @@ used to access and reason over the workflow state.
       {  
          "name":"UpdateArg",
          "type":"OPERATION",
-         "start":false,
          "action-mode":"Sequential",
          "InputPath":"$.payload",
          "ResultPath":"$.ifttt.value1",
@@ -37,7 +36,7 @@ used to access and reason over the workflow state.
       {  
          "name":"SaveResult",
          "type":"OPERATION",
-         "start":false,
+         "end":true,
          "action-mode":"Sequential",
          "actions":[  
             {  
@@ -45,10 +44,6 @@ used to access and reason over the workflow state.
             }
          ],
          "next-state":"STATE_END"
-      },
-      {  
-         "name":"STATE-END",
-         "type":"END"
       }
    ]
 }
