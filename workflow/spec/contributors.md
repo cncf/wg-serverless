@@ -32,4 +32,6 @@ some way, please add your information via pull request.
 * **RedHat**
     * Ruben Romero Montes
     * Tihomir Surdilovic
-    
+
+* **Camunda**
+    * Mauricio Salatino    
