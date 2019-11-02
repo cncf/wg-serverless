@@ -9,9 +9,36 @@
       "description": "Workflow name",
       "minLength": 1
     },
+<<<<<<< HEAD
     "starts-at": {
       "type": "string",
       "description": "Starts at state name"
+=======
+    "title": {
+      "type": "string",
+      "description": "Workflow title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Workflow description"
+    },
+    "version": {
+      "type": "string",
+      "description": "Workflow version",
+      "minLength": 1
+    },
+    "last-updated": {
+      "type": "string",
+      "description": "Workflow last updated date and time"
+    },
+    "created": {
+      "type": "string",
+      "description": "Workflow created date and time"
+    },
+    "schema-version": {
+      "type": "string",
+      "description": "Serverless Workflow schema version"
+>>>>>>> adding workflow properties
     },
     "exec-status": {
       "type" : "string",
@@ -61,6 +88,7 @@
     "starts-at",
     "states"
   ],
+  "additionalProperties": false,
   "definitions": {
     "triggerevent": {
       "type": "object",
