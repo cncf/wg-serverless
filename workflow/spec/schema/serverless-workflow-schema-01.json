@@ -9,10 +9,14 @@
       "description": "Workflow name",
       "minLength": 1
     },
+    "starts-at": {
+      "type": "string",
+      "description": "Starts at state name"
+    },
     "exec-status": {
       "type" : "string",
-      "enum": ["SYS.Timeout", "SYS.Fail", "SYS.Success", "SYS.InvalidParameter"],
-      "description": "Execution status"
+      "enum": ["Success", "Fail", "Timeout", "Invalid"],
+      "description": "Workflow execution status"
     },
     "trigger-defs": {
       "type": "array",
@@ -31,10 +35,6 @@
           {
             "title": "Delay State",
             "$ref": "#/definitions/delaystate"
-          },
-          {
-            "title": "End State",
-            "$ref": "#/definitions/endstate"
           },
           {
             "title": "Event State",
@@ -58,6 +58,7 @@
   },
   "required": [
     "name",
+    "starts-at",
     "states"
   ],
   "definitions": {
@@ -212,6 +213,10 @@
           "type": "string",
           "description": "Branch name"
         },
+        "starts-at": {
+          "type": "string",
+          "description": "Starts at state name"
+        },
         "states": {
           "type": "array",
           "description": "State Definitions",
@@ -233,10 +238,6 @@
               {
                 "title": "Switch State",
                 "$ref": "#/definitions/switchstate"
-              },
-              {
-                "title": "End State",
-                "$ref": "#/definitions/endstate"
               }
             ]
           }
@@ -247,7 +248,7 @@
           "description": "Flow must wait for this branch to finish before continuing"
         }
       },
-      "required": ["name", "states", "wait-for-completion"]
+      "required": ["name", "starts-at", "states", "wait-for-completion"]
     },
     "delaystate": {
       "type": "object",
@@ -264,10 +265,10 @@
           ],
           "description": "State type"
         },
-        "start": {
+        "end": {
           "type": "boolean",
           "default": false,
-          "description": "Is the start event"
+          "description": "Is this state an end state"
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -279,34 +280,6 @@
         "next-state": {
           "type": "string",
           "description": "Name of the next state to transition to after all the delay."
-        }
-      }
-    },
-    "endstate": {
-      "type": "object",
-      "description": "End State",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Unique name of the state"
-        },
-        "type": {
-          "type": "string",
-          "enum": [
-            "END"
-          ],
-          "description": "State type"
-        },
-        "filter": {
-          "$ref": "#/definitions/filter"
-        },
-        "status": {
-          "type": "string",
-          "enum": [
-            "SUCCESS",
-            "FAILURE"
-          ],
-          "description": "Specifies the workflow termination status"
         }
       }
     },
@@ -325,10 +298,10 @@
           ],
           "description": "State type"
         },
-        "start": {
+        "end": {
           "type": "boolean",
           "default": false,
-          "description": "Is the start event"
+          "description": "Is this state an end state"
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -358,10 +331,10 @@
           ],
           "description": "State type"
         },
-        "start": {
+        "end": {
           "type": "boolean",
           "default": false,
-          "description": "Is the start event"
+          "description": "Is this state an end state"
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -403,10 +376,10 @@
           ],
           "description": "State type"
         },
-        "start": {
+        "end": {
           "type": "boolean",
           "default": false,
-          "description": "Is the start event"
+          "description": "Is this state an end state"
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -440,10 +413,10 @@
           ],
           "description": "State type"
         },
-        "start": {
+        "end": {
           "type": "boolean",
           "default": false,
-          "description": "Is the start event"
+          "description": "Is this state an end state"
         },
         "filter": {
           "$ref": "#/definitions/filter"

@@ -89,20 +89,6 @@ A Serverless Workflow can be naturally modeled as a state machine.
 Specification of a workflow is called a workflow template. 
 Instantiation of the workflow template is called a workflow instance.
 
-Serverless Workflow definition/specification provides following list of states:
-
-* **[Event State](#Event-State)**: Used to wait for events from event sources and then to invoke one or more functions to run in sequence or in parallel.
-
-* **[Operation State](#Operation-State)**: Allows one or more functions to run in sequence or in parallel without waiting for any event.
-
-* **[Switch State](#Switch-State)**: Permits transitions to multiple other states (eg. Different function results in the previous state trigger branching/transition to different next states).
-
-* **[Delay State](#Delay-State)**: Causes the workflow execution to delay for a specified duration or until a specified time/date.
-
-* **[Parallel State](#Parallel-State)**: Allows a number of states to execute in parallel.
-
-* **[End State](#End-State)**: Terminates the workflow with Fail/Success.
-
 ### Workflow Definition
 
 Here we define details of the Serverless Workflow definitions:
@@ -110,6 +96,7 @@ Here we define details of the Serverless Workflow definitions:
 | Parameter | Description | Type | Required |
 | --- | --- |  --- | --- |
 | name | Workflow name | string |yes |
+| starts-at |State name which is the starting state | string |yes |
 | exec-status |Workflow execution status | string |no |
 | [trigger-defs](#Trigger-Definition) |Array of workflow triggers | array | no |
 | [states](#State-Definition) | Array of workflow states | array | yes |
@@ -128,9 +115,13 @@ Here we define details of the Serverless Workflow definitions:
             "type": "string",
             "description": "Workflow name"
         },
+        "starts-at": {
+            "type": "string",
+            "description": "State name which is the starting state"
+        },
         "exec-status": {
             "type" : "string",
-            "enum": ["SYS.Timeout", "SYS.Fail", "SYS.Success", "SYS.InvalidParameter"],
+            "enum": ["Success", "Fail", "Timeout", "Invalid"],
             "description": "Execution status"
         },
         "trigger-defs": {
@@ -148,7 +139,6 @@ Here we define details of the Serverless Workflow definitions:
                 "type": "object",
                 "anyOf": [
                     { "$ref": "#definitions/delaystate" },
-                    { "$ref": "#definitions/endstate" },
                     { "$ref": "#definitions/eventstate" },
                     { "$ref": "#definitions/operationstate" },
                     { "$ref": "#definitions/parallelstate" },
@@ -157,7 +147,7 @@ Here we define details of the Serverless Workflow definitions:
             }
         }
     },
-    "required": ["name", "states"]
+    "required": ["name", "starts-at", "states"]
 }
 ```
 
@@ -225,8 +215,6 @@ States define building blocks of the Serverless Workflow. The specification defi
 
 - **[Parallel State](#Parallel-State)**: Allows a number of states to execute in
     parallel.
-
-- **[End State](#End-State)**: Terminates the workflow with Fail/Success.
     
 We will start defining each individual state:
 
@@ -236,7 +224,7 @@ We will start defining each individual state:
 | --- | --- | --- | --- |
 | name | state name (unique) | string | yes |
 | type |start type | string | yes |
-| start |Is this state a start state | boolean | no |
+| end |Is this state an end state | boolean | no |
 | [events](#eventstate-eventdef) |Array of event | array | yes |
  
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -256,10 +244,10 @@ We will start defining each individual state:
             "enum": ["EVENT"],
             "description": "State type"
         },
-        "start": {
+        "end": {
             "type": "boolean",
             "default": false,
-            "description": "Is the start event"
+            "description": "Is this an end state"
         },
         "events": {
             "type": "array",
@@ -458,7 +446,7 @@ as well as define parameters (key/value pairs).
 | --- | --- | --- | --- |
 | name |State name | string | yes |
 | type |State type | string | yes |
-| start |Is this event a start | boolean | no |
+| end |Is this state an end state | boolean | no |
 | action-mode |Should actions be executed sequentially or in parallel | string | yes |
 | [actions](#Action-Definition) |Array of actions | array | yes |
 | next-state |State to transition to after all the actions have been successfully executed | string | yes |
@@ -479,10 +467,10 @@ as well as define parameters (key/value pairs).
             "enum": ["OPERATION"],
             "description": "State type"
         },
-        "start": {
+        "end": {
             "type": "boolean",
             "default": false,
-            "description": "Is the start event"
+            "description": "Is this state an end state"
         },
         "action-mode": {
             "type" : "string",
@@ -519,7 +507,7 @@ actions execute, a transition to "next state" happens.
 | --- | --- | --- | --- |
 | name |State name | string | yes |
 | type |State type | string | yes |
-| start |Is this event a start | boolean | no | 
+| end |Is this state an end start | boolean | no | 
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
 | default |Name of the next state if there is no match for any choices value | string | yes |
 
@@ -539,10 +527,10 @@ actions execute, a transition to "next state" happens.
             "enum": ["SWITCH"],
             "description": "State type"
         },
-        "start": {
+        "end": {
             "type": "boolean",
             "default": false,
-            "description": "Is the start event"
+            "description": "Is this state an end start"
         },
         "choices": {
             "type": "array",
@@ -765,11 +753,11 @@ There are found types of choices defined:
 | --- | --- | --- | --- |
 | name |State name | string | yes |
 | type |State type | string | yes |
-| start |If this is a start event | boolean | no |
 | time-delay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
+| end |If this state an end state | boolean | no |
 | next-state |Name of the next state to transition to after the delay | string | yes |
 
-<details><summary><strong>Click to view JSON Schema</strong></summary>
+<details><summary><strong>Click to view JSON Schema</strong></summary> 
 
 ```json
 {
@@ -785,10 +773,10 @@ There are found types of choices defined:
             "enum": ["DELAY"],
             "description": "State type"
         },
-        "start": {
+        "end": {
             "type": "boolean",
             "default": false,
-            "description": "Is the start event"
+            "description": "Is this state an end state"
         },
         "time-delay": {
             "type": "string",
@@ -814,7 +802,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 | --- | --- | --- | --- |
 | name |State name | string | yes | 
 | type |State type | string | yes | 
-| start |If this is a start event | boolean | no |
+| end |If this state and end state | boolean | no |
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
 | next-state |Name of the next state to transition to after all branches have completed execution | string | yes |
 
@@ -834,10 +822,10 @@ Delay state simple waits for a certain amount of time before transitioning to a 
             "enum": ["PARALLEL"],
             "description": "State type"
         },
-        "start": {
+        "end": {
             "type": "boolean",
             "default": false,
-            "description": "Is the start event"
+            "description": "Is this state an end state"
         },  
         "branches": {
             "type": "array",
@@ -860,8 +848,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 
 Parallel state defines a collection of branches which are to be executed in parallel.
 Each branch consists of a collection of states. It can be regarded as a sub-workflow
-which must have a start (state with "start" property set to true) and an end state which
-represents its completion.
+which must have the starts-at property defined and a state which has the end property set to true.
 
 Let's define a branch now:
 
@@ -870,6 +857,7 @@ Let's define a branch now:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | name |State name | string | yes |
+| starts-at |State name which is the start state | string | yes |
 | [states](#State-Definition) |List of states to be executed in this branch | array | yes |
 | wait-for-completion |If workflow execution must wait for this branch to finish before continuing | boolean | yes |
 
@@ -884,6 +872,10 @@ Let's define a branch now:
             "type": "string",
             "description": "Branch name"
         },
+        "starts-at": {
+            "type": "string",
+            "description": "State name which is the starting state"
+        },
         "states": {
             "type": "array",
             "description": "State Definitions",
@@ -894,8 +886,7 @@ Let's define a branch now:
                             { "$ref": "#definitions/eventstate" },
                             { "$ref": "#definitions/operationstate" },
                             { "$ref": "#definitions/parallelstate" },
-                            { "$ref": "#definitions/switchstate" },
-                            { "$ref": "#definitions/endstate" }
+                            { "$ref": "#definitions/switchstate" }
                         ]
                     }
         },
@@ -905,7 +896,7 @@ Let's define a branch now:
             "description": "Workflow execution must wait for this branch to finish before continuing"
         }
     },
-    "required": ["name", "states", "wait-for-completion"]
+    "required": ["name", "starts-at", "states", "wait-for-completion"]
 }
 ```
 
@@ -919,45 +910,6 @@ The elements of the output array need not be of the same type.
 
 The "wait-for-completion" property allows the parallel state to manage branch executions. If this flag is set to 
 true, the branches parallel parent state must wait for this branch to finish before continuing execution.
-
-### <img src="media/state-icon-small.png" with="30px" height="26px"/>End State
-
-| Parameter | Description | Type | Required |
-| --- | --- | --- | --- |
-| name |State name | string | yes |
-| type |State type | string | yes |
-| status |Workflow termination status | string | no |
-
-<details><summary><strong>Click to view JSON Schema</strong></summary>
-
-```json
-{
-    "type": "object",
-    "description": "End State",
-    "properties": {
-        "name": {
-            "type": "string",
-            "description": "Unique name of the state"
-        },
-        "type": {
-            "type" : "string",
-            "enum": ["END"],
-            "description": "State type"
-        },
-        "status": {
-            "type" : "string",
-            "enum": ["SUCCESS", "FAILURE"],
-            "description": "Specifies the workflow termination status"
-        }
-    },
-    "required": ["name", "type"]
-}
-```
-
-</details>
-
-End state defines the ending transition of the workflow. It provides a stats of successful or failed 
-workflow execution.
 
 ### Information Passing
 
