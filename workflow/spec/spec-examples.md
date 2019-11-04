@@ -25,9 +25,9 @@ used to access and reason over the workflow state.
          "name":"UpdateArg",
          "type":"OPERATION",
          "actionMode":"Sequential",
-         "InputPath":"$.payload",
-         "ResultPath":"$.ifttt.value1",
-         "OutputPath":"$.ifttt",
+         "inputPath":"$.payload",
+         "resultPath":"$.ifttt.value1",
+         "outputPath":"$.ifttt",
          "actions":[  
 
          ],

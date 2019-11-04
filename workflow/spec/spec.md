@@ -181,7 +181,7 @@ Here we define details of the Serverless Workflow definitions:
 ### Trigger Definition
 
 Triggers define incoming events which can be associated with invocation of one or more states.
-If there are multiple events involved in an application workflow, a correlationToken, which is used to correlate an event with other 
+If there are multiple events involved in an application workflow, a 'correlationToken', which is used to correlate an event with other 
 events for same workflow instance, must be specified in that event trigger.
 
 | Parameter | Description | Type | Required |
@@ -872,7 +872,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 
 Parallel state defines a collection of branches which are to be executed in parallel.
 Each branch consists of a collection of states. It can be regarded as a sub-workflow
-which must have the starts-at property defined and a state which has the end property set to true.
+which must have the startsAt property defined and a state which has the end property set to true.
 
 Let's define a branch now:
 
@@ -896,7 +896,7 @@ Let's define a branch now:
             "type": "string",
             "description": "Branch name"
         },
-        "startsSt": {
+        "startsAt": {
             "type": "string",
             "description": "State name which is the starting state"
         },
