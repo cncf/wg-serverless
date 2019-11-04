@@ -122,7 +122,7 @@
           "description": "Specify output data of State or Action as JSONPath"
         }
       },
-      "required": ["inputPath", "resultPath", "outputPath"]
+      "required": ["inputPath"]
     },
     "event": {
       "type": "object",

@@ -970,8 +970,8 @@ true, the branches parallel parent state must wait for this branch to finish bef
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | inputPath |Input path (JSONPath) | string | yes |
-| resultPath |Result Path (JSONPath) | string | yes |
-| outputPath |Output Path (JSONPath) | string | yes |
+| resultPath |Result Path (JSONPath) | string | no |
+| outputPath |Output Path (JSONPath) | string | no |
 
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -993,7 +993,7 @@ true, the branches parallel parent state must wait for this branch to finish bef
       "description": "Specify output data of State or Action as JSONPath"
     }
   },
-  "required": ["inputPath", "resultPath", "outputPath"]
+  "required": ["inputPath"]
 }
 ```
 
