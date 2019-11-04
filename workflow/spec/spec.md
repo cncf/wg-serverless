@@ -969,9 +969,9 @@ true, the branches parallel parent state must wait for this branch to finish bef
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| input-path |Input path (JSONPath) | string | yes |
-| result-path |Result Path (JSONPath) | string | yes |
-| output-path |Output Path (JSONPath) | string | yes |
+| inputPath |Input path (JSONPath) | string | yes |
+| resultPath |Result Path (JSONPath) | string | yes |
+| outputPath |Output Path (JSONPath) | string | yes |
 
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -980,20 +980,20 @@ true, the branches parallel parent state must wait for this branch to finish bef
 {
   "type": "object",
   "properties": {
-    "input-path": {
+    "inputPath": {
       "type": "string",
       "description": "Select input data of either Event, State or Action as JSONPath"
     },
-    "result-path": {
+    "resultPath": {
       "type": "string",
       "description": "Specify result JSON node of Action Output as JSONPath"
     },
-    "output-path": {
+    "outputPath": {
       "type": "string",
       "description": "Specify output data of State or Action as JSONPath"
     }
   },
-  "required": ["input-path", "result-path", "output-path"]
+  "required": ["inputPath", "resultPath", "outputPath"]
 }
 ```
 
