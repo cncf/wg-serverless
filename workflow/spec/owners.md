@@ -6,4 +6,3 @@ For more information on the current approval process see the [Governance doc](go
 
 * Cathy Hong Zhang (https://github.com/cathyhongzhang)
 * Ruben Romero Montes (https://github.com/ruromero)
-* Tihomir Surdilovic (https://github.com/tsurdilo)
