@@ -117,11 +117,13 @@ Here we define details of the Serverless Workflow definitions:
     "properties": {
         "id": {
           "type": "string",
-          "description": "Workflow unique identifier. Must conform to the UUID format."
+          "description": "Workflow unique identifier. Conforms the universally unique identifier (UUID) format.",
+          "minLength": 1
         },
         "name": {
           "type": "string",
-          "description": "Workflow name"
+          "description": "Workflow name",
+          "minLength": 1
         },
         "description": {
           "type": "string",
@@ -137,9 +139,9 @@ Here we define details of the Serverless Workflow definitions:
           "description": "Serverless Workflow schema version"
         },
         "starts-at": {
-           "type": "string",
-           "description": "Starts at state name"
-         },
+          "type": "string",
+          "description": "Starts at state name"
+        },
         "exec-status": {
             "type" : "string",
             "enum": ["Success", "Fail", "Timeout", "Invalid"],
@@ -168,7 +170,7 @@ Here we define details of the Serverless Workflow definitions:
             }
         }
     },
-    "required": ["id", "name", "starts-at", "states"]
+    "required": ["id", "name", "starts-at", "states"],
     "additionalProperties": false
 }
 ```
