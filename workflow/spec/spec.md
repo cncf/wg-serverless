@@ -118,7 +118,7 @@ Here we define details of the Serverless Workflow definitions:
         "id": {
           "type": "string",
           "description": "Workflow unique identifier",
-          "pattern": "$[a-zA-Z0-9\\-\\.]+^"
+          "pattern": "$[a-zA-Z0-9\\-\\.]+^",
           "minLength": 1
         },
         "name": {
