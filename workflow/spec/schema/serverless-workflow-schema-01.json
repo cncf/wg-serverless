@@ -76,7 +76,9 @@
     }
   },
   "required": [
+    "id",
     "name",
+    "version",
     "starts-at",
     "states"
   ],

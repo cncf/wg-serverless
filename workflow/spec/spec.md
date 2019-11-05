@@ -171,7 +171,7 @@ Here we define details of the Serverless Workflow definitions:
             }
         }
     },
-    "required": ["id", "name", "starts-at", "states"]
+    "required": ["id", "name", "version", "starts-at", "states"]
 }
 ```
 
