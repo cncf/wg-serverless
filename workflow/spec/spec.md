@@ -1084,6 +1084,7 @@ The wait-for-completion property defines if the Invoke state should wait until e
 is completed or not. 
 
 Each local workflow receives a copy of the Invoke state's input data.
+Local workflows executed are not allowed to edit the caller workflows' data.
 
 
 ### Filter Definition
