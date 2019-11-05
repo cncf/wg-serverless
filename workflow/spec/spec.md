@@ -95,7 +95,7 @@ Here we define details of the Serverless Workflow definitions:
 
 | Parameter | Description | Type | Required |
 | --- | --- |  --- | --- |
-| id | Workflow unique identifier. Must conform to the UUID format (https://en.wikipedia.org/wiki/Universally_unique_identifier). | string |yes |
+| id | Workflow unique identifier. | string |yes |
 | name | Workflow name | string |yes |
 | description | Workflow description | string |no |
 | version | Workflow version | string |no |
@@ -117,7 +117,8 @@ Here we define details of the Serverless Workflow definitions:
     "properties": {
         "id": {
           "type": "string",
-          "description": "Workflow unique identifier. Conforms the universally unique identifier (UUID) format.",
+          "description": "Workflow unique identifier",
+          "pattern": "$[a-zA-Z0-9\\-\\.]+^"
           "minLength": 1
         },
         "name": {
@@ -170,8 +171,7 @@ Here we define details of the Serverless Workflow definitions:
             }
         }
     },
-    "required": ["id", "name", "starts-at", "states"],
-    "additionalProperties": false
+    "required": ["id", "name", "starts-at", "states"]
 }
 ```
 

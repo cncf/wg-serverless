@@ -6,7 +6,8 @@
   "properties": {
     "id": {
       "type": "string",
-      "description": "Workflow unique identifier. Conforms the universally unique identifier (UUID) format.",
+      "description": "Workflow unique identifier",
+      "pattern": "$[a-zA-Z0-9\\-\\.]+^",
       "minLength": 1
     },
     "name": {
@@ -79,7 +80,6 @@
     "starts-at",
     "states"
   ],
-  "additionalProperties": false,
   "definitions": {
     "triggerevent": {
       "type": "object",
