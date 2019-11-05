@@ -252,7 +252,7 @@ States define building blocks of the Serverless Workflow. The specification defi
 - **[Parallel State](#Parallel-State)**: Allows a number of states to execute in
     parallel.
     
-- **[Invoke State](#Invoke-State)**: Allows execution of an external serverless workflow.   
+- **[Invoke State](#Invoke-State)**: Allows execution of a locally defined serverless workflow.   
     
 We will start defining each individual state:
 
