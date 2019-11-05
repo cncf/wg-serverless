@@ -70,6 +70,10 @@
           {
             "title": "Switch State",
             "$ref": "#/definitions/switchstate"
+          },
+          {
+            "title": "Switch State",
+            "$ref": "#/definitions/invokestate"
           }
         ]
       }
@@ -265,6 +269,10 @@
               {
                 "title": "Switch State",
                 "$ref": "#/definitions/switchstate"
+              },
+              {
+                "title": "Switch State",
+                "$ref": "#/definitions/invokestate"
               }
             ]
           }
@@ -503,6 +511,47 @@
           "description": "Specifies the name of the next state if there is no match for any choices value"
         }
       }
+    },
+    "invokestate": {
+      "type": "object",
+      "description": "Defines a local workflow to be executed",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Unique name of the state"
+        },
+        "type": {
+          "type" : "string",
+          "enum": ["INVOKE"],
+          "description": "State type"
+        },
+        "end": {
+          "type": "boolean",
+          "default": false,
+          "description": "Is this state an end state"
+        },
+        "wait-for-completion": {
+          "type": "boolean",
+          "default": false,
+          "description": "Workflow execution must wait for local workflow to finish before continuing."
+        },
+        "workflow-id": {
+          "type": "string",
+          "description": "Local workflow unique id."
+        },
+        "workflow-version": {
+          "type": "string",
+          "description": "Local workflow version"
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "next-state": {
+          "type": "string",
+          "description": "Specifies the name of the next state to transition to after local workflow has completed execution."
+        }
+      },
+      "required": ["name", "type", "next-state", "workflow-id"]
     },
     "defaultchoice": {
       "type": "object",

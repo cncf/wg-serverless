@@ -252,6 +252,8 @@ States define building blocks of the Serverless Workflow. The specification defi
 - **[Parallel State](#Parallel-State)**: Allows a number of states to execute in
     parallel.
     
+- **[Invoke State](#Invoke-State)**: Allows execution of an external serverless workflow.   
+    
 We will start defining each individual state:
 
 ### <img src="media/state-icon-small.png" with="30px" height="26px"/>Event State
@@ -1005,6 +1007,84 @@ The elements of the output array need not be of the same type.
 
 The "waitForCompletion" property allows the parallel state to manage branch executions. If this flag is set to 
 true, the branches parallel parent state must wait for this branch to finish before continuing execution.
+
+### <img src="media/state-icon-small.png" with="30px" height="26px"/>Invoke State
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name |State name | string | yes | 
+| type |State type | string | yes | 
+| end |If this state and end state | boolean | no |
+| wait-for-completion |If workflow execution must wait for local workflow to finish before continuing | boolean | yes |
+| workflow-id |Local workflow unique id | boolean | no |
+| workflow-version |Local workflow version | boolean | no |
+| [filter](#Filter-Definition) |State data filter | object | yes |
+| next-state |Name of the next state to transition to after all branches have completed execution | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "Defines a local workflow to be executed",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Unique name of the state"
+        },
+        "type": {
+            "type" : "string",
+            "enum": ["INVOKE"],
+            "description": "State type"
+        },
+        "end": {
+            "type": "boolean",
+            "default": false,
+            "description": "Is this state an end state"
+        },  
+        "wait-for-completion": {
+            "type": "boolean",
+            "default": false,
+            "description": "Workflow execution must wait for local workflow to finish before continuing."
+        },
+        "workflow-id": {
+            "type": "string",
+            "description": "Local workflow unique id."
+        },
+        "workflow-version": {
+            "type": "string",
+            "description": "Local workflow version"
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "next-state": {
+            "type": "string",
+            "description": "Specifies the name of the next state to transition to after local workflow has completed execution."
+        }
+    },
+    "required": ["name", "type", "next-state", "workflow-id"]
+}
+```
+
+</details>
+
+It is often the case that you want to group your workflows into small, **reusable** logical units that perform certain needed functionality.
+Even tho you can use the Event state to call an externally deployed serverless workflow (via function), at times
+there is a need to call a local workflow as well. In that case you would use the Invoke State.
+It also allows users to model their workflows with reusability and logical grouping in mind.
+
+This state allows you to call a uniquely identified local workflow and start its execution. 
+Another use of this state is within [branches](#parallel-state-branch) of the [Parallel State](#Parallel-State). Instead of having to define all states
+in each branch, you could separate the branch states into individual local workflows and call the Invoke state
+as a single state in each.
+
+The called local workflow must have a defined start and end states. 
+The wait-for-completion property defines if the Invoke state should wait until execution of the local workflow
+is completed or not. 
+
+Each local workflow receives a copy of the Invoke state's input data.
+
 
 ### Filter Definition
 
