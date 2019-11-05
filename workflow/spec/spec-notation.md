@@ -67,8 +67,8 @@ be resized to arbitrary with/height. Clicking on the "+" icon minimizes the expa
 #### Labels
 
 Labels can be added to all elements of the serverless workflow notation. 
-They should be localged cenetered and underneith the element icon. 
-By default the label should represent the name of the element it is for. Here are some examples 
+They should be located centered and under the element icon. 
+By default the label should represent the name of the element it belongs to. Here are some examples 
 of elements with labels:
 
 
