@@ -95,7 +95,11 @@ Here we define details of the Serverless Workflow definitions:
 
 | Parameter | Description | Type | Required |
 | --- | --- |  --- | --- |
+| id | Workflow unique identifier. | string |yes |
 | name | Workflow name | string |yes |
+| description | Workflow description | string |no |
+| version | Workflow version | string |no |
+| schema-version | Serverless Workflow schema version | string |no |
 | starts-at |State name which is the starting state | string |yes |
 | exec-status |Workflow execution status | string |no |
 | [trigger-defs](#Trigger-Definition) |Array of workflow triggers | array | no |
@@ -111,13 +115,33 @@ Here we define details of the Serverless Workflow definitions:
     "description": "Vendor-neutral and portable specification that standardizes the definition of serverless application flows",
     "type": "object",
     "properties": {
+        "id": {
+          "type": "string",
+          "description": "Workflow unique identifier",
+          "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+          "minLength": 1
+        },
         "name": {
-            "type": "string",
-            "description": "Workflow name"
+          "type": "string",
+          "description": "Workflow name",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "description": "Workflow description"
+        },
+        "version": {
+          "type": "string",
+          "description": "Workflow version",
+          "minLength": 1
+        },
+        "schema-version": {
+          "type": "string",
+          "description": "Serverless Workflow schema version"
         },
         "starts-at": {
-            "type": "string",
-            "description": "State name which is the starting state"
+          "type": "string",
+          "description": "Starts at state name"
         },
         "exec-status": {
             "type" : "string",
@@ -147,7 +171,7 @@ Here we define details of the Serverless Workflow definitions:
             }
         }
     },
-    "required": ["name", "starts-at", "states"]
+    "required": ["id", "name", "version", "starts-at", "states"]
 }
 ```
 

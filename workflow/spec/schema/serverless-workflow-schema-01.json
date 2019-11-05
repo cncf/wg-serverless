@@ -4,10 +4,29 @@
   "description": "Workflow is a vendor-neutral specification for defining the format/primitives that the users can use to specify/describe their serverless application flow.",
   "type": "object",
   "properties": {
+    "id": {
+      "type": "string",
+      "description": "Workflow unique identifier",
+      "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+      "minLength": 1
+    },
     "name": {
       "type": "string",
       "description": "Workflow name",
       "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "description": "Workflow description"
+    },
+    "version": {
+      "type": "string",
+      "description": "Workflow version",
+      "minLength": 1
+    },
+    "schema-version": {
+      "type": "string",
+      "description": "Serverless Workflow schema version"
     },
     "starts-at": {
       "type": "string",
@@ -57,7 +76,9 @@
     }
   },
   "required": [
+    "id",
     "name",
+    "version",
     "starts-at",
     "states"
   ],
