@@ -31,12 +31,13 @@ So let's define a simple example workflow model and then add our custom extensio
 ```json
 {  
    "name": "Simple Workflow",
+   "starts-at": "FirstOperation",
    "states":[  
       {  
          "name":"FirstOperation",
          "type":"OPERATION",
-         "start":true,
          "action-mode":"Sequential",
+         "end": false,
          "actions":[  
             {  
                "name": "callFirstFunction",
@@ -51,7 +52,7 @@ So let's define a simple example workflow model and then add our custom extensio
       {  
          "name":"SecondOperation",
          "type":"OPERATION",
-         "start":false,
+         "end":true,
          "action-mode":"Sequential",
          "actions":[  
               {  
@@ -61,12 +62,7 @@ So let's define a simple example workflow model and then add our custom extensio
                    "type": "serverless"
                 }
               }
-         ],
-         "next-state":"End"
-      },
-      {  
-         "name":"End",
-         "type":"END"
+         ]
       }
    ],
    "extensions": [
@@ -75,8 +71,7 @@ So let's define a simple example workflow model and then add our custom extensio
 }
 ```
 
-This workflow contains two Operation states with each calling a single function. The End state denotes 
-termination of the workflow. In the "extensions" array we can add our custom extension, let's say like this:
+This workflow contains two Operation states with each calling a single function. In the "extensions" array we can add our custom extension, let's say like this:
 
 ```json
 ...
@@ -116,5 +111,5 @@ termination of the workflow. In the "extensions" array we can add our custom ext
 ```
 
 With an implementation of workflow simulation our scenario would for example start the workflow
-and report if the exectimes and probability defined in the custom extension match the actual 
+and report if the execution and probability defined in the custom extension match the actual 
 values during workflow execution. 
