@@ -283,7 +283,9 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "State id"
+          "description": "State id",
+          "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+          "minLength": 1
         },
         "name": {
           "type": "string",
@@ -320,7 +322,9 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "State id"
+          "description": "State id",
+          "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+          "minLength": 1
         },
         "name": {
           "type": "string",
@@ -357,7 +361,9 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "State id"
+          "description": "State id",
+          "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+          "minLength": 1
         },
         "name": {
           "type": "string",
@@ -406,7 +412,9 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "State id"
+          "description": "State id",
+          "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+          "minLength": 1
         },
         "name": {
           "type": "string",
@@ -447,7 +455,9 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "State id"
+          "description": "State id",
+          "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+          "minLength": 1
         },
         "name": {
           "type": "string",

@@ -275,7 +275,9 @@ We will start defining each individual state:
     "properties": {
         "id": {
             "type": "string",
-            "description": "State id"
+            "description": "State id",
+            "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+            "minLength": 1
         },
         "name": {
             "type": "string",
@@ -516,7 +518,9 @@ as well as define parameters (key/value pairs).
     "properties": {
         "id": {
             "type": "string",
-            "description": "State id"
+            "description": "State id",
+            "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+            "minLength": 1
         },
         "name": {
             "type": "string",
@@ -585,7 +589,9 @@ actions execute, a transition to "next state" happens.
     "properties": {
         "id": {
             "type": "string",
-            "description": "State id"
+            "description": "State id",
+            "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+            "minLength": 1
         },
         "name": {
             "type": "string",
@@ -840,7 +846,9 @@ There are found types of choices defined:
     "properties": {
         "id": {
             "type": "string",
-            "description": "State id"
+            "description": "State id",
+            "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+            "minLength": 1
         },
         "name": {
             "type": "string",
@@ -898,7 +906,9 @@ Delay state simple waits for a certain amount of time before transitioning to a 
     "properties": {
         "id": {
             "type": "string",
-            "description": "State id"
+            "description": "State id",
+            "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+            "minLength": 1
         },
         "name": {
             "type": "string",
@@ -1038,7 +1048,7 @@ true, the branches parallel parent state must wait for this branch to finish bef
 Filters are used for data flow through the workflow. This is described in detail in the [Information Passing](#Information-Passing) section.
 
 ### Transitions
-Serverless workflow states can have one or more incoming transitions (from other states).
+Serverless workflow states can have one or more incoming and outgoing transitions (from/to other states).
 Each state has a "target" property which is a string value that determines which 
 state to transition to. Implementors can choose to use the states "name" string property
 for determining the target state, however we realize that in most cases this is not an
