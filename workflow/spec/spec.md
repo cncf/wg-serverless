@@ -1070,11 +1070,11 @@ true, the branches parallel parent state must wait for this branch to finish bef
 </details>
 
 It is often the case that you want to group your workflows into small, **reusable** logical units that perform certain needed functionality.
-Even tho you can use the Event state to call an externally deployed serverless workflow (via function), at times
-there is a need to call a local workflow as well. In that case you would use the Invoke State.
+Even tho you can use the Event state to call an externally deployed services (via function), at times
+there is a need to include another serverless workflow (from classpath/local fily system etc). In that case you would use the Invoke State.
 It also allows users to model their workflows with reusability and logical grouping in mind.
 
-This state allows you to call a uniquely identified local workflow and start its execution. 
+This state allows you to call a uniquely identified workflow and start its execution. 
 Another use of this state is within [branches](#parallel-state-branch) of the [Parallel State](#Parallel-State). Instead of having to define all states
 in each branch, you could separate the branch states into individual local workflows and call the Invoke state
 as a single state in each.
@@ -1083,7 +1083,7 @@ The called local workflow must have a defined start and end states.
 The wait-for-completion property defines if the Invoke state should wait until execution of the local workflow
 is completed or not. 
 
-Each local workflow receives a copy of the Invoke state's input data.
+Each invoked workflow receives a copy of the Invoke state's input data.
 Local workflows executed are not allowed to edit the caller workflows' data.
 
 

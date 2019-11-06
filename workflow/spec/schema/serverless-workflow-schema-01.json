@@ -72,7 +72,7 @@
             "$ref": "#/definitions/switchstate"
           },
           {
-            "title": "Switch State",
+            "title": "Invoke State",
             "$ref": "#/definitions/invokestate"
           }
         ]
@@ -271,7 +271,7 @@
                 "$ref": "#/definitions/switchstate"
               },
               {
-                "title": "Switch State",
+                "title": "Invoke State",
                 "$ref": "#/definitions/invokestate"
               }
             ]
