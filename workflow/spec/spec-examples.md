@@ -8,42 +8,42 @@ used to access and reason over the workflow state.
 
 ```json
 {  
-   "starts-at": "HelloWorld",
+   "startsAt": "HelloWorld",
    "states":[  
       {  
          "name":"HelloWorld",
          "type":"OPERATION",
-         "action-mode":"Sequential",
+         "actionMode":"Sequential",
          "actions":[  
             {  
                "function":"hello"
             }
          ],
-         "next-state":"UpdateArg"
+         "nextState":"UpdateArg"
       },
       {  
          "name":"UpdateArg",
          "type":"OPERATION",
-         "action-mode":"Sequential",
-         "InputPath":"$.payload",
-         "ResultPath":"$.ifttt.value1",
-         "OutputPath":"$.ifttt",
+         "actionMode":"Sequential",
+         "inputPath":"$.payload",
+         "resultPath":"$.ifttt.value1",
+         "outputPath":"$.ifttt",
          "actions":[  
 
          ],
-         "next-state":"SaveResult"
+         "nextState":"SaveResult"
       },
       {  
          "name":"SaveResult",
          "type":"OPERATION",
          "end":true,
-         "action-mode":"Sequential",
+         "actionMode":"Sequential",
          "actions":[  
             {  
                "function":"save_resut"
             }
          ],
-         "next-state":"STATE_END"
+         "nextState":"STATE_END"
       }
    ]
 }

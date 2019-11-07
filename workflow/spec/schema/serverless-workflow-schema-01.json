@@ -24,20 +24,20 @@
       "description": "Workflow version",
       "minLength": 1
     },
-    "schema-version": {
+    "schemaVersion": {
       "type": "string",
       "description": "Serverless Workflow schema version"
     },
-    "starts-at": {
+    "startsAt": {
       "type": "string",
       "description": "Starts at state name"
     },
-    "exec-status": {
+    "execStatus": {
       "type" : "string",
       "enum": ["Success", "Fail", "Timeout", "Invalid"],
       "description": "Workflow execution status"
     },
-    "trigger-defs": {
+    "triggerDefs": {
       "type": "array",
       "description": "Trigger Definitions",
       "items": {
@@ -79,7 +79,7 @@
     "id",
     "name",
     "version",
-    "starts-at",
+    "startsAt",
     "states"
   ],
   "definitions": {
@@ -99,7 +99,7 @@
           "type": "string",
           "description": "CloudEvent type"
         },
-        "correlation-token": {
+        "correlationToken": {
           "type": "string",
           "description": "Path used for event correlation."
         }
@@ -110,15 +110,15 @@
       "type": "object",
       "javaType": "org.serverless.workflow.api.filters.Filter",
       "properties": {
-        "input-path": {
+        "inputPath": {
           "type": "string",
           "description": "Select input data of either Event, State or Action as JSONPath"
         },
-        "result-path": {
+        "resultPath": {
           "type": "string",
           "description": "Specify result JSON node of Action Output as JSONPath"
         },
-        "output-path": {
+        "outputPath": {
           "type": "string",
           "description": "Specify output data of State or Action as JSONPath"
         }
@@ -128,15 +128,15 @@
     "event": {
       "type": "object",
       "properties": {
-        "event-expression": {
+        "eventExpression": {
           "type": "string",
           "description": "Boolean expression which consists of one or more Event operands and the Boolean operators"
         },
         "timeout": {
           "type": "string",
-          "description": "Specifies the time period waiting for the events in the EVENTS-EXPRESSION (ISO 8601 format)"
+          "description": "Specifies the time period waiting for the events in the eventExpression (ISO 8601 format)"
         },
-        "action-mode": {
+        "actionMode": {
           "type": "string",
           "enum": [
             "SEQUENTIAL",
@@ -152,7 +152,7 @@
             "$ref": "#/definitions/action"
           }
         },
-        "next-state": {
+        "nextState": {
           "type": "string",
           "description": "Name of the next state to transition to after all the actions for the matching event have been successfully executed",
           "minLength": 1
@@ -161,7 +161,7 @@
           "$ref": "#/definitions/filter"
         }
       },
-      "required": ["event-expression", "timeout", "next-state"]
+      "required": ["eventExpression", "timeout", "nextState"]
     },
     "action": {
       "type": "object",
@@ -172,7 +172,7 @@
         },
         "timeout": {
           "type": "string",
-          "description": "Specifies the time period waiting for the events in the EVENTS-EXPRESSION (ISO 8601 format)"
+          "description": "Specifies the time period waiting for the events in the eventExpression (ISO 8601 format)"
         },
         "retry": {
           "type": "object",
@@ -192,19 +192,19 @@
           "type": "string",
           "description": "Specifies the matching value for the result"
         },
-        "retry-interval": {
+        "retryInterval": {
           "type": "string",
           "description": "Specifies retry interval (ISO 8601 format)"
         },
-        "max-retry": {
+        "maxRetry": {
           "type": "integer",
           "default": "0",
           "minimum": 0,
           "description": "Specifies the max retry"
         },
-        "next-state": {
+        "nextState": {
           "type": "string",
-          "description": "Name of the next state to transition to when exceeding max-retry limit",
+          "description": "Name of the next state to transition to when exceeding maxRetry limit",
           "minLength": 1
         }
       }
@@ -234,7 +234,7 @@
           "type": "string",
           "description": "Branch name"
         },
-        "starts-at": {
+        "startsAt": {
           "type": "string",
           "description": "Starts at state name"
         },
@@ -263,13 +263,13 @@
             ]
           }
         },
-        "wait-for-completion": {
+        "waitForCompletion": {
           "type": "boolean",
           "default": false,
           "description": "Flow must wait for this branch to finish before continuing"
         }
       },
-      "required": ["name", "starts-at", "states", "wait-for-completion"]
+      "required": ["name", "startsAt", "states", "waitForCompletion"]
     },
     "delaystate": {
       "type": "object",
@@ -294,11 +294,11 @@
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "time-delay": {
+        "timeDelay": {
           "type": "string",
           "description": "Amount of time (ISO 8601 format) to delay"
         },
-        "next-state": {
+        "nextState": {
           "type": "string",
           "description": "Name of the next state to transition to after all the delay."
         }
@@ -360,7 +360,7 @@
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "action-mode": {
+        "actionMode": {
           "type": "string",
           "enum": [
             "SEQUENTIAL",
@@ -376,7 +376,7 @@
             "$ref": "#/definitions/action"
           }
         },
-        "next-state": {
+        "nextState": {
           "type": "string",
           "description": "Name of the next state to transition to after all the actions have been successfully executed"
         }
@@ -413,7 +413,7 @@
             "$ref": "#/definitions/branch"
           }
         },
-        "next-state": {
+        "nextState": {
           "type": "string",
           "description": "Specifies the name of the next state to transition to after all branches have completed execution"
         }
@@ -515,7 +515,7 @@
             "$ref": "#/definitions/defaultchoice"
           }
         },
-        "next-state": {
+        "nextState": {
           "type": "string",
           "description": "Specifies the name of the next state to transition to if there is a value match"
         }
@@ -533,7 +533,7 @@
             "$ref": "#/definitions/defaultchoice"
           }
         },
-        "next-state": {
+        "nextState": {
           "type": "string",
           "description": "Specifies the name of the next state to transition to if there is a value match"
         }
@@ -551,7 +551,7 @@
             "$ref": "#/definitions/defaultchoice"
           }
         },
-        "next-state": {
+        "nextState": {
           "type": "string",
           "description": "Specifies the name of the next state to transition to if there is a value match"
         }
@@ -566,7 +566,7 @@
           "$ref": "#/definitions/defaultchoice",
           "description": "Single Choice"
         },
-        "next-state": {
+        "nextState": {
           "type": "string",
           "description": "Specifies the name of the next state to transition to if there is a value match"
         }

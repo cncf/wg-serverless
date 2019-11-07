@@ -99,10 +99,10 @@ Here we define details of the Serverless Workflow definitions:
 | name | Workflow name | string |yes |
 | description | Workflow description | string |no |
 | version | Workflow version | string |no |
-| schema-version | Serverless Workflow schema version | string |no |
-| starts-at |State name which is the starting state | string |yes |
-| exec-status |Workflow execution status | string |no |
-| [trigger-defs](#Trigger-Definition) |Array of workflow triggers | array | no |
+| schemaVersion | Serverless Workflow schema version | string |no |
+| startsAt |State name which is the starting state | string |yes |
+| execStatus |Workflow execution status | string |no |
+| [triggerDefs](#Trigger-Definition) |Array of workflow triggers | array | no |
 | [states](#State-Definition) | Array of workflow states | array | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -135,20 +135,20 @@ Here we define details of the Serverless Workflow definitions:
           "description": "Workflow version",
           "minLength": 1
         },
-        "schema-version": {
+        "schemaVersion": {
           "type": "string",
           "description": "Serverless Workflow schema version"
         },
-        "starts-at": {
-          "type": "string",
-          "description": "Starts at state name"
+        "startsAt": {
+            "type": "string",
+            "description": "State name which is the starting state"
         },
-        "exec-status": {
+        "execStatus": {
             "type" : "string",
             "enum": ["Success", "Fail", "Timeout", "Invalid"],
             "description": "Execution status"
         },
-        "trigger-defs": {
+        "triggerDefs": {
             "type": "array",
             "description": "Trigger Definitions",
             "items": {
@@ -171,7 +171,7 @@ Here we define details of the Serverless Workflow definitions:
             }
         }
     },
-    "required": ["id", "name", "version", "starts-at", "states"]
+    "required": ["id", "name", "version", "startsAt", "states"]
 }
 ```
 
@@ -181,7 +181,7 @@ Here we define details of the Serverless Workflow definitions:
 ### Trigger Definition
 
 Triggers define incoming events which can be associated with invocation of one or more states.
-If there are multiple events involved in an application workflow, a correlation-token, which is used to correlate an event with other 
+If there are multiple events involved in an application workflow, a 'correlationToken', which is used to correlate an event with other 
 events for same workflow instance, must be specified in that event trigger.
 
 | Parameter | Description | Type | Required |
@@ -189,7 +189,7 @@ events for same workflow instance, must be specified in that event trigger.
 | name | Unique trigger name | string |yes |
 | source |CloudEvent source | string | yes |
 | type |CloudEvent type | string | yes |
-| correlation-token | path used for event correlation | string | no |
+| correlationToken | path used for event correlation | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -210,7 +210,7 @@ events for same workflow instance, must be specified in that event trigger.
             "type": "string",
             "description": "CloudEvent type"
         },
-        "correlation-token": {
+        "correlationToken": {
             "type": "string",
             "description": "Path used for event correlation."
         }
@@ -295,11 +295,11 @@ Event state can hold one or more events definitions, so let's define those:
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| event-expression |Expression used to associate trigger-defs with event state  | string | yes |
-| timeout |Time period to wait for the events in the event-expression (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
-| action-mode |Specifies if functions are executed in sequence of parallel | string | no |
+| eventExpression |Expression used to associate triggerDefs with event state  | string | yes |
+| timeout |Time period to wait for the events in the eventExpression (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
+| actionMode |Specifies if functions are executed in sequence of parallel | string | no |
 | [actions](#Action-Definition) |Array of actions | array | yes |
-| next-state|Next state to transition to after all the actions for the matching event have been successfully executed | string | yes |
+| nextState|Next state to transition to after all the actions for the matching event have been successfully executed | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -308,15 +308,15 @@ Event state can hold one or more events definitions, so let's define those:
     "type": "object",
     "description": "Event associated with a State",
     "properties": {
-        "event-expression": {
+        "eventExpression": {
             "type": "string",
             "description": "Boolean expression which consists of one or more Event operands and the Boolean operators"
         },
         "timeout": {
             "type": "string",
-            "description": "Specifies the time period waiting for the events in the event-expression (ISO 8601 format)"
+            "description": "Specifies the time period waiting for the events in the eventExpression (ISO 8601 format)"
         },
-        "action-mode": {
+        "actionMode": {
             "type" : "string",
             "enum": ["SEQUENTIAL", "PARALLEL"],
             "description": "Specifies whether functions are executed in sequence or in parallel"
@@ -329,12 +329,12 @@ Event state can hold one or more events definitions, so let's define those:
                 "$ref": "#definitions/action"
             }
         },
-        "next-state": {
+        "nextState": {
             "type": "string",
             "description": "Name of the next state to transition to after all the actions for the matching event have been successfully executed"
         }
     },
-    "required": ["event-expression", "actions", "next-state"]
+    "required": ["eventExpression", "actions", "nextState"]
 }
 ```
 
@@ -342,7 +342,7 @@ Event state can hold one or more events definitions, so let's define those:
 
 The event expression attribute is used to associate this event state with one or more trigger events. 
 
-Note that each event definition has a "next-state" property, which is used to idetify the state which 
+Note that each event definition has a "nextState" property, which is used to idetify the state which 
 should get executed after this event completes (value should be the unique name of a state).
 
 Each event state's event definition includes one or more actions. Let's define these actions now:
@@ -428,9 +428,9 @@ as well as define parameters (key/value pairs).
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | match |Result matching value | string | yes |
-| retry-interval |Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| integer | no |
-| max-retry |Max retry value | integer | no |
-| next-state |Name of the next state to transition to when exceeding max-retry limit | string | yes |
+| retryInterval |Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| integer | no |
+| maxRetry |Max retry value | integer | no |
+| nextState |Name of the next state to transition to when exceeding maxRetry limit | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -443,22 +443,22 @@ as well as define parameters (key/value pairs).
             "type": "string",
             "description": "Specifies the matching value for the result"
         },
-        "retry-interval": {
+        "retryInterval": {
             "type": "string",
             "description": "Specifies retry interval (ISO 8601 format)"
         },
-        "max-retry": {
+        "maxRetry": {
             "type": "integer",
             "default":"0",
             "minimum": 0,
             "description": "Specifies the max retry"
         },
-        "next-state": {
+        "nextState": {
             "type": "string",
-            "description": "Name of the next state to transition to when exceeding max-retry limit"
+            "description": "Name of the next state to transition to when exceeding maxRetry limit"
         }
     },
-    "required": ["match", "next-state"]
+    "required": ["match", "nextState"]
 }
 ```
 
@@ -471,9 +471,9 @@ as well as define parameters (key/value pairs).
 | name |State name | string | yes |
 | type |State type | string | yes |
 | end |Is this state an end state | boolean | no |
-| action-mode |Should actions be executed sequentially or in parallel | string | yes |
+| actionMode |Should actions be executed sequentially or in parallel | string | yes |
 | [actions](#Action-Definition) |Array of actions | array | yes |
-| next-state |State to transition to after all the actions have been successfully executed | string | yes |
+| nextState |State to transition to after all the actions have been successfully executed | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -496,7 +496,7 @@ as well as define parameters (key/value pairs).
             "default": false,
             "description": "Is this state an end state"
         },
-        "action-mode": {
+        "actionMode": {
             "type" : "string",
             "enum": ["SEQUENTIAL", "PARALLEL"],
             "description": "Specifies whether actions are executed in sequence or in parallel."
@@ -509,12 +509,12 @@ as well as define parameters (key/value pairs).
                 "$ref": "#definitions/action"
             }
         },
-        "next-state": {
+        "nextState": {
             "type": "string",
             "description": "Name of the next state to transition to after all the actions have been successfully executed"
         }
     },
-    "required": ["name", "action-mode", "actions", "type", "next-state"]
+    "required": ["name", "actionMode", "actions", "type", "nextState"]
 }
 ```
 
@@ -601,7 +601,7 @@ There are found types of choices defined:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | single |List of choices | array | yes |
-| next-state |Name of state to transition to if there is valid match(es) | string | yes |
+| nextState |Name of state to transition to if there is valid match(es) | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -629,12 +629,12 @@ There are found types of choices defined:
                 }
             }
         },
-        "next-state": {
+        "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to if there is a value match"
         }
     },
-    "required": ["single", "next-state"]
+    "required": ["single", "nextState"]
 }
 ```
 
@@ -645,7 +645,7 @@ There are found types of choices defined:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | and |List of choices | array | yes |
-| next-state |Name of state to transition to if there is valid match(es) | string | yes |
+| nextState |Name of state to transition to if there is valid match(es) | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -673,12 +673,12 @@ There are found types of choices defined:
                 }
             }
         },
-        "next-state": {
+        "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to if there is a value match"
         }
     },
-    "required": ["and", "next-state"]
+    "required": ["and", "nextState"]
 }
 ```
 
@@ -689,7 +689,7 @@ There are found types of choices defined:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | not |List of choices | array | yes |
-| next-state |Name of state to transition to if there is valid match(es) | string | yes |
+| nextState |Name of state to transition to if there is valid match(es) | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -717,12 +717,12 @@ There are found types of choices defined:
                 }
             }
         },
-        "next-state": {
+        "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to if there is a value match"
         }
     },
-    "required": ["not", "next-state"]
+    "required": ["not", "nextState"]
 }
 ```
 
@@ -733,7 +733,7 @@ There are found types of choices defined:
 | Parameter | Description |  Type | Required |
 | --- | --- | --- | --- |
 | or |List of choices | array | yes | 
-| next-state |Name of state to transition to if there is valid match(es) | string | yes |
+| nextState |Name of state to transition to if there is valid match(es) | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -761,12 +761,12 @@ There are found types of choices defined:
                 }                              
             }
         },
-        "next-state": {
+        "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to if there is a value match"
         }
     },
-    "required": ["or", "next-state"]
+    "required": ["or", "nextState"]
 }
 ```
 </details>
@@ -777,9 +777,9 @@ There are found types of choices defined:
 | --- | --- | --- | --- |
 | name |State name | string | yes |
 | type |State type | string | yes |
-| time-delay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
+| timeDelay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
 | end |If this state an end state | boolean | no |
-| next-state |Name of the next state to transition to after the delay | string | yes |
+| nextState |Name of the next state to transition to after the delay | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary> 
 
@@ -802,16 +802,16 @@ There are found types of choices defined:
             "default": false,
             "description": "Is this state an end state"
         },
-        "time-delay": {
+        "timeDelay": {
             "type": "string",
             "description": "Amount of time (ISO 8601 format) to delay"
         },
-        "next-state": {
+        "nextState": {
             "type": "string",
             "description": "Name of the next state to transition to after the delay"
         }
     },
-    "required": ["name", "type", "time-delay", "next-state"]
+    "required": ["name", "type", "timeDelay", "nextState"]
 }
 ```
 
@@ -828,7 +828,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 | type |State type | string | yes | 
 | end |If this state and end state | boolean | no |
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
-| next-state |Name of the next state to transition to after all branches have completed execution | string | yes |
+| nextState |Name of the next state to transition to after all branches have completed execution | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -859,12 +859,12 @@ Delay state simple waits for a certain amount of time before transitioning to a 
                 "$ref": "#definitions/branch"
             }
         },
-        "next-state": {
+        "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to after all branches have completed execution"
         }
     },
-    "required": ["name", "type", "branches", "next-state"]
+    "required": ["name", "type", "branches", "nextState"]
 }
 ```
 
@@ -872,7 +872,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 
 Parallel state defines a collection of branches which are to be executed in parallel.
 Each branch consists of a collection of states. It can be regarded as a sub-workflow
-which must have the starts-at property defined and a state which has the end property set to true.
+which must have the startsAt property defined and a state which has the end property set to true.
 
 Let's define a branch now:
 
@@ -881,9 +881,9 @@ Let's define a branch now:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | name |State name | string | yes |
-| starts-at |State name which is the start state | string | yes |
+| startsAt |State name which is the start state | string | yes |
 | [states](#State-Definition) |List of states to be executed in this branch | array | yes |
-| wait-for-completion |If workflow execution must wait for this branch to finish before continuing | boolean | yes |
+| waitForCompletion |If workflow execution must wait for this branch to finish before continuing | boolean | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -896,7 +896,7 @@ Let's define a branch now:
             "type": "string",
             "description": "Branch name"
         },
-        "starts-at": {
+        "startsAt": {
             "type": "string",
             "description": "State name which is the starting state"
         },
@@ -914,13 +914,13 @@ Let's define a branch now:
                         ]
                     }
         },
-        "wait-for-completion": {
+        "waitForCompletion": {
             "type": "boolean",
             "default": false,
             "description": "Workflow execution must wait for this branch to finish before continuing"
         }
     },
-    "required": ["name", "starts-at", "states", "wait-for-completion"]
+    "required": ["name", "startsAt", "states", "waitForCompletion"]
 }
 ```
 
@@ -932,7 +932,7 @@ In addition, states outside a Parallel state cannot transition to a state within
 The Parallel state generates an output array in which each element is the output for a branch. 
 The elements of the output array need not be of the same type.
 
-The "wait-for-completion" property allows the parallel state to manage branch executions. If this flag is set to 
+The "waitForCompletion" property allows the parallel state to manage branch executions. If this flag is set to 
 true, the branches parallel parent state must wait for this branch to finish before continuing execution.
 
 ### Information Passing
