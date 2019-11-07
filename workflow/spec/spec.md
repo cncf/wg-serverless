@@ -1015,8 +1015,8 @@ true, the branches parallel parent state must wait for this branch to finish bef
 | name |State name | string | yes | 
 | type |State type | string | yes | 
 | end |If this state and end state | boolean | no |
-| wait-for-completion |If workflow execution must wait for sub-workflow to finish before continuing | boolean | yes |
-| workflow-id |Sub-workflow unique id | boolean | no |
+| waitForCompletion |If workflow execution must wait for sub-workflow to finish before continuing | boolean | yes |
+| workflowId |Sub-workflow unique id | boolean | no |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | next-state |Name of the next state to transition to after all branches have completed execution | string | yes |
 
@@ -1041,24 +1041,24 @@ true, the branches parallel parent state must wait for this branch to finish bef
             "default": false,
             "description": "Is this state an end state"
         },  
-        "wait-for-completion": {
+        "waitForCompletion": {
             "type": "boolean",
             "default": false,
             "description": "Workflow execution must wait for sub-workflow to finish before continuing."
         },
-        "workflow-id": {
+        "workflowId": {
             "type": "string",
             "description": "Sub-workflow unique id."
         },
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "next-state": {
+        "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to after sub-workflow has completed execution."
         }
     },
-    "required": ["name", "type", "next-state", "workflow-id"]
+    "required": ["name", "type", "nextState", "workflowId"]
 }
 ```
 
@@ -1075,11 +1075,11 @@ in each branch, you could separate the branch states into individual sub-workflo
 as a single state in each.
 
 Sub-workflows must have a defined start and end states. 
-The wait-for-completion property defines if the SubFlow state should wait until execution of the sub-workflow
+The waitForCompletion property defines if the SubFlow state should wait until execution of the sub-workflow
 is completed or not. 
 
 Each sub-workflow receives a copy of the SubFlow state's input data.
-If wait-for-completion property is set to true, sub-workflows have the ability to edit the parent's workflow data.
+If waitForCompletion property is set to true, sub-workflows have the ability to edit the parent's workflow data.
 If this property is sete to false, data access to parent's workflow should not be allowed.
 
 

@@ -530,24 +530,24 @@
           "default": false,
           "description": "Is this state an end state"
         },
-        "wait-for-completion": {
+        "waitForCompletion": {
           "type": "boolean",
           "default": false,
           "description": "Workflow execution must wait for sub-workflow to finish before continuing."
         },
-        "workflow-id": {
+        "workflowId": {
           "type": "string",
           "description": "Sub-workflow unique id."
         },
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "next-state": {
+        "nextState": {
           "type": "string",
           "description": "Specifies the name of the next state to transition to after sub-workflow has completed execution."
         }
       },
-      "required": ["name", "type", "next-state", "workflow-id"]
+      "required": ["name", "type", "nextState", "workflowId"]
     },
     "defaultchoice": {
       "type": "object",
