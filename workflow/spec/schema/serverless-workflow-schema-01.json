@@ -108,7 +108,6 @@
     },
     "filter": {
       "type": "object",
-      "javaType": "org.serverless.workflow.api.filters.Filter",
       "properties": {
         "inputPath": {
           "type": "string",
@@ -123,7 +122,7 @@
           "description": "Specify output data of State or Action as JSONPath"
         }
       },
-      "required": []
+      "required": ["inputPath"]
     },
     "event": {
       "type": "object",
