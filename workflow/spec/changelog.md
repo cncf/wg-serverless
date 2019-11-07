@@ -5,15 +5,16 @@ This document includes notable changes to this specification.
 ## 2019-11
 
 ### Added
-- Filter Definition
+- Filter definition
+- Element extension definition
 - Additional workflow properties
-- Required parameter
 - Readme document
 - Owners and Governance documents
 - References section
 
 
-### Changed
+### Changed/Updated
+- Required parameter
 - CamelCase parameter names
 - Time/Date/Duration parameter types to ISO-8601 format
 
