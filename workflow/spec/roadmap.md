@@ -16,10 +16,11 @@ add your feedback to this document.
 * Update sections to make their contents clearer to understand
 * Update images
 
-### Finalize serverless workflow Notation
+### Keep defining/improving serverless workflow Notation
 * Update icons
 * Update shapes / transitions
 * Add more notation examples
+* Add comparisons and align with other existing frameworks/notations
 
 ### Add JSON examples
 * Currently JSON Schema definition is provided for each of the workflow elements. Add JSON example for each aswell.
@@ -27,14 +28,15 @@ add your feedback to this document.
 ### Create content for community
 * Create blogs/videos showcasing serverless workflow features
 
-### Provide serverless workflow JSON Validator (CLI Linter)
-* Add a command-line linter for serverless workflow JSON.
-
-### Provide serverless workflow Fluent Java API
-* Add a fluent Java API/SPI. More languages would be great to have as contributions as well.
-
 ## Longer Term
 
 ### Specification Improvements
 * Add additional states
 * Provide improvements of workflow data flow / information filtering
+
+### Provide serverless workflow JSON Validator (CLI Linter)
+* Add a command-line linter for serverless workflow JSON.
+
+### Specify serverless workflow API 
+* Specify the requirements for a serverless workflow API that can be used in different applications.
+
