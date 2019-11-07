@@ -28,7 +28,9 @@ This document is a working draft.
 - [Specification Details](#Specification-Details)
     - [Workflow Model](#Workflow-Model)
     - [Workflow Definition](#Workflow-Definition)
+- [Extending](#Extending)
 - [Examples](#Examples)
+- [Reference](#Reference)
 
 
 ## Introduction
@@ -104,6 +106,7 @@ Here we define details of the Serverless Workflow definitions:
 | execStatus |Workflow execution status | string |no |
 | [triggerDefs](#Trigger-Definition) |Array of workflow triggers | array | no |
 | [states](#State-Definition) | Array of workflow states | array | yes |
+| extensions | Array of workflow custom extension | array | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -169,6 +172,13 @@ Here we define details of the Serverless Workflow definitions:
                     { "$ref": "#definitions/switchstate" }
                 ]
             }
+        },
+        "extensions": {
+          "type": "array",
+          "description": "Workflow Extensions",
+          "items": {
+            "type": "object"
+          }
         }
     },
     "required": ["id", "name", "version", "startsAt", "states"]
@@ -1073,10 +1083,23 @@ Each Filter has three kinds of path filters
 </p>
 
 
+## Extending
+
+Serverless Workflows are build with extensibility in mind. The extension mechanism allows
+users and implementors to extend the standard workflow elements with additional ones. This can be used 
+for example to satisfy some unique requirements and remain being compliant with the the workflow specfication.
+
+The extension mechanism can be used to define custom workflow elements. It is targeted to
+solving custom requirements that go beyond the core of the workflow specification, for example
+logging, simulation, debugging, tracing, etc.
+
+You can find more info and examples of element extensions [here](spec-extending.md).
+
 ## Examples
 
 You can find different Serverless Workflow examples [here](spec-examples.md)
 
 ## Reference
+
 You can find a list of other languages, technologies and specifications related to workflows [here](references.md)
 

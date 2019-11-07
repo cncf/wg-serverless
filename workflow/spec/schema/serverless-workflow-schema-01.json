@@ -73,6 +73,13 @@
           }
         ]
       }
+    },
+    "extensions": {
+      "type": "array",
+      "description": "Workflow Extensions",
+      "items": {
+        "type": "object"
+      }
     }
   },
   "required": [
