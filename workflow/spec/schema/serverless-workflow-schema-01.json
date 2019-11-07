@@ -72,8 +72,8 @@
             "$ref": "#/definitions/switchstate"
           },
           {
-            "title": "Invoke State",
-            "$ref": "#/definitions/invokestate"
+            "title": "SubFlow State",
+            "$ref": "#/definitions/subflowstate"
           }
         ]
       }
@@ -271,8 +271,8 @@
                 "$ref": "#/definitions/switchstate"
               },
               {
-                "title": "Invoke State",
-                "$ref": "#/definitions/invokestate"
+                "title": "SubFlow State",
+                "$ref": "#/definitions/subflowstate"
               }
             ]
           }
@@ -512,9 +512,9 @@
         }
       }
     },
-    "invokestate": {
+    "subflowstate": {
       "type": "object",
-      "description": "Defines a local workflow to be executed",
+      "description": "Defines a sub-workflow to be executed",
       "properties": {
         "name": {
           "type": "string",
@@ -522,7 +522,7 @@
         },
         "type": {
           "type" : "string",
-          "enum": ["INVOKE"],
+          "enum": ["SUBFLOW"],
           "description": "State type"
         },
         "end": {
@@ -533,22 +533,18 @@
         "wait-for-completion": {
           "type": "boolean",
           "default": false,
-          "description": "Workflow execution must wait for local workflow to finish before continuing."
+          "description": "Workflow execution must wait for sub-workflow to finish before continuing."
         },
         "workflow-id": {
           "type": "string",
-          "description": "Local workflow unique id."
-        },
-        "workflow-version": {
-          "type": "string",
-          "description": "Local workflow version"
+          "description": "Sub-workflow unique id."
         },
         "filter": {
           "$ref": "#/definitions/filter"
         },
         "next-state": {
           "type": "string",
-          "description": "Specifies the name of the next state to transition to after local workflow has completed execution."
+          "description": "Specifies the name of the next state to transition to after sub-workflow has completed execution."
         }
       },
       "required": ["name", "type", "next-state", "workflow-id"]
