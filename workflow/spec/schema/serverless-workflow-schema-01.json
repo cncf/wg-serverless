@@ -158,7 +158,7 @@
             "$ref": "#/definitions/action"
           }
         },
-        "target": {
+        "nextState": {
           "type": "string",
           "description": "State to transition to after all the actions for the matching event have been successfully executed",
           "minLength": 1
@@ -167,7 +167,7 @@
           "$ref": "#/definitions/filter"
         }
       },
-      "required": ["eventExpression", "timeout", "target"]
+      "required": ["eventExpression", "timeout", "nextState"]
     },
     "action": {
       "type": "object",
@@ -208,7 +208,7 @@
           "minimum": 0,
           "description": "Specifies the max retry"
         },
-        "target": {
+        "nextState": {
           "type": "string",
           "description": "State to transition to when exceeding max-retry limit",
           "minLength": 1
@@ -283,8 +283,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "State id",
-          "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+          "description": "Unique State id",
           "minLength": 1
         },
         "name": {
@@ -310,7 +309,7 @@
           "type": "string",
           "description": "Amount of time (ISO 8601 format) to delay"
         },
-        "target": {
+        "nextState": {
           "type": "string",
           "description": "State to transition to after all the delay."
         }
@@ -322,8 +321,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "State id",
-          "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+          "description": "Unique State id",
           "minLength": 1
         },
         "name": {
@@ -361,8 +359,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "State id",
-          "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+          "description": "Unique State id",
           "minLength": 1
         },
         "name": {
@@ -400,7 +397,7 @@
             "$ref": "#/definitions/action"
           }
         },
-        "target": {
+        "nextState": {
           "type": "string",
           "description": "State to transition to after all the actions have been successfully executed"
         }
@@ -412,8 +409,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "State id",
-          "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+          "description": "Unique State id",
           "minLength": 1
         },
         "name": {
@@ -443,7 +439,7 @@
             "$ref": "#/definitions/branch"
           }
         },
-        "target": {
+        "nextState": {
           "type": "string",
           "description": "State to transition to after all branches have completed execution"
         }
@@ -455,8 +451,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "State id",
-          "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+          "description": "Unique State id",
           "minLength": 1
         },
         "name": {
@@ -551,7 +546,7 @@
             "$ref": "#/definitions/defaultchoice"
           }
         },
-        "target": {
+        "nextState": {
           "type": "string",
           "description": "State to transition to if there is a value match"
         }
@@ -569,7 +564,7 @@
             "$ref": "#/definitions/defaultchoice"
           }
         },
-        "target": {
+        "nextState": {
           "type": "string",
           "description": "State to transition to if there is a value match"
         }
@@ -587,7 +582,7 @@
             "$ref": "#/definitions/defaultchoice"
           }
         },
-        "target": {
+        "nextState": {
           "type": "string",
           "description": "State to transition to if there is a value match"
         }
@@ -602,7 +597,7 @@
           "$ref": "#/definitions/defaultchoice",
           "description": "Single Choice"
         },
-        "target": {
+        "nextState": {
           "type": "string",
           "description": "State to transition to if there is a value match"
         }

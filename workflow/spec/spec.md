@@ -258,7 +258,7 @@ We will start defining each individual state:
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | State id | string | no |
+| id | Unique state id | string | no |
 | name | State name | string | yes |
 | type |start type | string | yes |
 | end |Is this state an end state | boolean | no |
@@ -275,8 +275,7 @@ We will start defining each individual state:
     "properties": {
         "id": {
             "type": "string",
-            "description": "State id",
-            "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+            "description": "Unique state id",
             "minLength": 1
         },
         "name": {
@@ -323,7 +322,7 @@ Event state can hold one or more events definitions, so let's define those:
 | actionMode |Specifies if functions are executed in sequence of parallel | string | no |
 | [actions](#Action-Definition) |Array of actions | array | yes |
 | [filter](#Filter-Definition) |Event data filter | object | yes |
-| [target](#Transitions) |State to transition to after all the actions for the matching event have been successfully executed | string | yes |
+| [nextState](#Transitions) |State to transition to after all the actions for the matching event have been successfully executed | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -356,12 +355,12 @@ Event state can hold one or more events definitions, so let's define those:
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "target": {
+        "nextState": {
             "type": "string",
             "description": "State to transition to after all the actions for the matching event have been successfully executed"
         }
     },
-    "required": ["event-expression", "actions", "filter", "target"]
+    "required": ["event-expression", "actions", "filter", "nextState"]
 }
 ```
 
@@ -369,7 +368,7 @@ Event state can hold one or more events definitions, so let's define those:
 
 The event expression attribute is used to associate this event state with one or more trigger events. 
 
-Note that each event definition has a "target" property, which is used to identify the state which 
+Note that each event definition has a "nextState" property, which is used to identify the state which 
 should get triggered after this event completes.
 
 Each event state's event definition includes one or more actions. Let's define these actions now:
@@ -462,7 +461,7 @@ as well as define parameters (key/value pairs).
 | match |Result matching value | string | yes |
 | retryInterval |Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| integer | no |
 | maxRetry |Max retry value | integer | no |
-| [target](#Transitions) |State to transition to when exceeding max-retry limit | string | yes |
+| [nextState](#Transitions) |State to transition to when exceeding max-retry limit | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -485,12 +484,12 @@ as well as define parameters (key/value pairs).
             "minimum": 0,
             "description": "Specifies the max retry"
         },
-        "target": {
+        "nextState": {
             "type": "string",
             "description": "State to transition to when exceeding max-retry limit"
         }
     },
-    "required": ["match", "target"]
+    "required": ["match", "nexttState"]
 }
 ```
 
@@ -500,14 +499,14 @@ as well as define parameters (key/value pairs).
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | State id | string | no |
+| id | Unique state id | string | no |
 | name |State name | string | yes |
 | type |State type | string | yes |
 | end |Is this state an end state | boolean | no |
 | actionMode |Should actions be executed sequentially or in parallel | string | yes |
 | [actions](#Action-Definition) |Array of actions | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
-| [target](#Transitions) |State to transition to after all the actions have been successfully executed | string | yes |
+| [nextState](#Transitions) |State to transition to after all the actions have been successfully executed | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -518,8 +517,7 @@ as well as define parameters (key/value pairs).
     "properties": {
         "id": {
             "type": "string",
-            "description": "State id",
-            "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+            "description": "Unique state id",
             "minLength": 1
         },
         "name": {
@@ -552,12 +550,12 @@ as well as define parameters (key/value pairs).
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "target": {
+        "nextState": {
             "type": "string",
             "description": "State to transition to after all the actions have been successfully executed"
         }
     },
-    "required": ["name", "type", "actionMode", "actions", "filter", "target"]
+    "required": ["name", "type", "actionMode", "actions", "filter", "nextState"]
 }
 ```
 
@@ -572,8 +570,8 @@ actions execute, a transition to "next state" happens.
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | State id | string | no |
-| name |State name | string | yes |
+| id | Unique state id | string | no |
+| name |Unique state name | string | yes |
 | type |State type | string | yes |
 | end |Is this state an end start | boolean | no | 
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
@@ -589,8 +587,7 @@ actions execute, a transition to "next state" happens.
     "properties": {
         "id": {
             "type": "string",
-            "description": "State id",
-            "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+            "description": "Unique state id",
             "minLength": 1
         },
         "name": {
@@ -655,7 +652,7 @@ There are found types of choices defined:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | single |List of choices | array | yes |
-| [target](#Transitions) |State to transition to if there is valid match(es) | string | yes |
+| [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -683,12 +680,12 @@ There are found types of choices defined:
                 }
             }
         },
-        "target": {
+        "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to if there is a value match"
         }
     },
-    "required": ["single", "target"]
+    "required": ["single", "nextState"]
 }
 ```
 
@@ -699,7 +696,7 @@ There are found types of choices defined:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | and |List of choices | array | yes |
-| [target](#Transitions) |State to transition to if there is valid match(es) | string | yes |
+| [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -727,12 +724,12 @@ There are found types of choices defined:
                 }
             }
         },
-        "target": {
+        "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to if there is a value match"
         }
     },
-    "required": ["and", "target"]
+    "required": ["and", "nextState"]
 }
 ```
 
@@ -743,7 +740,7 @@ There are found types of choices defined:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | not |List of choices | array | yes |
-| [target](#Transitions) |State to transition to if there is valid match(es) | string | yes |
+| [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -771,12 +768,12 @@ There are found types of choices defined:
                 }
             }
         },
-        "target": {
+        "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to if there is a value match"
         }
     },
-    "required": ["not", "target"]
+    "required": ["not", "nextState"]
 }
 ```
 
@@ -787,7 +784,7 @@ There are found types of choices defined:
 | Parameter | Description |  Type | Required |
 | --- | --- | --- | --- |
 | or |List of choices | array | yes | 
-| [target](#Transitions) |State to transition to if there is valid match(es) | string | yes |
+| [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -815,12 +812,12 @@ There are found types of choices defined:
                 }                              
             }
         },
-        "target": {
+        "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to if there is a value match"
         }
     },
-    "required": ["or", "target"]
+    "required": ["or", "nextState"]
 }
 ```
 </details>
@@ -829,13 +826,13 @@ There are found types of choices defined:
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | State id | string | no |
+| id | Unique state id | string | no |
 | name |State name | string | yes |
 | type |State type | string | yes |
 | end |If this state an end state | boolean | no |
 | timeDelay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
-| [target](#Transitions) |State to transition to after the delay | string | yes |
+| [nextState](#Transitions) |State to transition to after the delay | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary> 
 
@@ -846,8 +843,7 @@ There are found types of choices defined:
     "properties": {
         "id": {
             "type": "string",
-            "description": "State id",
-            "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+            "description": "Unique state id",
             "minLength": 1
         },
         "name": {
@@ -871,12 +867,12 @@ There are found types of choices defined:
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "target": {
+        "nextState": {
             "type": "string",
             "description": "Name of the next state to transition to after the delay"
         }
     },
-    "required": ["name", "type", "timeDelay", "target"]
+    "required": ["name", "type", "timeDelay", "nextState"]
 }
 ```
 
@@ -889,13 +885,13 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | State id | string | no |
+| id | Unique state id | string | no |
 | name |State name | string | yes | 
 | type |State type | string | yes | 
 | end |If this state and end state | boolean | no |
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
-| [target](#Transitions) |State to transition to after all branches have completed execution | string | yes |
+| [nextState](#Transitions) |State to transition to after all branches have completed execution | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -906,8 +902,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
     "properties": {
         "id": {
             "type": "string",
-            "description": "State id",
-            "pattern": "$[a-zA-Z0-9\\-\\.]+^",
+            "description": "Unique State id",
             "minLength": 1
         },
         "name": {
@@ -935,12 +930,12 @@ Delay state simple waits for a certain amount of time before transitioning to a 
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "target": {
+        "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to after all branches have completed execution"
         }
     },
-    "required": ["name", "type", "branches", "filter", "target"]
+    "required": ["name", "type", "branches", "filter", "nextState"]
 }
 ```
 
@@ -1049,14 +1044,14 @@ Filters are used for data flow through the workflow. This is described in detail
 
 ### Transitions
 Serverless workflow states can have one or more incoming and outgoing transitions (from/to other states).
-Each state has a "target" property which is a string value that determines which 
+Each state has a "nextState" property which is a string value that determines which 
 state to transition to. Implementors can choose to use the states "name" string property
-for determining the target state, however we realize that in most cases this is not an
+for determining the next state, however we realize that in most cases this is not an
 optimal solution that can lead to ambiguity. This is why each state also include an "id"
 property. Implementors can choose their own id generation strategy to populate the id property
-for each of the states and use it as the unique state identifier taht is to be used as the "target" value. 
+for each of the states and use it as the unique state identifier that is to be used as the "nextState" value. 
 
-So the options for target transitions are:
+So the options for next state transitions are:
 * Use the state name property
 * Use the state id property
 * Use a combination of name and id properties
