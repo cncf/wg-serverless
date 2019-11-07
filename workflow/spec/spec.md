@@ -855,7 +855,6 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | nextState |Name of the next state to transition to after all branches have completed execution | string | yes |
->>>>>>> adding filter definition
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
