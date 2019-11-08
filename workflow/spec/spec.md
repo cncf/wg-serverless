@@ -1065,7 +1065,7 @@ true, the branches parallel parent state must wait for this branch to finish bef
 </details>
 
 It is often the case that you want to group your workflows into small, **reusable** logical units that perform certain needed functionality.
-Even tho you can use the Event state to call an externally deployed services (via function), at times
+Even though you can use the Event state to call an externally deployed services (via function), at times
 there is a need to include/nest another serverless workflow (from classpath/local file system etc). In that case you would use the SubFlow State.
 It also allows users to model their workflows with reusability and logical grouping in mind.
 
