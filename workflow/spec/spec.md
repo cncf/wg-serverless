@@ -1361,7 +1361,7 @@ Metadata information should not affect workflow execution. Implementations have 
 or ignore it. 
 Metadata can be useful for things like documentation, content management, authentication, translation, logging, etc.
 
-The metadata property can be seen as a map where keys are of type string and values have the object type. 
+The metaData property is a map with keys  of type string and values of type object. 
 
 Here is an example of metadata property defined in the main workflow definition. Note that 
 all metaData parameters are just examples, you can fully define your own.
