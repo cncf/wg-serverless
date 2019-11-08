@@ -489,7 +489,7 @@ as well as define parameters (key/value pairs).
             "description": "State to transition to when exceeding max-retry limit"
         }
     },
-    "required": ["match", "nexttState"]
+    "required": ["match", "nextState"]
 }
 ```
 
