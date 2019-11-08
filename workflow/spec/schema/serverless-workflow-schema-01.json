@@ -516,9 +516,14 @@
       "type": "object",
       "description": "Defines a sub-workflow to be executed",
       "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique State id",
+          "minLength": 1
+        },
         "name": {
           "type": "string",
-          "description": "Unique name of the state"
+          "description": "State name"
         },
         "type": {
           "type" : "string",

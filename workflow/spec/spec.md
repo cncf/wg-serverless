@@ -1012,6 +1012,7 @@ true, the branches parallel parent state must wait for this branch to finish bef
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
+| id | Unique state id | string | no |
 | name |State name | string | yes | 
 | type |State type | string | yes | 
 | end |If this state and end state | boolean | no |
@@ -1027,9 +1028,14 @@ true, the branches parallel parent state must wait for this branch to finish bef
     "type": "object",
     "description": "Defines a sub-workflow to be executed",
     "properties": {
+        "id": {
+            "type": "string",
+            "description": "Unique State id",
+            "minLength": 1
+        },
         "name": {
             "type": "string",
-            "description": "Unique name of the state"
+            "description": "State name"
         },
         "type": {
             "type" : "string",
@@ -1066,10 +1072,11 @@ true, the branches parallel parent state must wait for this branch to finish bef
 
 It is often the case that you want to group your workflows into small, **reusable** logical units that perform certain needed functionality.
 Even though you can use the Event state to call an externally deployed services (via function), at times
-there is a need to include/nest another serverless workflow (from classpath/local file system etc). In that case you would use the SubFlow State.
+there is a need to include/inject another serverless workflow (from classpath/local file system etc, depending on the implementation logic). 
+In that case you would use the SubFlow State.
 It also allows users to model their workflows with reusability and logical grouping in mind.
 
-This state allows you to include/nest a uniquely identified sub-workflow and start its execution. 
+This state allows you to include/inject a uniquely identified sub-workflow and start its execution. 
 Another use of this state is within [branches](#parallel-state-branch) of the [Parallel State](#Parallel-State). Instead of having to define all states
 in each branch, you could separate the branch states into individual sub-workflows and call the SubFlow state
 as a single state in each.
