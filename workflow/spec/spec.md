@@ -461,7 +461,7 @@ as well as define parameters (key/value pairs).
 | match |Result matching value | string | yes |
 | retryInterval |Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| integer | no |
 | maxRetry |Max retry value | integer | no |
-| [nextState](#Transitions) |State to transition to when exceeding max-retry limit | string | yes |
+| [nextState](#Transitions) |State to transition to when exceeding maxRetry limit | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -486,7 +486,7 @@ as well as define parameters (key/value pairs).
         },
         "nextState": {
             "type": "string",
-            "description": "State to transition to when exceeding max-retry limit"
+            "description": "State to transition to when exceeding maxRetry limit"
         }
     },
     "required": ["match", "nextState"]
