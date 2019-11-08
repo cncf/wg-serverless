@@ -1352,7 +1352,7 @@ You can find more info and examples of element extensions [here](spec-extending.
 
 ## Element Metadata
 
-Element metadata enables you to enrich the core definition of each element of the serverless workflow
+Element metadata enables you to enrich elements of the serverless workflow
 with information above and beyond that which is defined its core definition. 
 This is done via the "metaData" property (included in each workflow element) and which has the main goal of allowing users to add additional 
 descriptions of the element it belongs to.
