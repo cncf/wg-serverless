@@ -1,8 +1,8 @@
 ## Serverless Workflow Specification - Examples
 
 ### Hello World Example
-The following example illustrates a simple "Hello World" Serverless Workflow with three operation states
-and an end state. The digram below show how information is passed through the workflow and filter mechanism 
+The following example illustrates a simple "Hello World" Serverless Workflow with three operation states. 
+The digram below show how information is passed through the workflow and filter mechanism 
 used to access and reason over the workflow state.
 
 
@@ -42,12 +42,7 @@ used to access and reason over the workflow state.
             {  
                "function":"save_resut"
             }
-         ],
-         "nextState":"STATE_END"
-      },
-      {  
-         "name":"STATE-END",
-         "type":"END"
+         ]
       }
    ]
 }
