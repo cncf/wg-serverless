@@ -1359,7 +1359,8 @@ descriptions of the element it belongs to.
 
 Metadata information should not affect workflow execution. Implementations have the choice to act upon metadata info
 or ignore it. 
-Metadata can be useful for things like documentation, content management, authentication, translation, logging, etc.
+Metadata can be useful for things like documentation, content management, authentication, 
+translation, logging, etc (basically things above and beyond core workflow execution).
 
 The metaData property is a map with keys  of type string and values of type object. 
 
