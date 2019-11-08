@@ -98,7 +98,7 @@
   "definitions": {
     "metadata": {
       "type": "object",
-      "description": "Define custom key/value pair data values (of string type)"
+      "description": "Element metadata map"
     },
     "triggerevent": {
       "type": "object",
@@ -119,6 +119,9 @@
         "correlationToken": {
           "type": "string",
           "description": "Path used for event correlation."
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "required": ["name", "source", "type"]
@@ -137,6 +140,9 @@
         "outputPath": {
           "type": "string",
           "description": "Specify output data of State or Action as JSONPath"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "required": ["inputPath"]
@@ -175,6 +181,9 @@
         },
         "filter": {
           "$ref": "#/definitions/filter"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "required": ["eventExpression", "actions", "timeout", "nextState"]
@@ -200,6 +209,9 @@
         },
         "filter": {
           "$ref": "#/definitions/filter"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "required": ["function"]
@@ -224,7 +236,13 @@
         },
         "nextState": {
           "type": "string",
-          "description": "State to transition to when exceeding max limit"
+
+          "description": "State to transition to when exceeding max limit",
+          "minLength": 1
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata",
+          "description": "Element Metadata"
         }
       },
       "required": ["match", "nextState"]
@@ -247,6 +265,9 @@
         "parameters": {
           "type": "object",
           "description": "Function parameters"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "required": ["name", "type"]
@@ -296,6 +317,9 @@
           "type": "boolean",
           "default": false,
           "description": "Flow must wait for this branch to finish before continuing"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "required": ["name", "startsAt", "states", "waitForCompletion"]
@@ -671,6 +695,10 @@
             "nextState": {
               "type": "string",
               "description": "Specifies the name of the next state to transition to if there is a value match"
+            },
+            "metaData": {
+              "$ref": "#/definitions/metadata",
+              "description": "Element Metadata"
             }
           }
         }
@@ -692,6 +720,9 @@
         "nextState": {
           "type": "string",
           "description": "State to transition to if there is a value match"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "required": ["and", "nextState"]
@@ -711,6 +742,9 @@
         "nextState": {
           "type": "string",
           "description": "State to transition to if there is a value match"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "required": ["or", "nextState"]
@@ -727,6 +761,9 @@
         "nextState": {
           "type": "string",
           "description": "State to transition to if there is a value match"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "required": ["not", "nextState"]
