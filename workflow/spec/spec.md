@@ -107,7 +107,8 @@ Here we define details of the Serverless Workflow definitions:
 | execStatus |Workflow execution status | string |no |
 | [triggerDefs](#Trigger-Definition) |Array of workflow triggers | array | no |
 | [states](#State-Definition) | Array of workflow states | array | yes |
-| extensions | Array of workflow custom extension | array | no |
+| [extensions](#Extending) | Array of workflow custom extension | array | no |
+| [metaData](#Extending) | Define custom key/value pair data values (of string type) | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -180,6 +181,9 @@ Here we define details of the Serverless Workflow definitions:
           "items": {
             "type": "object"
           }
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "required": ["id", "name", "version", "startsAt", "states"]
@@ -265,6 +269,7 @@ We will start defining each individual state:
 | end |Is this state an end state | boolean | no |
 | [events](#eventstate-eventdef) |Array of event | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
+| [metaData](#Extending) | Define custom key/value pair data values (of string type) | object | no |
  
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -303,6 +308,9 @@ We will start defining each individual state:
         },
         "filter": {
           "$ref": "#/definitions/filter"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "required": ["name", "type", "events"]
@@ -514,7 +522,8 @@ as well as define parameters (key/value pairs).
 | actionMode |Should actions be executed sequentially or in parallel | string | yes |
 | [actions](#Action-Definition) |Array of actions | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
-| [nextState](#Transitions) |State to transition to after all the actions have been successfully executed | string | yes (if end is set to false) |
+| [nextState](#Transitions) |State to transition to after all the actions have been successfully executed | string | yes |
+| [metaData](#Extending) | Define custom key/value pair data values (of string type) | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -561,6 +570,9 @@ as well as define parameters (key/value pairs).
         "nextState": {
             "type": "string",
             "description": "State to transition to after all the actions have been successfully executed"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "if": {
@@ -594,7 +606,8 @@ actions execute, a transition to "next state" happens.
 | end |Is this state an end start | boolean | no | 
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
-| default |Name of the next state if there is no match for any choices value | string | yes (if end is set to false) |
+| default |Name of the next state if there is no match for any choices value | string | yes |
+| [metaData](#Extending) | Define custom key/value pair data values (of string type) | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -641,6 +654,9 @@ actions execute, a transition to "next state" happens.
         "default": {
             "type": "string",
             "description": "Specifies the name of the next state if there is no match for any choices value"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "if": {
@@ -932,7 +948,8 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 | end |If this state and end state | boolean | no |
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
-| [nextState](#Transitions) |State to transition to after all branches have completed execution | string | yes (if end is set to false) |
+| [nextState](#Transitions) |State to transition to after all branches have completed execution | string | yes |
+| [metaData](#Extending) | Define custom key/value pair data values (of string type) | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -974,6 +991,9 @@ Delay state simple waits for a certain amount of time before transitioning to a 
         "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to after all branches have completed execution"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "if": {

@@ -83,6 +83,9 @@
       "items": {
         "type": "object"
       }
+    },
+    "metaData": {
+      "$ref": "#/definitions/metadata"
     }
   },
   "required": [
@@ -93,6 +96,10 @@
     "states"
   ],
   "definitions": {
+    "metadata": {
+      "type": "object",
+      "description": "Define custom key/value pair data values (of string type)"
+    },
     "triggerevent": {
       "type": "object",
       "properties": {
@@ -328,6 +335,9 @@
         "nextState": {
           "type": "string",
           "description": "State to transition to after all the delay."
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "if": {
@@ -377,6 +387,9 @@
             "type": "object",
             "$ref": "#/definitions/event"
           }
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "required": ["name", "type", "events"]
@@ -428,6 +441,9 @@
         "nextState": {
           "type": "string",
           "description": "State to transition to after all the actions have been successfully executed"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "if": {
@@ -481,6 +497,9 @@
         "nextState": {
           "type": "string",
           "description": "State to transition to after all branches have completed execution"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "if": {
@@ -551,6 +570,9 @@
         "default": {
           "type": "string",
           "description": "Specifies the name of the next state if there is no match for any choices value"
+        },
+        "metaData": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "if": {
