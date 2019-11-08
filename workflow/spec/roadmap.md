@@ -23,7 +23,7 @@ add your feedback to this document.
 * Add comparisons and align with other existing frameworks/notations
 
 ### Add JSON examples
-* Currently JSON Schema definition is provided for each of the workflow elements. Add JSON example for each aswell.
+* Currently JSON Schema definition is provided for each of the workflow elements. Add JSON example for each as well.
 
 ### Create content for community
 * Create blogs/videos showcasing serverless workflow features
