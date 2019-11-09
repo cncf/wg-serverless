@@ -84,7 +84,7 @@
         "type": "object"
       }
     },
-    "metaData": {
+    "metadata": {
       "$ref": "#/definitions/metadata"
     }
   },
@@ -120,7 +120,7 @@
           "type": "string",
           "description": "Path used for event correlation."
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },
@@ -141,7 +141,7 @@
           "type": "string",
           "description": "Specify output data of State or Action as JSONPath"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },
@@ -182,7 +182,7 @@
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },
@@ -210,7 +210,7 @@
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },
@@ -240,7 +240,7 @@
           "description": "State to transition to when exceeding max limit",
           "minLength": 1
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata",
           "description": "Element Metadata"
         }
@@ -266,7 +266,7 @@
           "type": "object",
           "description": "Function parameters"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },
@@ -318,7 +318,7 @@
           "default": false,
           "description": "Flow must wait for this branch to finish before continuing"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },
@@ -360,7 +360,7 @@
           "type": "string",
           "description": "State to transition to after all the delay."
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },
@@ -412,7 +412,7 @@
             "$ref": "#/definitions/event"
           }
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },
@@ -466,7 +466,7 @@
           "type": "string",
           "description": "State to transition to after all the actions have been successfully executed"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },
@@ -522,7 +522,7 @@
           "type": "string",
           "description": "State to transition to after all branches have completed execution"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },
@@ -595,7 +595,7 @@
           "type": "string",
           "description": "Specifies the name of the next state if there is no match for any choices value"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },
@@ -696,7 +696,7 @@
               "type": "string",
               "description": "Specifies the name of the next state to transition to if there is a value match"
             },
-            "metaData": {
+            "metadata": {
               "$ref": "#/definitions/metadata",
               "description": "Element Metadata"
             }
@@ -721,7 +721,7 @@
           "type": "string",
           "description": "State to transition to if there is a value match"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },
@@ -743,7 +743,7 @@
           "type": "string",
           "description": "State to transition to if there is a value match"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },
@@ -762,7 +762,7 @@
           "type": "string",
           "description": "State to transition to if there is a value match"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
       },

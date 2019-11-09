@@ -109,7 +109,7 @@ Here we define details of the Serverless Workflow definitions:
 | [triggerDefs](#Trigger-Definition) |Array of workflow triggers | array | no |
 | [states](#State-Definition) | Array of workflow states | array | yes |
 | [extensions](#Extending) | Array of workflow custom extension | array | no |
-| [metaData](#Element-Metadata) |  Element metadata map| object | no |
+| [metadata](#Element-Metadata) |  Element metadata map| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -183,7 +183,7 @@ Here we define details of the Serverless Workflow definitions:
             "type": "object"
           }
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -206,7 +206,7 @@ events for same workflow instance, must be specified in that event trigger.
 | source |CloudEvent source | string | yes |
 | type |CloudEvent type | string | yes |
 | correlationToken | path used for event correlation | string | no |
-| [metaData](#Element-Metadata) |  Element metadata map| object | no |
+| [metadata](#Element-Metadata) |  Element metadata map| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -231,7 +231,7 @@ events for same workflow instance, must be specified in that event trigger.
             "type": "string",
             "description": "Path used for event correlation."
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -274,7 +274,7 @@ We will start defining each individual state:
 | end |Is this state an end state | boolean | no |
 | [events](#eventstate-eventdef) |Array of event | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
-| [metaData](#Element-Metadata) |  Element metadata map| object | no |
+| [metadata](#Element-Metadata) |  Element metadata map| object | no |
  
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -314,7 +314,7 @@ We will start defining each individual state:
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -337,7 +337,7 @@ Event state can hold one or more events definitions, so let's define those:
 | [actions](#Action-Definition) |Array of actions | array | yes |
 | [filter](#Filter-Definition) |Event data filter | object | yes |
 | [nextState](#Transitions) |State to transition to after all the actions for the matching event have been successfully executed | string | yes |
-| [metaData](#Element-Metadata) |  Element metadata map| object | no |
+| [metadata](#Element-Metadata) |  Element metadata map| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -374,7 +374,7 @@ Event state can hold one or more events definitions, so let's define those:
             "type": "string",
             "description": "State to transition to after all the actions for the matching event have been successfully executed"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -426,7 +426,7 @@ Each event state's event definition includes one or more actions. Let's define t
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -471,7 +471,7 @@ It also defines a timeout wait period if one is needed, as well as a retry defin
       "type": "object",
       "description": "Function parameters"
     },
-    "metaData": {
+    "metadata": {
       "$ref": "#/definitions/metadata"
     }
   },
@@ -519,7 +519,7 @@ as well as define parameters (key/value pairs).
             "type": "string",
             "description": "State to transition to when exceeding max limit"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata",
           "description": "Element Metadata"
         }
@@ -589,7 +589,7 @@ as well as define parameters (key/value pairs).
             "type": "string",
             "description": "State to transition to after all the actions have been successfully executed"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -625,7 +625,7 @@ actions execute, a transition to "next state" happens.
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | default |Name of the next state if there is no match for any choices value | string | yes |
-| [metaData](#Element-Metadata) |  Element metadata map| object | no |
+| [metadata](#Element-Metadata) |  Element metadata map| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -673,7 +673,7 @@ actions execute, a transition to "next state" happens.
             "type": "string",
             "description": "Specifies the name of the next state if there is no match for any choices value"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -716,7 +716,7 @@ There are found types of choices defined:
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
 | [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
-| [metaData](#Element-Metadata) |  Element metadata map| object | no |
+| [metadata](#Element-Metadata) |  Element metadata map| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -742,7 +742,7 @@ There are found types of choices defined:
             "type": "string",
             "description": "Specifies the name of the next state to transition to if there is a value match"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -761,7 +761,7 @@ There are found types of choices defined:
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
 | [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
-| [metaData](#Element-Metadata) |  Element metadata map| object | no |
+| [metadata](#Element-Metadata) |  Element metadata map| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -793,7 +793,7 @@ There are found types of choices defined:
             "type": "string",
             "description": "Specifies the name of the next state to transition to if there is a value match"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -812,7 +812,7 @@ There are found types of choices defined:
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
 | [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
-| [metaData](#Element-Metadata) |  Element metadata map| object | no |
+| [metadata](#Element-Metadata) |  Element metadata map| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -843,7 +843,7 @@ There are found types of choices defined:
             "type": "string",
             "description": "Specifies the name of the next state to transition to if there is a value match"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -862,7 +862,7 @@ There are found types of choices defined:
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
 | [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
-| [metaData](#Element-Metadata) |  Element metadata map| object | no |
+| [metadata](#Element-Metadata) |  Element metadata map| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -894,7 +894,7 @@ There are found types of choices defined:
             "type": "string",
             "description": "Specifies the name of the next state to transition to if there is a value match"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -914,7 +914,7 @@ There are found types of choices defined:
 | timeDelay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [nextState](#Transitions) |State to transition to after the delay | string | yes |
-| [metaData](#Element-Metadata) |  Element metadata map| object | no |
+| [metadata](#Element-Metadata) |  Element metadata map| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary> 
 
@@ -953,7 +953,7 @@ There are found types of choices defined:
             "type": "string",
             "description": "Name of the next state to transition to after the delay"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -987,7 +987,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [nextState](#Transitions) |State to transition to after all branches have completed execution | string | yes |
-| [metaData](#Element-Metadata) |  Element metadata map| object | no |
+| [metadata](#Element-Metadata) |  Element metadata map| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1030,7 +1030,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
             "type": "string",
             "description": "Specifies the name of the next state to transition to after all branches have completed execution"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -1064,7 +1064,7 @@ Let's define a branch now:
 | startsAt |State name which is the start state | string | yes |
 | [states](#State-Definition) |List of states to be executed in this branch | array | yes |
 | waitForCompletion |If workflow execution must wait for this branch to finish before continuing | boolean | yes |
-| [metaData](#Element-Metadata) |  Element metadata map| object | no |
+| [metadata](#Element-Metadata) |  Element metadata map| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1100,7 +1100,7 @@ Let's define a branch now:
             "default": false,
             "description": "Workflow execution must wait for this branch to finish before continuing"
         },
-        "metaData": {
+        "metadata": {
           "$ref": "#/definitions/metadata"
         }
     },
@@ -1219,7 +1219,7 @@ If this property is sete to false, data access to parent's workflow should not b
 | inputPath |Input path (JSONPath) | string | yes |
 | resultPath |Result Path (JSONPath) | string | no |
 | outputPath |Output Path (JSONPath) | string | no |
-| [metaData](#Element-Metadata) |  Element metadata map| object | no |
+| [metadata](#Element-Metadata) |  Element metadata map| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1239,7 +1239,7 @@ If this property is sete to false, data access to parent's workflow should not b
       "type": "string",
       "description": "Specify output data of State or Action as JSONPath"
     },
-    "metaData": {
+    "metadata": {
       "$ref": "#/definitions/metadata"
     }
   },
@@ -1354,7 +1354,7 @@ You can find more info and examples of element extensions [here](spec-extending.
 
 Element metadata enables you to enrich elements of the serverless workflow
 with information above and beyond that which is defined its core definition. 
-This is done via the "metaData" property (included in each workflow element) and which has the main goal of allowing users to add additional 
+This is done via the "metadata" property (included in each workflow element) and which has the main goal of allowing users to add additional 
 descriptions of the element it belongs to.
 
 Metadata information should not affect workflow execution. Implementations have the choice to act upon metadata info
@@ -1362,17 +1362,17 @@ or ignore it.
 Metadata can be useful for things like documentation, content management, authentication, 
 translation, logging, etc (basically things above and beyond core workflow execution).
 
-The metaData property is a map with keys  of type string and values of type object. 
+The metadata property is a map with keys  of type string and values of type object. 
 
 Here is an example of metadata property defined in the main workflow definition. Note that 
-all metaData parameters are just examples, you can fully define your own.
+all metadata parameters are just examples, you can fully define your own.
 
 ```json
 {
   "id": "workflow-uuid",
   "name": "workflow-name",
   "version": "1.0",
-  "metaData": {
+  "metadata": {
     "loginfo": {
       "enabled": true,
       "level": "INFO"
