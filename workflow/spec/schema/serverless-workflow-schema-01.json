@@ -70,6 +70,10 @@
           {
             "title": "Switch State",
             "$ref": "#/definitions/switchstate"
+          },
+          {
+            "title": "SubFlow State",
+            "$ref": "#/definitions/subflowstate"
           }
         ]
       }
@@ -265,6 +269,10 @@
               {
                 "title": "Switch State",
                 "$ref": "#/definitions/switchstate"
+              },
+              {
+                "title": "SubFlow State",
+                "$ref": "#/definitions/subflowstate"
               }
             ]
           }
@@ -503,6 +511,48 @@
           "description": "Specifies the name of the next state if there is no match for any choices value"
         }
       }
+    },
+    "subflowstate": {
+      "type": "object",
+      "description": "Defines a sub-workflow to be executed",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique State id",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "State name"
+        },
+        "type": {
+          "type" : "string",
+          "enum": ["SUBFLOW"],
+          "description": "State type"
+        },
+        "end": {
+          "type": "boolean",
+          "default": false,
+          "description": "Is this state an end state"
+        },
+        "waitForCompletion": {
+          "type": "boolean",
+          "default": false,
+          "description": "Workflow execution must wait for sub-workflow to finish before continuing."
+        },
+        "workflowId": {
+          "type": "string",
+          "description": "Sub-workflow unique id."
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "nextState": {
+          "type": "string",
+          "description": "Specifies the name of the next state to transition to after sub-workflow has completed execution."
+        }
+      },
+      "required": ["name", "type", "nextState", "workflowId"]
     },
     "defaultchoice": {
       "type": "object",

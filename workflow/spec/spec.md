@@ -252,6 +252,8 @@ States define building blocks of the Serverless Workflow. The specification defi
 - **[Parallel State](#Parallel-State)**: Allows a number of states to execute in
     parallel.
     
+- **[SubFlow State](#SubFlow-State)**: Allows execution of a sub-workflow.   
+    
 We will start defining each individual state:
 
 ### <img src="media/state-icon-small.png" with="30px" height="26px"/>Event State
@@ -1005,6 +1007,88 @@ The elements of the output array need not be of the same type.
 
 The "waitForCompletion" property allows the parallel state to manage branch executions. If this flag is set to 
 true, the branches parallel parent state must wait for this branch to finish before continuing execution.
+
+### <img src="media/state-icon-small.png" with="30px" height="26px"/>SubFlow State
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| id | Unique state id | string | no |
+| name |State name | string | yes | 
+| type |State type | string | yes | 
+| end |If this state and end state | boolean | no |
+| waitForCompletion |If workflow execution must wait for sub-workflow to finish before continuing | boolean | yes |
+| workflowId |Sub-workflow unique id | boolean | no |
+| [filter](#Filter-Definition) |State data filter | object | yes |
+| next-state |Name of the next state to transition to after all branches have completed execution | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "Defines a sub-workflow to be executed",
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Unique State id",
+            "minLength": 1
+        },
+        "name": {
+            "type": "string",
+            "description": "State name"
+        },
+        "type": {
+            "type" : "string",
+            "enum": ["SUBFLOW"],
+            "description": "State type"
+        },
+        "end": {
+            "type": "boolean",
+            "default": false,
+            "description": "Is this state an end state"
+        },  
+        "waitForCompletion": {
+            "type": "boolean",
+            "default": false,
+            "description": "Workflow execution must wait for sub-workflow to finish before continuing."
+        },
+        "workflowId": {
+            "type": "string",
+            "description": "Sub-workflow unique id."
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "nextState": {
+            "type": "string",
+            "description": "Specifies the name of the next state to transition to after sub-workflow has completed execution."
+        }
+    },
+    "required": ["name", "type", "nextState", "workflowId"]
+}
+```
+
+</details>
+
+It is often the case that you want to group your workflows into small, **reusable** logical units that perform certain needed functionality.
+Even though you can use the Event state to call an externally deployed services (via function), at times
+there is a need to include/inject another serverless workflow (from classpath/local file system etc, depending on the implementation logic). 
+In that case you would use the SubFlow State.
+It also allows users to model their workflows with reusability and logical grouping in mind.
+
+This state allows you to include/inject a uniquely identified sub-workflow and start its execution. 
+Another use of this state is within [branches](#parallel-state-branch) of the [Parallel State](#Parallel-State). Instead of having to define all states
+in each branch, you could separate the branch states into individual sub-workflows and call the SubFlow state
+as a single state in each.
+
+Sub-workflows must have a defined start and end states. 
+The waitForCompletion property defines if the SubFlow state should wait until execution of the sub-workflow
+is completed or not. 
+
+Each sub-workflow receives a copy of the SubFlow state's input data.
+If waitForCompletion property is set to true, sub-workflows have the ability to edit the parent's workflow data.
+If this property is sete to false, data access to parent's workflow should not be allowed.
+
 
 ### Filter Definition
 
