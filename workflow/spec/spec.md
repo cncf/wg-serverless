@@ -1019,7 +1019,8 @@ true, the branches parallel parent state must wait for this branch to finish bef
 | waitForCompletion |If workflow execution must wait for sub-workflow to finish before continuing | boolean | yes |
 | workflowId |Sub-workflow unique id | boolean | no |
 | [filter](#Filter-Definition) |State data filter | object | yes |
-| next-state |Name of the next state to transition to after all branches have completed execution | string | yes |
+| [nextState](#Transitions) |State to transition to after subflow has completed | string | yes |
+
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1061,7 +1062,7 @@ true, the branches parallel parent state must wait for this branch to finish bef
         },
         "nextState": {
             "type": "string",
-            "description": "Specifies the name of the next state to transition to after sub-workflow has completed execution."
+            "description": "State to transition to after subflow has completed."
         }
     },
     "required": ["name", "type", "nextState", "workflowId"]
