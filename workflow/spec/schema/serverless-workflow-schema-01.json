@@ -98,7 +98,17 @@
   "definitions": {
     "metadata": {
       "type": "object",
-      "description": "Element metadata map"
+      "description": "Element metadata information",
+      "properties": {
+        "tags": {
+          "type": "object",
+          "description": "Metadata tags (key/value pairs of string type)"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Metadata notes (key/value pairs of string type)"
+        }
+      }
     },
     "triggerevent": {
       "type": "object",
