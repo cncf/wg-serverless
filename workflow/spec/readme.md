@@ -38,9 +38,6 @@ You can find the Serverless Workflow specification Governance information [here]
   
 ## Communication
 
-Mailing list for e-mail communications:
-
-- Send emails to: [cncf-wg-serverless](mailto:cncf-wg-serverless@lists.cncf.io)
-- To subscribe see: [https://lists.cncf.io/g/cncf-wg-serverless](https://lists.cncf.io/g/cncf-wg-serverless)
-
-Community Slack channel: #serverless-workflow - [https://slack.cncf.io/](https://slack.cncf.io/)
+- Email: [cncf-wg-serverless](mailto:cncf-wg-serverless@lists.cncf.io)
+- Subscription: [https://lists.cncf.io/g/cncf-wg-serverless](https://lists.cncf.io/g/cncf-wg-serverless)
+- Community Slack Channel: [https://slack.cncf.io/](https://slack.cncf.io/) #serverless-workflow
