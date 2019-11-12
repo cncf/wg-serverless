@@ -270,6 +270,7 @@ We will start defining each individual state:
 | end |Is this state an end state | boolean | no |
 | [events](#eventstate-eventdef) |Array of event | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
+| [loop](#Loop-Definition) |State loop information | object | yes |
  
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -308,7 +309,10 @@ We will start defining each individual state:
         },
         "filter": {
           "$ref": "#/definitions/filter"
-        }
+        },
+        "loop": {
+          "$ref": "#/definitions/loop"
+        } 
     },
     "required": ["name", "type", "events"]
 }
@@ -554,6 +558,7 @@ as well as define parameters (key/value pairs).
 | actionMode |Should actions be executed sequentially or in parallel | string | yes |
 | [actions](#Action-Definition) |Array of actions | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
+| [loop](#Loop-Definition) |State loop information | object | yes |
 | [nextState](#Transitions) |State to transition to after all the actions have been successfully executed | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -598,6 +603,9 @@ as well as define parameters (key/value pairs).
         "filter": {
           "$ref": "#/definitions/filter"
         },
+        "loop": {
+          "$ref": "#/definitions/loop"
+        }, 
         "nextState": {
             "type": "string",
             "description": "State to transition to after all the actions have been successfully executed"
@@ -634,6 +642,7 @@ actions execute, a transition to "next state" happens.
 | end |Is this state an end start | boolean | no | 
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
+| [loop](#Loop-Definition) |State loop information | object | yes |
 | default |Name of the next state if there is no match for any choices value | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -678,6 +687,9 @@ actions execute, a transition to "next state" happens.
         "filter": {
           "$ref": "#/definitions/filter"
         },
+        "loop": {
+          "$ref": "#/definitions/loop"
+        }, 
         "default": {
             "type": "string",
             "description": "Specifies the name of the next state if there is no match for any choices value"
@@ -903,6 +915,7 @@ There are found types of choices defined:
 | end |If this state an end state | boolean | no |
 | timeDelay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
+| [loop](#Loop-Definition) |State loop information | object | yes |
 | [nextState](#Transitions) |State to transition to after the delay | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary> 
@@ -938,6 +951,9 @@ There are found types of choices defined:
         "filter": {
           "$ref": "#/definitions/filter"
         },
+        "loop": {
+          "$ref": "#/definitions/loop"
+        }, 
         "nextState": {
             "type": "string",
             "description": "Name of the next state to transition to after the delay"
@@ -972,6 +988,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 | end |If this state and end state | boolean | no |
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
+| [loop](#Loop-Definition) |State loop behavior | object | yes |
 | [nextState](#Transitions) |State to transition to after all branches have completed execution | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -1011,6 +1028,9 @@ Delay state simple waits for a certain amount of time before transitioning to a 
         "filter": {
           "$ref": "#/definitions/filter"
         },
+        "loop": {
+          "$ref": "#/definitions/loop"
+        }, 
         "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to after all branches have completed execution"
@@ -1108,8 +1128,8 @@ true, the branches parallel parent state must wait for this branch to finish bef
 | waitForCompletion |If workflow execution must wait for sub-workflow to finish before continuing | boolean | yes |
 | workflowId |Sub-workflow unique id | boolean | no |
 | [filter](#Filter-Definition) |State data filter | object | yes |
+| [loop](#Loop-Definition) |State loop information | object | yes |
 | [nextState](#Transitions) |State to transition to after subflow has completed | string | yes (if end is set to false) |
-
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1148,6 +1168,9 @@ true, the branches parallel parent state must wait for this branch to finish bef
         },
         "filter": {
           "$ref": "#/definitions/filter"
+        },
+        "loop": {
+          "$ref": "#/definitions/loop"
         },
         "nextState": {
             "type": "string",
@@ -1225,6 +1248,86 @@ If this property is set to false, data access to parent's workflow should not be
 </details>
 
 Filters are used for data flow through the workflow. This is described in detail in the [Information Passing](#Information-Passing) section.
+
+### Loop Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| inputCollection |Selects a collection of the states inputPath | string | no |
+| outputCollection |Selects a collection of the states outputPath | string | no |
+| completionCondition |Boolean expression (evaluated after each iteration) that controls the loop. If this expression is true looping stops even if not all collection elements are processesd | string | no |
+| timeDelay |Amount of time (ISO 8601 format) to wait between each loop | integer | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "description": "Defines state Looping Information",
+  "properties": {
+    "inputCollection": {
+      "type": "string",
+      "description": "JSON Path, selects a collection of the states inputPath"
+    },
+    "outputCollection": {
+      "type": "string",
+      "description": "JSON Path, selects a collection of the states outputPath"
+    },
+    "completionCondition": {
+      "type": "string",
+      "description": "Boolean expression (evaluated after each iteration) that controls the loop. If this expression is true looping stops even if not all collection elements are processesd."
+    },
+    "timeDelay": {
+        "type": "string",
+        "description": "|Amount of time (ISO 8601 format) to wait between each loop "
+    }
+  },
+  "required": ["inputCollection"]
+}
+```
+
+</details>
+
+Loop definition allows states to be executed in a loop until a completion condition becomes true. 
+
+Looping happens over each element of the inputCollection parameter. This parameter must evaluate to a collection
+of the states input data.
+
+If the completionCondition expression is defined, this expression must be checked after each loop iteration.
+If it evaluates to true, looping must stop even if looping over all elements of the inputCollection have not finished. 
+In addtion, the time delay property defines a wait period betwen each loop iteration.
+
+If the state defines a result, the outputCollection parameter must resolve to a collection element of the states
+output data. After each iteration the state data result is added to the collection evaluated by this expression.
+
+Once looping has completed the state may transition to the next state defined, or end the workflow in case of an end state.
+
+Here is an example of an Operation state which sends a confirmation email for each completed sales order
+
+```json
+{  
+   "name": "Send order confirmation email",
+   "description": "Send email for each confirmed oreder",
+   "startsAt": "sendConfirmationEmail",
+   "states":[  
+      {  
+         "name":"sendConfirmationEmail",
+         "type":"OPERATION",
+         "actionMode":"Sequential",
+         "actions":[  
+            {  
+               "function":"sendConfirmationEmailFunction"
+            }
+         ],
+         "end": true,
+         "loop": {
+            "inputCollection": "$.orders[?(@.completed == true)]"
+         }
+      }
+   ]
+}
+```
+
 
 ### Transitions
 

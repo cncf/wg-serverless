@@ -329,6 +329,9 @@
           "type": "string",
           "description": "Amount of time (ISO 8601 format) to delay"
         },
+        "loop": {
+          "$ref": "#/definitions/loop"
+        },
         "nextState": {
           "type": "string",
           "description": "State to transition to after all the delay."
@@ -381,6 +384,9 @@
             "type": "object",
             "$ref": "#/definitions/event"
           }
+        },
+        "loop": {
+          "$ref": "#/definitions/loop"
         }
       },
       "required": ["name", "type", "events"]
@@ -428,6 +434,9 @@
             "type": "object",
             "$ref": "#/definitions/action"
           }
+        },
+        "loop": {
+          "$ref": "#/definitions/loop"
         },
         "nextState": {
           "type": "string",
@@ -482,6 +491,9 @@
             "$ref": "#/definitions/branch"
           }
         },
+        "loop": {
+          "$ref": "#/definitions/loop"
+        },
         "nextState": {
           "type": "string",
           "description": "State to transition to after all branches have completed execution"
@@ -526,6 +538,9 @@
         },
         "filter": {
           "$ref": "#/definitions/filter"
+        },
+        "loop": {
+          "$ref": "#/definitions/loop"
         },
         "choices": {
           "type": "array",
@@ -605,6 +620,9 @@
         },
         "filter": {
           "$ref": "#/definitions/filter"
+        },
+        "loop": {
+          "$ref": "#/definitions/loop"
         },
         "nextState": {
           "type": "string",
@@ -728,61 +746,28 @@
       },
       "required": ["body"]
     },
-    "loopBehavior" : {
+    "loop" : {
       "type": "object",
-      "description": "State Looping Behavior",
-      "oneOf": [
-        {
-          "title": "Standard",
-          "$ref": "#/definitions/standard"
-        },
-        {
-          "title": "Input Based",
-          "$ref": "#/definitions/inputBased"
-        }
-      ]
-    },
-    "standard": {
-      "type": "object",
-      "description": "Standard Looping Behavior",
+      "description": "Defines state Looping Information",
       "properties": {
-          "condition": {
-            "type": "string",
-            "description": "Boolean expression that controls the loop. Looping will continue as long as condition holds true"
-          },
-          "maxIterations": {
-            "type": "integer",
-            "minimum": 0,
-            "description": "Maximum loop iterations. If reached looping will stop."
-          },
-          "checkCondition": {
-            "type" : "string",
-            "enum": ["BEFORE", "AFTER"],
-            "default": "BEFORE",
-            "description": "Controls if condition is to be evaluated before or after loop iteration"
-          }
-      },
-      "required": ["condition", "maxIterations"]
-    },
-    "inputBased": {
-      "type": "object",
-      "description": "Input Based Looping Behavior",
-      "properties": {
-        "mode": {
+        "inputCollection": {
           "type": "string",
-          "description": "Controls if state instances are executed sequentially or in parallel",
-          "default": "SEQUENTIAL",
-          "enum": [
-            "SEQUENTIAL",
-            "PARALLEL"
-          ]
+          "description": "JSON Path that selects the data collection to iterate over"
         },
-        "inputExpression": {
+        "outputCollection": {
           "type": "string",
-          "description": "Boolean expression that controls the loop. Looping will continue as long as condition holds true"
+          "description": "JSON Path that selects the data collection to iterate over"
+        },
+        "completionCondition": {
+          "type": "string",
+          "description": "Boolean expression (evaluated after each iteration) that controls the loop. If this expression is true looping stops even if not all collection elements are processesd."
+        },
+        "timeDelay": {
+          "type": "string",
+          "description": "Amount of time (ISO 8601 format) to delay"
         }
       },
-      "required": ["condition", "maxCount"]
+      "required": ["inputCollection"]
     }
   }
 }
