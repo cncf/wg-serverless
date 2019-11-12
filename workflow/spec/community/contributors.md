@@ -11,7 +11,7 @@ some way, please add your information via pull request.
   * Farhad Sunavala
   
 * **Independent**
-    * Louis Fourie
+   * Louis Fourie
 	
 * **Fujitsu**
   * Naohiro Tamura
@@ -29,7 +29,7 @@ some way, please add your information via pull request.
 * **WSO2**
   * Chathura Ekanayake
   
-* **RedHat**
+* **Red Hat**
     * Ruben Romero Montes
     * Tihomir Surdilovic
 
