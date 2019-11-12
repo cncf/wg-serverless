@@ -1,0 +1,171 @@
+{
+  "specVersion": "0.1",
+  "name": "Gardening workflow",
+  "version": "1.0",
+  "description": "Definition of an example gardening system",
+  "license": {
+    "name": "Apache 2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  "eventSource": "/example-workflows/gardening",
+  "events": [
+    {
+      "name": "sensor-reading",
+      "type": "org.serverless.examples.iot.sensors.reading",
+      "attributes": [
+        {
+          "deviceId": {
+            "type": "string"
+          }
+        }
+      ],
+      "payload": {
+        "$ref": "#/definitions/sensor-read"
+      }
+    },
+    {
+      "name": "device-action",
+      "type": "org.serverless.examples.iot.device.action",
+      "attributes": [
+        {
+          "deviceId": {
+            "type": "string"
+          }
+        }
+      ],
+      "payload": {
+        "$ref": "#/definitions/device-action"
+      }
+    },
+    {
+      "name": "backend-notification",
+      "type": "org.serverless.examples.backend.notify",
+      "payload": {
+        "$ref": "#/definitions/backend-notification"
+      }
+    },
+    {
+      "name": "backend-action",
+      "type": "org.serverless.examples.backend.action",
+      "payload": {
+        "$ref": "#/definitions/backend-action"
+      }
+    }
+  ],
+  "servers": {
+    "default": {
+      "url": "default-broker",
+      "protocol": "http"
+    },
+    "iot": {
+      "url": "iot-broker",
+      "protocol": "mqtt"
+    }
+  },
+  "states": [
+    {
+      "name": "incoming-events",
+      "type": "EVENT",
+      "receive": [
+        {
+          "event": "sensor-reading",
+          "server": "iot",
+          "nextState": "notify-backend",
+          "filter": {
+            "output": [
+              {
+                "from": "#attributes.deviceId",
+                "to": "$.sensor"
+              }
+            ]
+          }
+        },
+        {
+          "event": "backend-action",
+          "server": "default",
+          "nextState": "notify-device"
+        }
+      ]
+    },
+    {
+      "name": "notify-backend",
+      "type": "FUNCTION",
+      "send": {
+        "event": "backend-reading",
+        "server": "default"
+      }
+    },
+    {
+      "name": "notify-device",
+      "type": "FUNCTION",
+      "filter": {
+        "input": [
+          {
+            "from": "$.device",
+            "to": "#attributes.deviceId"
+          }
+        ]
+      },
+      "send": {
+        "event": "device-action",
+        "server": "iot"
+      }
+    }
+  ],
+  "definitions": {
+    "sensor-reading": {
+      "type": "object",
+      "required": ["value", "time"],
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "time": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "device-action": {
+    "type": "object",
+    "required": ["action"],
+    "properties": {
+      "action": {
+        "type": "string"
+      },
+      "value": {
+        "type": "string"
+      }
+    }
+  },
+  "backend-reading": {
+    "type": "object",
+    "required": ["sensor", "device", "value", "time"],
+    "properties": {
+      "sensor": {
+        "type": "string"
+      },
+      "value": {
+        "type": "number"
+      },
+      "time": {
+        "type": "string"
+      }
+    }
+  },
+  "backend-action": {
+    "type": "object",
+    "required": ["device", "action", "value"],
+    "properties": {
+      "device": {
+        "type": "string"
+      },
+      "action": {
+        "type": "string"
+      },
+      "value": {
+        "type": "number"
+      }
+    }
+  }
+}

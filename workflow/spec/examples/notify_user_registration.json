@@ -1,0 +1,112 @@
+{
+  "specVersion": "0.1",
+  "name": "User registration",
+  "version": "1.0",
+  "description": "Definition of an example registration notification workflow",
+  "license": {
+    "name": "Apache 2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  "eventSource": "/example-workflows/notify-user-registration",
+  "events": [
+    {
+      "name": "user-registered",
+      "type": "org.serverless.examples.registration.new",
+      "payload": {
+        "$ref": "#/definitions/registration"
+      }
+    },
+    {
+      "name": "notify-user-registered",
+      "type": "org.serverless.examples.notifications.user-created",
+      "payload": {
+        "$ref": "#/definitions/user-created"
+      }
+    }
+  ],
+  "servers": {
+    "default": {
+      "url": "default-broker",
+      "protocol": "http"
+    }
+  },
+  "states": [
+    {
+      "name": "new-registration",
+      "type": "EVENT",
+      "receive": [
+        {
+          "event": "user-registered",
+          "server": "default",
+          "nextState": "notify"
+        }
+      ]
+    },
+    {
+      "name": "notify",
+      "type": "FUNCTION",
+      "filter": {
+        "input": [
+          {
+            "from": "$.email",
+            "to": "$.email"
+          },
+          {
+            "from": "$.username",
+            "to": "$.username"
+          }
+        ]
+      },
+      "send": {
+        "event": "notify-user-registered",
+        "server": "default"
+      }
+    }
+  ],
+  "definitions": {
+    "registation": {
+      "type": "object",
+      "required": ["user", "username", "email", "creationDate"],
+      "properties": {
+        "user": {
+          "type": "object",
+          "required": ["firstName", "lastName"],
+          "properties": {
+            "firstName": {
+              "type": "string",
+              "minLength": 5
+            },
+            "lastName": {
+              "type": "string"
+            }
+          }
+        },
+        "email": {
+          "type": "string",
+          "minLength": 6
+        },
+        "creationDate": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string",
+          "minLength": 3
+        }
+      }
+    }
+  },
+  "user-created": {
+    "type": "object",
+    "required": ["username", "email"],
+    "properties": {
+      "email": {
+        "type": "string",
+        "minLength": 6
+      },
+      "username": {
+        "type": "string",
+        "minLength": 3
+      }
+    }
+  }
+}

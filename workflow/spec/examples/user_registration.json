@@ -1,0 +1,176 @@
+{
+  "specVersion": "0.1",
+  "name": "User registration",
+  "version": "1.0",
+  "description": "Definition of an example registration workflow",
+  "license": {
+    "name": "Apache 2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  "eventSource": "/example-workflows/user-registration",
+  "events": [
+    {
+      "name": "registration-request",
+      "type": "org.serverless.examples.registration.request",
+      "payload": {
+        "$ref": "#/definitions/registration"
+      }
+    },
+    {
+      "name": "user-registered",
+      "type": "org.serverless.examples.registration.created",
+      "payload": {
+        "$ref": "#/definitions/registration"
+      }
+    },
+    {
+      "name": "registration-error",
+      "type": "org.serverless.examples.notifications.registration-success",
+      "payload": {
+        "$ref": "#/definitions/user-notification"
+      }
+    },
+    {
+      "name": "registration-error",
+      "type": "org.serverless.examples.notifications.registration-error",
+      "payload": {
+        "$ref": "#/definitions/user-notification"
+      }
+    }
+  ],
+  "servers": {
+    "default": {
+      "url": "default-broker",
+      "protocol": "http"
+    },
+    "notifications": {
+      "url": "notifications-broker",
+      "protocol": "http"
+    }
+  },
+  "states": [
+    {
+      "name": "registration-request",
+      "type": "EVENT",
+      "receive": [
+        {
+          "event": "registration-request",
+          "server": "default",
+          "nextState": "register"
+        }
+      ]
+    },
+    {
+      "name": "register",
+      "type": "FUNCTION",
+      "send": {
+        "event": "registration-request",
+        "server": "default"
+      },
+      "waitFor": {
+        "event": "user-registered",
+        "server": "default",
+        "correlationToken": "$.username",
+        "timeout": "T5M",
+        "retry": {
+          "interval": "T10M",
+          "retries": 3,
+          "delta": "T5M"
+        },
+        "otherwise": "notify-registration-error"
+      },
+      "nextState": "notify-registration-success"
+    },
+    {
+      "name": "notify-registration-success",
+      "type": "FUNCTION",
+      "filter": {
+        "input": [
+          {
+            "from": "$.email",
+            "to": "$.email"
+          },
+          {
+            "from": "$.username",
+            "to": "$.username"
+          }
+        ]
+      },
+      "send": {
+        "event": "registration-success",
+        "server": "notifications"
+      }
+    },
+    {
+      "name": "notify-registration-error",
+      "type": "FUNCTION",
+      "filter": {
+        "input": [
+          {
+            "from": "$.email",
+            "to": "$.email"
+          },
+          {
+            "from": "$.username",
+            "to": "$.username"
+          }
+        ]
+      },
+      "send": {
+        "event": "registration-error",
+        "server": "notifications"
+      }
+    }
+  ],
+  "definitions": {
+    "registation": {
+      "type": "object",
+      "required": ["user", "username", "email", "passwordHash", "creationDate"],
+      "properties": {
+        "user": {
+          "type": "object",
+          "required": ["firstName", "lastName"],
+          "properties": {
+            "firstName": {
+              "type": "string",
+              "minLength": 5
+            },
+            "lastName": {
+              "type": "string"
+            }
+          }
+        },
+        "passwordHash": {
+          "type": "string",
+          "description": "SHA256 of the password",
+          "minLength": 64
+        },
+        "email": {
+          "type": "string",
+          "minLength": 6
+        },
+        "creationDate": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string",
+          "minLength": 3
+        }
+      }
+    }
+  },
+  "user-notification": {
+    "type": "object",
+    "required": ["username", "email"],
+    "properties": {
+      "email": {
+        "type": "string",
+        "minLength": 6
+      },
+      "username": {
+        "type": "string",
+        "minLength": 3
+      }
+    }
+  }
+}

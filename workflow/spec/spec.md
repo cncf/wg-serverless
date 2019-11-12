@@ -5,14 +5,14 @@
 Serverless applications are becoming increasingly complex. Nowdays they have to coordinate, manage, and define
 the execution order (steps) for countless functions triggered by as many events.
 
-When we are dealing with large number of functions, managing their execution is not a simpler task. 
-For example we have to coordinate functions and event triggers, orchestrate function execution (sequential,  parallel, 
+When we are dealing with large number of functions, managing their execution is not a simpler task.
+For example we have to coordinate functions and event triggers, orchestrate function execution (sequential,  parallel,
 in branches depending on different event triggers), etc.
 
 Workflows have become key components of serverless applications as they excel at orchestration and coordination
-of their functional flow. 
+of their functional flow.
 
-The goal of the Serverless Workflow sub-group is to come up with a standard way for users to specify their serverless application workflow, as well as help facilitate 
+The goal of the Serverless Workflow sub-group is to come up with a standard way for users to specify their serverless application workflow, as well as help facilitate
 portability of serverless applications across different vendor platforms.
 
 Serverless Workflow is a vendor-neutral and portable specification which meets these goals.
@@ -23,29 +23,31 @@ This document is a working draft.
 
 ## Table of Contents
 
-- [Introduction](#Introduction)
-- [Use Cases](#Use-Cases)
+- [Overview](#Overview)
+  - [Functional scope](#Functional-scope)
+- [Notation and terminology](#Notation-and-terminology)
+- [Use cases](#Use-cases)
 - [Specification Details](#Specification-Details)
-    - [Workflow Model](#Workflow-Model)
-    - [Workflow Definition](#Workflow-Definition)
+  - [Workflow Model](#Workflow-Model)
+  - [Workflow Definition](#Workflow-Definition)
 - [Extending](#Extending)
 - [Examples](#Examples)
 - [Reference](#Reference)
 
-
-## Introduction
+## Overview
 
 Serverless Workflow can be used to:
 
-* **Orchestrate serverless application logic**: serverless applications are typicall event-driven and can be 
-very hard to manage. Serverless Workflow groups the application events and functions into a coherent unit and 
+- **Orchestrate serverless application logic**: Serverless applications are typicall event-driven and can be
+very hard to manage. Serverless Workflow groups the application events and functions into a coherent unit and
 simplifies orchestration of the app logic.
-* **Define and coordinate application control flow**: allow the users to define the execution/operation
+- **Define and coordinate application control flow**: allow the users to define the execution/operation
 control flow and how/which functions are to be invoked on arrival of events.
-* **Define and manage application data flow**: allows the users to define how data is passed and filtered from incoming events to states, 
-rom states to functions, from one function to another function, and from one state to another state.
+- **Define and manage application data flow**: allows the users to define how data is passed and filtered from incoming events to states,
+from states to functions, from one function to another function, and from one state to another state.
 
 ### Functional Scope
+
 Serverless Workflow allows users to:
 
 1. Define and orchestrate steps/states involved in a serverless application.
@@ -59,38 +61,99 @@ Serverless Workflow allows users to:
 Following example illustrates a Serverless Workflow that involves events
 and functions. It specifies the interaction between events, states and functions to be invoked.
 
-<p align="center">
-<img src="media/sample-serverless-workflow1.png" with="400px" height="260px" alt="Serverless Workflow Diagram"/>
-</p>
+![sample serverless workflow](media/sample-serverless-workflow1.png)
+
+## Notation and terminology
+
+### Notational conventions
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", "MAY NOT" and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
+
+### Terminology
+
+This specification defines the following terms:
+
+#### Workflow
+
+A Serverless Workflow is a definition of an event orchestration which MUST be repeatable.
+A workflow receives one or more events that will be used as the input for the defined states.
+States use the current message to call serverless functions and transform the message.
+The data will transition from one state to the next until no more states are defined.
+
+#### Message
+
+A message is the object that will flow throughout each transition. The message MAY or MAY NOT be transformed by a state or its filters. The message MUST be created from the payload of an incoming event or replaced from the payload of a response event, from a function call.
+
+#### Function
+
+A (serverless) function is a remote service that is invoked in the workflow using the current message. The serverless function MUST support CloudEvents and the content type of the event will be `application/json`.
+The serverless function MAY or MAY NOT reply synchronously. In case a synchronous reply is received and such response is a CloudEvent it MAY be used as output of the current state.
+The function call MAY wait for an asynchronous event to be considered finished. The function SHALL define how to correlate both, the sent and the received events.
+A reply, either synchronous or asynchronous is OPTIONAL, in case no reply is needed the message MUST NOT be modified.
+
+#### Event
+
+An event is an instance of a CloudEvent defined in the workflow. An event consists of the payload and the headers.
+Headers can be used for event filtering and data transformation at the
+event reception. The event payload MUST be `application/json` because events are defined using Json Schema
+and JSONPath is used for message  transformations.
+
+#### State
+
+States define the logic of the workflow. A state can react to events, call functions, make decisions and create branches. The state MUST use the message resulting from the previous transition and SHALL be replaced by the output of the processing of the current state. The resulting message MUST be passed to the next transition.
+
+#### Filter
+
+Filters SHALL be used to transform the message payload or headers before or after each state transition.
+
+#### Transition
+
+A transition is the change from one state to the following. The message MAY be updated by the current state and MUST be passed to the next state. The message MAY also be updated by any defined filter.
+
+Serverless workflow states can have one or more incoming and outgoing transitions (from/to other states).
+Each state has a `nextState` property which is a string value that determines which
+state to transition to. Implementors MAY choose to use the states `name` string property
+for determining the next state, however we realize that in most cases this is not an
+optimal solution that can lead to ambiguity. This is why each state MUST also include an `id`
+property. Implementors MAY choose their own id generation strategy to populate the `id` property
+for each of the states and use it as the unique state identifier that is to be used as the `nextState` value.
+
+So the options for next state transitions are:
+
+- Use the state `name` property
+- Use the state `id` property
+- Use a combination of `name` and `id` properties
 
 ## Use Cases
+
 You can find different Serverless Workflow usescases [here](spec-usecases.md)
 
 ## Specification Details
 
-In sections below we describe all each section of the Serverless Workflow in details. We first show properties in table format, 
+In sections below we describe each section of the Serverless Workflow in details. We first show properties in table format,
 and you can also click on the "Click to view JSON Schema" to see the detailed definision defines with [JSON Schema](https://json-schema.org/).
 
 You can find the entire schema document [here](schema/serverless-workflow-schema-01.json). Please note just like this document, this is also
 work in progress.
 
 ### Workflow Model
+
 Serverless Workflow can be viewed as a collection of states and the transitions and branching between these states.
-Each state could have associated events and/or functions. Serverless Workflow may be invoked from a CLI command or triggered dynamically upon arrival of events from event sources. 
-An event from an event source may also be associated with a specific state within a Serverless Workflow. 
-States within a Serverless Workflow can wait on the arrival of an event or events from one or more event sources before performing their associated action and progressing to the next state. 
+Each state could have associated events and/or functions. Serverless Workflow may be invoked from a CLI command or triggered dynamically upon arrival of events from event sources.
+An event from an event source may also be associated with a specific state within a Serverless Workflow.
+States within a Serverless Workflow can wait on the arrival of an event or events from one or more event sources before performing their associated action and progressing to the next state.
 See the [Transitions](#Transitions) section for more details on workflow state progressions.
 
 Additional workflow functionality includes:
 
-* Results from a cloud function can be used to initiate retry operations or determine which function to execute next or which state to transition to.
+- Results from a cloud function can be used to initiate retry operations or determine which function to execute next or which state to transition to.
 
-* Provide a way to filter and transform the JSON event payload as it progresses through the Serverless Workflow.
+- Provide a way to filter and transform the JSON event payload as it progresses through the Serverless Workflow.
 
-* Provide a way for the application developer to specify a unique field in the event that can be used to correlate events from the event sources to the same serverless workflow instance
+- Provide a way for the application developer to specify a unique field in the event that can be used to correlate events from the event sources to the same serverless workflow instance
 
-A Serverless Workflow can be naturally modeled as a state machine. 
-Specification of a workflow is called a workflow template. 
+A Serverless Workflow can be naturally modeled as a state machine.
+Specification of a workflow is called a workflow template.
 Instantiation of the workflow template is called a workflow instance.
 
 ### Workflow Definition
@@ -193,7 +256,7 @@ Here we define details of the Serverless Workflow definitions:
 ### Trigger Definition
 
 Triggers define incoming events which can be associated with invocation of one or more states.
-If there are multiple events involved in an application workflow, a 'correlationToken', which is used to correlate an event with other 
+If there are multiple events involved in an application workflow, a 'correlationToken', which is used to correlate an event with other
 events for same workflow instance, must be specified in that event trigger.
 
 | Parameter | Description | Type | Required |
@@ -236,6 +299,7 @@ events for same workflow instance, must be specified in that event trigger.
 ### State Definition
 
 States define building blocks of the Serverless Workflow. The specification defines six different types of states:
+
 - **[Event State](#Event-state)**: Used to wait for events from event sources and
     then to invoke one or more functions to run in sequence or in parallel.
 
@@ -251,9 +315,9 @@ States define building blocks of the Serverless Workflow. The specification defi
 
 - **[Parallel State](#Parallel-State)**: Allows a number of states to execute in
     parallel.
-    
-- **[SubFlow State](#SubFlow-State)**: Allows execution of a sub-workflow.   
-    
+
+- **[SubFlow State](#SubFlow-State)**: Allows execution of a sub-workflow.
+
 We will start defining each individual state:
 
 ### <img src="media/state-icon-small.png" with="30px" height="26px"/>Event State
@@ -266,7 +330,7 @@ We will start defining each individual state:
 | end |Is this state an end state | boolean | no |
 | [events](#eventstate-eventdef) |Array of event | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
- 
+
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
 
@@ -368,9 +432,9 @@ Event state can hold one or more events definitions, so let's define those:
 
 </details>
 
-The event expression attribute is used to associate this event state with one or more trigger events. 
+The event expression attribute is used to associate this event state with one or more trigger events.
 
-Note that each event definition has a "nextState" property, which is used to identify the state which 
+Note that each event definition has a "nextState" property, which is used to identify the state which
 should get triggered after this event completes.
 
 Each event state's event definition includes one or more actions. Let's define these actions now:
@@ -383,7 +447,6 @@ Each event state's event definition includes one or more actions. Let's define t
 | timeout |Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | integer | no |
 | [retry](#Retry-Definition) |Defines if funtion execution needs a retry | object | no |
 | [filter](#Filter-Definition) |Action data filter | object | yes |
-
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -417,7 +480,6 @@ Each event state's event definition includes one or more actions. Let's define t
 
 An action defines a collection of functions that are to be invoked when this action is triggered.
 It also defines a timeout wait period if one is needed, as well as a retry definition, so lets look at those now:
-
 
 #### Function Definition
 
@@ -563,10 +625,9 @@ as well as define parameters (key/value pairs).
 
 </details>
 
-Unlike Event states, Operation states do not wait for an incoming trigger event. When they 
-are invoked, their set of actions are executed in SEQUENTIAL, or PARALALLEL modes. Once these 
+Unlike Event states, Operation states do not wait for an incoming trigger event. When they
+are invoked, their set of actions are executed in SEQUENTIAL, or PARALALLEL modes. Once these
 actions execute, a transition to "next state" happens.
-
 
 ### <img src="media/state-icon-small.png" with="30px" height="26px"/>Switch State
 
@@ -575,7 +636,7 @@ actions execute, a transition to "next state" happens.
 | id | Unique state id | string | no |
 | name |Unique state name | string | yes |
 | type |State type | string | yes |
-| end |Is this state an end start | boolean | no | 
+| end |Is this state an end start | boolean | no |
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | default |Name of the next state if there is no match for any choices value | string | yes |
@@ -633,21 +694,20 @@ actions execute, a transition to "next state" happens.
 
 </details>
 
-Switch states can be viewed as gateways. They define matching choices which then define which state should be 
+Switch states can be viewed as gateways. They define matching choices which then define which state should be
 triggered next upon successful match.
 
 #### <a name="switch-state-choices"></a>Switch State: Choices
 
-Switch states can be viewed as gateways. They define matching choices which then define which state should be 
+Switch states can be viewed as gateways. They define matching choices which then define which state should be
 triggered next upon successful match.
 
 There are found types of choices defined:
 
-* [Single Choice](#switch-state-single-choice)
-* [And Choice](#switch-state-and-choice)
-* [Not Choice](#switch-state-not-choice)
-* [Or Choice](#switch-state-or-choice)
-
+- [Single Choice](#switch-state-single-choice)
+- [And Choice](#switch-state-and-choice)
+- [Not Choice](#switch-state-not-choice)
+- [Or Choice](#switch-state-or-choice)
 
 ##### <a name="switch-state-single-choice"></a>Switch State Choices: Single Choice
 
@@ -785,7 +845,7 @@ There are found types of choices defined:
 
 | Parameter | Description |  Type | Required |
 | --- | --- | --- | --- |
-| or |List of choices | array | yes | 
+| or |List of choices | array | yes |
 | [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -811,7 +871,7 @@ There are found types of choices defined:
                     "type" : "string",
                     "enum": ["EQ", "LT", "LTEQ", "GT", "GTEQ", "StrEQ", "StrLT", "StrLTEQ", "StrGT", "StrGTEQ"],
                     "description": "Specifies how data input is compared with the value"
-                }                              
+                }
             }
         },
         "nextState": {
@@ -822,6 +882,7 @@ There are found types of choices defined:
     "required": ["or", "nextState"]
 }
 ```
+
 </details>
 
 ### <img src="media/state-icon-small.png" with="30px" height="26px"/>Delay State
@@ -836,7 +897,7 @@ There are found types of choices defined:
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [nextState](#Transitions) |State to transition to after the delay | string | yes |
 
-<details><summary><strong>Click to view JSON Schema</strong></summary> 
+<details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
 {
@@ -882,14 +943,13 @@ There are found types of choices defined:
 
 Delay state simple waits for a certain amount of time before transitioning to a next state.
 
-
 ### <img src="media/state-icon-small.png" with="30px" height="26px"/>Parallel State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | id | Unique state id | string | no |
-| name |State name | string | yes | 
-| type |State type | string | yes | 
+| name |State name | string | yes |
+| type |State type | string | yes |
 | end |If this state and end state | boolean | no |
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
@@ -920,7 +980,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
             "type": "boolean",
             "default": false,
             "description": "Is this state an end state"
-        },  
+        },
         "branches": {
             "type": "array",
             "description": "Branch Definitions",
@@ -1000,12 +1060,12 @@ Let's define a branch now:
 </details>
 
 Each branch receives a copy of the Parallel state's input data.
-Transitions for states within a branch can only be to other states in that branch. 
+Transitions for states within a branch can only be to other states in that branch.
 In addition, states outside a Parallel state cannot transition to a state within a branch of a Parallel state.
-The Parallel state generates an output array in which each element is the output for a branch. 
+The Parallel state generates an output array in which each element is the output for a branch.
 The elements of the output array need not be of the same type.
 
-The "waitForCompletion" property allows the parallel state to manage branch executions. If this flag is set to 
+The "waitForCompletion" property allows the parallel state to manage branch executions. If this flag is set to
 true, the branches parallel parent state must wait for this branch to finish before continuing execution.
 
 ### <img src="media/state-icon-small.png" with="30px" height="26px"/>SubFlow State
@@ -1013,8 +1073,8 @@ true, the branches parallel parent state must wait for this branch to finish bef
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | id | Unique state id | string | no |
-| name |State name | string | yes | 
-| type |State type | string | yes | 
+| name |State name | string | yes |
+| type |State type | string | yes |
 | end |If this state and end state | boolean | no |
 | waitForCompletion |If workflow execution must wait for sub-workflow to finish before continuing | boolean | yes |
 | workflowId |Sub-workflow unique id | boolean | no |
@@ -1046,7 +1106,7 @@ true, the branches parallel parent state must wait for this branch to finish bef
             "type": "boolean",
             "default": false,
             "description": "Is this state an end state"
-        },  
+        },
         "waitForCompletion": {
             "type": "boolean",
             "default": false,
@@ -1072,18 +1132,18 @@ true, the branches parallel parent state must wait for this branch to finish bef
 
 It is often the case that you want to group your workflows into small, **reusable** logical units that perform certain needed functionality.
 Even though you can use the Event state to call an externally deployed services (via function), at times
-there is a need to include/inject another serverless workflow (from classpath/local file system etc, depending on the implementation logic). 
+there is a need to include/inject another serverless workflow (from classpath/local file system etc, depending on the implementation logic).
 In that case you would use the SubFlow State.
 It also allows users to model their workflows with reusability and logical grouping in mind.
 
-This state allows you to include/inject a uniquely identified sub-workflow and start its execution. 
+This state allows you to include/inject a uniquely identified sub-workflow and start its execution.
 Another use of this state is within [branches](#parallel-state-branch) of the [Parallel State](#Parallel-State). Instead of having to define all states
 in each branch, you could separate the branch states into individual sub-workflows and call the SubFlow state
 as a single state in each.
 
-Sub-workflows must have a defined start and end states. 
+Sub-workflows must have a defined start and end states.
 The waitForCompletion property defines if the SubFlow state should wait until execution of the sub-workflow
-is completed or not. 
+is completed or not.
 
 Each sub-workflow receives a copy of the SubFlow state's input data.
 If waitForCompletion property is set to true, sub-workflows have the ability to edit the parent's workflow data.
@@ -1097,7 +1157,6 @@ If this property is sete to false, data access to parent's workflow should not b
 | inputPath |Input path (JSONPath) | string | yes |
 | resultPath |Result Path (JSONPath) | string | no |
 | outputPath |Output Path (JSONPath) | string | no |
-
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1126,20 +1185,6 @@ If this property is sete to false, data access to parent's workflow should not b
 
 Filters are used for data flow through the workflow. This is described in detail in the [Information Passing](#Information-Passing) section.
 
-### Transitions
-Serverless workflow states can have one or more incoming and outgoing transitions (from/to other states).
-Each state has a "nextState" property which is a string value that determines which 
-state to transition to. Implementors can choose to use the states "name" string property
-for determining the next state, however we realize that in most cases this is not an
-optimal solution that can lead to ambiguity. This is why each state also include an "id"
-property. Implementors can choose their own id generation strategy to populate the id property
-for each of the states and use it as the unique state identifier that is to be used as the "nextState" value. 
-
-So the options for next state transitions are:
-* Use the state name property
-* Use the state id property
-* Use a combination of name and id properties
-
 ### Information Passing
 
 The diagram below shows data flow through a Serverless Workflow that includes an
@@ -1161,9 +1206,7 @@ received in a response from a serverless function may be transformed and
 combined with data received from a previous state before it is delivered in a
 response sent to the event source.
 
-<p align="center">
-<img src="media/information-passing1.png" with="400px" height="260px" alt="Async Event Diagram"/>
-</p>
+![Async Event Diagram](./media/information-passing1.png)
 
 There may be cases where an event source such as an API gateway expects to
 receive a response from the workflow. In this case CloudEvent metadata received
@@ -1171,9 +1214,7 @@ in a response from a serverless function may be transformed and combined with
 data received from a previous state before it is delivered in a response sent to
 the event source as shown below.
 
-<p align="center">
-<img src="media/information-passing2.png" with="400px" height="260px" alt="Sync Event Diagram"/>
-</p>
+![Sync Event Diagram](./media/information-passing2.png)
 
 ### Filter Mechanism
 
@@ -1187,7 +1228,7 @@ There are three kinds of filters
 - State Filter
   - Invoked when data is passed from the previous state to the current state
   - Invoked when data is passed from the current state to the next state
-- Action Filter 
+- Action Filter
   - Invoked when data is passed from the current state to the first action
   - Invoked when data is passed from an action to action
   - Invoked when data is passed from the last action to the current state
@@ -1204,19 +1245,13 @@ Each Filter has three kinds of path filters
   - Specify output data of State or Action as JSONPath
   - Default value is '\$'
 
-<p align="center">
-<img src="media/filter-sequential.png" with="480px" height="270px" alt="Sequential FilterDiagram"/>
-</p>
-
-<p align="center">
-<img src="media/filter-parallel.png" with="480px" height="270px" alt="Parallel FilterDiagram"/>
-</p>
-
+![filter sequential](./media/filter-sequential.png)
+![filter parallel](./media/filter-parallel.png)
 
 ## Extending
 
 Serverless Workflows are build with extensibility in mind. The extension mechanism allows
-users and implementors to extend the standard workflow elements with additional ones. This can be used 
+users and implementors to extend the standard workflow elements with additional ones. This can be used
 for example to satisfy some unique requirements and remain being compliant with the the workflow specfication.
 
 The extension mechanism can be used to define custom workflow elements. It is targeted to
@@ -1232,4 +1267,3 @@ You can find different Serverless Workflow examples [here](spec-examples.md)
 ## Reference
 
 You can find a list of other languages, technologies and specifications related to workflows [here](references.md)
-
