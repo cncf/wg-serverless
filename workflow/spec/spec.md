@@ -1253,27 +1253,12 @@ Filters are used for data flow through the workflow. This is described in detail
 
 ### Metadata Definition
 
-| Parameter | Description | Type | Required |
-| --- | --- | --- | --- |
-| tags | Metadata tags (key/value pairs of string type) | string | yes |
-| notes | Metadata notes (key/value pairs of string type) | string | no |
-
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
 {
   "type": "object",
-  "description": "Element metadata information",
-  "properties": {
-    "tags": {
-      "type": "object",
-      "description": "Metadata tags (key/value pairs of string type)"
-    },
-    "notes": {
-      "type": "string",
-      "description": "Metadata notes (key/value pairs of string type)"
-    }
-  }
+  "description": "Element metadata information"
 }
 ```
 
@@ -1388,19 +1373,14 @@ with information beyond what is defined in their core definition.
 This is done via the "metadata" property (included in each workflow element) and which has the main goal of allowing users to add additional 
 descriptions of the element it belongs to.
 
-Metadata can be grouped into two categories:
-
-- **tags**:  key/value pairs (type string) which describe
-element attributes relevant to users. Tags do not affect workflow execution. Example tags could include "protocol", "authentication", "release", "system", etc.
-Each tags key must be unique. Tags can be used for indexing, searching, and organizing workflow elements.
-- **notes**: key/value pairs (type string) which can include arbitrary information (not related to the element they are attached to). Example notes could include "gitinfo", "team", "docsurl", "buildinfo", etc.
-Each notes key must be unique. Notes can be used by clients (tools, libraries) for display or content management purposes.
+Element metadata can contain key/value parts (both of type string) which can describe information related to the element 
+they belong to (e.g indexing, searching, organizing information), as well as arbitrary information not necessarily
+related to the element but relevant to clients like tooling, libraries etc. 
  
-Metadata information should not affect workflow execution. Implementations have the choice to act upon metadata info
+Metadata information should not affect workflow execution. Implementations have the choice to act upon element metadata
 or ignore it. 
 
-Here is an example of workflow metadata which includes both tags and notes. For this example metadata is attached to the
-workflow definition.
+Here is an example of metadata attached to the workflow definition: 
 
 ```json
 {
@@ -1408,16 +1388,13 @@ workflow definition.
   "name": "workflow name",
   "version": "1.0",
   "metadata": {
-    "tags": {
-      "loglevel": "info",
-      "environment": "production",
-      "category": "sales orders"
-    },
-    "notes": {
-      "giturl": "github.com/myproject",
-      "author": "author name",
-      "team": "team name"
-      }
+    "loglevel": "info",
+    "environment": "production",
+    "category": "sales orders",
+    "giturl": "github.com/myproject",
+    "author": "author name",
+    "team": "team name",
+    ...
   },
   "states": [
     ...
