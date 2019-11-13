@@ -7,7 +7,7 @@
 * After a review, owners can approve the changes by commenting on the PR with "LGTM" ("Looks good to me"), 
 request changes to the PR with "CR" ("Changes requested"), or reject the PR with "NA" ("Not acceptable").
 * Owners must provide an explanation for both "CR" and "NA" comments to the contributor.
-* 2 "LGTM" and no "NA" comments are needed in order for a change to be accepted.
+* 2 "LGTM" votes (from owners other than the contributor) and no "NA" votes are needed in order for a change to be accepted.
 * If there is an existing "LGTM" vote by a owner and another owner comments with "NA", then
 the owners must work together to reach a consensus on the requested changes (preferably publicly including the contributor).
 
