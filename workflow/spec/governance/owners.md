@@ -6,3 +6,4 @@ These people are currently responsible for overseeing, reviewing, and approving 
 * [Cathy Hong Zhang](https://github.com/cathyhongzhang)
 * [Ruben Romero Montes](https://github.com/ruromero)
 * [Tihomir Surdilovic](https://github.com/tsurdilo)
+* [Mauricio Salatino](https://github.com/salaboy)
