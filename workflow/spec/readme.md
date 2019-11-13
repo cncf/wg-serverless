@@ -27,20 +27,17 @@ The following documents are available:
 
 ## Community
 
-Learn more about the people and organizations who are creating Serverless Workflows.
+We have an growing community working together to build a dynamic serverless workflow
+ecosystem. Community contributions are welcome and much needed to move this specification forward. 
 
-- [Contributors](contributors.md): people and organizations who helped
-  us get started or are actively working on the Serverless Workflow specification.
-- Coming soon: [demos & open source]() -- if you have
-  something to share about your use of Serverless Workflow, please submit a PR!
+To learn about current community efforts and how to contribute 
+reference the [Serverless Workflow Community doc](community/readme.md).
+
+As a CNCF member project, we abide by the [CNCF Code of Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md).
+You can find the Serverless Workflow specification Governance information [here](governance/readme.md).
   
 ## Communication
 
-The mailing list for e-mail communications:
-
-- Send emails to: [cncf-wg-serverless](mailto:cncf-wg-serverless@lists.cncf.io)
-- To subscribe see: https://lists.cncf.io/g/cncf-wg-serverless
-
-And a #serverless-workflow Slack channel:
-[https://slack.cncf.io/](https://slack.cncf.io/)
-
+- Email: [cncf-wg-serverless](mailto:cncf-wg-serverless@lists.cncf.io)
+- Subscription: [https://lists.cncf.io/g/cncf-wg-serverless](https://lists.cncf.io/g/cncf-wg-serverless)
+- Community Slack Channel: [https://slack.cncf.io/](https://slack.cncf.io/) #serverless-workflow
