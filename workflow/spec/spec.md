@@ -1384,11 +1384,11 @@ You can find more info and examples of element extensions [here](spec-extending.
 ## Element Metadata
 
 Element metadata enables you to enrich elements of the serverless workflow
-with information above and beyond that which is defined its core definition. 
+with information beyond what is defined in their core definition. 
 This is done via the "metadata" property (included in each workflow element) and which has the main goal of allowing users to add additional 
 descriptions of the element it belongs to.
 
-Metadata can be grouped into two categories 
+Metadata can be grouped into two categories:
 
 - **tags**:  key/value pairs (type string) which describe
 element attributes relevant to users. Tags do not affect workflow execution. Example tags could include "protocol", "authentication", "release", "system", etc.
