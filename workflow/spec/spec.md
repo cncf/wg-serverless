@@ -362,7 +362,7 @@ Event state can hold one or more events definitions, so let's define those:
             "description": "State to transition to after all the actions for the matching event have been successfully executed"
         }
     },
-    "required": ["event-expression", "actions", "filter", "nextState"]
+    "required": ["eventExpression", "actions", "filter", "nextState"]
 }
 ```
 

@@ -170,7 +170,7 @@
           "$ref": "#/definitions/filter"
         }
       },
-      "required": ["eventExpression", "timeout", "nextState"]
+      "required": ["eventExpression", "actions", "timeout", "nextState"]
     },
     "action": {
       "type": "object",
@@ -191,7 +191,8 @@
         "filter": {
           "$ref": "#/definitions/filter"
         }
-      }
+      },
+      "required": ["function", "filter"]
     },
     "retry": {
       "type": "object",
@@ -216,7 +217,8 @@
           "description": "State to transition to when exceeding max-retry limit",
           "minLength": 1
         }
-      }
+      },
+      "required": ["match", "nextState"]
     },
     "function": {
       "type": "object",
@@ -233,7 +235,8 @@
           "type": "object",
           "description": "Function parameters"
         }
-      }
+      },
+      "required": ["name", "type"]
     },
     "branch": {
       "type": "object",
@@ -320,7 +323,8 @@
           "type": "string",
           "description": "State to transition to after all the delay."
         }
-      }
+      },
+      "required": ["name", "type", "timeDelay", "nextState"]
     },
     "eventstate": {
       "type": "object",
@@ -358,7 +362,8 @@
             "$ref": "#/definitions/event"
           }
         }
-      }
+      },
+      "required": ["name", "type", "events", "filter"]
     },
     "operationstate": {
       "type": "object",
@@ -408,7 +413,8 @@
           "type": "string",
           "description": "State to transition to after all the actions have been successfully executed"
         }
-      }
+      },
+      "required": ["name", "type", "actionMode", "actions", "filter", "nextState"]
     },
     "parallelstate": {
       "type": "object",
@@ -450,7 +456,8 @@
           "type": "string",
           "description": "State to transition to after all branches have completed execution"
         }
-      }
+      },
+      "required": ["name", "type", "branches", "filter", "nextState"]
     },
     "switchstate": {
       "type": "object",
@@ -509,7 +516,8 @@
           "type": "string",
           "description": "Specifies the name of the next state if there is no match for any choices value"
         }
-      }
+      },
+      "required": ["name", "type", "choices", "filter", "default"]
     },
     "subflowstate": {
       "type": "object",
@@ -601,7 +609,8 @@
           "type": "string",
           "description": "State to transition to if there is a value match"
         }
-      }
+      },
+      "required": ["single", "nextState"]
     },
     "andchoice": {
       "type": "object",
@@ -619,7 +628,8 @@
           "type": "string",
           "description": "State to transition to if there is a value match"
         }
-      }
+      },
+      "required": ["and", "nextState"]
     },
     "orchoice": {
       "type": "object",
@@ -637,7 +647,8 @@
           "type": "string",
           "description": "State to transition to if there is a value match"
         }
-      }
+      },
+      "required": ["or", "nextState"]
     },
     "notchoice": {
       "type": "object",
@@ -652,7 +663,8 @@
           "type": "string",
           "description": "State to transition to if there is a value match"
         }
-      }
+      },
+      "required": ["not", "nextState"]
     }
   }
 }
