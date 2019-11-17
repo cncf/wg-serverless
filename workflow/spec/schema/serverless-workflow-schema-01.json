@@ -192,7 +192,7 @@
           "$ref": "#/definitions/filter"
         }
       },
-      "required": ["function", "filter"]
+      "required": ["function"]
     },
     "retry": {
       "type": "object",
@@ -324,7 +324,17 @@
           "description": "State to transition to after all the delay."
         }
       },
-      "required": ["name", "type", "timeDelay", "nextState"]
+      "if": {
+        "properties": {
+          "end": { "const": true }
+        }
+      },
+      "then": {
+        "required": ["name", "type", "timeDelay", "end"]
+      },
+      "else": {
+        "required": ["name", "type", "timeDelay", "nextState"]
+      }
     },
     "eventstate": {
       "type": "object",
@@ -363,7 +373,7 @@
           }
         }
       },
-      "required": ["name", "type", "events", "filter"]
+      "required": ["name", "type", "events"]
     },
     "operationstate": {
       "type": "object",
@@ -414,7 +424,17 @@
           "description": "State to transition to after all the actions have been successfully executed"
         }
       },
-      "required": ["name", "type", "actionMode", "actions", "filter", "nextState"]
+      "if": {
+        "properties": {
+          "end": { "const": true }
+        }
+      },
+      "then": {
+        "required": ["name", "type", "actionMode", "actions"]
+      },
+      "else": {
+        "required": ["name", "type", "actionMode", "actions", "nextState"]
+      }
     },
     "parallelstate": {
       "type": "object",
@@ -457,7 +477,17 @@
           "description": "State to transition to after all branches have completed execution"
         }
       },
-      "required": ["name", "type", "branches", "filter", "nextState"]
+      "if": {
+        "properties": {
+          "end": { "const": true }
+        }
+      },
+      "then": {
+        "required": ["name", "type", "branches"]
+      },
+      "else": {
+        "required": ["name", "type", "branches", "nextState"]
+      }
     },
     "switchstate": {
       "type": "object",
@@ -517,7 +547,17 @@
           "description": "Specifies the name of the next state if there is no match for any choices value"
         }
       },
-      "required": ["name", "type", "choices", "filter", "default"]
+      "if": {
+        "properties": {
+          "end": { "const": true }
+        }
+      },
+      "then": {
+        "required": ["name", "type", "choices"]
+      },
+      "else": {
+        "required": ["name", "type", "choices", "default"]
+      }
     },
     "subflowstate": {
       "type": "object",
@@ -561,7 +601,17 @@
           "description": "Specifies the name of the next state to transition to after sub-workflow has completed execution."
         }
       },
-      "required": ["name", "type", "nextState", "workflowId"]
+      "if": {
+        "properties": {
+          "end": { "const": true }
+        }
+      },
+      "then": {
+        "required": ["name", "type", "workflowId"]
+      },
+      "else": {
+        "required": ["name", "type", "workflowId", "nextState"]
+      }
     },
     "defaultchoice": {
       "type": "object",

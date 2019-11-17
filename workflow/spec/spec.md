@@ -306,7 +306,7 @@ We will start defining each individual state:
           "$ref": "#/definitions/filter"
         }
     },
-    "required": ["name", "type", "events", "filter"]
+    "required": ["name", "type", "events"]
 }
 ```
 
@@ -362,7 +362,7 @@ Event state can hold one or more events definitions, so let's define those:
             "description": "State to transition to after all the actions for the matching event have been successfully executed"
         }
     },
-    "required": ["eventExpression", "actions", "filter", "nextState"]
+    "required": ["eventExpression", "actions", "nextState"]
 }
 ```
 
@@ -409,7 +409,7 @@ Each event state's event definition includes one or more actions. Let's define t
           "$ref": "#/definitions/filter"
         }
     },
-    "required": ["function", "filter"]
+    "required": ["function"]
 }
 ```
 
@@ -508,7 +508,7 @@ as well as define parameters (key/value pairs).
 | actionMode |Should actions be executed sequentially or in parallel | string | yes |
 | [actions](#Action-Definition) |Array of actions | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
-| [nextState](#Transitions) |State to transition to after all the actions have been successfully executed | string | yes |
+| [nextState](#Transitions) |State to transition to after all the actions have been successfully executed | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -557,7 +557,17 @@ as well as define parameters (key/value pairs).
             "description": "State to transition to after all the actions have been successfully executed"
         }
     },
-    "required": ["name", "type", "actionMode", "actions", "filter", "nextState"]
+    "if": {
+      "properties": {
+        "end": { "const": true }
+      }
+    },
+    "then": {
+      "required": ["name", "type", "actionMode", "actions"]
+    },
+    "else": {
+      "required": ["name", "type", "actionMode", "actions", "nextState"]
+    }
 }
 ```
 
@@ -578,7 +588,7 @@ actions execute, a transition to "next state" happens.
 | end |Is this state an end start | boolean | no | 
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
-| default |Name of the next state if there is no match for any choices value | string | yes |
+| default |Name of the next state if there is no match for any choices value | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -627,7 +637,17 @@ actions execute, a transition to "next state" happens.
             "description": "Specifies the name of the next state if there is no match for any choices value"
         }
     },
-    "required": ["name", "type", "choices", "filter", "default"]
+    "if": {
+      "properties": {
+        "end": { "const": true }
+      }
+    },
+    "then": {
+      "required": ["name", "type", "choices"]
+    },
+    "else": {
+      "required": ["name", "type", "choices", "default"]
+    }
 }
 ```
 
@@ -834,7 +854,7 @@ There are found types of choices defined:
 | end |If this state an end state | boolean | no |
 | timeDelay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
-| [nextState](#Transitions) |State to transition to after the delay | string | yes |
+| [nextState](#Transitions) |State to transition to after the delay | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary> 
 
@@ -874,7 +894,17 @@ There are found types of choices defined:
             "description": "Name of the next state to transition to after the delay"
         }
     },
-    "required": ["name", "type", "timeDelay", "nextState"]
+    "if": {
+        "properties": {
+          "end": { "const": true }
+        }
+    },
+    "then": {
+      "required": ["name", "type", "timeDelay", "end"]
+    },
+    "else": {
+      "required": ["name", "type", "timeDelay", "nextState"]
+    }
 }
 ```
 
@@ -893,7 +923,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 | end |If this state and end state | boolean | no |
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
-| [nextState](#Transitions) |State to transition to after all branches have completed execution | string | yes |
+| [nextState](#Transitions) |State to transition to after all branches have completed execution | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -937,7 +967,17 @@ Delay state simple waits for a certain amount of time before transitioning to a 
             "description": "Specifies the name of the next state to transition to after all branches have completed execution"
         }
     },
-    "required": ["name", "type", "branches", "filter", "nextState"]
+    "if": {
+      "properties": {
+       "end": { "const": true }
+      }
+    },
+    "then": {
+      "required": ["name", "type", "branches"]
+    },
+    "else": {
+      "required": ["name", "type", "branches", "nextState"]
+    }
 }
 ```
 
@@ -1019,7 +1059,7 @@ true, the branches parallel parent state must wait for this branch to finish bef
 | waitForCompletion |If workflow execution must wait for sub-workflow to finish before continuing | boolean | yes |
 | workflowId |Sub-workflow unique id | boolean | no |
 | [filter](#Filter-Definition) |State data filter | object | yes |
-| [nextState](#Transitions) |State to transition to after subflow has completed | string | yes |
+| [nextState](#Transitions) |State to transition to after subflow has completed | string | yes (if end is set to false) |
 
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -1065,7 +1105,17 @@ true, the branches parallel parent state must wait for this branch to finish bef
             "description": "State to transition to after subflow has completed."
         }
     },
-    "required": ["name", "type", "nextState", "workflowId"]
+    "if": {
+      "properties": {
+        "end": { "const": true }
+      }
+    },
+    "then": {
+      "required": ["name", "type", "workflowId"]
+    },
+    "else": {
+      "required": ["name", "type", "workflowId", "nextState"]
+    }
 }
 ```
 
