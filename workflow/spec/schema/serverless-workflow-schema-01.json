@@ -81,6 +81,14 @@
         ]
       }
     },
+    "onError": {
+      "type": "array",
+      "description": "Workflow runtime error handling definitions",
+      "items": {
+        "type": "object",
+        "$ref": "#/definitions/error"
+      }
+    },
     "extensions": {
       "type": "array",
       "description": "Workflow Extensions",
@@ -88,15 +96,33 @@
         "type": "object"
       }
     }
-  },
+ },
   "required": [
     "id",
     "name",
     "version",
     "startsAt",
-    "states"
-  ],
+    "states],
   "definitions": {
+    "error": {
+      "type": "object",
+      "properties": {
+        "errorExpression": {
+          "type": "string",
+          "description": "Boolean expression to match one or more errors"
+        },
+        "resultPath": {
+          "type": "string",
+          "description": "Specify result JSON Node of States output as JSONPath. Used to inject error information into state output."
+        },
+        "nextState": {
+          "type": "string",
+          "description": "State to transition to if errors expressed in errorExpression are matched",
+          "minLength": 1
+        }
+      },
+      "required": ["errorExpression", "nextState"]
+    },
     "triggerevent": {
       "type": "object",
       "properties": {
@@ -225,7 +251,7 @@
         }
       },
       "required": ["match", "nextState"]
-    },
+    ,
     "function": {
       "type": "object",
       "properties": {
@@ -247,7 +273,7 @@
         }
       },
       "required": ["name", "type"]
-    },
+
     "branch": {
       "type": "object",
       "description": "Branch Definition",
@@ -296,7 +322,7 @@
         }
       },
       "required": ["name", "startsAt", "states", "waitForCompletion"]
-    },
+
     "delaystate": {
       "type": "object",
       "description": "Causes the workflow execution to delay for a specified duration",
@@ -332,6 +358,14 @@
         "loop": {
           "$ref": "#/definitions/loop"
         },
+        "onError": {
+          "type": "array",
+          "description": "OnError Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
+        },
         "nextState": {
           "type": "string",
           "description": "State to transition to after all the delay."
@@ -348,7 +382,7 @@
       "else": {
         "required": ["name", "type", "timeDelay", "nextState"]
       }
-    },
+
     "eventstate": {
       "type": "object",
       "description": "This state is used to wait for events from event sources and then to invoke one or more functions to run in sequence or in parallel.",
@@ -387,10 +421,18 @@
         },
         "loop": {
           "$ref": "#/definitions/loop"
+        },
+        "onError": {
+          "type": "array",
+          "description": "States runtime error handling definitions",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
         }
       },
       "required": ["name", "type", "events"]
-    },
+
     "operationstate": {
       "type": "object",
       "description": "This state allows one or more functions to run in sequence or in parallel without waiting for any event.",
@@ -437,6 +479,14 @@
         },
         "loop": {
           "$ref": "#/definitions/loop"
+        }
+        "onError": {
+          "type": "array",
+          "description": "OnError Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
         },
         "nextState": {
           "type": "string",
@@ -454,7 +504,7 @@
       "else": {
         "required": ["name", "type", "actionMode", "actions", "nextState"]
       }
-    },
+    }
     "parallelstate": {
       "type": "object",
       "description": "Consists of a number of states that are executed in parallel",
@@ -493,6 +543,14 @@
         },
         "loop": {
           "$ref": "#/definitions/loop"
+        },
+        "onError": {
+          "type": "array",
+          "description": "OnError Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
         },
         "nextState": {
           "type": "string",
@@ -567,6 +625,14 @@
             ]
           }
         },
+        "onError": {
+          "type": "array",
+          "description": "OnError Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
+        },
         "default": {
           "type": "string",
           "description": "Specifies the name of the next state if there is no match for any choices value"
@@ -623,6 +689,14 @@
         },
         "loop": {
           "$ref": "#/definitions/loop"
+        },
+        "onError": {
+          "type": "array",
+          "description": "OnError Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
         },
         "nextState": {
           "type": "string",

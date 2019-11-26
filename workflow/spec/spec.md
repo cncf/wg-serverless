@@ -108,6 +108,7 @@ Here we define details of the Serverless Workflow definitions:
 | expressionLanguage |Default expression language to be used throughout the workflow definition | string |no |
 | [triggerDefs](#Trigger-Definition) |Array of workflow triggers | array | no |
 | [states](#State-Definition) | Array of workflow states | array | yes |
+| [onError](#Error-Handling) |Workflow error handling definitions | array | no |
 | extensions | Array of workflow custom extension | array | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -179,6 +180,14 @@ Here we define details of the Serverless Workflow definitions:
                 ]
             }
         },
+        "onError": {
+          "type": "array",
+          "description": "Workflow runtime error handling definitions",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
+        },
         "extensions": {
           "type": "array",
           "description": "Workflow Extensions",
@@ -237,6 +246,45 @@ events for same workflow instance, must be specified in that event trigger.
 
 </details>
 
+### Error Definition
+
+Error definitions define runtime errors that can occur during workflow execution and how to handle them. For more information
+see the [Error Handling section](#Error-Handling). 
+
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| errorExpression | Boolean expression to match one or more errors | string |yes |
+| resultPath |Specify result JSON Node of States output as JSONPath. Used to inject error information into state output. | string | no |
+| nextState |State to transition to if errors expressed in errorExpression are matched | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "errorExpression": {
+      "type": "string",
+      "description": "Boolean expression to match one or more errors"
+    },
+    "resultPath": {
+      "type": "string",
+      "description": "Specify result JSON Node of States output as JSONPath. Used to inject error information into state output."
+    },
+    "nextState": {
+      "type": "string",
+      "description": "State to transition to if errors expressed in errorExpression are matched",
+      "minLength": 1
+    }
+  },
+  "required": ["errorExpression", "nextState"]
+}
+```
+
+</details>
+
 ### State Definition
 
 States define building blocks of the Serverless Workflow. The specification defines six different types of states:
@@ -271,6 +319,7 @@ We will start defining each individual state:
 | [events](#eventstate-eventdef) |Array of event | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
+| [onError](#Error-Handling) |States error handling definitions | array | no |
  
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -312,7 +361,15 @@ We will start defining each individual state:
         },
         "loop": {
           "$ref": "#/definitions/loop"
-        } 
+        }, 
+        "onError": {
+            "type": "array",
+            "description": "States error handling definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/error"
+            }
+        }
     },
     "required": ["name", "type", "events"]
 }
@@ -559,6 +616,7 @@ as well as define parameters (key/value pairs).
 | [actions](#Action-Definition) |Array of actions | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
+| [onError](#Error-Handling) |States error handling definitions | array | no |
 | [nextState](#Transitions) |State to transition to after all the actions have been successfully executed | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -606,6 +664,14 @@ as well as define parameters (key/value pairs).
         "loop": {
           "$ref": "#/definitions/loop"
         }, 
+        "onError": {
+            "type": "array",
+            "description": "States error handling definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/error"
+            }
+        },
         "nextState": {
             "type": "string",
             "description": "State to transition to after all the actions have been successfully executed"
@@ -643,6 +709,7 @@ actions execute, a transition to "next state" happens.
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
+| [onError](#Error-Handling) |States error handling definitions | array | no |
 | default |Name of the next state if there is no match for any choices value | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -690,6 +757,14 @@ actions execute, a transition to "next state" happens.
         "loop": {
           "$ref": "#/definitions/loop"
         }, 
+        "onError": {
+            "type": "array",
+            "description": "States error handling definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/error"
+            }
+        },
         "default": {
             "type": "string",
             "description": "Specifies the name of the next state if there is no match for any choices value"
@@ -916,6 +991,7 @@ There are found types of choices defined:
 | timeDelay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
+| [onError](#Error-Handling) |States error handling definitions | array | no |
 | [nextState](#Transitions) |State to transition to after the delay | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary> 
@@ -954,6 +1030,14 @@ There are found types of choices defined:
         "loop": {
           "$ref": "#/definitions/loop"
         }, 
+        "onError": {
+            "type": "array",
+            "description": "States error handling definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/error"
+            }
+        },
         "nextState": {
             "type": "string",
             "description": "Name of the next state to transition to after the delay"
@@ -989,6 +1073,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop behavior | object | yes |
+| [onError](#Error-Handling) |States error handling definitions | array | no |
 | [nextState](#Transitions) |State to transition to after all branches have completed execution | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -1031,6 +1116,14 @@ Delay state simple waits for a certain amount of time before transitioning to a 
         "loop": {
           "$ref": "#/definitions/loop"
         }, 
+        "onError": {
+            "type": "array",
+            "description": "States error handling definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/error"
+            }
+        },
         "nextState": {
             "type": "string",
             "description": "Specifies the name of the next state to transition to after all branches have completed execution"
@@ -1129,6 +1222,7 @@ true, the branches parallel parent state must wait for this branch to finish bef
 | workflowId |Sub-workflow unique id | boolean | no |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
+| [onError](#State-Exception-Handling) |States error handling definitions | array | no |
 | [nextState](#Transitions) |State to transition to after subflow has completed | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -1170,7 +1264,15 @@ true, the branches parallel parent state must wait for this branch to finish bef
           "$ref": "#/definitions/filter"
         },
         "loop": {
-          "$ref": "#/definitions/loop"
+            "$ref": "#/definitions/loop"
+        },
+        "onError": {
+            "type": "array",
+            "description": "States error handling definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/error"
+           }
         },
         "nextState": {
             "type": "string",
@@ -1416,6 +1518,115 @@ Each Filter has three kinds of path filters
 <img src="media/filter-parallel.png" with="480px" height="270px" alt="Parallel FilterDiagram"/>
 </p>
 
+
+### Error Handling
+
+Serverless Workflow allows you to explicitly model what should happen in case of runtime errors during workflow execution.
+Explicit error handling is done via the "onError" property which you can place inside a state as well as the main workflow
+definition.
+
+Let's first look at error handling inside states. 
+The states "onError" property is an array containing 
+one ore more error handling definitions. These describe the types of errors which can happen and how serverless workflow
+execution should handle them. 
+
+Let's take a look at a small example:
+
+```json
+{
+  ...
+  "startsAt": "HandleErrors",
+  "states": [
+    {  
+       "name":"HandleErrors",
+       "type":"OPERATION",
+       "end": false,
+       "actionMode":"SEQUENTIAL",
+       "actions":[  
+          {  
+             "function": {
+               "name": "throw runtime error function",
+               "resource": "function-resource-info:throw-runtime-error-function"
+             }
+          }
+       ],
+       "onError": [
+          {
+            "errorExpression": "name matches '^\w+Exception$'",
+            "resultPath": "$.stateError",
+            "nextState": "afterErrorState"
+          }
+       ],
+       "nextState":"doSomethingElse"
+    },
+    ...
+  ]
+}
+```
+
+Here we have an operation state with one action that executes a function call. For our example the function call
+results in a runtime exception. In the "onError" definition we state we want to catch all errors whose name ends in "Exception".
+If that happens, we want to workflow to continue execution with the "afterErrorState" state. 
+
+Note that errors that don't match the "errorExpression" may not be caught
+by this explicit error handling. In those cases a "fallback" or "catch-all" error definition inside the onError block may be necessary.
+
+Having to define explicit error handling inside every state of your workflow might lead to repetitive definitions as can become
+hard to maintain. To alleviate this the workflow model also allows you to define the "onError" parameter as part of the main
+workflow definition. Let's take a look:
+
+```json
+{
+  ...
+  "startsAt": "HandleErrors1",
+  "onError": [
+     {
+       "errorExpression": "name matches '^\w+Exception$'",
+       "resultPath": "$.stateError",
+       "nextState": "afterErrorState"
+     }
+  ],
+  "states": [
+    {  
+       "name":"HandleErrors1",
+       "type":"OPERATION",
+       "end": false,
+       "actionMode":"SEQUENTIAL",
+       "actions":[  
+          {  
+             "function": {
+               "name": "throw runtime error function",
+               "resource": "function-resource-info:throw-runtime-error-function"
+             }
+          }
+       ],
+       "nextState":"doSomethingElse"
+    },
+    {  
+       "name":"HandleErrors2",
+       "type":"OPERATION",
+       "end": false,
+       "actionMode":"SEQUENTIAL",
+       "actions":[  
+          {  
+             "function": {
+               "name": "throw runtime error function",
+               "resource": "function-resource-info:throw-runtime-error-function"
+             }
+          }
+       ],
+       "nextState":"doSomethingElse"
+    },
+    ...
+  ]
+}
+```
+
+Here we define our error handling as a top-level workflow property and will handle errors that happen in all states 
+of the workflow, in this example both the "HandleErrors1" and "HandleErrors2" states.
+
+In cases where there is error handling on both workflow level and state level that catches the same specific error, the state level (local)
+error handling should have precedence. In this case the top level error handling definition should be ignored. 
 
 ## Extending
 
