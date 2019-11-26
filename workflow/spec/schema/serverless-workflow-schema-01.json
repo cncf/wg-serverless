@@ -226,6 +226,10 @@
           "type": "string",
           "description": "Function name"
         },
+        "resource": {
+          "type": "string",
+          "desription": "Function resource (URI)"
+        },
         "type": {
           "type": "string",
           "description": "Type of function to implement. Implementors may define custom types here."

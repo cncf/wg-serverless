@@ -424,6 +424,7 @@ It also defines a timeout wait period if one is needed, as well as a retry defin
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | name |Function name | string | yes |
+| resource |Function resource (URI) | string | yes |
 | type |Function type. Implementors may define custom types. | string | yes |
 | parameters |Function parameters | object | no |
 
@@ -437,6 +438,10 @@ It also defines a timeout wait period if one is needed, as well as a retry defin
       "type": "string",
       "description": "Function name"
     },
+    "resource": {
+      "type": "string",
+      "desription": "Function resource (URI)"
+    },
     "type": {
       "type": "string",
       "description": "Type of function to implement. Implementors may define custom types here."
@@ -446,7 +451,7 @@ It also defines a timeout wait period if one is needed, as well as a retry defin
       "description": "Function parameters"
     }
   },
-  "required": ["name", "type"]
+  "required": ["name", "resource", "type"]
 }
 ```
 
