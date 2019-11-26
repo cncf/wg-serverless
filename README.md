@@ -82,7 +82,7 @@ International numbers available: https://zoom.us/zoomconference?m=QpOqQYfTzY_Gbj
 NOTE: Please use \*6 to mute/un-mute your phone during the call.
 
 World Time Zone Converter:
-http://www.thetimezoneconverter.com/?t=9:00%20am&tz=San%20Francisco&
+https://www.thetimezoneconverter.com/?t=9%3A00%20am&tz=PT%20(Pacific%20Time)&
 
 ## In Person Meetings
 
