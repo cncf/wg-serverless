@@ -106,6 +106,7 @@ Here we define details of the Serverless Workflow definitions:
 | schemaVersion | Serverless Workflow schema version | string |no |
 | startsAt |State name which is the starting state | string |yes |
 | execStatus |Workflow execution status | string |no |
+| expressionLanguage |Default expression language to be used throughout the workflow definition | string |no |
 | [triggerDefs](#Trigger-Definition) |Array of workflow triggers | array | no |
 | [states](#State-Definition) | Array of workflow states | array | yes |
 | extensions | Array of workflow custom extension | array | no |
@@ -152,6 +153,10 @@ Here we define details of the Serverless Workflow definitions:
             "type" : "string",
             "enum": ["Success", "Fail", "Timeout", "Invalid"],
             "description": "Execution status"
+        },
+        "expressionLanguage": {
+          "type": "string",
+          "description": "Default expression language to be used throughout the workflow definition"
         },
         "triggerDefs": {
             "type": "array",
@@ -319,7 +324,7 @@ Event state can hold one or more events definitions, so let's define those:
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| eventExpression |Expression used to associate triggerDefs with event state  | string | yes |
+| [eventExpression](#Expression-Definition) |Expression used to associate triggerDefs with event state  | object | yes |
 | timeout |Time period to wait for the events in the eventExpression (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | actionMode |Specifies if functions are executed in sequence of parallel | string | no |
 | [actions](#Action-Definition) |Array of actions | array | yes |
@@ -374,6 +379,41 @@ Note that each event definition has a "nextState" property, which is used to ide
 should get triggered after this event completes.
 
 Each event state's event definition includes one or more actions. Let's define these actions now:
+
+#### Expression Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| language |Expression language. For example 'spel', 'jexl', 'cel', etc| string | no |
+| body |The expression body | string | yes |
+
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "description": "Defines the language and body of expression.",
+  "properties": {
+    "language": {
+      "type": "string",
+      "description": "Expression language. For example 'spel', 'jexl', 'cel', etc"
+    },
+    "body": {
+      "type": "string",
+      "description": "The expression body"
+    }
+  },
+  "required": ["body"]
+}
+```
+
+</details>
+
+Serverless workflow does not limit implementors to use any expression language they choose to
+evaluate expressions with. Expressions define a "language" and a "body". 
+Note that top-level workflow "expressionLanguage" property can be set to define the default
+expression language used for all expressions defined.
 
 #### Action Definition
 
