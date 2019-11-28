@@ -631,40 +631,27 @@
         },
         "operator": {
           "type": "string",
-          "enum": [
-            "EQ",
-            "LT",
-            "LTEQ",
-            "GT",
-            "GTEQ",
-            "StrEQ",
-            "StrLT",
-            "StrLTEQ",
-            "StrGT",
-            "StrGTEQ"
-          ],
+          "enum": ["Exists", "Equals", "LessThan", "LessThanEquals", "GreaterThan", "GreaterThanEquals"],
           "description": "Specifies how the input data is compared with the values"
         }
-      }
+      },
+      "required": ["path", "value", "operator"]
     },
     "singlechoice": {
       "type": "object",
       "description": "Single Choice",
-      "properties": {
-        "single": {
-          "type": "array",
-          "description": "List of choices",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/defaultchoice"
+      "allOf": [
+        { "$ref": "#/definitions/defaultchoice" },
+        {
+          "properties": {
+            "nextState": {
+              "type": "string",
+              "description": "Specifies the name of the next state to transition to if there is a value match"
+            }
           }
-        },
-        "nextState": {
-          "type": "string",
-          "description": "State to transition to if there is a value match"
         }
-      },
-      "required": ["single", "nextState"]
+      ],
+      "required": ["nextState"]
     },
     "andchoice": {
       "type": "object",
@@ -711,7 +698,7 @@
         "not": {
           "type": "object",
           "$ref": "#/definitions/defaultchoice",
-          "description": "Single Choice"
+          "description": "Not Choice"
         },
         "nextState": {
           "type": "string",
