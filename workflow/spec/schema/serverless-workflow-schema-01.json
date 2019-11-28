@@ -183,7 +183,7 @@
           "type": "string",
           "description": "Specifies the time period waiting for the events in the eventExpression (ISO 8601 format)"
         },
-        "retry-when": {
+        "retry": {
           "type": "array",
           "description": "Retry Definitions",
           "items": {
@@ -196,7 +196,7 @@
         },
         "default": {
           "type": "string",
-          "description": "State to transition to in case there are errors and no retry-when definitions have been triggered"
+          "description": "State to transition to in case there are errors and no retry definitions have been triggered"
         }
       },
       "required": ["function"]
