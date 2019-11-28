@@ -193,10 +193,6 @@
         },
         "filter": {
           "$ref": "#/definitions/filter"
-        },
-        "default": {
-          "type": "string",
-          "description": "State to transition to in case there are errors and no retry definitions have been triggered"
         }
       },
       "required": ["function"]
