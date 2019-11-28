@@ -184,9 +184,12 @@
           "description": "Specifies the time period waiting for the events in the eventExpression (ISO 8601 format)"
         },
         "retry": {
-          "type": "object",
-          "$ref": "#/definitions/retry",
-          "description": "Specifies how the result from a function is to be handled"
+          "type": "array",
+          "description": "Retry Definitions",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/retry"
+          }
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -202,11 +205,11 @@
           "type": "string",
           "description": "Specifies the matching value for the result"
         },
-        "retryInterval": {
+        "interval": {
           "type": "string",
           "description": "Specifies retry interval (ISO 8601 format)"
         },
-        "maxRetry": {
+        "max": {
           "type": "integer",
           "default": "0",
           "minimum": 0,
@@ -214,8 +217,7 @@
         },
         "nextState": {
           "type": "string",
-          "description": "State to transition to when exceeding max-retry limit",
-          "minLength": 1
+          "description": "State to transition to when exceeding max limit"
         }
       },
       "required": ["match", "nextState"]
