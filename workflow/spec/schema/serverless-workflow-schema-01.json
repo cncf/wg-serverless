@@ -211,13 +211,13 @@
         },
         "max": {
           "type": "integer",
-          "default":"0",
+          "default": "0",
           "minimum": 0,
           "description": "Specifies the max retry"
         },
         "nextState": {
           "type": "string",
-          "description": "State to transition to when exceeding maxRetry limit"
+          "description": "State to transition to when exceeding max limit"
         }
       },
       "required": ["match", "nextState"]
