@@ -1253,10 +1253,10 @@ Filters are used for data flow through the workflow. This is described in detail
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| inputCollection |Selects a collection of the states inputPath | string | no |
+| inputCollection |Selects a collection of the states inputPath | string | yes |
 | outputCollection |Selects a collection of the states outputPath | string | no |
 | completionCondition |Boolean expression (evaluated after each iteration) that controls the loop. If this expression is true looping stops even if not all collection elements are processesd | string | no |
-| timeDelay |Amount of time (ISO 8601 format) to wait between each loop | integer | yes |
+| timeDelay |Amount of time (ISO 8601 format) to wait between each loop | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
