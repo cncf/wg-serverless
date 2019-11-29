@@ -36,7 +36,7 @@ This document is a working draft.
 
 Serverless Workflow can be used to:
 
-* **Orchestrate serverless application logic**: serverless applications are typical event-driven and can be 
+* **Orchestrate serverless application logic**: serverless applications are typically event-driven and can be 
 very hard to manage. Serverless Workflow groups the application events and functions into a coherent unit and 
 simplifies orchestration of the app logic.
 * **Define and coordinate application control flow**: allow the users to define the execution/operation
