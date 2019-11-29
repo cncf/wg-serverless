@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Serverless applications are becoming increasingly complex. Nowdays they have to coordinate, manage, and define
+Serverless applications are becoming increasingly complex. Nowadays they have to coordinate, manage, and define
 the execution order (steps) for countless functions triggered by as many events.
 
 When we are dealing with large number of functions, managing their execution is not a simpler task. 
@@ -36,13 +36,13 @@ This document is a working draft.
 
 Serverless Workflow can be used to:
 
-* **Orchestrate serverless application logic**: serverless applications are typicall event-driven and can be 
+* **Orchestrate serverless application logic**: serverless applications are typical event-driven and can be 
 very hard to manage. Serverless Workflow groups the application events and functions into a coherent unit and 
 simplifies orchestration of the app logic.
 * **Define and coordinate application control flow**: allow the users to define the execution/operation
 control flow and how/which functions are to be invoked on arrival of events.
 * **Define and manage application data flow**: allows the users to define how data is passed and filtered from incoming events to states, 
-rom states to functions, from one function to another function, and from one state to another state.
+from states to functions, from one function to another function, and from one state to another state.
 
 ### Functional Scope
 Serverless Workflow allows users to:
@@ -55,20 +55,20 @@ Serverless Workflow allows users to:
 6. Define error conditions with retries.
 7. If a function is triggered by two or more events, define what label/key should be used to correlate those events to the same serverless workflow instance.
 
-Following example illustrates a Serverless Workflow that involves events
-and functions. It specifies the interaction between events, states and functions to be invoked.
+Following diagram illustrates functional flow that involves states, events and functions. It shows that
+incoming events can trigger function calls during flow execution.
 
 <p align="center">
-<img src="media/sample-serverless-workflow1.png" with="400px" height="260px" alt="Serverless Workflow Diagram"/>
+<img src="media/sample-serverless-workflow2.png" with="400px" height="260px" alt="Serverless Workflow Diagram"/>
 </p>
 
 ## Use Cases
-You can find different Serverless Workflow usescases [here](spec-usecases.md)
+You can find different Serverless Workflow use cases [here](spec-usecases.md)
 
 ## Specification Details
 
 In sections below we describe all each section of the Serverless Workflow in details. We first show properties in table format, 
-and you can also click on the "Click to view JSON Schema" to see the detailed definision defines with [JSON Schema](https://json-schema.org/).
+and you can also click on the "Click to view JSON Schema" to see the detailed definition defines with [JSON Schema](https://json-schema.org/).
 
 You can find the entire schema document [here](schema/serverless-workflow-schema-01.json). Please note just like this document, this is also
 work in progress.
@@ -426,7 +426,7 @@ It also defines a timeout wait period if one is needed, as well as a retry defin
 | --- | --- | --- | --- |
 | name |Function name | string | yes |
 | resource |Function resource (URI) | string | yes |
-| type |Function type. Implementors may define custom types. | string | yes |
+| type |Function type. Implementers may define custom types. | string | yes |
 | parameters |Function parameters | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -441,11 +441,11 @@ It also defines a timeout wait period if one is needed, as well as a retry defin
     },
     "resource": {
       "type": "string",
-      "desription": "Function resource (URI)"
+      "description": "Function resource (URI)"
     },
     "type": {
       "type": "string",
-      "description": "Type of function to implement. Implementors may define custom types here."
+      "description": "Type of function to implement. Implementers may define custom types here."
     },
     "parameters": {
       "type": "object",
@@ -458,7 +458,7 @@ It also defines a timeout wait period if one is needed, as well as a retry defin
 
 </details>
 
-The function name is a string that can evaluate to a call and execution of a serverless function. Implementors
+The function name is a string that can evaluate to a call and execution of a serverless function. Implementers
 can define how this string maps to their actual function call(s). Functions can have a type
 as well as define parameters (key/value pairs).
 
@@ -1147,7 +1147,7 @@ is completed or not.
 
 Each sub-workflow receives a copy of the SubFlow state's input data.
 If waitForCompletion property is set to true, sub-workflows have the ability to edit the parent's workflow data.
-If this property is sete to false, data access to parent's workflow should not be allowed.
+If this property is set to false, data access to parent's workflow should not be allowed.
 
 
 ### Filter Definition
@@ -1190,10 +1190,10 @@ Filters are used for data flow through the workflow. This is described in detail
 
 Serverless workflow states can have one or more incoming and outgoing transitions (from/to other states).
 Each state has a "nextState" property which is a string value that determines which 
-state to transition to. Implementors can choose to use the states "name" string property
+state to transition to. Implementers can choose to use the states "name" string property
 for determining the next state, however we realize that in most cases this is not an
 optimal solution that can lead to ambiguity. This is why each state also include an "id"
-property. Implementors can choose their own id generation strategy to populate the id property
+property. Implementers can choose their own id generation strategy to populate the id property
 for each of the states and use it as the unique state identifier that is to be used as the "nextState" value. 
 
 So the options for next state transitions are:
@@ -1277,8 +1277,8 @@ Each Filter has three kinds of path filters
 ## Extending
 
 Serverless Workflows are build with extensibility in mind. The extension mechanism allows
-users and implementors to extend the standard workflow elements with additional ones. This can be used 
-for example to satisfy some unique requirements and remain being compliant with the the workflow specfication.
+users and implementers to extend the standard workflow elements with additional ones. This can be used 
+for example to satisfy some unique requirements and remain being compliant with the workflow specification.
 
 The extension mechanism can be used to define custom workflow elements. It is targeted to
 solving custom requirements that go beyond the core of the workflow specification, for example
