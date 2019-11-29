@@ -55,11 +55,11 @@ Serverless Workflow allows users to:
 6. Define error conditions with retries.
 7. If a function is triggered by two or more events, define what label/key should be used to correlate those events to the same serverless workflow instance.
 
-Following diagram illustrates functional flow that involves states, events and functions. It shows that
-incoming events can trigger function calls during flow execution.
+Following example illustrates a Serverless Workflow that involves events
+and functions. It specifies the interaction between events, states and functions to be invoked.
 
 <p align="center">
-<img src="media/sample-serverless-workflow2.png" with="400px" height="260px" alt="Serverless Workflow Diagram"/>
+<img src="media/sample-serverless-workflow1.png" with="400px" height="260px" alt="Serverless Workflow Diagram"/>
 </p>
 
 ## Use Cases
