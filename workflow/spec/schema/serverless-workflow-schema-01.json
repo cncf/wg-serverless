@@ -752,11 +752,11 @@
       "properties": {
         "inputCollection": {
           "type": "string",
-          "description": "JSON Path that selects the data collection to iterate over"
+          "description": "Selects a collection of the states inputPath"
         },
         "outputCollection": {
           "type": "string",
-          "description": "JSON Path that selects the data collection to iterate over"
+          "description": "Selects a collection of the states outputPath"
         },
         "completionCondition": {
           "type": "string",
@@ -764,7 +764,7 @@
         },
         "timeDelay": {
           "type": "string",
-          "description": "Amount of time (ISO 8601 format) to delay"
+          "description": "Amount of time (ISO 8601 format) to wait between each loop"
         }
       },
       "required": ["inputCollection"]
