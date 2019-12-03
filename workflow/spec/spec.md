@@ -324,7 +324,7 @@ Event state can hold one or more events definitions, so let's define those:
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [eventExpression](#Expression-Definition) |Expression used to associate triggerDefs with event state  | object | yes |
+| [condition](#Condition-Definition) |Condition consisting of Boolean operation of events that will trigger the event state | object | yes |
 | timeout |Time period to wait for the events in the eventExpression (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | actionMode |Specifies if functions are executed in sequence of parallel | string | no |
 | [actions](#Action-Definition) |Array of actions | array | yes |
@@ -338,7 +338,7 @@ Event state can hold one or more events definitions, so let's define those:
     "type": "object",
     "description": "Event associated with a State",
     "properties": {
-        "eventExpression": {
+        "condition": {
             "type": "string",
             "description": "Boolean expression which consists of one or more Event operands and the Boolean operators"
         },
@@ -380,11 +380,11 @@ should get triggered after this event completes.
 
 Each event state's event definition includes one or more actions. Let's define these actions now:
 
-#### Expression Definition
+#### Condition Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| language |Expression language. For example 'spel', 'jexl', 'cel', etc| string | no |
+| expressionLanguage |Expression language. For example 'spel', 'jexl', 'cel', etc| string | no |
 | body |The expression body | string | yes |
 
 
@@ -395,13 +395,13 @@ Each event state's event definition includes one or more actions. Let's define t
   "type": "object",
   "description": "Defines the language and body of expression.",
   "properties": {
-    "language": {
+    "expressionLanguage": {
       "type": "string",
       "description": "Expression language. For example 'spel', 'jexl', 'cel', etc"
     },
     "body": {
       "type": "string",
-      "description": "The expression body"
+      "description": "The expression body. For example, (event1 or event2) and event3"
     }
   },
   "required": ["body"]
