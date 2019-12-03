@@ -329,6 +329,9 @@
           "type": "string",
           "description": "Amount of time (ISO 8601 format) to delay"
         },
+        "loop": {
+          "$ref": "#/definitions/loop"
+        },
         "nextState": {
           "type": "string",
           "description": "State to transition to after all the delay."
@@ -381,6 +384,9 @@
             "type": "object",
             "$ref": "#/definitions/event"
           }
+        },
+        "loop": {
+          "$ref": "#/definitions/loop"
         }
       },
       "required": ["name", "type", "events"]
@@ -428,6 +434,9 @@
             "type": "object",
             "$ref": "#/definitions/action"
           }
+        },
+        "loop": {
+          "$ref": "#/definitions/loop"
         },
         "nextState": {
           "type": "string",
@@ -482,6 +491,9 @@
             "$ref": "#/definitions/branch"
           }
         },
+        "loop": {
+          "$ref": "#/definitions/loop"
+        },
         "nextState": {
           "type": "string",
           "description": "State to transition to after all branches have completed execution"
@@ -526,6 +538,9 @@
         },
         "filter": {
           "$ref": "#/definitions/filter"
+        },
+        "loop": {
+          "$ref": "#/definitions/loop"
         },
         "choices": {
           "type": "array",
@@ -605,6 +620,9 @@
         },
         "filter": {
           "$ref": "#/definitions/filter"
+        },
+        "loop": {
+          "$ref": "#/definitions/loop"
         },
         "nextState": {
           "type": "string",
@@ -727,6 +745,29 @@
         }
       },
       "required": ["body"]
+    },
+    "loop" : {
+      "type": "object",
+      "description": "Defines state Looping Information",
+      "properties": {
+        "inputCollection": {
+          "type": "string",
+          "description": "Selects a collection of the states inputPath"
+        },
+        "outputCollection": {
+          "type": "string",
+          "description": "Selects a collection of the states outputPath"
+        },
+        "completionCondition": {
+          "type": "string",
+          "description": "Boolean expression (evaluated after each iteration) that controls the loop. If this expression is true looping stops even if not all collection elements are processesd."
+        },
+        "timeDelay": {
+          "type": "string",
+          "description": "Amount of time (ISO 8601 format) to wait between each loop"
+        }
+      },
+      "required": ["inputCollection"]
     }
   }
 }
