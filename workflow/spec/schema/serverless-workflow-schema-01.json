@@ -36,6 +36,10 @@
       "enum": ["Success", "Fail", "Timeout", "Invalid"],
       "description": "Workflow execution status"
     },
+    "expressionLanguage": {
+      "type": "string",
+      "description": "Default expression language to be used throughout the workflow definition"
+    },
     "triggerDefs": {
       "type": "array",
       "description": "Trigger Definitions",
@@ -137,9 +141,9 @@
     "event": {
       "type": "object",
       "properties": {
-        "eventExpression": {
-          "type": "string",
-          "description": "Boolean expression which consists of one or more Event operands and the Boolean operators"
+        "condition": {
+          "description": "Boolean expression which consists of one or more Event operands and the Boolean operators",
+          "$ref": "#/definitions/condition"
         },
         "timeout": {
           "type": "string",
@@ -708,6 +712,21 @@
         }
       },
       "required": ["not", "nextState"]
+    },
+    "condition": {
+      "type": "object",
+      "description": "Defines the expression language and body of condition.",
+      "properties": {
+        "expressionLanguage": {
+          "type": "string",
+          "description": "Expression language. For example 'spel', 'jexl', 'cel', etc"
+        },
+        "body": {
+          "type": "string",
+          "description": "The expression body."
+        }
+      },
+      "required": ["body"]
     }
   }
 }
