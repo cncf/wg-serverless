@@ -117,9 +117,8 @@
           "type": "string",
           "description": "Boolean expression to match one or more errors"
         },
-        "resultPath": {
-          "type": "string",
-          "description": "Specify result JSON Node of States output as JSONPath. Used to inject error information into state output."
+        "filter": {
+          "$ref": "#/definitions/filter"
         },
         "nextState": {
           "type": "string",

@@ -255,7 +255,7 @@ see the [Error Handling section](#Error-Handling).
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | errorExpression | Boolean expression to match one or more errors | string |yes |
-| resultPath |Specify result JSON Node of States output as JSONPath. Used to inject error information into state output. | string | no |
+| [filter](#Filter-Definition) |Error data filter | object | yes |
 | nextState |State to transition to if errors expressed in errorExpression are matched | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -269,9 +269,9 @@ see the [Error Handling section](#Error-Handling).
       "type": "string",
       "description": "Boolean expression to match one or more errors"
     },
-    "resultPath": {
-      "type": "string",
-      "description": "Specify result JSON Node of States output as JSONPath. Used to inject error information into state output."
+     "filter": {
+      "$ref": "#/definitions/filter",
+      "description": "Error data filter"
     },
     "nextState": {
       "type": "string",
@@ -1486,7 +1486,7 @@ the event source as shown below.
 Serverless Workflow maintains an implicit JSON object which is accessed from each
 filter via JSONPath expression '$.'
 
-There are three kinds of filters
+There are four kinds of filters
 
 - Event Filter
   - Invoked when data is passed from an event to the current state
@@ -1497,7 +1497,9 @@ There are three kinds of filters
   - Invoked when data is passed from the current state to the first action
   - Invoked when data is passed from an action to action
   - Invoked when data is passed from the last action to the current state
-
+- Error Filter 
+  - Invoked when a state encounters runtime exceptions
+  
 Each Filter has three kinds of path filters
 
 - InputPath
@@ -1553,7 +1555,10 @@ Let's take a look at a small example:
        "onError": [
           {
             "errorExpression": "name matches '^\w+Exception$'",
-            "resultPath": "$.stateError",
+            "filter": {
+              "resultPath": "$.trace",
+              "outputPath": "$.stateerror"
+            },
             "nextState": "afterErrorState"
           }
        ],
@@ -1582,7 +1587,10 @@ workflow definition. Let's take a look:
   "onError": [
      {
        "errorExpression": "name matches '^\w+Exception$'",
-       "resultPath": "$.stateError",
+       "filter": {
+         "resultPath": "$.trace",
+         "outputPath": "$.stateerror"
+       },
        "nextState": "afterErrorState"
      }
   ],
