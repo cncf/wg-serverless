@@ -187,7 +187,7 @@
         },
         "timeout": {
           "type": "string",
-          "description": "Specifies the time period waiting for the events in the eventExpression (ISO 8601 format)"
+          "description": "Specifies the time period waiting for the events in the condition (ISO 8601 format)"
         },
         "actionMode": {
           "type": "string",
@@ -215,7 +215,7 @@
         }
       },
       "required": [
-        "eventExpression",
+        "condition",
         "actions",
         "timeout",
         "nextState"
@@ -227,10 +227,6 @@
         "function": {
           "description": "Specifies the function that must be invoked",
           "$ref": "#/definitions/function"
-        },
-        "timeout": {
-          "type": "string",
-          "description": "Specifies the time period waiting for the events in the eventExpression (ISO 8601 format)"
         },
         "retry": {
           "type": "array",

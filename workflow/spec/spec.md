@@ -385,7 +385,7 @@ Event state can hold one or more events definitions, so let's define those:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | [condition](#Condition-Definition) |Condition consisting of Boolean operation of events that will trigger the event state | object | yes |
-| timeout |Time period to wait for the events in the eventExpression (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
+| timeout |Time period to wait for the events in the condition (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | actionMode |Specifies if functions are executed in sequence of parallel | string | no |
 | [actions](#Action-Definition) |Array of actions | array | yes |
 | [filter](#Filter-Definition) |Event data filter | object | yes |
@@ -404,8 +404,8 @@ Event state can hold one or more events definitions, so let's define those:
         },
         "timeout": {
             "type": "string",
-            "description": "Specifies the time period waiting for the events in the eventExpression (ISO 8601 format)"
-        },
+            "description": "Specifies the time period waiting for the events in the condition (ISO 8601 format)"
+        }, 
         "actionMode": {
             "type" : "string",
             "enum": ["SEQUENTIAL", "PARALLEL"],
@@ -427,7 +427,7 @@ Event state can hold one or more events definitions, so let's define those:
             "description": "State to transition to after all the actions for the matching event have been successfully executed"
         }
     },
-    "required": ["eventExpression", "actions", "nextState"]
+    "required": ["condition", "actions", "nextState"]
 }
 ```
 
