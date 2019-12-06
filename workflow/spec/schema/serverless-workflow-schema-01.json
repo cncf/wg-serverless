@@ -110,6 +110,23 @@
     "states"
   ],
   "definitions": {
+    "transition": {
+      "type": "object",
+      "properties": {
+        "condition": {
+          "description": "Boolean expression which consists of one or more Event operands and the Boolean operators",
+          "$ref": "#/definitions/condition"
+        },
+        "nextState": {
+          "type": "string",
+          "description": "State to transition to next",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "nextState"
+      ]
+    },
     "error": {
       "type": "object",
       "properties": {
@@ -120,15 +137,14 @@
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "nextState": {
-          "type": "string",
-          "description": "State to transition to if errors expressed in errorExpression are matched",
-          "minLength": 1
+        "transition": {
+          "description": "Transition definition when errors expressed in errorExpression are matched",
+          "$ref": "#/definitions/transition"
         }
       },
       "required": [
         "errorExpression",
-        "nextState"
+        "transition"
       ]
     },
     "triggerevent": {
@@ -205,10 +221,9 @@
             "$ref": "#/definitions/action"
           }
         },
-        "nextState": {
-          "type": "string",
-          "description": "State to transition to after all the actions for the matching event have been successfully executed",
-          "minLength": 1
+        "transition": {
+          "description": "Transition definition after all the actions for the matching event have been successfully executed",
+          "$ref": "#/definitions/transition"
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -218,7 +233,7 @@
         "condition",
         "actions",
         "timeout",
-        "nextState"
+        "transition"
       ]
     },
     "action": {
@@ -262,14 +277,14 @@
           "minimum": 0,
           "description": "Specifies the max retry"
         },
-        "nextState": {
-          "type": "string",
-          "description": "State to transition to when exceeding max limit"
+        "transition": {
+          "description": "Transition definition when exceeding max limit",
+          "$ref": "#/definitions/transition"
         }
       },
       "required": [
         "match",
-        "nextState"
+        "transition"
       ],
       "function": {
         "type": "object",
@@ -393,9 +408,9 @@
               "$ref": "#/definitions/error"
             }
           },
-          "nextState": {
-            "type": "string",
-            "description": "State to transition to after all the delay."
+          "transition": {
+            "description": "Transition definition after the time delay",
+            "$ref": "#/definitions/transition"
           }
         },
         "if": {
@@ -418,7 +433,7 @@
             "name",
             "type",
             "timeDelay",
-            "nextState"
+            "transition"
           ]
         }
       },
@@ -531,9 +546,9 @@
               "$ref": "#/definitions/error"
             }
           },
-          "nextState": {
-            "type": "string",
-            "description": "State to transition to after all the actions have been successfully executed"
+          "transition": {
+            "description": "Transition definition after all the actions have been successfully executed",
+            "$ref": "#/definitions/transition"
           }
         },
         "if": {
@@ -557,7 +572,7 @@
             "type",
             "actionMode",
             "actions",
-            "nextState"
+            "transition"
           ]
         }
       },
@@ -608,9 +623,9 @@
               "$ref": "#/definitions/error"
             }
           },
-          "nextState": {
-            "type": "string",
-            "description": "State to transition to after all branches have completed execution"
+          "transition": {
+            "description": "Transition definition after all branches have completed execution",
+            "$ref": "#/definitions/transition"
           }
         },
         "if": {
@@ -632,7 +647,7 @@
             "name",
             "type",
             "branches",
-            "nextState"
+            "transition"
           ]
         }
       },
@@ -776,9 +791,9 @@
               "$ref": "#/definitions/error"
             }
           },
-          "nextState": {
-            "type": "string",
-            "description": "Specifies the name of the next state to transition to after sub-workflow has completed execution."
+          "transition": {
+            "description": "Transition definition after SubFlow has completed execution",
+            "$ref": "#/definitions/transition"
           }
         },
         "if": {
@@ -800,7 +815,7 @@
             "name",
             "type",
             "workflowId",
-            "nextState"
+            "transition"
           ]
         }
       },
@@ -843,16 +858,12 @@
             "$ref": "#/definitions/defaultchoice"
           },
           {
-            "properties": {
-              "nextState": {
-                "type": "string",
-                "description": "Specifies the name of the next state to transition to if there is a value match"
-              }
-            }
+            "$ref": "#/definitions/transition",
+            "description": "Transition definition if there is a value match"
           }
         ],
         "required": [
-          "nextState"
+          "transition"
         ]
       },
       "andchoice": {
@@ -867,14 +878,14 @@
               "$ref": "#/definitions/defaultchoice"
             }
           },
-          "nextState": {
-            "type": "string",
-            "description": "State to transition to if there is a value match"
+          "transition": {
+            "description": "Transition definition if there is a valid match",
+            "$ref": "#/definitions/transition"
           }
         },
         "required": [
           "and",
-          "nextState"
+          "transition"
         ]
       },
       "orchoice": {
@@ -889,14 +900,14 @@
               "$ref": "#/definitions/defaultchoice"
             }
           },
-          "nextState": {
-            "type": "string",
-            "description": "State to transition to if there is a value match"
+          "transition": {
+            "description": "Transition definition if there is a valid match",
+            "$ref": "#/definitions/transition"
           }
         },
         "required": [
           "or",
-          "nextState"
+          "transition"
         ]
       },
       "notchoice": {
@@ -908,14 +919,14 @@
             "$ref": "#/definitions/defaultchoice",
             "description": "Not Choice"
           },
-          "nextState": {
-            "type": "string",
-            "description": "State to transition to if there is a value match"
+          "transition": {
+            "description": "Transition definition if there is a valid match",
+            "$ref": "#/definitions/transition"
           }
         },
         "required": [
           "not",
-          "nextState"
+          "transition"
         ]
       },
       "condition": {

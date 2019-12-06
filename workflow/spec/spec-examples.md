@@ -16,22 +16,28 @@ used to access and reason over the workflow state.
          "actionMode":"Sequential",
          "actions":[  
             {  
-               "function":"hello"
+               "function":{
+                  "name": "helloWorldFunction",
+                  "resource": "functionResourse"
+               }
             }
          ],
-         "nextState":"UpdateArg"
+         "transition": {
+            "nextState":"UpdateArg"  
+         }
       },
       {  
          "name":"UpdateArg",
          "type":"OPERATION",
          "actionMode":"Sequential",
-         "inputPath":"$.payload",
-         "resultPath":"$.ifttt.value1",
-         "outputPath":"$.ifttt",
-         "actions":[  
-
-         ],
-         "nextState":"SaveResult"
+         "filter": {
+            "inputPath":"$.payload",
+            "resultPath":"$.ifttt.value1",
+            "outputPath":"$.ifttt"
+         },
+         "transition": {
+            "nextState":"SaveResult"
+         }
       },
       {  
          "name":"SaveResult",
@@ -40,7 +46,10 @@ used to access and reason over the workflow state.
          "actionMode":"Sequential",
          "actions":[  
             {  
-               "function":"save_resut"
+               "function":{
+                  "name": "saveResults",
+                  "resource": "functionResourse"
+               }
             }
          ]
       }
