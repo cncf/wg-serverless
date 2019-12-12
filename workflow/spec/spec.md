@@ -2,20 +2,31 @@
 
 ## Abstract
 
-Serverless applications are becoming increasingly complex. Nowadays they have to coordinate, manage, and define
-the execution order (steps) for countless functions triggered by as many events.
+Serverless applications are becoming increasingly complex and are rearely sequential in nature. 
+Often they contain complex business logic to coordinate, manage, and define the execution order of a large amount 
+of serverless functions and events that can trigger those functions.
+ 
+Workflows have become a key component of serverless applications as they excel at dealing with cross-cutting concerns 
+such as orchestration and coordination of serverless applications functional flow. 
 
-When we are dealing with large number of functions, managing their execution is not a simpler task. 
-For example we have to coordinate functions and event triggers, orchestrate function execution (sequential,  parallel, 
-in branches depending on different event triggers), etc.
+Some of many benefits using workflows in serverless applications include:
+- Reduce complex execution logic out of your serverless functions
+- Externalize cross-cutting concerts such as parallel execution, branching, timeouts, compensation, and other flow control
+ logic out of many serverless function implementations into a single workflow definition.
+- Allow you to write less code in your serverless apps/functions
+- Significantly reduce the amount of time and effort to make changes in large serverless apps.
 
-Workflows have become key components of serverless applications as they excel at orchestration and coordination
-of their functional flow. 
+Many different workflow implementations (both proprietary and open-source) exist today, each with it's own set of features
+and capabilities. When picking a current implementations, it is very difficult to later on switch to a different one without
+running into large time and cost investments.
 
-The goal of the Serverless Workflow sub-group is to come up with a standard way for users to specify their serverless application workflow, as well as help facilitate 
-portability of serverless applications across different vendor platforms.
+The goal of the Serverless Workflow sub-group is to:
+- Standardize Serverless Worfkflow model and definition
+- Facilitate Serverless Workflow portability
+- Be completely vendor neutral
+- Support both stateless and stateful Serverless Workflow implementations
 
-Serverless Workflow is a vendor-neutral and portable specification which meets these goals.
+The Serverless Workflow specification defined in this document incorporates all of these goals.
 
 ## Status of this document
 
