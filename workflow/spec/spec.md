@@ -315,7 +315,7 @@ States define building blocks of the Serverless Workflow. The specification defi
     
 We will start defining each individual state:
 
-### <img src="media/state-icon-small.png" with="30px" height="26px"/>Event State
+### Event State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -611,7 +611,7 @@ as well as define parameters (key/value pairs).
 
 </details>
 
-### <img src="media/state-icon-small.png" with="30px" height="26px"/>Operation State
+### Operation State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -705,7 +705,7 @@ are invoked, their set of actions are executed in SEQUENTIAL, or PARALALLEL mode
 actions execute, a transition to "next state" happens.
 
 
-### <img src="media/state-icon-small.png" with="30px" height="26px"/>Switch State
+### Switch State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -987,7 +987,7 @@ There are found types of choices defined:
 ```
 </details>
 
-### <img src="media/state-icon-small.png" with="30px" height="26px"/>Delay State
+### Delay State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -1069,7 +1069,7 @@ There are found types of choices defined:
 Delay state simple waits for a certain amount of time before transitioning to a next state.
 
 
-### <img src="media/state-icon-small.png" with="30px" height="26px"/>Parallel State
+### Parallel State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -1217,7 +1217,7 @@ The elements of the output array need not be of the same type.
 The "waitForCompletion" property allows the parallel state to manage branch executions. If this flag is set to 
 true, the branches parallel parent state must wait for this branch to finish before continuing execution.
 
-### <img src="media/state-icon-small.png" with="30px" height="26px"/>SubFlow State
+### SubFlow State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
