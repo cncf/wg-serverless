@@ -1,11 +1,5 @@
 <p align="center"><img src="media/logo-small-text.png"/></p>
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[![GitHub Stars](https://img.shields.io/github/stars/cncf/wg-serverless)](https://github.com/cncf/wg-serverless/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/cncf/wg-serverless)](https://github.com/cncf/wg-serverless/network/members)
-[![GitHub Issues](https://img.shields.io/github/issues/cncf/wg-serverless)](https://github.com/cncf/wg-serverless/issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr/cncf/wg-serverless.svg?style=flat-square)](https://github.com/cncf/wg-serverless/pulls)
-[![Contributors](https://img.shields.io/github/contributors/cncf/wg-serverless.svg?style=flat-square)](https://github.com/cncf/wg-serverless/graphs/contributors)
 
 ## Abstract
 
