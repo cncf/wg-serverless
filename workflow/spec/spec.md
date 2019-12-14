@@ -257,7 +257,7 @@ see the [Error Handling section](#Error-Handling).
 | --- | --- | --- | --- |
 | errorExpression | Boolean expression to match one or more errors | string |yes |
 | [filter](#Filter-Definition) |Error data filter | object | yes |
-| [transition](#Transitions) |Transition definition when errors expressed in errorExpression are matched | string | yes |
+| [transition](#Transitions) |Next transition of the workflow when an errors expressed in errorExpression are matched | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -275,7 +275,7 @@ see the [Error Handling section](#Error-Handling).
       "description": "Error data filter"
     },
     "transition": {
-      "description": "Transition definition when errors expressed in errorExpression are matched",
+      "description": "Next transition of the workflow when an errors expressed in errorExpression are matched",
       "$ref": "#/definitions/transition"
     }
   },
@@ -389,7 +389,7 @@ Event state can hold one or more events definitions, so let's define those:
 | actionMode |Specifies if functions are executed in sequence of parallel | string | no |
 | [actions](#Action-Definition) |Array of actions | array | yes |
 | [filter](#Filter-Definition) |Event data filter | object | yes |
-| [transition](#Transitions) |Transition definition after all the actions for the matching event have been successfully executed | string | yes |
+| [transition](#Transitions) |Next transition of the workflow after all the actions for the matching event have been successfully executed | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -423,7 +423,7 @@ Event state can hold one or more events definitions, so let's define those:
           "$ref": "#/definitions/filter"
         },
         "transition": {
-          "description": "Transition definition after all the actions for the matching event have been successfully executed",
+          "description": "Next transition of the workflow after all the actions for the matching event have been successfully executed",
           "$ref": "#/definitions/transition"
         }
     },
@@ -570,7 +570,7 @@ as well as define parameters (key/value pairs).
 | match |Result matching value | string | yes |
 | interval |Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| integer | no |
 | max |Max retry value | integer | no |
-| [transition](#Transitions) |Transition Definition when exceeding max limit | string | yes |
+| [transition](#Transitions) |Next transition of the workflow when exceeding max limit | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -594,7 +594,7 @@ as well as define parameters (key/value pairs).
             "description": "Specifies the max retry"
         },
         "transition": {
-          "description": "Transition definition when exceeding max limit",
+          "description": "Next transition of the workflow when exceeding max limit",
           "$ref": "#/definitions/transition"
         }
     },
@@ -651,7 +651,7 @@ Defines Transitions from point A to point B in the serverless workflow. For more
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
-| [transition](#Transitions) |Transition definition after all the actions have been successfully executed | string | yes (if end is set to false) |
+| [transition](#Transitions) |Next transition of the workflow after all the actions have been successfully executed | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -707,7 +707,7 @@ Defines Transitions from point A to point B in the serverless workflow. For more
             }
         },
         "transition": {
-          "description": "Transition definition after all the actions have been successfully executed",
+          "description": "Next transition of the workflow after all the actions have been successfully executed",
           "$ref": "#/definitions/transition"
         }
     },
@@ -842,7 +842,7 @@ There are found types of choices defined:
 | path |Path that selects the data input value to be matched | string | yes |
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
-| [transition](#Transitions) |Transition Definition if there is valid matches | string | yes |
+| [transition](#Transitions) |Next transition of the workflow if there is valid matches | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -865,7 +865,7 @@ There are found types of choices defined:
             "description": "Specifies how data input is compared with the value"
         },
         "transition": {
-          "description": "Transition definition if there is valid matches",
+          "description": "Next transition of the workflow if there is valid matches",
           "$ref": "#/definitions/transition"
         }
     },
@@ -883,7 +883,7 @@ There are found types of choices defined:
 | path |Path that selects the data input value to be matched | string | yes |
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
-| [transition](#Transitions) |Transition Definition if there is valid matches | string | yes |
+| [transition](#Transitions) |Next transition of the workflow if there is valid matches | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -912,7 +912,7 @@ There are found types of choices defined:
             }
         },
         "transition": {
-          "description": "Transition definition if there is valid matches",
+          "description": "Next transition of the workflow if there is valid matches",
           "$ref": "#/definitions/transition"
         }
     },
@@ -930,7 +930,7 @@ There are found types of choices defined:
 | path |Path that selects the data input value to be matched | string | yes |
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
-| [transition](#Transitions) |Transition Definition if there is valid matches | string | yes |
+| [transition](#Transitions) |Next transition of the workflow if there is valid matches | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -958,7 +958,7 @@ There are found types of choices defined:
             }
         },
         "transition": {
-          "description": "Transition definition if there is valid matches",
+          "description": "Next transition of the workflow if there is valid matches",
           "$ref": "#/definitions/transition"
         }
     },
@@ -976,7 +976,7 @@ There are found types of choices defined:
 | path |Path that selects the data input value to be matched | string | yes |
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
-| [transition](#Transitions) |Transition Definition if there is valid matches | string | yes |
+| [transition](#Transitions) |Next transition of the workflow if there is valid matches | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1005,7 +1005,7 @@ There are found types of choices defined:
             }
         },
         "transition": {
-          "description": "Transition definition if there is valid matches",
+          "description": "Next transition of the workflow if there is valid matches",
           "$ref": "#/definitions/transition"
         }
     },
@@ -1026,7 +1026,7 @@ There are found types of choices defined:
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
-| [transition](#Transitions) |Transition Definition after the delay | string | yes (if end is set to false) |
+| [transition](#Transitions) |Next transition of the workflow after the delay | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary> 
 
@@ -1073,7 +1073,7 @@ There are found types of choices defined:
             }
         },
         "transition": {
-          "description": "Transition definition after the delay",
+          "description": "Next transition of the workflow after the delay",
           "$ref": "#/definitions/transition"
         }
     },
@@ -1108,7 +1108,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop behavior | object | yes |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
-| [transition](#Transitions) |Transition Definition after all branches have completed execution | string | yes (if end is set to false) |
+| [transition](#Transitions) |Next transition of the workflow after all branches have completed execution | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1159,7 +1159,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
             }
         },
         "transition": {
-          "description": "Transition definition after all branches have completed execution",
+          "description": "Next transition of the workflow after all branches have completed execution",
           "$ref": "#/definitions/transition"
         }
     },
@@ -1257,7 +1257,7 @@ true, the branches parallel parent state must wait for this branch to finish bef
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
 | [onError](#State-Exception-Handling) |States error handling definitions | array | no |
-| [transition](#Transitions) |Transition Definition after subflow has completed | string | yes (if end is set to false) |
+| [transition](#Transitions) |Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1309,7 +1309,7 @@ true, the branches parallel parent state must wait for this branch to finish bef
            }
         },
         "transition": {
-          "description": "Transition definition after subflow has completed",
+          "description": "Next transition of the workflow after subflow has completed",
           "$ref": "#/definitions/transition"
         }
     },

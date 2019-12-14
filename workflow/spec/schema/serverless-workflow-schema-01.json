@@ -138,7 +138,7 @@
           "$ref": "#/definitions/filter"
         },
         "transition": {
-          "description": "Transition definition when errors expressed in errorExpression are matched",
+          "description": "Next transition of the workflow when errors expressed in errorExpression are matched",
           "$ref": "#/definitions/transition"
         }
       },
@@ -222,7 +222,7 @@
           }
         },
         "transition": {
-          "description": "Transition definition after all the actions for the matching event have been successfully executed",
+          "description": "Next transition of the workflow after all the actions for the matching event have been successfully executed",
           "$ref": "#/definitions/transition"
         },
         "filter": {
@@ -278,7 +278,7 @@
           "description": "Specifies the max retry"
         },
         "transition": {
-          "description": "Transition definition when exceeding max limit",
+          "description": "Next transition of the workflow when exceeding max limit",
           "$ref": "#/definitions/transition"
         }
       },
@@ -409,7 +409,7 @@
             }
           },
           "transition": {
-            "description": "Transition definition after the time delay",
+            "description": "Next transition of the workflow after the time delay",
             "$ref": "#/definitions/transition"
           }
         },
@@ -547,7 +547,7 @@
             }
           },
           "transition": {
-            "description": "Transition definition after all the actions have been successfully executed",
+            "description": "Next transition of the workflow after all the actions have been successfully executed",
             "$ref": "#/definitions/transition"
           }
         },
@@ -624,7 +624,7 @@
             }
           },
           "transition": {
-            "description": "Transition definition after all branches have completed execution",
+            "description": "Next transition of the workflow after all branches have completed execution",
             "$ref": "#/definitions/transition"
           }
         },
@@ -792,7 +792,7 @@
             }
           },
           "transition": {
-            "description": "Transition definition after SubFlow has completed execution",
+            "description": "Next transition of the workflow after SubFlow has completed execution",
             "$ref": "#/definitions/transition"
           }
         },
@@ -859,7 +859,7 @@
           },
           {
             "$ref": "#/definitions/transition",
-            "description": "Transition definition if there is a value match"
+            "description": "Next transition of the workflow if there is a value match"
           }
         ],
         "required": [
@@ -879,7 +879,7 @@
             }
           },
           "transition": {
-            "description": "Transition definition if there is a valid match",
+            "description": "Next transition of the workflow if there is a valid match",
             "$ref": "#/definitions/transition"
           }
         },
@@ -901,7 +901,7 @@
             }
           },
           "transition": {
-            "description": "Transition definition if there is a valid match",
+            "description": "Next transition of the workflow if there is a valid match",
             "$ref": "#/definitions/transition"
           }
         },
@@ -920,7 +920,7 @@
             "description": "Not Choice"
           },
           "transition": {
-            "description": "Transition definition if there is a valid match",
+            "description": "Next transition of the workflow if there is a valid match",
             "$ref": "#/definitions/transition"
           }
         },
