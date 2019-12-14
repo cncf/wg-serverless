@@ -27,15 +27,13 @@ You can find the current list of project owners [here](owners.md).
 
 In order to become a project owner you must:
 
+- Abite to the [CNCF Code of Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md)
 - Be an active community member of the project
-- Actively review and be involved in pull request conversations
-- Keep all communication public (via mailing lists, github comments/issues etc)
-- Keep all your conversations friendly 
-- Be proactive and positive
-- Keep all conversations focused on actions and moving the project forward
+- Demonstrate in-depth knowledge of the code and design of the project
+- Help onboard new people to the project
 
 
-Every three months current project owners have the chance to get together (via email list) and publicly propose community
+Project owners can publicly propose community
 members which have shown these characteristics to be included as owners of the project. 
 Majority vote must be used to accept such a proposal.
  
@@ -44,27 +42,8 @@ Majority vote must be used to accept such a proposal.
 At times people lose interest in different projects or no longer can invest time into them. Also some owners
 may no longer follow the characteristis/traits mentioned in the [above](#Becoming-a-project-owner) section. 
 If this happens project owners have the ability (and responsibility) to remove themselves from the owners duties. 
-This can be done via a formal email 
- to the project mailing list where they state that they no longer wish to have owner responsibilities.
+This can be done via a Pull Request which removes their name from the [owners document](#owners.md).
  
 It is also possible for current project owners to cast a vote to remove another owner that they feel no longer exemplifies 
-owners duties/characteristics. This vote can also happen once every three months.
+owners duties/characteristics.
 Majority vote must be used to accept such a proposal. 
-
-## Project maintainer
-
-The project maintaner role is important as it includes responsibilities that go above and beyond 
-those of community contributors and project owners.
-
-In order to become a project maintainer, you must:
-
-- Show deep knowledge of the project design and code
-- Be a very active contributor
-- Show to be a good community member 
-- Show 100% focus on project growth (and not individual interests)
-
-Similar to project owners, the project maintainer should publicly announce their resignation from the role 
-in case they no longer have the interest or the time to invest into the project. Project owners can once every 6 month
-cast a vote to replace the project maintainer. A unanymous vote should be used for such a proposal.
-
-Currently our project does not have a project maintainer, but one should be selected as soon as possible.
