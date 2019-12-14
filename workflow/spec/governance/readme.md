@@ -27,7 +27,7 @@ You can find the current list of project owners [here](owners.md).
 
 In order to become a project owner you must:
 
-- Abite to the [CNCF Code of Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md)
+- Adhere to the [CNCF Code of Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md)
 - Be an active community member of the project
 - Demonstrate in-depth knowledge of the code and design of the project
 - Help onboard new people to the project
@@ -35,15 +35,15 @@ In order to become a project owner you must:
 
 Project owners can publicly propose community
 members which have shown these characteristics to be included as owners of the project. 
-Majority vote must be used to accept such a proposal.
+Majority vote among the existing owners must be used to accept such a proposal.
  
 ### Removing project owners
 
 At times people lose interest in different projects or no longer can invest time into them. Also some owners
-may no longer follow the characteristis/traits mentioned in the [above](#Becoming-a-project-owner) section. 
+may no longer follow the characteristics/traits mentioned in the [above](#Becoming-a-project-owner) section. 
 If this happens project owners have the ability (and responsibility) to remove themselves from the owners duties. 
 This can be done via a Pull Request which removes their name from the [owners document](#owners.md).
  
 It is also possible for current project owners to cast a vote to remove another owner that they feel no longer exemplifies 
 owners duties/characteristics.
-Majority vote must be used to accept such a proposal. 
+Majority vote among the existing owners must be used to accept such a proposal. 
