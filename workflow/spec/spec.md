@@ -604,6 +604,40 @@ as well as define parameters (key/value pairs).
 
 </details>
 
+#### Transition Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| [condition](#Condition-Definition) |Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid. | object | no |
+| [nextState](#Transitions) |State to transition to next | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "condition": {
+      "description": "Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid.",
+      "$ref": "#/definitions/condition"
+    },
+    "nextState": {
+      "type": "string",
+      "description": "State to transition to next",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "nextState"
+  ]
+}
+```
+
+</details>
+
+Defines Transitions from point A to point B in the serverless workflow. For more information see the
+[Transitions section](#Transitions).
+
 ### Operation State
 
 | Parameter | Description | Type | Required |

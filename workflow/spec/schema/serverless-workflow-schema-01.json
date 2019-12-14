@@ -114,7 +114,7 @@
       "type": "object",
       "properties": {
         "condition": {
-          "description": "Boolean expression which consists of one or more Event operands and the Boolean operators",
+          "description": "Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid.",
           "$ref": "#/definitions/condition"
         },
         "nextState": {
