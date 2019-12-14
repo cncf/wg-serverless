@@ -2,23 +2,24 @@
 
 ## Abstract
 
-Serverless applications are becoming increasingly complex and are rearely sequential in nature. 
+Serverless applications are becoming increasingly complex and are rarely composed 
+of a single function call triggered by an event. 
 Often they contain complex business logic to coordinate, manage, and define the execution order of a large amount 
 of serverless functions and events that can trigger those functions.
  
-Workflows have become a key component of serverless applications as they excel at dealing with cross-cutting concerns 
-such as orchestration and coordination of serverless applications functional flow. 
+Workflows have become a key component of serverless applications as they automate
+ orchestration and coordination of serverless applications functional flow. 
 
 Some of many benefits using workflows in serverless applications include:
-- Reduce complex execution logic out of your serverless functions
-- Externalize cross-cutting concerts such as parallel execution, branching, timeouts, compensation, and other flow control
+- Allow you to develop new application much faster by taking the complex execution logic out of your application.
+- Externalize workflow execution logic and management such as parallel execution, branching, timeouts, compensation, and other flow control
  logic out of many serverless function implementations into a single workflow definition.
 - Allow you to write less code in your serverless apps/functions
 - Significantly reduce the amount of time and effort to make changes in large serverless apps.
 
 Many different workflow implementations (both proprietary and open-source) exist today, each with it's own set of features
-and capabilities. When picking a current implementations, it is very difficult to later on switch to a different one without
-running into large time and cost investments.
+and capabilities. When picking a current implementations, it is very difficult to later on switch to a different one
+without investing a lot of time and cost
 
 The goal of the Serverless Workflow sub-group is to:
 - Standardize Serverless Worfkflow model and definition
