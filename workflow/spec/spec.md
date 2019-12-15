@@ -106,14 +106,14 @@ Here we define details of the Serverless Workflow definitions:
 | name | Workflow name | string |yes |
 | description | Workflow description | string |no |
 | version | Workflow version | string |no |
-| schemaVersion | Serverless Workflow schema version | string |no |
-| startsAt |State name which is the starting state | string |yes |
+| schemaVersion | Workflow schema version | string |no |
+| startsAt | Workflow starting state | string |yes |
 | execStatus |Workflow execution status | string |no |
 | expressionLanguage |Default expression language to be used throughout the workflow definition | string |no |
-| [triggerDefs](#Trigger-Definition) |Array of workflow triggers | array | no |
-| [states](#State-Definition) | Array of workflow states | array | yes |
+| [triggerDefs](#Trigger-Definition) |Workflow triggers | array | no |
+| [states](#State-Definition) | Workflow states | array | yes |
 | [onError](#Error-Handling) |Workflow error handling definitions | array | no |
-| [extensions](#Extending) | Array of workflow custom extension | array | no |
+| [extensions](#Extending) | Workflow custom extensions | array | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -217,7 +217,7 @@ events for same workflow instance, must be specified in that event trigger.
 | name | Unique trigger name | string |yes |
 | source |CloudEvent source | string | yes |
 | type |CloudEvent type | string | yes |
-| correlationToken | path used for event correlation | string | no |
+| correlationToken | Path used for event correlation | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -317,9 +317,9 @@ We will start defining each individual state:
 | --- | --- | --- | --- |
 | id | Unique state id | string | no |
 | name | State name | string | yes |
-| type |start type | string | yes |
+| type | State type | string | yes |
 | end |Is this state an end state | boolean | no |
-| [events](#eventstate-eventdef) |Array of event | array | yes |
+| [events](#eventstate-eventdef) |State events | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
@@ -390,7 +390,7 @@ Event state can hold one or more events definitions, so let's define those:
 | [condition](#Condition-Definition) |Condition consisting of Boolean operation of events that will trigger the event state | object | yes |
 | timeout |Time period to wait for the events in the condition (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | actionMode |Specifies if functions are executed in sequence of parallel | string | no |
-| [actions](#Action-Definition) |Array of actions | array | yes |
+| [actions](#Action-Definition) |State actions | array | yes |
 | [filter](#Filter-Definition) |Event data filter | object | yes |
 | [nextState](#Transitions) |State to transition to after all the actions for the matching event have been successfully executed | string | yes |
 
@@ -448,7 +448,7 @@ Each event state's event definition includes one or more actions. Let's define t
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | expressionLanguage |Expression language. For example 'spel', 'jexl', 'cel', etc| string | no |
-| body |The expression body | string | yes |
+| body |Expression body | string | yes |
 
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -616,7 +616,7 @@ as well as define parameters (key/value pairs).
 | type |State type | string | yes |
 | end |Is this state an end state | boolean | no |
 | actionMode |Should actions be executed sequentially or in parallel | string | yes |
-| [actions](#Action-Definition) |Array of actions | array | yes |
+| [actions](#Action-Definition) |State actions | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
@@ -706,7 +706,7 @@ actions execute, a transition to "next state" happens.
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | id | Unique state id | string | no |
-| name |Unique state name | string | yes |
+| name |State name | string | yes |
 | type |State type | string | yes |
 | end |Is this state an end start | boolean | no | 
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
@@ -895,7 +895,7 @@ There are found types of choices defined:
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| not |Choice | object | yes |
+| not |State choice | object | yes |
 | path |Path that selects the data input value to be matched | string | yes |
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
@@ -941,7 +941,7 @@ There are found types of choices defined:
 
 | Parameter | Description |  Type | Required |
 | --- | --- | --- | --- |
-| or |List of choices | array | yes | 
+| or |State choices | array | yes | 
 | path |Path that selects the data input value to be matched | string | yes |
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
@@ -1159,8 +1159,8 @@ Let's define a branch now:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | name |State name | string | yes |
-| startsAt |State name which is the start state | string | yes |
-| [states](#State-Definition) |List of states to be executed in this branch | array | yes |
+| startsAt |Branch start state | string | yes |
+| [states](#State-Definition) |States to be executed in this branch | array | yes |
 | waitForCompletion |If workflow execution must wait for this branch to finish before continuing | boolean | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
