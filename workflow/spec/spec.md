@@ -25,6 +25,7 @@ This document is a working draft.
 ## Table of Contents
 
 - [Introduction](#Introduction)
+- [Functional Scope](#Functional-Scope)
 - [Use Cases](#Use-Cases)
 - [Specification Details](#Specification-Details)
     - [Workflow Model](#Workflow-Model)
@@ -68,13 +69,15 @@ You can find different Serverless Workflow use cases [here](spec-usecases.md)
 
 ## Specification Details
 
-In sections below we describe all each section of the Serverless Workflow in details. We first show properties in table format, 
-and you can also click on the "Click to view JSON Schema" to see the detailed definition defines with [JSON Schema](https://json-schema.org/).
+Following sections provide detailed descriptions of the Serverless Workflow Model. For each part of the model we provide:
+- Parameter description in table format
+- JSON Schema definition 
 
-You can find the entire schema document [here](schema/serverless-workflow-schema-01.json). Please note just like this document, this is also
-work in progress.
+You can find the entire Serverless Workflow JSON Schema [here](schema/serverless-workflow-schema-01.json).
+Note that this schema reflects the current status of the specification as is updated alongside this document. 
 
 ### Workflow Model
+
 Serverless Workflow can be viewed as a collection of states and the transitions and branching between these states.
 Each state could have associated events and/or functions. Serverless Workflow may be invoked from a CLI command or triggered dynamically upon arrival of events from event sources. 
 An event from an event source may also be associated with a specific state within a Serverless Workflow. 
