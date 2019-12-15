@@ -113,7 +113,7 @@ Here we define details of the Serverless Workflow definitions:
 | [triggerDefs](#Trigger-Definition) |Array of workflow triggers | array | no |
 | [states](#State-Definition) | Array of workflow states | array | yes |
 | [onError](#Error-Handling) |Workflow error handling definitions | array | no |
-| extensions | Array of workflow custom extension | array | no |
+| [extensions](#Extending) | Array of workflow custom extension | array | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
