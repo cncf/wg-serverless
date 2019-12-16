@@ -35,7 +35,7 @@ In order to become a project owner you must:
 
 Project owners can publicly propose community
 members which have shown these characteristics to be included as owners of the project. 
-Majority vote among the existing owners must be used to accept such a proposal.
+Majority (>50%) vote among the existing owners must be used to accept such a proposal.
  
 ### Removing project owners
 
@@ -46,4 +46,4 @@ This can be done via a Pull Request which removes their name from the [owners do
  
 It is also possible for current project owners to cast a vote to remove another owner that they feel no longer exemplifies 
 owners duties/characteristics.
-Majority vote among the existing owners must be used to accept such a proposal. 
+Majority (>50%) vote among the existing owners must be used to accept such a proposal. 
