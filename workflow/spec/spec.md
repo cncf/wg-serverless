@@ -42,6 +42,8 @@ This document is a working draft.
 - [Specification Details](#Specification-Details)
     - [Workflow Model](#Workflow-Model)
     - [Workflow Definition](#Workflow-Definition)
+- [Workflow Data](#Workflow-Data)
+- [Workflow Error Handling](#Workflow-Error-Handling)
 - [Extending](#Extending)
 - [Examples](#Examples)
 - [Reference](#Reference)
@@ -59,6 +61,7 @@ control flow and how/which functions are to be invoked on arrival of events.
 from states to functions, from one function to another function, and from one state to another state.
 
 ### Functional Scope
+
 Serverless Workflow allows users to:
 
 1. Define and orchestrate steps/states involved in a serverless application.
@@ -264,7 +267,7 @@ events for same workflow instance, must be specified in that event trigger.
 ### Error Definition
 
 Error definitions define runtime errors that can occur during workflow execution and how to handle them. For more information
-see the [Error Handling section](#Error-Handling). 
+see the [Workflow Error Handling section](#Workflow-Error-Handling). 
 
 
 | Parameter | Description | Type | Required |
@@ -333,7 +336,7 @@ We will start defining each individual state:
 | [events](#eventstate-eventdef) |State events | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
-| [onError](#Error-Handling) |States error handling definitions | array | no |
+| [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
  
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -757,7 +760,7 @@ actions execute, a transition to "next state" happens.
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
-| [onError](#Error-Handling) |States error handling definitions | array | no |
+| [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
 | default |Name of the next state if there is no match for any choices value | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -1585,7 +1588,29 @@ Implementers should decide how to handle data-base transitions which return fals
 The default should be that if this happens workflow execution should halt and a detailed message
  on why the transition failed should be provided.
 
-### Information Passing
+## Workflow Data
+
+Workflow data is represented in [JSON](https://www.json.org/json-en.html) format. Flow of data during
+serverless workflow execution can be divided into the following constructs:
+
+- [Workfow data input](#Workflow-data-input)
+- [Information passing between states](#Information-passing-between-states)
+- [Workflow data output](#Workflow-data-output)
+
+### Workflow data input
+
+The initial data input into a workflow instance can be any valid JSON object. If no input is provided
+the default data input is an empty JSON object 
+```json
+{}
+```
+
+It is up to implementations how to define their API to ingest the initial workflow data. 
+Workflow data input must be passed as input to the workflows' "startsAt" state (the state representing the start of the workflow).
+Initial workflow data should not be manipulated (via filters for example) before it is passed to the "startsAt" state.
+
+
+### Information passing between states
 
 The diagram below shows data flow through a Serverless Workflow that includes an
 Event state that invokes two serverless functions. Output data from one state is
@@ -1659,8 +1684,10 @@ Each Filter has three kinds of path filters
 <img src="media/filter-parallel.png" with="480px" height="270px" alt="Parallel FilterDiagram"/>
 </p>
 
+### Workflow data output
 
-### Error Handling
+
+## Workflow Error Handling
 
 Serverless Workflow allows you to explicitly model what should happen in case of runtime errors during workflow execution.
 Explicit error handling is done via the "onError" property which you can place inside a state as well as the main workflow
