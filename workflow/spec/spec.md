@@ -257,7 +257,7 @@ see the [Error Handling section](#Error-Handling).
 | --- | --- | --- | --- |
 | errorExpression | Boolean expression to match one or more errors | string |yes |
 | [filter](#Filter-Definition) |Error data filter | object | yes |
-| nextState |State to transition to if errors expressed in errorExpression are matched | string | yes |
+| [transition](#Transitions) |Next transition of the workflow when an errors expressed in errorExpression are matched | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -274,13 +274,12 @@ see the [Error Handling section](#Error-Handling).
       "$ref": "#/definitions/filter",
       "description": "Error data filter"
     },
-    "nextState": {
-      "type": "string",
-      "description": "State to transition to if errors expressed in errorExpression are matched",
-      "minLength": 1
+    "transition": {
+      "description": "Next transition of the workflow when an errors expressed in errorExpression are matched",
+      "$ref": "#/definitions/transition"
     }
   },
-  "required": ["errorExpression", "nextState"]
+  "required": ["errorExpression", "transition"]
 }
 ```
 
@@ -390,7 +389,7 @@ Event state can hold one or more events definitions, so let's define those:
 | actionMode |Specifies if functions are executed in sequence of parallel | string | no |
 | [actions](#Action-Definition) |Array of actions | array | yes |
 | [filter](#Filter-Definition) |Event data filter | object | yes |
-| [nextState](#Transitions) |State to transition to after all the actions for the matching event have been successfully executed | string | yes |
+| [transition](#Transitions) |Next transition of the workflow after all the actions for the matching event have been successfully executed | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -423,12 +422,12 @@ Event state can hold one or more events definitions, so let's define those:
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "nextState": {
-            "type": "string",
-            "description": "State to transition to after all the actions for the matching event have been successfully executed"
+        "transition": {
+          "description": "Next transition of the workflow after all the actions for the matching event have been successfully executed",
+          "$ref": "#/definitions/transition"
         }
     },
-    "required": ["condition", "actions", "nextState"]
+    "required": ["condition", "actions", "transition"]
 }
 ```
 
@@ -436,7 +435,7 @@ Event state can hold one or more events definitions, so let's define those:
 
 The event expression attribute is used to associate this event state with one or more trigger events. 
 
-Note that each event definition has a "nextState" property, which is used to identify the state which 
+Note that each event definition has a "transition" property, which is used to identify the state which 
 should get triggered after this event completes.
 
 Each event state's event definition includes one or more actions. Let's define these actions now:
@@ -571,7 +570,7 @@ as well as define parameters (key/value pairs).
 | match |Result matching value | string | yes |
 | interval |Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| integer | no |
 | max |Max retry value | integer | no |
-| [nextState](#Transitions) |State to transition to when exceeding max limit | string | yes |
+| [transition](#Transitions) |Next transition of the workflow when exceeding max limit | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -594,16 +593,50 @@ as well as define parameters (key/value pairs).
             "minimum": 0,
             "description": "Specifies the max retry"
         },
-        "nextState": {
-            "type": "string",
-            "description": "State to transition to when exceeding max limit"
+        "transition": {
+          "description": "Next transition of the workflow when exceeding max limit",
+          "$ref": "#/definitions/transition"
         }
     },
-    "required": ["match", "nextState"]
+    "required": ["match", "transition"]
 }
 ```
 
 </details>
+
+#### Transition Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| [condition](#Condition-Definition) |Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid. | object | no |
+| [nextState](#Transitions) |State to transition to next | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "condition": {
+      "description": "Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid.",
+      "$ref": "#/definitions/condition"
+    },
+    "nextState": {
+      "type": "string",
+      "description": "State to transition to next",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "nextState"
+  ]
+}
+```
+
+</details>
+
+Defines Transitions from point A to point B in the serverless workflow. For more information see the
+[Transitions section](#Transitions).
 
 ### Operation State
 
@@ -618,7 +651,7 @@ as well as define parameters (key/value pairs).
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
-| [nextState](#Transitions) |State to transition to after all the actions have been successfully executed | string | yes (if end is set to false) |
+| [transition](#Transitions) |Next transition of the workflow after all the actions have been successfully executed | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -673,9 +706,9 @@ as well as define parameters (key/value pairs).
                 "$ref": "#/definitions/error"
             }
         },
-        "nextState": {
-            "type": "string",
-            "description": "State to transition to after all the actions have been successfully executed"
+        "transition": {
+          "description": "Next transition of the workflow after all the actions have been successfully executed",
+          "$ref": "#/definitions/transition"
         }
     },
     "if": {
@@ -687,7 +720,7 @@ as well as define parameters (key/value pairs).
       "required": ["name", "type", "actionMode", "actions"]
     },
     "else": {
-      "required": ["name", "type", "actionMode", "actions", "nextState"]
+      "required": ["name", "type", "actionMode", "actions", "transition"]
     }
 }
 ```
@@ -809,7 +842,7 @@ There are found types of choices defined:
 | path |Path that selects the data input value to be matched | string | yes |
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
-| [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
+| [transition](#Transitions) |Next transition of the workflow if there is valid matches | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -831,12 +864,12 @@ There are found types of choices defined:
             "enum": ["Exists", "Equals", "LessThan", "LessThanEquals", "GreaterThan", "GreaterThanEquals"],
             "description": "Specifies how data input is compared with the value"
         },
-        "nextState": {
-            "type": "string",
-            "description": "Specifies the name of the next state to transition to if there is a value match"
+        "transition": {
+          "description": "Next transition of the workflow if there is valid matches",
+          "$ref": "#/definitions/transition"
         }
     },
-    "required": ["path", "value", "operator", "nextState"]
+    "required": ["path", "value", "operator", "transition"]
 }
 ```
 
@@ -850,7 +883,7 @@ There are found types of choices defined:
 | path |Path that selects the data input value to be matched | string | yes |
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
-| [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
+| [transition](#Transitions) |Next transition of the workflow if there is valid matches | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -878,12 +911,12 @@ There are found types of choices defined:
                 }
             }
         },
-        "nextState": {
-            "type": "string",
-            "description": "Specifies the name of the next state to transition to if there is a value match"
+        "transition": {
+          "description": "Next transition of the workflow if there is valid matches",
+          "$ref": "#/definitions/transition"
         }
     },
-    "required": ["and", "path", "value", "operator", "nextState"]
+    "required": ["and", "path", "value", "operator", "transition"]
 }
 ```
 
@@ -897,7 +930,7 @@ There are found types of choices defined:
 | path |Path that selects the data input value to be matched | string | yes |
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
-| [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
+| [transition](#Transitions) |Next transition of the workflow if there is valid matches | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -924,12 +957,12 @@ There are found types of choices defined:
                 }
             }
         },
-        "nextState": {
-            "type": "string",
-            "description": "Specifies the name of the next state to transition to if there is a value match"
+        "transition": {
+          "description": "Next transition of the workflow if there is valid matches",
+          "$ref": "#/definitions/transition"
         }
     },
-    "required": ["not", "path", "value", "operator", "nextState"]
+    "required": ["not", "path", "value", "operator", "transition"]
 }
 ```
 
@@ -943,7 +976,7 @@ There are found types of choices defined:
 | path |Path that selects the data input value to be matched | string | yes |
 | value |Matching value | string | yes |
 | operator |Data Input comparator | string | yes |
-| [nextState](#Transitions) |State to transition to if there is valid match(es) | string | yes |
+| [transition](#Transitions) |Next transition of the workflow if there is valid matches | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -971,12 +1004,12 @@ There are found types of choices defined:
                 }                              
             }
         },
-        "nextState": {
-            "type": "string",
-            "description": "Specifies the name of the next state to transition to if there is a value match"
+        "transition": {
+          "description": "Next transition of the workflow if there is valid matches",
+          "$ref": "#/definitions/transition"
         }
     },
-    "required": ["or",  "path", "value", "operator", "nextState"]
+    "required": ["or",  "path", "value", "operator", "transition"]
 }
 ```
 </details>
@@ -993,7 +1026,7 @@ There are found types of choices defined:
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
-| [nextState](#Transitions) |State to transition to after the delay | string | yes (if end is set to false) |
+| [transition](#Transitions) |Next transition of the workflow after the delay | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary> 
 
@@ -1039,9 +1072,9 @@ There are found types of choices defined:
                 "$ref": "#/definitions/error"
             }
         },
-        "nextState": {
-            "type": "string",
-            "description": "Name of the next state to transition to after the delay"
+        "transition": {
+          "description": "Next transition of the workflow after the delay",
+          "$ref": "#/definitions/transition"
         }
     },
     "if": {
@@ -1053,7 +1086,7 @@ There are found types of choices defined:
       "required": ["name", "type", "timeDelay", "end"]
     },
     "else": {
-      "required": ["name", "type", "timeDelay", "nextState"]
+      "required": ["name", "type", "timeDelay", "transition"]
     }
 }
 ```
@@ -1075,7 +1108,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop behavior | object | yes |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
-| [nextState](#Transitions) |State to transition to after all branches have completed execution | string | yes (if end is set to false) |
+| [transition](#Transitions) |Next transition of the workflow after all branches have completed execution | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1125,9 +1158,9 @@ Delay state simple waits for a certain amount of time before transitioning to a 
                 "$ref": "#/definitions/error"
             }
         },
-        "nextState": {
-            "type": "string",
-            "description": "Specifies the name of the next state to transition to after all branches have completed execution"
+        "transition": {
+          "description": "Next transition of the workflow after all branches have completed execution",
+          "$ref": "#/definitions/transition"
         }
     },
     "if": {
@@ -1139,7 +1172,7 @@ Delay state simple waits for a certain amount of time before transitioning to a 
       "required": ["name", "type", "branches"]
     },
     "else": {
-      "required": ["name", "type", "branches", "nextState"]
+      "required": ["name", "type", "branches", "transition"]
     }
 }
 ```
@@ -1224,7 +1257,7 @@ true, the branches parallel parent state must wait for this branch to finish bef
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
 | [onError](#State-Exception-Handling) |States error handling definitions | array | no |
-| [nextState](#Transitions) |State to transition to after subflow has completed | string | yes (if end is set to false) |
+| [transition](#Transitions) |Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1275,9 +1308,9 @@ true, the branches parallel parent state must wait for this branch to finish bef
                 "$ref": "#/definitions/error"
            }
         },
-        "nextState": {
-            "type": "string",
-            "description": "State to transition to after subflow has completed."
+        "transition": {
+          "description": "Next transition of the workflow after subflow has completed",
+          "$ref": "#/definitions/transition"
         }
     },
     "if": {
@@ -1289,7 +1322,7 @@ true, the branches parallel parent state must wait for this branch to finish bef
       "required": ["name", "type", "workflowId"]
     },
     "else": {
-      "required": ["name", "type", "workflowId", "nextState"]
+      "required": ["name", "type", "workflowId", "transition"]
     }
 }
 ```
@@ -1435,9 +1468,13 @@ Here is an example of an Operation state which sends a confirmation email for ea
 ### Transitions
 
 Serverless workflow states can have one or more incoming and outgoing transitions (from/to other states).
-Each state has a "nextState" property which is a string value that determines which 
-state to transition to. Implementers can choose to use the states "name" string property
-for determining the next state, however we realize that in most cases this is not an
+Each state has a "transition" definition that is used to determines which 
+state to transition to next. 
+
+To define a transition, set the "nextState" property in your transition definitions.
+
+Implementers can choose to use the states "name" string property
+for determining the transition, however we realize that in most cases this is not an
 optimal solution that can lead to ambiguity. This is why each state also include an "id"
 property. Implementers can choose their own id generation strategy to populate the id property
 for each of the states and use it as the unique state identifier that is to be used as the "nextState" value. 
@@ -1446,6 +1483,65 @@ So the options for next state transitions are:
 * Use the state name property
 * Use the state id property
 * Use a combination of name and id properties
+
+#### Restricting Transitions based on state output
+
+In addition to specifying the "nextState" property a transition also defines a "condition" which must 
+evaluate to true for the transition to happen. Having this data-based restriction capabilities can help 
+ stop transitions within workflow execution that can have serious and harmful business impacts.
+
+State Transitions have access to the states data output. Conditions 
+can define an expression against the states output data to make sure that this transition only happens 
+if the expression evaluates to true.
+
+Here is an example of a restricted transition which only allows transition to the "highRiskState" if the 
+output of the state to transition from includes an user with the title "MANAGER".
+
+```json
+{  
+   "startsAt": "lowRiskState",
+   "states":[  
+      {  
+         "name":"lowRiskState",
+         "type":"OPERATION",
+         "actionMode":"Sequential",
+         "actions":[  
+          {  
+            "function":{
+               "name": "doLowRistOperation",
+               "resource": "functionResourse"
+            }
+          }
+         ],
+         "transition": {
+            "nextState":"highRiskState",
+            "condition": {
+               "expressionLanguage": "spel",
+               "body": "#jsonPath(stateOutputData,'$..user.title') eq 'MANAGER'"
+            }
+         }
+      },
+      {  
+         "name":"highRiskState",
+         "type":"OPERATION",
+         "end":true,
+         "actionMode":"Sequential",
+         "actions":[  
+            {  
+              "function":{
+                "name": "doHighRistOperation",
+                "resource": "functionResourse"
+              }
+           }
+         ]
+      }
+   ]
+}
+```
+
+Implementers should decide how to handle data-base transitions which return false (do not proceed).
+The default should be that if this happens workflow execution should halt and a detailed message
+ on why the transition failed should be provided.
 
 ### Information Passing
 
@@ -1560,10 +1656,14 @@ Let's take a look at a small example:
               "resultPath": "$.trace",
               "outputPath": "$.stateerror"
             },
-            "nextState": "afterErrorState"
+            "transition": {
+              "nextState": "afterErrorState"
+            }
           }
        ],
-       "nextState":"doSomethingElse"
+       "transition": {
+          "nextState":"doSomethingElse"
+       }
     },
     ...
   ]
@@ -1592,7 +1692,9 @@ workflow definition. Let's take a look:
          "resultPath": "$.trace",
          "outputPath": "$.stateerror"
        },
-       "nextState": "afterErrorState"
+       "transition": {
+          "nextState": "afterErrorState"
+       }
      }
   ],
   "states": [
@@ -1609,7 +1711,9 @@ workflow definition. Let's take a look:
              }
           }
        ],
-       "nextState":"doSomethingElse"
+       "transition": {
+          "nextState": "doSomethingElse"
+       }
     },
     {  
        "name":"HandleErrors2",
@@ -1624,7 +1728,9 @@ workflow definition. Let's take a look:
              }
           }
        ],
-       "nextState":"doSomethingElse"
+       "transition": {
+          "nextState": "doSomethingElse"
+       }
     },
     ...
   ]

@@ -31,12 +31,12 @@ So let's define a simple example workflow model and then add our custom extensio
 ```json
 {  
    "name": "Simple Workflow",
-   "starts-at": "FirstOperation",
+   "startsAt": "FirstOperation",
    "states":[  
       {  
          "name":"FirstOperation",
          "type":"OPERATION",
-         "action-mode":"Sequential",
+         "actionMode":"Sequential",
          "end": false,
          "actions":[  
             {  
@@ -47,13 +47,15 @@ So let's define a simple example workflow model and then add our custom extensio
                }
             }
          ],
-         "next-state":"SecondOperation"
+         "transition": {
+            "nextState": "SecondOperation"
+         }
       },
       {  
          "name":"SecondOperation",
          "type":"OPERATION",
          "end":true,
-         "action-mode":"Sequential",
+         "actionMode":"Sequential",
          "actions":[  
               {  
                  "name": "callSecondFunction",
