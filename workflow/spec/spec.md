@@ -1679,6 +1679,8 @@ the event states actions (sequential or parallel).
 </p>
 
 
+As previously mentioned [CloudEvents](https://cloudevents.io/) are first-class citizens of serverless workflows. Filters can be used
+just as previously mentioned to filter CloudEvents seamlessly.  
 
 The diagram below shows data flow through a Serverless Workflow that includes an
 Event state that invokes two serverless functions. Output data from one state is
@@ -1700,7 +1702,7 @@ combined with data received from a previous state before it is delivered in a
 response sent to the event source.
 
 <p align="center">
-<img src="media/information-passing1.png" with="400px" height="260px" alt="Async Event Diagram"/>
+<img src="media/event-state-info-passing1.png" with="350px" height="500px" alt="Event State Information Passing"/>
 </p>
 
 There may be cases where an event source such as an API gateway expects to
@@ -1710,11 +1712,14 @@ data received from a previous state before it is delivered in a response sent to
 the event source as shown below.
 
 <p align="center">
-<img src="media/information-passing2.png" with="400px" height="260px" alt="Sync Event Diagram"/>
+<img src="media/event-state-info-passing2.png" with="350px" height="500px" alt="Event State Information Passing"/>
 </p>
 
 ### Workflow data output
 
+Once a workflow instance reaces an end state (where the "end" parameter is set to true) and the workflow finishes its execution
+the data output of that result state becomes the workflow data output. This output can be logged or indexed depending on the
+implementation details. 
 
 ## Workflow Error Handling
 
