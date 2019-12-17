@@ -1717,7 +1717,7 @@ the event source as shown below.
 
 ### Workflow data output
 
-Once a workflow instance reaces an end state (where the "end" parameter is set to true) and the workflow finishes its execution
+Once a workflow instance reaches an end state (where the "end" parameter is set to true) and the workflow finishes its execution
 the data output of that result state becomes the workflow data output. This output can be logged or indexed depending on the
 implementation details. 
 
