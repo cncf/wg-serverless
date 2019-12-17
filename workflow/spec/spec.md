@@ -1602,17 +1602,17 @@ serverless workflow execution can be divided into the following constructs:
 The initial data input into a workflow instance can be any valid JSON object. If no input is provided
 the default data input is an empty JSON object 
 ```json
-{}
+{
+
+}
 ```
 
 It is up to implementations how to define their API to ingest the initial workflow data. 
 Workflow data input must be passed as input to the workflows' "startsAt" state (the state representing the start of the workflow).
 Initial workflow data should not be manipulated (via filters for example) before it is passed to the "startsAt" state.
 
-Following diagram shows that the workflow data input is passed as input to the "startsAt" state.
-
 <p align="center">
-<img src="media/workflowdatainput.png" with="400px" height="260px" alt="Async Event Diagram"/>
+<img src="media/workflowdatainput.png" with="500px" height="300px" alt="Workflow data input"/>
 </p>
 
 
