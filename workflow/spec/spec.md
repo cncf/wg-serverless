@@ -1642,6 +1642,11 @@ InputPath is used to select a portion of the states, event, or action data input
 </p>
 
 OutputPath is used to select a portion of the states or actions data output.
+
+<p align="center">
+<img src="media/state-filter-outputpath.png" with="350px" height="500px" alt="State Filter OutputPath"/>
+</p>
+
 ResultPath is used to select a portion of the actions output and use it to replace or combine it with the states data output.
 
 
