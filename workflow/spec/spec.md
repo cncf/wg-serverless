@@ -1612,10 +1612,7 @@ Workflow data input must be passed as input to the workflows' "startsAt" state (
 Initial workflow data should not be manipulated (via filters for example) before it is passed to the "startsAt" state.
 
 <p align="center">
-    <figure>
-    <img src="media/workflowdatainput.png" with="500px" height="300px" alt="Workflow data input"/>
-    <figcaption>Workflow data input</figcaption>
-    </figure>
+<img src="media/workflowdatainput.png" with="500px" height="300px" alt="Workflow data input"/>
 </p>
 
 
