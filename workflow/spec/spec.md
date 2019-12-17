@@ -1600,7 +1600,7 @@ serverless workflow execution can be divided into the following constructs:
 ### Workflow data input
 
 The initial data input into a workflow instance can be any valid JSON object. If no input is provided
-the default data input is an empty JSON object 
+the default data input is an empty JSON object:
 ```json
 {
 
@@ -1612,7 +1612,10 @@ Workflow data input must be passed as input to the workflows' "startsAt" state (
 Initial workflow data should not be manipulated (via filters for example) before it is passed to the "startsAt" state.
 
 <p align="center">
-<img src="media/workflowdatainput.png" with="500px" height="300px" alt="Workflow data input"/>
+    <figure>
+    <img src="media/workflowdatainput.png" with="500px" height="300px" alt="Workflow data input"/>
+    <figcaption>Workflow data input</figcaption>
+    </figure>
 </p>
 
 
