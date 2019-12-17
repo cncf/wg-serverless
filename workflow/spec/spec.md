@@ -1599,17 +1599,15 @@ serverless workflow execution can be divided into the following constructs:
 
 ### Workflow data input
 
-The initial data input into a workflow instance can be any valid JSON object. If no input is provided
-the default data input is an empty JSON object:
+The initial data input into a workflow instance must be a valid JSON object. If no input is provided
+the default data input is the empty object:
 ```json
 {
 
 }
 ```
 
-It is up to implementations how to define their API to ingest the initial workflow data. 
-Workflow data input must be passed as input to the workflows' "startsAt" state (the state representing the start of the workflow).
-Initial workflow data should not be manipulated (via filters for example) before it is passed to the "startsAt" state.
+Workflow data input is passed to the workflows "startsAt" state (the starting state) as data input.
 
 <p align="center">
 <img src="media/workflowdatainput.png" with="500px" height="300px" alt="Workflow data input"/>
@@ -1618,16 +1616,36 @@ Initial workflow data should not be manipulated (via filters for example) before
 
 ### Information passing between states
 
-All states in Serverless workflow can receive data. This is called the state's "Data Input". Each state also passes its 
-data to the next state, called the state's "Data Output". 
-Note that if the state is the workflows' "startsAt" (starting) state, its data input is the workflow data input. 
-If the state is an "End state" ("end" property set to true), its data output becomes the workflow output. This is described in the [Workflow Data Output section](#Workflow-Data-Output).
+States in Serverless workflow can receive data (Data Input) as well as produce a data result (Data Output).
+The states data input is typically the presious states' data output. The states
+data output then becomes the data input of the state it transitions to.
+There are two of rules to consider here:
+
+- If the state is the starting state its data input is the [workflow data input](#Workflow-data-input).
+- If the state is an end state ("end" property set to true), its data output is the [workflow data output](#Workflow-data-output).  
 
 <p align="center">
 <img src="media/basic-state-data-passing.png" with="500px" height="300px" alt="Basic state data passing"/>
 </p>
 
+Within states the JSON data can be accessed and manipulated via [filters](#Filter-Definition). 
+Filters are also used within [actions](#Action-Definition) and [events]((#eventstate-eventdef)). 
+Filters use JSONPath to do things like select a portion of data that you care about, filter unwanted information, 
+or combine/merge data to pass to the next state or action. The JSONPath expression must start with "$.". 
+ 
+Filters have three properties namely inputPath, outputPath, an resultPath.
 
+InputPath is used to select a portion of the states, event, or action data input.
+
+<p align="center">
+<img src="media/state-filter-inputpath.png" with="350px" height="500px" alt="State Filter InputPath"/>
+</p>
+
+OutputPath is used to select a portion of the states or actions data output.
+ResultPath is used to select a portion of the actions output and use it to replace or combine it with the states data output.
+
+
+ 
 
 The diagram below shows data flow through a Serverless Workflow that includes an
 Event state that invokes two serverless functions. Output data from one state is
