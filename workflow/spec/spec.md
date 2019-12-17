@@ -1635,21 +1635,23 @@ or combine/merge data to pass to the next state or action. The JSONPath expressi
  
 Filters have three properties namely inputPath, outputPath, an resultPath.
 
-InputPath is used to select a portion of the states, event, or action data input.
+**InputPath** is used to select a portion of the states, event, or action data input.
 
 <p align="center">
 <img src="media/state-filter-inputpath.png" with="350px" height="500px" alt="State Filter InputPath"/>
 </p>
 
-OutputPath is used to select a portion of the states or actions data output.
+**OutputPath** is used to select a portion of the states or actions data output.
 
 <p align="center">
 <img src="media/state-filter-outputpath.png" with="350px" height="500px" alt="State Filter OutputPath"/>
 </p>
 
-ResultPath is used to select a portion of the actions output and use it to replace or combine it with the states data output.
+**ResultPath** is used to select a portion of the actions output and use it to replace or combine it with the states data output.
 
-
+<p align="center">
+<img src="media/state-filter-resultpath.png" with="350px" height="500px" alt="State Filter ResultPath"/>
+</p>
  
 
 The diagram below shows data flow through a Serverless Workflow that includes an
