@@ -1653,6 +1653,32 @@ Filters have three properties namely inputPath, outputPath, an resultPath.
 <img src="media/state-filter-resultpath.png" with="350px" height="500px" alt="State Filter ResultPath"/>
 </p>
  
+Serverless workflow defines four types of data filters:
+
+- **Event Filter**
+  - Invoked when data is passed from an event to the current state
+- **State Filter**
+  - Invoked when data is passed from the previous state to the current state
+  - Invoked when data is passed from the current state to the next state
+- **Action Filter** 
+  - Invoked when data is passed from the current state to the first action
+  - Invoked when data is passed from an action to another action
+  - Invoked when data is passed from the last action to the current state
+- **Error Filter** 
+  - Invoked when a state encounters runtime exceptions
+
+The following diagrams show different filters in an Event state. Note that data merging can depend on the "actionModel" of
+the event states actions (sequential or parallel).
+
+<p align="center">
+<img src="media/event-state-filters-sequential.png" with="350px" height="500px" alt="Event State Filters Sequential"/>
+</p>
+
+<p align="center">
+<img src="media/event-state-filters-parallel.png" with="350px" height="500px" alt="Event State Filters Parallel"/>
+</p>
+
+
 
 The diagram below shows data flow through a Serverless Workflow that includes an
 Event state that invokes two serverless functions. Output data from one state is
@@ -1685,45 +1711,6 @@ the event source as shown below.
 
 <p align="center">
 <img src="media/information-passing2.png" with="400px" height="260px" alt="Sync Event Diagram"/>
-</p>
-
-### Filter Mechanism
-
-Serverless Workflow maintains an implicit JSON object which is accessed from each
-filter via JSONPath expression '$.'
-
-There are four kinds of filters
-
-- Event Filter
-  - Invoked when data is passed from an event to the current state
-- State Filter
-  - Invoked when data is passed from the previous state to the current state
-  - Invoked when data is passed from the current state to the next state
-- Action Filter 
-  - Invoked when data is passed from the current state to the first action
-  - Invoked when data is passed from an action to action
-  - Invoked when data is passed from the last action to the current state
-- Error Filter 
-  - Invoked when a state encounters runtime exceptions
-  
-Each Filter has three kinds of path filters
-
-- InputPath
-  - Select input data of either Event, State or Action as JSONPath
-  - Default value is '\$'
-- ResultPath
-  - Specify result JSON node of Action Output as JSONPath
-  - Default value is '\$'
-- OutputPath
-  - Specify output data of State or Action as JSONPath
-  - Default value is '\$'
-
-<p align="center">
-<img src="media/filter-sequential.png" with="480px" height="270px" alt="Sequential FilterDiagram"/>
-</p>
-
-<p align="center">
-<img src="media/filter-parallel.png" with="480px" height="270px" alt="Parallel FilterDiagram"/>
 </p>
 
 ### Workflow data output
