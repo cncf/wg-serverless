@@ -1618,6 +1618,17 @@ Initial workflow data should not be manipulated (via filters for example) before
 
 ### Information passing between states
 
+All states in Serverless workflow can receive data. This is called the state's "Data Input". Each state also passes its 
+data to the next state, called the state's "Data Output". 
+Note that if the state is the workflows' "startsAt" (starting) state, its data input is the workflow data input. 
+If the state is an "End state" ("end" property set to true), its data output becomes the workflow output. This is described in the [Workflow Data Output section](#Workflow-Data-Output).
+
+<p align="center">
+<img src="media/basic-state-data-passing.png" with="500px" height="300px" alt="Basic state data passing"/>
+</p>
+
+
+
 The diagram below shows data flow through a Serverless Workflow that includes an
 Event state that invokes two serverless functions. Output data from one state is
 passed as input data to the next state. Filters are used to filter and transform
