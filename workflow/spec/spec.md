@@ -1463,10 +1463,13 @@ Here is an example of an Operation state which sends a confirmation email for ea
       {  
          "name":"sendConfirmationEmail",
          "type":"OPERATION",
-         "actionMode":"Sequential",
-         "actions":[  
+         "actionMode":"SEQUENTIAL",
+         "actions": [  
             {  
-               "function":"sendConfirmationEmailFunction"
+               "function": {
+                "name": "sendConfirmationEmailFunction",
+                "resource": "functionResourse"
+               }
             }
          ],
          "end": true,
@@ -1478,6 +1481,31 @@ Here is an example of an Operation state which sends a confirmation email for ea
 }
 ```
 
+The data input to the "sendConfirmationEmail" state could be for example:
+
+```json
+{
+    "orders": [
+        {
+            "orderNumber": "1234",
+            "completed": true,
+            "email": "firstBuyer@buyer.com"
+        },
+        {
+            "orderNumber": "5678",
+            "completed": true,
+            "email": "secondBuyer@buyer.com"
+        },
+        {
+            "orderNumber": "9910",
+            "completed": false,
+            "email": "thirdBuyer@buyer.com"
+        }
+    ]
+}
+```
+
+in which case this state will loop two times for each of the completed orders.
 
 ### Transitions
 
