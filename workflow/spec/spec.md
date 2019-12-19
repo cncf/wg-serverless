@@ -542,7 +542,7 @@ It also defines a timeout wait period if one is needed, as well as a retry defin
 | name |Function name | string | yes |
 | resource |Function resource (URI) | string | yes |
 | type |Function type. Implementers may define custom types. | string | yes |
-| parameters |Function parameters | object | no |
+| parameters |Function parameters. Can be either static string values, or selected from the state input using a JSON Path expression. | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -564,7 +564,7 @@ It also defines a timeout wait period if one is needed, as well as a retry defin
     },
     "parameters": {
       "type": "object",
-      "description": "Function parameters"
+      "description": "Function parameters. Can be either static string values, or selected from the state input using a JSON Path expression."
     }
   },
   "required": ["name", "resource", "type"]

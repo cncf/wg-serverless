@@ -1,62 +1,76 @@
 ## Serverless Workflow Specification - Examples
 
-### Hello World Example
-The following example illustrates a simple "Hello World" Serverless Workflow with three operation states. 
-The digram below show how information is passed through the workflow and filter mechanism 
-used to access and reason over the workflow state.
+## Table of Contents
 
+- [Greeting](#Greeting-Example)
+
+
+### Greeting Example
+
+#### Description
+
+This example shows a single Operation state with one action that calls the "greeting" function. 
+The workflow data input is assumed to be the name of the person to greet:
+
+```json
+{
+  "greet": {
+    "name": "John"
+  }
+}
+```
+
+The results of the action is assumed to be the full greeting for the provided persons name:
+
+```json
+{
+  "payload": {
+    "greeting": "Welcome to Serverless Workflow, John!"
+  }
+}
+```
+
+The state filter merges the action results into its output, and then uses outputPath to only return the greeting as its data
+output, which then becomes the data output of the workflow itsels (as it is the end state).
+
+```
+   "Welcome to Serverless Workflow, John!" 
+```
+
+#### Workflow JSON
 
 ```json
 {  
-   "startsAt": "HelloWorld",
+   "name": "Greeting Workflow",
+   "description": "Greet Someone",
+   "startsAt": "greetState",
    "states":[  
       {  
-         "name":"HelloWorld",
+         "name":"greetState",
          "type":"OPERATION",
-         "actionMode":"Sequential",
+         "actionMode":"SEQUENTIAL",
          "actions":[  
             {  
                "function":{
-                  "name": "helloWorldFunction",
-                  "resource": "functionResourse"
+                  "name": "greetingFunction",
+                  "resource": "functionResourse",
+                  "parameters": {
+                    "name": "$.greet.name"
+                  }
                }
             }
          ],
-         "transition": {
-            "nextState":"UpdateArg"  
-         }
-      },
-      {  
-         "name":"UpdateArg",
-         "type":"OPERATION",
-         "actionMode":"Sequential",
          "filter": {
-            "inputPath":"$.payload",
-            "resultPath":"$.ifttt.value1",
-            "outputPath":"$.ifttt"
+            "resultPath": "$.out",
+            "outputPath": "$.out.payload.greeting"
          },
-         "transition": {
-            "nextState":"SaveResult"
-         }
-      },
-      {  
-         "name":"SaveResult",
-         "type":"OPERATION",
-         "end":true,
-         "actionMode":"Sequential",
-         "actions":[  
-            {  
-               "function":{
-                  "name": "saveResults",
-                  "resource": "functionResourse"
-               }
-            }
-         ]
+         "end": true
       }
    ]
 }
 ```
+#### Worfklow Diagram
 
 <p align="center">
-<img src="media/helloworldexample.png" with="480px" height="270px" alt="Hello World Example"/>
+<img src="media/greetingexample.png" with="400px" height="400px" alt="Greeting Example"/>
 </p>
