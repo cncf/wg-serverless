@@ -4,6 +4,7 @@
 
 - [Greeting](#Greeting-Example)
 - [Looping](#Looping-Example)
+- [Parallel](#Parallel-Example)
 
 
 ### Greeting Example
@@ -144,4 +145,64 @@ The state filter is then used to only return the results of the solved math expr
 
 <p align="center">
 <img src="media/loopingexample.png" with="400px" height="400px" alt="Looping Example"/>
+</p>
+
+### Parallel Example
+
+#### Description
+
+This example uses a parallel state to execute two branches (simple wait states) at the same time. 
+Note that the waitForCompletion flag is set to "false" so as soon as the "ShortDelay" delay state finishes,
+the workflow complete execution. If waitForCompletion was set to true, the workflow would complete after both
+of the branches are done.
+
+#### Workflow JSON
+
+```json
+{  
+   "name": "Parallel Workflow",
+   "description": "Executes two branches in parallel",
+   "startsAt": "ParallelExec",
+   "states":[  
+      {  
+         "name":"ParallelExec",
+         "type":"PARALLEL",
+         "branches": [
+            {
+              "name": "Branch1",
+              "startsAt": "ShortDelay",
+              "states": [
+                {
+                    "name":"ShortDelay",
+                     "type":"DELAY",
+                     "timeDelay": "PT15S",
+                     "end": true
+                }
+              ],
+              "waitForCompletion": false
+            },
+            {
+              "name": "Branch2",
+              "startsAt": "LongDelay",
+              "states": [
+                 {
+                     "name":"LongDelay",
+                      "type":"DELAY",
+                      "timeDelay": "PT2M",
+                      "end": true
+                 }      
+              ],
+              "waitForCompletion": false
+            }
+         ],
+         "end": true
+      }
+   ]
+}
+```
+
+#### Worfklow Diagram
+
+<p align="center">
+<img src="media/parallelexample.png" with="400px" height="400px" alt="Parallel Example"/>
 </p>

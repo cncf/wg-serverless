@@ -1203,7 +1203,7 @@ Let's define a branch now:
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| name |State name | string | yes |
+| name |Branch name | string | yes |
 | startsAt |Branch start state | string | yes |
 | [states](#State-Definition) |States to be executed in this branch | array | yes |
 | waitForCompletion |If workflow execution must wait for this branch to finish before continuing | boolean | yes |
