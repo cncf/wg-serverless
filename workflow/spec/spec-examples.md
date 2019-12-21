@@ -31,7 +31,7 @@ The results of the action is assumed to be the full greeting for the provided pe
 ```
 
 The state filter merges the action results into its output, and then uses outputPath to only return the greeting as its data
-output, which then becomes the data output of the workflow itsels (as it is the end state).
+output, which then becomes the data output of the workflow itself (as it is the end state).
 
 ```
    "Welcome to Serverless Workflow, John!" 
