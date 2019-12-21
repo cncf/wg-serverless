@@ -1,22 +1,53 @@
-# Serverless Workflow - Changelog
+# Changelog
 
-This document includes notable changes to this specification.
+## [Unreleased](https://github.com/cncf/wg-serverless/tree/HEAD)
 
-## 2019-11
+[Full Changelog](https://github.com/cncf/wg-serverless/compare/baef662dde4af54ae6a43490cf2e16692cff4708...HEAD)
 
-### Added
-- Filter definition
-- Element extension definition
-- Additional workflow properties
-- Readme document
-- Owners and Governance documents
-- References section
+**Closed issues:**
 
+- \[workflow\] add something to the governance doc about how to become a maintainer [\#116](https://github.com/cncf/wg-serverless/issues/116)
+- \[workflow\] Event state simplification [\#88](https://github.com/cncf/wg-serverless/issues/88)
+- \[workflow\] Define event-expression format [\#87](https://github.com/cncf/wg-serverless/issues/87)
+**Merged pull requests:**
 
-### Changed/Updated
-- Required parameter
-- CamelCase parameter names
-- Time/Date/Duration parameter types to ISO-8601 format
-
-### Removed
-- End state (replaces with "end" property in other states)
+- Fixing loop definition example [\#125](https://github.com/cncf/wg-serverless/pull/125) ([tsurdilo](https://github.com/tsurdilo))
+- specification details update + small fixes [\#123](https://github.com/cncf/wg-serverless/pull/123) ([tsurdilo](https://github.com/tsurdilo))
+- updating abstract [\#122](https://github.com/cncf/wg-serverless/pull/122) ([tsurdilo](https://github.com/tsurdilo))
+- updating spec title [\#121](https://github.com/cncf/wg-serverless/pull/121) ([tsurdilo](https://github.com/tsurdilo))
+- Governance update [\#120](https://github.com/cncf/wg-serverless/pull/120) ([tsurdilo](https://github.com/tsurdilo))
+- update state transitions [\#119](https://github.com/cncf/wg-serverless/pull/119) ([tsurdilo](https://github.com/tsurdilo))
+- Small fixes - condition/eventExpression [\#118](https://github.com/cncf/wg-serverless/pull/118) ([tsurdilo](https://github.com/tsurdilo))
+- Remove ruben from owners [\#117](https://github.com/cncf/wg-serverless/pull/117) ([ruromero](https://github.com/ruromero))
+- Fixing spelling errors [\#115](https://github.com/cncf/wg-serverless/pull/115) ([tsurdilo](https://github.com/tsurdilo))
+- Updating functional flow image [\#114](https://github.com/cncf/wg-serverless/pull/114) ([tsurdilo](https://github.com/tsurdilo))
+- Adding expression definition [\#113](https://github.com/cncf/wg-serverless/pull/113) ([tsurdilo](https://github.com/tsurdilo))
+- Fix broken timezone converter link [\#112](https://github.com/cncf/wg-serverless/pull/112) ([RainbowMango](https://github.com/RainbowMango))
+- Workflow/state explicit error handling [\#111](https://github.com/cncf/wg-serverless/pull/111) ([tsurdilo](https://github.com/tsurdilo))
+- fixing function definition [\#110](https://github.com/cncf/wg-serverless/pull/110) ([tsurdilo](https://github.com/tsurdilo))
+- JSON Schema fixes [\#109](https://github.com/cncf/wg-serverless/pull/109) ([tsurdilo](https://github.com/tsurdilo))
+- Adding Visual Studio Code extension to open source contributions [\#108](https://github.com/cncf/wg-serverless/pull/108) ([tsurdilo](https://github.com/tsurdilo))
+- updating community open source document [\#107](https://github.com/cncf/wg-serverless/pull/107) ([tsurdilo](https://github.com/tsurdilo))
+- Owners and Governance docs updates [\#106](https://github.com/cncf/wg-serverless/pull/106) ([tsurdilo](https://github.com/tsurdilo))
+- Updating project community information [\#104](https://github.com/cncf/wg-serverless/pull/104) ([tsurdilo](https://github.com/tsurdilo))
+- State Looping behavior [\#103](https://github.com/cncf/wg-serverless/pull/103) ([tsurdilo](https://github.com/tsurdilo))
+- Fixing SubFlow state nextState property [\#102](https://github.com/cncf/wg-serverless/pull/102) ([tsurdilo](https://github.com/tsurdilo))
+- fixing markup error after a rebase [\#99](https://github.com/cncf/wg-serverless/pull/99) ([tsurdilo](https://github.com/tsurdilo))
+- Proposal for new state: SubFlow State [\#97](https://github.com/cncf/wg-serverless/pull/97) ([tsurdilo](https://github.com/tsurdilo))
+- Update workflow parameters to use camel case [\#96](https://github.com/cncf/wg-serverless/pull/96) ([tsurdilo](https://github.com/tsurdilo))
+- Adding workflow properties [\#95](https://github.com/cncf/wg-serverless/pull/95) ([tsurdilo](https://github.com/tsurdilo))
+- Updating state transitions [\#94](https://github.com/cncf/wg-serverless/pull/94) ([tsurdilo](https://github.com/tsurdilo))
+- Adding to contributor section [\#93](https://github.com/cncf/wg-serverless/pull/93) ([salaboy](https://github.com/salaboy))
+- Adding Reference Section  [\#92](https://github.com/cncf/wg-serverless/pull/92) ([salaboy](https://github.com/salaboy))
+- Adding reviewers and governance docs [\#91](https://github.com/cncf/wg-serverless/pull/91) ([tsurdilo](https://github.com/tsurdilo))
+- Adding extension capability to workflow model [\#90](https://github.com/cncf/wg-serverless/pull/90) ([tsurdilo](https://github.com/tsurdilo))
+- Adding filter definition [\#86](https://github.com/cncf/wg-serverless/pull/86) ([tsurdilo](https://github.com/tsurdilo))
+- Changing time values from seconds to ISO 8601 format [\#85](https://github.com/cncf/wg-serverless/pull/85) ([tsurdilo](https://github.com/tsurdilo))
+- Update retry in action definition [\#84](https://github.com/cncf/wg-serverless/pull/84) ([tsurdilo](https://github.com/tsurdilo))
+- Update to switch state choices [\#83](https://github.com/cncf/wg-serverless/pull/83) ([tsurdilo](https://github.com/tsurdilo))
+- Removing end state [\#82](https://github.com/cncf/wg-serverless/pull/82) ([tsurdilo](https://github.com/tsurdilo))
+- Adding readme [\#80](https://github.com/cncf/wg-serverless/pull/80) ([tsurdilo](https://github.com/tsurdilo))
+- Specification Update - 2 [\#79](https://github.com/cncf/wg-serverless/pull/79) ([tsurdilo](https://github.com/tsurdilo))
+- formatting and json updates [\#78](https://github.com/cncf/wg-serverless/pull/78) ([tsurdilo](https://github.com/tsurdilo))
+- Fix markdown and remove non-English characters [\#77](https://github.com/cncf/wg-serverless/pull/77) ([ruromero](https://github.com/ruromero))
+- Additions to 'Serverless Function Workflow' section of whitepaper [\#75](https://github.com/cncf/wg-serverless/pull/75) ([wints](https://github.com/wints))
