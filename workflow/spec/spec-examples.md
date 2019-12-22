@@ -3,8 +3,9 @@
 ## Table of Contents
 
 - [Greeting](#Greeting-Example)
-- [Looping](#Looping-Example)
-- [Parallel](#Parallel-Example)
+- [Solving Math Problems (Looping)](#Solving-Math-Problems-Example)
+- [Parallel Execution](#Parallel-Execution-Example)
+- [Applicant Request Decision (Switch + SubFlow)](#Applicant-Request-Decision-Example)
 
 
 ### Greeting Example
@@ -77,7 +78,7 @@ output, which then becomes the data output of the workflow itself (as it is the 
 <img src="media/greetingexample.png" with="400px" height="400px" alt="Greeting Example"/>
 </p>
 
-### Looping Example
+### Solving Math Problems Example
 
 #### Description
 
@@ -109,8 +110,8 @@ The state filter is then used to only return the results of the solved math expr
 
 ```json
 {  
-   "name": "Looping Workflow",
-   "description": "Solve math expressions",
+   "name": "Solve Math Problems Workflow",
+   "description": "Solve math problems",
    "startsAt": "Solve",
    "states":[  
       {  
@@ -147,7 +148,7 @@ The state filter is then used to only return the results of the solved math expr
 <img src="media/loopingexample.png" with="400px" height="400px" alt="Looping Example"/>
 </p>
 
-### Parallel Example
+### Parallel Execution Example
 
 #### Description
 
@@ -160,7 +161,7 @@ of the branches are done.
 
 ```json
 {  
-   "name": "Parallel Workflow",
+   "name": "Parallel Execution Workflow",
    "description": "Executes two branches in parallel",
    "startsAt": "ParallelExec",
    "states":[  
@@ -205,4 +206,89 @@ of the branches are done.
 
 <p align="center">
 <img src="media/parallelexample.png" with="400px" height="400px" alt="Parallel Example"/>
+</p>
+
+### Applicant Request Decision Example
+
+#### Description
+
+This example shows off the switch state and the subflow state. The workflow is started with application information data as input:
+
+```json
+    {
+      "applicant": {
+        "fname": "John",
+        "lname": "Stockton",
+        "age": 22,
+        "email": "js@something.com"
+      }
+    }
+```
+
+We use the switch state with two choices to determine if the application should be made based on the applicants age. 
+If the applicants age is over 18 we start the application (subflow state). Otherwise the workflow notifies the 
+ applicant of the rejection. 
+
+#### Workflow JSON
+
+```json
+{  
+   "name": "Applicant Request Decision Workflow",
+   "description": "Determine if applicant request is valid",
+   "startsAt": "CheckApplication",
+   "states":[  
+      {  
+         "name":"CheckApplication",
+         "type":"SWITCH",
+         "choices": [
+            {
+              "path": "$.applicant.age",
+              "value": "18",
+              "operator": "GreaterThanEquals",
+              "transition": {
+                "nextState": "StartApplication"
+              }
+            },
+            {
+              "path": "$.applicant.age",
+              "value": "18",
+              "operator": "LessThan",
+              "transition": {
+                "nextState": "RejectApplication"
+              }
+            }
+         ],
+         "default": "RejectApplication"
+      },
+      {
+        "name": "StartApplication",
+        "type": "SUBFLOW",
+        "workflowId": "startApplicationWorkflowId",
+        "end": true
+      },
+      {  
+        "name":"RejectApplication",
+        "type":"OPERATION",
+        "actionMode":"SEQUENTIAL",
+        "actions":[  
+           {  
+              "function":{
+                 "name": "sendRejectionEmailFunction",
+                 "resource": "functionResourse",
+                 "parameters": {
+                   "applicant": "$.applicant"
+                 }
+              }
+           }
+        ],
+        "end": true
+    }
+   ]
+}
+```
+
+#### Worfklow Diagram
+
+<p align="center">
+<img src="media/switchstateexample.png" with="400px" height="400px" alt="Switch State Example"/>
 </p>
