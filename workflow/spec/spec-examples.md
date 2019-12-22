@@ -6,6 +6,7 @@
 - [Solving Math Problems (Looping)](#Solving-Math-Problems-Example)
 - [Parallel Execution](#Parallel-Execution-Example)
 - [Applicant Request Decision (Switch + SubFlow)](#Applicant-Request-Decision-Example)
+- [Provision Orders (Error Handling)](#Provision-Orders-Example)
 
 
 ### Greeting Example
@@ -291,4 +292,120 @@ If the applicants age is over 18 we start the application (subflow state). Other
 
 <p align="center">
 <img src="media/switchstateexample.png" with="400px" height="400px" alt="Switch State Example"/>
+</p>
+
+### Provision Orders Example
+
+#### Description
+
+In this example we show off the states error handling capability. The workflow data input that's passed in contains 
+missing order information that causes the function in the "ProvisionOrder" state to throw a runtime exception. With the "onError" conditions we
+can transition the workflow to different error handling states depending on the error thrown. Each type of error 
+in this example is handled by simple delay states, each including a data filter which sets the exception info as their 
+data output. If no error is caught the workflow can transition to the "ApplyOrder" state.
+
+Workflow data is assumed to me:
+```json
+    {
+      "order": {
+        "id": "",
+        "item": "laptop",
+        "quantity": "10"
+      }
+    }
+```
+
+The data output of the workflow contains the information of the exception caught during workflow execution.
+
+#### Workflow JSON
+
+```json
+{  
+   "name": "Provision Orders",
+   "description": "Provision Orders and handle errors thrown",
+   "startsAt": "ProvisionOrder",
+   "states":[  
+      {  
+        "name":"ProvisionOrder",
+        "type":"OPERATION",
+        "actionMode":"SEQUENTIAL",
+        "actions":[  
+           {  
+              "function":{
+                 "name": "provisionOrderFunction",
+                 "resource": "functionResourse",
+                 "parameters": {
+                   "order": "$.order"
+                 }
+              }
+           }
+        ],
+        "filter": {
+           "resultPath": "$.exception"
+        },
+        "onError": [
+           {
+             "condition": {
+                "expressionLanguage": "spel",
+                "body": "$.exception.name is 'MissingOrderIdException'"
+             },
+             "transition": {
+               "nextState": "MissingId"
+             }
+           },
+           {
+             "condition": {
+               "expressionLanguage": "spel",
+               "body": "$.exception.name is 'MissingOrderItemException'"
+             },
+             "transition": {
+               "nextState": "MissingItem"
+             }
+           },
+           {
+            "condition": {
+              "expressionLanguage": "spel",
+              "body": "$.exception.name is 'MissingOrderQuantityException'"
+            },
+            "transition": {
+              "nextState": "MissingQuantity"
+            }
+           }
+        ],
+        "transition": {
+           "nextState":"ApplyOrder"
+        }
+    },
+    {
+       "name": "MissingId",
+       "type": "SUBFLOW",
+       "workflowId": "handleMissingIdExceptionWorkflow",
+       "end": true
+    },
+    {
+       "name": "MissingItem",
+       "type": "SUBFLOW",
+       "workflowId": "handleMissingItemExceptionWorkflow",
+       "end": true
+    },
+    {
+       "name": "MissingQuantity",
+       "type": "SUBFLOW",
+       "workflowId": "handleMissingQuantityExceptionWorkflow",
+       "end": true
+    },
+    {
+       "name": "ApplyOrder",
+       "type": "SUBFLOW",
+       "workflowId": "applyOrderWorkflowId",
+       "end": true
+    }
+   ]
+}
+```
+
+#### Worfklow Diagram
+
+<p align="center">
+<img src="media/handlerrorsexample.png" with="400px" height="400px" alt="Handle Errors Example"/>
 </p>

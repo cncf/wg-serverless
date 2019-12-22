@@ -130,9 +130,9 @@
     "error": {
       "type": "object",
       "properties": {
-        "errorExpression": {
-          "type": "string",
-          "description": "Boolean expression to match one or more errors"
+        "condition": {
+          "description": "Condition that matches against the error in the state data input",
+          "$ref": "#/definitions/condition"
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -143,7 +143,7 @@
         }
       },
       "required": [
-        "errorExpression",
+        "condition",
         "transition"
       ]
     },

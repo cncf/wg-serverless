@@ -269,7 +269,7 @@ see the [Error Handling section](#Error-Handling).
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| errorExpression | Boolean expression to match one or more errors | string |yes |
+| [condition](#Condition-Definition) | Condition that matches against the error in the state data input | string |yes |
 | [filter](#Filter-Definition) |Error data filter | object | yes |
 | [transition](#Transitions) |Next transition of the workflow when an errors expressed in errorExpression are matched | string | yes |
 
@@ -280,10 +280,10 @@ see the [Error Handling section](#Error-Handling).
 {
   "type": "object",
   "properties": {
-    "errorExpression": {
-      "type": "string",
-      "description": "Boolean expression to match one or more errors"
-    },
+     "condition": {
+       "description": "Boolean expression which consists of one or more Error operands and the Boolean operators",
+       "$ref": "#/definitions/condition"
+     },
      "filter": {
       "$ref": "#/definitions/filter",
       "description": "Error data filter"
@@ -293,7 +293,7 @@ see the [Error Handling section](#Error-Handling).
       "$ref": "#/definitions/transition"
     }
   },
-  "required": ["errorExpression", "transition"]
+  "required": ["condition", "transition"]
 }
 ```
 
@@ -1665,7 +1665,10 @@ Let's take a look at a small example:
        ],
        "onError": [
           {
-            "errorExpression": "name matches '^\w+Exception$'",
+            "condition": {
+              "expressionLanguage": "spel",
+              "body": "$.exception.name matches '^\w+Exception$'"
+            },
             "filter": {
               "resultPath": "$.trace",
               "outputPath": "$.stateerror"
@@ -1688,7 +1691,7 @@ Here we have an operation state with one action that executes a function call. F
 results in a runtime exception. In the "onError" definition we state we want to catch all errors whose name ends in "Exception".
 If that happens, we want to workflow to continue execution with the "afterErrorState" state. 
 
-Note that errors that don't match the "errorExpression" may not be caught
+Note that errors that don't match the "condition" may not be caught
 by this explicit error handling. In those cases a "fallback" or "catch-all" error definition inside the onError block may be necessary.
 
 Having to define explicit error handling inside every state of your workflow might lead to repetitive definitions as can become
@@ -1701,7 +1704,10 @@ workflow definition. Let's take a look:
   "startsAt": "HandleErrors1",
   "onError": [
      {
-       "errorExpression": "name matches '^\w+Exception$'",
+       "condition": {
+         "expressionLanguage": "spel",
+         "body": "$.exception.name matches '^\w+Exception$'"
+       },
        "filter": {
          "resultPath": "$.trace",
          "outputPath": "$.stateerror"
