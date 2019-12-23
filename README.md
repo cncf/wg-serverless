@@ -38,13 +38,13 @@ And a #serverless Slack channel:
 
 ## Landscape
 
-![Serverless Landscape](https://github.com/cncf/landscape/blob/master/serverless/CloudNativeLandscape_Serverless_latest.png)
+![Serverless Landscape](https://landscape.cncf.io/images/serverless.png)
 
 You can open up suggestions and issues with the landscape here: https://github.com/cncf/landscape.
 
 ## Interactive Landscape
 
-Please see the new interactive [version](https://landscape.cncf.io/grouping=landscape&landscape=serverless) of the landscape. The easy-to-remember URL is [s.cncf.io](https://s.cncf.io).
+Please see the new interactive [version](https://landscape.cncf.io/format=serverless) of the landscape. The easy-to-remember URL is [s.cncf.io](https://s.cncf.io).
 
 ## Serverless Overview Whitepaper
 
@@ -82,7 +82,7 @@ International numbers available: https://zoom.us/zoomconference?m=QpOqQYfTzY_Gbj
 NOTE: Please use \*6 to mute/un-mute your phone during the call.
 
 World Time Zone Converter:
-http://www.thetimezoneconverter.com/?t=9:00%20am&tz=San%20Francisco&
+https://www.thetimezoneconverter.com/?t=9%3A00%20am&tz=PT%20(Pacific%20Time)&
 
 ## In Person Meetings
 
