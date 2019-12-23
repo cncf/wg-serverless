@@ -1375,7 +1375,7 @@ If this property is set to false, data access to parent's workflow should not be
 | id | Unique state id | string | no |
 | name |State name | string | yes | 
 | type |State type | string | yes | 
-| inject |JSON object which can be injected into states output via filters resultPath | object | no |
+| inject |JSON object which can be set as states data input and can be manipulated via filter | object | no |
 | [filter](#Filter-Definition) |State data filter | object | no |
 | [transition](#Transitions) |Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
 
@@ -1384,7 +1384,7 @@ If this property is set to false, data access to parent's workflow should not be
 ```json
 {
     "type": "object",
-    "description": "Inject and filter state data",
+    "description": "No-op state that can be used to set up and filter data",
     "properties": {
         "id": {
             "type": "string",
@@ -1407,7 +1407,7 @@ If this property is set to false, data access to parent's workflow should not be
         },  
         "inject": {
             "type": "object",
-            "description": "JSON object which can be injected into states output via filters resultPath"
+            "description": "JSON object which can be set as states data input and can be manipulated via filters"
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -1433,7 +1433,96 @@ If this property is set to false, data access to parent's workflow should not be
 
 </details>
 
-**** TODO - finish state description
+Transform state is a no-op state which can be used to statically set up and transform data input and output. 
+It is very useful for debugging for example as you can test/simulate workflow execution with pre-set data that would typically 
+be dynamic in nature (e.g. function calls, events etc). 
+The transform state "inject" property allows you to statically define a JSON object which gets added to the states data input.
+You can use the filter property to control the states data output to the transition state.
+
+Here is a typical example of how to use the transform state to inject static data into its data input, which then will be passed
+as data output to the transition state:
+
+```json
+{  
+     "name":"SimpleTransformState",
+     "type":"TRANSFORM",
+     "inject": {
+        "person": {
+          "fnam": "John",
+          "lname": "Doe",
+          "address": "1234 SomeStreet",
+          "age": 40
+        }
+     },
+     "transition": {
+        "nextState": "GreetPersonState"
+     }
+}
+```
+
+The data output of the "SimpleTransformState" which then is passed as input to the transition state would be:
+
+```json
+{
+ "person": {
+      "fnam": "John",
+      "lname": "Doe",
+      "address": "1234 SomeStreet",
+      "age": 40
+ }
+}
+
+```
+
+If the transform state already receives a data input from the previous transition state, the inject data will be merged 
+with its data input.
+
+You can also use the filter property of the transform state to further transform the set-up data input and pass only
+what you need as data output of the state. Let's say we have:
+
+```json
+{  
+     "name":"SimpleTransformState",
+     "type":"TRANSFORM",
+     "inject": {
+        "people": [
+          {
+             "fnam": "John",
+             "lname": "Doe",
+             "address": "1234 SomeStreet",
+             "age": 40
+          },
+          {
+             "fnam": "Marry",
+             "lname": "Allice",
+             "address": "1234 SomeStreet",
+             "age": 25
+          },
+          {
+             "fnam": "Kelly",
+             "lname": "Mill",
+             "address": "1234 SomeStreet",
+             "age": 30
+          }
+        ]
+     },
+     "filter": {
+        "outputPath": "$.people[?(@.age < 40)]"
+     },
+     "transition": {
+        "nextState": "GreetPersonState"
+     }
+}
+```
+
+In which case the states data output would include people whos age is less than 40. You can then easily during testing 
+change your output path to for example:
+
+```
+$.people[?(@.age >= 40)]
+```
+to test if your workflow behaves properly for the case when there are people whos age is greater or equal 40.
+
 
 ### Filter Definition
 
