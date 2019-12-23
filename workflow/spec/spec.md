@@ -42,6 +42,8 @@ This document is a working draft.
 - [Specification Details](#Specification-Details)
     - [Workflow Model](#Workflow-Model)
     - [Workflow Definition](#Workflow-Definition)
+- [Workflow Data](#Workflow-Data)
+- [Workflow Error Handling](#Workflow-Error-Handling)
 - [Extending](#Extending)
 - [Examples](#Examples)
 - [Reference](#Reference)
@@ -59,6 +61,7 @@ control flow and how/which functions are to be invoked on arrival of events.
 from states to functions, from one function to another function, and from one state to another state.
 
 ### Functional Scope
+
 Serverless Workflow allows users to:
 
 1. Define and orchestrate steps/states involved in a serverless application.
@@ -264,7 +267,7 @@ events for same workflow instance, must be specified in that event trigger.
 ### Error Definition
 
 Error definitions define runtime errors that can occur during workflow execution and how to handle them. For more information
-see the [Error Handling section](#Error-Handling). 
+see the [Workflow Error Handling section](#Workflow-Error-Handling). 
 
 
 | Parameter | Description | Type | Required |
@@ -333,7 +336,7 @@ We will start defining each individual state:
 | [events](#eventstate-eventdef) |State events | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
-| [onError](#Error-Handling) |States error handling definitions | array | no |
+| [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
  
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -757,7 +760,7 @@ actions execute, a transition to "next state" happens.
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
-| [onError](#Error-Handling) |States error handling definitions | array | no |
+| [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
 | default |Name of the next state if there is no match for any choices value | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -1585,7 +1588,99 @@ Implementers should decide how to handle data-base transitions which return fals
 The default should be that if this happens workflow execution should halt and a detailed message
  on why the transition failed should be provided.
 
-### Information Passing
+## Workflow Data
+
+Workflow data is represented in [JSON](https://www.json.org/json-en.html) format. Flow of data during
+serverless workflow execution can be divided into the following constructs:
+
+- [Workfow data input](#Workflow-data-input)
+- [Information passing between states](#Information-passing-between-states)
+- [Workflow data output](#Workflow-data-output)
+
+### Workflow data input
+
+The initial data input into a workflow instance must be a valid JSON object. If no input is provided
+the default data input is the empty object:
+```json
+{
+
+}
+```
+
+Workflow data input is passed to the workflows "startsAt" state (the starting state) as data input.
+
+<p align="center">
+<img src="media/workflowdatainput.png" with="500px" height="300px" alt="Workflow data input"/>
+</p>
+
+
+### Information passing between states
+
+States in Serverless workflow can receive data (Data Input) as well as produce a data result (Data Output).
+The states data input is typically the presious states' data output. The states
+data output then becomes the data input of the state it transitions to.
+There are two of rules to consider here:
+
+- If the state is the starting state its data input is the [workflow data input](#Workflow-data-input).
+- If the state is an end state ("end" property set to true), its data output is the [workflow data output](#Workflow-data-output).  
+
+<p align="center">
+<img src="media/basic-state-data-passing.png" with="500px" height="300px" alt="Basic state data passing"/>
+</p>
+
+Within states the JSON data can be accessed and manipulated via [filters](#Filter-Definition). 
+Filters are also used within [actions](#Action-Definition) and [events]((#eventstate-eventdef)). 
+Filters use JSONPath to do things like select a portion of data that you care about, filter unwanted information, 
+or combine/merge data to pass to the next state or action. The JSONPath expression must start with "$.". 
+ 
+Filters have three properties namely inputPath, outputPath, an resultPath.
+
+**InputPath** is used to select a portion of the states, event, or action data input.
+
+<p align="center">
+<img src="media/state-filter-inputpath.png" with="350px" height="500px" alt="State Filter InputPath"/>
+</p>
+
+**OutputPath** is used to select a portion of the states or actions data output.
+
+<p align="center">
+<img src="media/state-filter-outputpath.png" with="350px" height="500px" alt="State Filter OutputPath"/>
+</p>
+
+**ResultPath** is used to select a portion of the actions output and use it to replace or combine it with the states data output.
+
+<p align="center">
+<img src="media/state-filter-resultpath.png" with="350px" height="500px" alt="State Filter ResultPath"/>
+</p>
+ 
+Serverless workflow defines four types of data filters:
+
+- **Event Filter**
+  - Invoked when data is passed from an event to the current state
+- **State Filter**
+  - Invoked when data is passed from the previous state to the current state
+  - Invoked when data is passed from the current state to the next state
+- **Action Filter** 
+  - Invoked when data is passed from the current state to the first action
+  - Invoked when data is passed from an action to another action
+  - Invoked when data is passed from the last action to the current state
+- **Error Filter** 
+  - Invoked when a state encounters runtime exceptions
+
+The following diagrams show different filters in an Event state. Note that data merging can depend on the "actionModel" of
+the event states actions (sequential or parallel).
+
+<p align="center">
+<img src="media/event-state-filters-sequential.png" with="350px" height="500px" alt="Event State Filters Sequential"/>
+</p>
+
+<p align="center">
+<img src="media/event-state-filters-parallel.png" with="350px" height="500px" alt="Event State Filters Parallel"/>
+</p>
+
+
+As previously mentioned [CloudEvents](https://cloudevents.io/) are first-class citizens of serverless workflows. Filters can be used
+just as previously mentioned to filter CloudEvents seamlessly.  
 
 The diagram below shows data flow through a Serverless Workflow that includes an
 Event state that invokes two serverless functions. Output data from one state is
@@ -1607,7 +1702,7 @@ combined with data received from a previous state before it is delivered in a
 response sent to the event source.
 
 <p align="center">
-<img src="media/information-passing1.png" with="400px" height="260px" alt="Async Event Diagram"/>
+<img src="media/event-state-info-passing1.png" with="350px" height="500px" alt="Event State Information Passing"/>
 </p>
 
 There may be cases where an event source such as an API gateway expects to
@@ -1617,50 +1712,16 @@ data received from a previous state before it is delivered in a response sent to
 the event source as shown below.
 
 <p align="center">
-<img src="media/information-passing2.png" with="400px" height="260px" alt="Sync Event Diagram"/>
+<img src="media/event-state-info-passing2.png" with="350px" height="500px" alt="Event State Information Passing"/>
 </p>
 
-### Filter Mechanism
+### Workflow data output
 
-Serverless Workflow maintains an implicit JSON object which is accessed from each
-filter via JSONPath expression '$.'
+Once a workflow instance reaches an end state (where the "end" parameter is set to true) and the workflow finishes its execution
+the data output of that result state becomes the workflow data output. This output can be logged or indexed depending on the
+implementation details. 
 
-There are four kinds of filters
-
-- Event Filter
-  - Invoked when data is passed from an event to the current state
-- State Filter
-  - Invoked when data is passed from the previous state to the current state
-  - Invoked when data is passed from the current state to the next state
-- Action Filter 
-  - Invoked when data is passed from the current state to the first action
-  - Invoked when data is passed from an action to action
-  - Invoked when data is passed from the last action to the current state
-- Error Filter 
-  - Invoked when a state encounters runtime exceptions
-  
-Each Filter has three kinds of path filters
-
-- InputPath
-  - Select input data of either Event, State or Action as JSONPath
-  - Default value is '\$'
-- ResultPath
-  - Specify result JSON node of Action Output as JSONPath
-  - Default value is '\$'
-- OutputPath
-  - Specify output data of State or Action as JSONPath
-  - Default value is '\$'
-
-<p align="center">
-<img src="media/filter-sequential.png" with="480px" height="270px" alt="Sequential FilterDiagram"/>
-</p>
-
-<p align="center">
-<img src="media/filter-parallel.png" with="480px" height="270px" alt="Parallel FilterDiagram"/>
-</p>
-
-
-### Error Handling
+## Workflow Error Handling
 
 Serverless Workflow allows you to explicitly model what should happen in case of runtime errors during workflow execution.
 Explicit error handling is done via the "onError" property which you can place inside a state as well as the main workflow
