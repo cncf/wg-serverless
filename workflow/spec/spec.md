@@ -304,7 +304,8 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 
 ### State Definition
 
-States define building blocks of the Serverless Workflow. The specification defines six different types of states:
+States define building blocks of the Serverless Workflow. The specification defines the following states:
+
 - **[Event State](#Event-state)**: Used to wait for events from event sources and
     then to invoke one or more functions to run in sequence or in parallel.
 
@@ -321,7 +322,9 @@ States define building blocks of the Serverless Workflow. The specification defi
 - **[Parallel State](#Parallel-State)**: Allows a number of states to execute in
     parallel.
     
-- **[SubFlow State](#SubFlow-State)**: Allows execution of a sub-workflow.   
+- **[SubFlow State](#SubFlow-State)**: Allows execution of a sub-workflow. 
+  
+- **[Transform State](#Transform-State)**: Used to transform state data input and output without performing any work. 
     
 We will start defining each individual state:
 
@@ -1365,6 +1368,72 @@ Each sub-workflow receives a copy of the SubFlow state's input data.
 If waitForCompletion property is set to true, sub-workflows have the ability to edit the parent's workflow data.
 If this property is set to false, data access to parent's workflow should not be allowed.
 
+### Transform State
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| id | Unique state id | string | no |
+| name |State name | string | yes | 
+| type |State type | string | yes | 
+| inject |JSON object which can be injected into states output via filters resultPath | object | no |
+| [filter](#Filter-Definition) |State data filter | object | no |
+| [transition](#Transitions) |Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "Inject and filter state data",
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Unique State id",
+            "minLength": 1
+        },
+        "name": {
+            "type": "string",
+            "description": "State name"
+        },
+        "type": {
+            "type" : "string",
+            "enum": ["TRANSFORM"],
+            "description": "State type"
+        },
+        "end": {
+            "type": "boolean",
+            "default": false,
+            "description": "Is this state an end state"
+        },  
+        "inject": {
+            "type": "object",
+            "description": "JSON object which can be injected into states output via filters resultPath"
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "transition": {
+          "description": "Next transition of the workflow after subflow has completed",
+          "$ref": "#/definitions/transition"
+        }
+    },
+    "if": {
+      "properties": {
+        "end": { "const": true }
+      }
+    },
+    "then": {
+      "required": ["name", "type"]
+    },
+    "else": {
+      "required": ["name", "type", "transition"]
+    }
+}
+```
+
+</details>
+
+**** TODO - finish state description
 
 ### Filter Definition
 
