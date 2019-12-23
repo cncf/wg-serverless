@@ -272,7 +272,7 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| errorExpression | Boolean expression to match one or more errors | string |yes |
+| [condition](#Condition-Definition) | Condition that matches against the error in the state data input | string |yes |
 | [filter](#Filter-Definition) |Error data filter | object | yes |
 | [transition](#Transitions) |Next transition of the workflow when an errors expressed in errorExpression are matched | string | yes |
 
@@ -283,10 +283,10 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 {
   "type": "object",
   "properties": {
-    "errorExpression": {
-      "type": "string",
-      "description": "Boolean expression to match one or more errors"
-    },
+     "condition": {
+       "description": "Boolean expression which consists of one or more Error operands and the Boolean operators",
+       "$ref": "#/definitions/condition"
+     },
      "filter": {
       "$ref": "#/definitions/filter",
       "description": "Error data filter"
@@ -296,7 +296,7 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
       "$ref": "#/definitions/transition"
     }
   },
-  "required": ["errorExpression", "transition"]
+  "required": ["condition", "transition"]
 }
 ```
 
@@ -545,7 +545,7 @@ It also defines a timeout wait period if one is needed, as well as a retry defin
 | name |Function name | string | yes |
 | resource |Function resource (URI) | string | yes |
 | type |Function type. Implementers may define custom types. | string | yes |
-| parameters |Function parameters | object | no |
+| parameters |Function parameters. Can be either static string values, or selected from the state input using a JSON Path expression. | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -567,7 +567,7 @@ It also defines a timeout wait period if one is needed, as well as a retry defin
     },
     "parameters": {
       "type": "object",
-      "description": "Function parameters"
+      "description": "Function parameters. Can be either static string values, or selected from the state input using a JSON Path expression."
     }
   },
   "required": ["name", "resource", "type"]
@@ -1206,7 +1206,7 @@ Let's define a branch now:
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| name |State name | string | yes |
+| name |Branch name | string | yes |
 | startsAt |Branch start state | string | yes |
 | [states](#State-Definition) |States to be executed in this branch | array | yes |
 | waitForCompletion |If workflow execution must wait for this branch to finish before continuing | boolean | yes |
@@ -1754,7 +1754,10 @@ Let's take a look at a small example:
        ],
        "onError": [
           {
-            "errorExpression": "name matches '^\w+Exception$'",
+            "condition": {
+              "expressionLanguage": "spel",
+              "body": "$.exception.name matches '^\w+Exception$'"
+            },
             "filter": {
               "resultPath": "$.trace",
               "outputPath": "$.stateerror"
@@ -1777,7 +1780,7 @@ Here we have an operation state with one action that executes a function call. F
 results in a runtime exception. In the "onError" definition we state we want to catch all errors whose name ends in "Exception".
 If that happens, we want to workflow to continue execution with the "afterErrorState" state. 
 
-Note that errors that don't match the "errorExpression" may not be caught
+Note that errors that don't match the "condition" may not be caught
 by this explicit error handling. In those cases a "fallback" or "catch-all" error definition inside the onError block may be necessary.
 
 Having to define explicit error handling inside every state of your workflow might lead to repetitive definitions as can become
@@ -1790,7 +1793,10 @@ workflow definition. Let's take a look:
   "startsAt": "HandleErrors1",
   "onError": [
      {
-       "errorExpression": "name matches '^\w+Exception$'",
+       "condition": {
+         "expressionLanguage": "spel",
+         "body": "$.exception.name matches '^\w+Exception$'"
+       },
        "filter": {
          "resultPath": "$.trace",
          "outputPath": "$.stateerror"
