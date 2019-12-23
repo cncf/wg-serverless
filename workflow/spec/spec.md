@@ -1436,6 +1436,9 @@ If this property is set to false, data access to parent's workflow should not be
 Transform state is a no-op state which can be used to statically set up and transform data input and output. 
 It is very useful for debugging for example as you can test/simulate workflow execution with pre-set data that would typically 
 be dynamic in nature (e.g. function calls, events etc). 
+
+It is also useful for production workflows where you want to just transform workflow data without doing any actual work (actions, functions, etc).
+
 The transform state "inject" property allows you to statically define a JSON object which gets added to the states data input.
 You can use the filter property to control the states data output to the transition state.
 
