@@ -34,9 +34,12 @@
             spec:
               description: WorkflowSpec defines the desired state of a Workflow
               properties:
-                workflowDefinition:
+                definition:
                   description: "Workflow Definition content or reference to the actual definition"
                   type: string
+                language: 
+                  description: "Specifies the Language used to create the workflow definition"  
+                  type: string    
               type: object
             status:
               description: WorkflowStatus defines the observed state of a Workflow
