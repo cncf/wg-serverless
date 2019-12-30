@@ -825,7 +825,7 @@
         "properties": {
           "path": {
             "type": "string",
-            "description": "JSON Path that selects the value of the input data to be matched"
+            "description": "JSONPath that selects the value of the input data to be matched"
           },
           "value": {
             "type": "string",
