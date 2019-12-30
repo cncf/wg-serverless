@@ -1,6 +1,5 @@
 <p align="center"><img src="media/logo-small-text.png"/></p>
 
-
 ## Abstract
 
 Serverless applications are becoming increasingly complex and are rarely composed 
@@ -126,6 +125,7 @@ Here we define details of the Serverless Workflow definitions:
 | execStatus |Workflow execution status | string |no |
 | expressionLanguage |Default expression language to be used throughout the workflow definition | string |no |
 | [triggerDefs](#Trigger-Definition) |Workflow triggers | array | no |
+| [actionDefs](#Action-Definition) | Workflow actions | array | no |
 | [states](#State-Definition) | Workflow states | array | yes |
 | [onError](#Error-Handling) |Workflow error handling definitions | array | no |
 | [extensions](#Extending) | Workflow custom extensions | array | no |
@@ -182,6 +182,14 @@ Here we define details of the Serverless Workflow definitions:
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/triggerevent"
+            }
+        },
+        "actionDefs": {
+            "type": "array",
+            "description": "Action Definitions",
+            "items": {
+              "type": "object",
+              "$ref": "#/definitions/action"
             }
         },
         "states": {
@@ -263,6 +271,69 @@ events for same workflow instance, must be specified in that event trigger.
 ```
 
 </details>
+
+### Action Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name | Action unique name | string |yes |
+| group | Action group | string |no |
+| [function](#Function-Definition) |Function to be invoked | object | yes |
+| timeout |Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | integer | no |
+| [retry](#Retry-Definition) |Defines if function execution needs a retry | array | no |
+| [filter](#Filter-Definition) |Action data filter | object | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "Action Definition",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Action unique name"
+        },
+        "group": {
+            "type": "string",
+            "description": "Action group name"
+        },
+        "function": {
+            "$ref": "#/definitions/function",
+            "description": "Function to be invoked"
+        },
+        "timeout": {
+            "type": "string",
+            "description": "Specifies the maximum amount of time (ISO 8601 format) to wait for the completion of the function's execution. The function timer is started when the request is sent to the invoked function"
+        },
+        "retry": {
+            "type": "array",
+            "description": "Array of retry definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/retry"
+            }
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        }
+    },
+    "required": ["name", "group", "function"]
+}
+```
+
+</details>
+
+Actions are units of work in serverless workflow. They can be used by both [Event](#Event-state) and [Operation](#Operation-State) states.
+Each action includes a [Function](#Function-Definition) definition and a [Retry](#Retry-Definition) definition.
+Function definition describes execution of a serverless function. Retry definition describes the retry policy for the serverless
+function call.
+
+Actions can be grouped into logical units via the "group" parameter. The name of each group has to be unique
+and it is recommended to name them according to their functionality, for example "Login", "Onboarding", "Payroll", etc.
+
+Once defined, actions can be executed within Event and Operation states. Actions can be referenced by their
+group name. All actions included in the group are then executed in the order their are defined.
 
 ### Error Definition
 
@@ -398,7 +469,8 @@ We will start defining each individual state:
 </p>
 </details>
 
-Event state can hold one or more events definitions, so let's define those:
+Event states execution waits for arrival for events defined in [incoming triggers](#Trigger-Definition) section. 
+Incoming events are matched against the states condition parameter. If they match, the state executes all defined events.
 
 #### <a name="eventstate-eventdef"></a> Event State: Event Definitions
 
@@ -407,7 +479,7 @@ Event state can hold one or more events definitions, so let's define those:
 | [condition](#Condition-Definition) |Condition consisting of Boolean operation of events that will trigger the event state | object | yes |
 | timeout |Time period to wait for the events in the condition (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | actionMode |Specifies if functions are executed in sequence of parallel | string | no |
-| [actions](#Action-Definition) |State actions | array | yes |
+| actions |String array containing the defined action group names to be executed. Groups are executed in order defined. | array | yes |
 | [filter](#Filter-Definition) |Event data filter | object | yes |
 | [transition](#Transitions) |Next transition of the workflow after all the actions for the matching event have been successfully executed | string | yes |
 
@@ -431,14 +503,14 @@ Event state can hold one or more events definitions, so let's define those:
             "enum": ["SEQUENTIAL", "PARALLEL"],
             "description": "Specifies whether functions are executed in sequence or in parallel"
         },
-        "actions": {
-            "type": "array",
-            "description": "Action Definitions",
-            "items": {
-                "type": "object",
-                "$ref": "#/definitions/action"
-            }
-        },
+            "actions": {
+              "type": "array",
+              "description": "String array containing the defined action group names to be executed. Groups are executed in order defined.",
+              "default": [""],
+              "items": {
+                "type": "string"
+              }
+            },
         "filter": {
           "$ref": "#/definitions/filter"
         },
@@ -453,12 +525,10 @@ Event state can hold one or more events definitions, so let's define those:
 
 </details>
 
-The event expression attribute is used to associate this event state with one or more trigger events. 
-
-Note that each event definition has a "transition" property, which is used to identify the state which 
-should get triggered after this event completes.
-
-Each event state's event definition includes one or more actions. Let's define these actions now:
+The condition parameter is used to associate this event state with one or more defined trigger events. 
+Upon a condition match all action groups defined are executed sequentially or in parallel depending on the
+actionMode parameter. 
+Upon execution of all actions the even defines a workflow state to transition to via the transition parameter.
 
 #### Condition Definition
 
@@ -494,52 +564,6 @@ Serverless workflow does not limit implementors to use any expression language t
 evaluate expressions with. Expressions define a "language" and a "body". 
 Note that top-level workflow "expressionLanguage" property can be set to define the default
 expression language used for all expressions defined.
-
-#### Action Definition
-
-| Parameter | Description | Type | Required |
-| --- | --- | --- | --- |
-| [function](#Function-Definition) |Function to be invoked | object | yes |
-| timeout |Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | integer | no |
-| [retry](#Retry-Definition) |Defines if function execution needs a retry | array | no |
-| [filter](#Filter-Definition) |Action data filter | object | yes |
-
-<details><summary><strong>Click to view JSON Schema</strong></summary>
-
-```json
-{
-    "type": "object",
-    "description": "Action Definition",
-    "properties": {
-        "function": {
-            "$ref": "#/definitions/function",
-            "description": "Function to be invoked"
-        },
-        "timeout": {
-            "type": "string",
-            "description": "Specifies the maximum amount of time (ISO 8601 format) to wait for the completion of the function's execution. The function timer is started when the request is sent to the invoked function"
-        },
-        "retry": {
-            "type": "array",
-            "description": "Array of retry definitions",
-            "items": {
-                "type": "object",
-                "$ref": "#/definitions/retry"
-            }
-        },
-        "filter": {
-          "$ref": "#/definitions/filter"
-        }
-    },
-    "required": ["function"]
-}
-```
-
-</details>
-
-An action defines a collection of functions that are to be invoked when this action is triggered.
-It also defines a timeout wait period if one is needed, as well as a retry definition, so lets look at those now:
-
 
 #### Function Definition
 
@@ -667,7 +691,7 @@ Defines Transitions from point A to point B in the serverless workflow. For more
 | type |State type | string | yes |
 | end |Is this state an end state | boolean | no |
 | actionMode |Should actions be executed sequentially or in parallel | string | yes |
-| [actions](#Action-Definition) |State actions | array | yes |
+| actions |String array containing the defined action group names to be executed. Groups are executed in order defined. | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
@@ -705,12 +729,12 @@ Defines Transitions from point A to point B in the serverless workflow. For more
             "description": "Specifies whether actions are executed in sequence or in parallel."
         },
         "actions": {
-            "type": "array",
-            "description": "Actions Definitions",
-            "items": {
-                "type": "object",
-                "$ref": "#/definitions/action"
-            }
+          "type": "array",
+          "description": "String array containing the defined action group names to be executed. Groups are executed in order defined.",
+          "default": [""],
+          "items": {
+            "type": "string"
+          }
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -1623,19 +1647,22 @@ Here is an example of an Operation state which sends a confirmation email for ea
    "name": "Send order confirmation email",
    "description": "Send email for each confirmed oreder",
    "startsAt": "sendConfirmationEmail",
+   "actionDefs": [
+    {
+      "name": "Send Confirmation",
+      "group": "Orders",
+      "function": {
+        "name": "sendConfirmationEmailFunction",
+        "resource": "functionResourse"
+      }
+    }
+   ],
    "states":[  
       {  
          "name":"sendConfirmationEmail",
          "type":"OPERATION",
          "actionMode":"SEQUENTIAL",
-         "actions": [  
-            {  
-               "function": {
-                "name": "sendConfirmationEmailFunction",
-                "resource": "functionResourse"
-               }
-            }
-         ],
+         "actions": ["Orders"],
          "end": true,
          "loop": {
             "inputCollection": "$.orders[?(@.completed == true)]"
@@ -1706,19 +1733,30 @@ output of the state to transition from includes an user with the title "MANAGER"
 ```json
 {  
    "startsAt": "lowRiskState",
+   "actionDefs": [
+    {
+      "name": "Some Low Risk Operation",
+      "group": "LowRisk",
+      "function": {
+        "name": "doLowRistOperation",
+        "resource": "functionResourse"
+      }
+    },
+    {
+      "name": "Some High Risk Operation",
+      "group": "HighRisk",
+      "function": {
+        "name": "doHighRistOperation",
+        "resource": "functionResourse"
+      }
+    }
+   ],
    "states":[  
       {  
          "name":"lowRiskState",
          "type":"OPERATION",
          "actionMode":"Sequential",
-         "actions":[  
-          {  
-            "function":{
-               "name": "doLowRistOperation",
-               "resource": "functionResourse"
-            }
-          }
-         ],
+         "actions":["LowRisk"],
          "transition": {
             "nextState":"highRiskState",
             "condition": {
@@ -1732,14 +1770,7 @@ output of the state to transition from includes an user with the title "MANAGER"
          "type":"OPERATION",
          "end":true,
          "actionMode":"Sequential",
-         "actions":[  
-            {  
-              "function":{
-                "name": "doHighRistOperation",
-                "resource": "functionResourse"
-              }
-           }
-         ]
+         "actions":["HighRisk"]
       }
    ]
 }
@@ -1899,20 +1930,23 @@ Let's take a look at a small example:
 {
   ...
   "startsAt": "HandleErrors",
+  "actionDefs": [
+     {
+       "name": "Throw Runtime Error",
+       "group": "RuntimeError",
+       "function": {
+          "name": "FunctionThatThrowsRuntimeError",
+          "resource": "function-resource-info:throw-runtime-error-function"
+        }
+      }
+  ],
   "states": [
     {  
        "name":"HandleErrors",
        "type":"OPERATION",
        "end": false,
        "actionMode":"SEQUENTIAL",
-       "actions":[  
-          {  
-             "function": {
-               "name": "throw runtime error function",
-               "resource": "function-resource-info:throw-runtime-error-function"
-             }
-          }
-       ],
+       "actions":["RuntimeError"],
        "onError": [
           {
             "condition": {
@@ -1952,6 +1986,16 @@ workflow definition. Let's take a look:
 {
   ...
   "startsAt": "HandleErrors1",
+  "actionDefs": [
+     {
+       "name": "Throw Runtime Error",
+       "group": "RuntimeError",
+       "function": {
+          "name": "FunctionThatThrowsRuntimeError",
+          "resource": "function-resource-info:throw-runtime-error-function"
+        }
+      }
+  ],
   "onError": [
      {
        "condition": {
@@ -1973,14 +2017,7 @@ workflow definition. Let's take a look:
        "type":"OPERATION",
        "end": false,
        "actionMode":"SEQUENTIAL",
-       "actions":[  
-          {  
-             "function": {
-               "name": "throw runtime error function",
-               "resource": "function-resource-info:throw-runtime-error-function"
-             }
-          }
-       ],
+       "actions": ["RuntimeError"],
        "transition": {
           "nextState": "doSomethingElse"
        }
@@ -1990,14 +2027,7 @@ workflow definition. Let's take a look:
        "type":"OPERATION",
        "end": false,
        "actionMode":"SEQUENTIAL",
-       "actions":[  
-          {  
-             "function": {
-               "name": "throw runtime error function",
-               "resource": "function-resource-info:throw-runtime-error-function"
-             }
-          }
-       ],
+       "actions": ["RuntimeError"],
        "transition": {
           "nextState": "doSomethingElse"
        }

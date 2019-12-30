@@ -53,6 +53,14 @@
         "$ref": "#/definitions/triggerevent"
       }
     },
+    "actionDefs": {
+      "type": "array",
+      "description": "Action Definitions",
+      "items": {
+        "type": "object",
+        "$ref": "#/definitions/action"
+      }
+    },
     "states": {
       "type": "array",
       "description": "State Definitions",
@@ -219,10 +227,10 @@
         },
         "actions": {
           "type": "array",
-          "description": "Action Definitions",
+          "description": "String array containing the defined action group names to be executed. Groups are executed in order defined.",
+          "default": [""],
           "items": {
-            "type": "object",
-            "$ref": "#/definitions/action"
+            "type": "string"
           }
         },
         "transition": {
@@ -243,6 +251,14 @@
     "action": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "description": "Action unique name"
+        },
+        "group": {
+          "type": "string",
+          "description": "Action group name"
+        },
         "function": {
           "description": "Specifies the function that must be invoked",
           "$ref": "#/definitions/function"
@@ -260,7 +276,9 @@
         }
       },
       "required": [
-        "function"
+        "name",
+        "function",
+        "group"
       ]
     },
     "retry": {
@@ -537,10 +555,10 @@
           },
           "actions": {
             "type": "array",
-            "description": "Actions Definitions",
+            "description": "String array containing the defined action group names to be executed. Groups are executed in order defined.",
+            "default": [""],
             "items": {
-              "type": "object",
-              "$ref": "#/definitions/action"
+              "type": "string"
             }
           },
           "loop": {

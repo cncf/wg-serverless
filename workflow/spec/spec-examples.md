@@ -109,22 +109,25 @@ output, which then becomes the data output of the workflow itself (as it is the 
    "name": "Greeting Workflow",
    "description": "Greet Someone",
    "startsAt": "Greet",
+   "actionDefs": [
+      {
+        "name": "Greet Action",
+        "group": "Greetings",
+        "function": {
+            "name": "greetingFunction",
+            "resource": "functionResourse",
+            "parameters": {
+               "name": "$.greet.name"
+            }
+         }
+       }
+   ],
    "states":[  
       {  
          "name":"Greet",
          "type":"OPERATION",
          "actionMode":"SEQUENTIAL",
-         "actions":[  
-            {  
-               "function":{
-                  "name": "greetingFunction",
-                  "resource": "functionResourse",
-                  "parameters": {
-                    "name": "$.greet.name"
-                  }
-               }
-            }
-         ],
+         "actions":["Greetings"],
          "filter": {
             "resultPath": "$.out",
             "outputPath": "$.out.payload.greeting"
@@ -175,22 +178,25 @@ The state filter is then used to only return the results of the solved math expr
    "name": "Solve Math Problems Workflow",
    "description": "Solve math problems",
    "startsAt": "Solve",
+   "actionDefs": [
+     {
+        "name": "Math Action",
+        "group": "Math",
+        "function": {
+           "name": "solveMathExpressionFunction",
+           "resource": "functionResourse",
+           "parameters": {
+             "expression": "$."
+           }
+        }
+       }
+   ],
    "states":[  
       {  
          "name":"Solve",
          "type":"OPERATION",
          "actionMode":"SEQUENTIAL",
-         "actions":[  
-            {  
-               "function":{
-                  "name": "solveMathExpressionFunction",
-                  "resource": "functionResourse",
-                  "parameters": {
-                    "expression": "$."
-                  }
-               }
-            }
-         ],
+         "actions":["Math"],
          "loop": {
              "inputCollection": "$.expressions",
              "outputCollection": "$.answers"
@@ -298,6 +304,19 @@ If the applicants age is over 18 we start the application (subflow state). Other
    "name": "Applicant Request Decision Workflow",
    "description": "Determine if applicant request is valid",
    "startsAt": "CheckApplication",
+   "actionDefs": [
+     {
+        "name": "Reject Order Action",
+        "group": "OrderRejection",
+        "function": {
+           "name": "sendRejectionEmailFunction",
+           "resource": "functionResourse",
+           "parameters": {
+             "applicant": "$.applicant"
+           }
+        }
+     }
+   ],
    "states":[  
       {  
          "name":"CheckApplication",
@@ -332,17 +351,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
         "name":"RejectApplication",
         "type":"OPERATION",
         "actionMode":"SEQUENTIAL",
-        "actions":[  
-           {  
-              "function":{
-                 "name": "sendRejectionEmailFunction",
-                 "resource": "functionResourse",
-                 "parameters": {
-                   "applicant": "$.applicant"
-                 }
-              }
-           }
-        ],
+        "actions":["OrderRejection"],
         "end": true
     }
    ]
@@ -385,22 +394,25 @@ The data output of the workflow contains the information of the exception caught
    "name": "Provision Orders",
    "description": "Provision Orders and handle errors thrown",
    "startsAt": "ProvisionOrder",
+   "actionDefs": [
+    {
+       "name": "Provision Order Action",
+       "group": "Provisioning",
+       "function":{
+          "name": "provisionOrderFunction",
+          "resource": "functionResourse",
+          "parameters": {
+            "order": "$.order"
+          }
+       }
+    }
+   ],
    "states":[  
       {  
         "name":"ProvisionOrder",
         "type":"OPERATION",
         "actionMode":"SEQUENTIAL",
-        "actions":[  
-           {  
-              "function":{
-                 "name": "provisionOrderFunction",
-                 "resource": "functionResourse",
-                 "parameters": {
-                   "order": "$.order"
-                 }
-              }
-           }
-        ],
+        "actions":["Provisioning"],
         "filter": {
            "resultPath": "$.exception"
         },
