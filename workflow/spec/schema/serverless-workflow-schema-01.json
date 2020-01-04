@@ -84,8 +84,8 @@
             "$ref": "#/definitions/subflowstate"
           },
           {
-            "title": "Transform State",
-            "$ref": "#/definitions/transformstate"
+            "title": "Relay State",
+            "$ref": "#/definitions/relaystate"
           }
         ]
       }
@@ -354,8 +354,8 @@
                   "$ref": "#/definitions/subflowstate"
                 },
                 {
-                  "title": "Transform State",
-                  "$ref": "#/definitions/transformstate"
+                  "title": "Relay State",
+                  "$ref": "#/definitions/relaystate"
                 }
               ]
             }
@@ -827,9 +827,9 @@
           ]
         }
       },
-      "transformstate": {
+      "relaystate": {
         "type": "object",
-        "description": "No-op state that can be used to set up and filter data",
+        "description": "Set up and relay the state's data input to data output. Does not perform any actions",
         "properties": {
           "id": {
             "type": "string",
@@ -842,7 +842,7 @@
           },
           "type": {
             "type" : "string",
-            "enum": ["TRANSFORM"],
+            "enum": ["RELAY"],
             "description": "State type"
           },
           "end": {
