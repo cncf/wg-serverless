@@ -7,7 +7,7 @@
 - [Parallel Execution](#Parallel-Execution-Example)
 - [Applicant Request Decision (Switch + SubFlow)](#Applicant-Request-Decision-Example)
 - [Provision Orders (Error Handling)](#Provision-Orders-Example)
-- [Monitor Job for completion](#Monitor-Job-Example)
+- [Monitor Job for completion (Polling)](#Monitor-Job-Example)
 
 
 ### Greeting Example
