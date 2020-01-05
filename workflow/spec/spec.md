@@ -627,6 +627,7 @@ as well as define parameters (key/value pairs).
 | --- | --- | --- | --- |
 | [condition](#Condition-Definition) |Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid. | object | no |
 | [nextState](#Transitions) |State to transition to next | string | yes |
+| end | Instead of transitioning to nextState, end workflow execution instead | boolean | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -642,11 +643,24 @@ as well as define parameters (key/value pairs).
       "type": "string",
       "description": "State to transition to next",
       "minLength": 1
+    },
+    "end": {
+        "type": "boolean",
+        "default": false,
+        "description": "Instead of transitioning to nextState, end workflow execution instead"
     }
   },
-  "required": [
-    "nextState"
-  ]
+  "if": {
+    "properties": {
+      "end": { "const": true }
+    }
+  },
+  "then": {
+    "required": ["end"]
+  },
+  "else": {
+    "required": ["nextState"]
+  }
 }
 ```
 
@@ -1587,6 +1601,89 @@ output of the state to transition from includes an user with the title "MANAGER"
 Implementers should decide how to handle data-base transitions which return false (do not proceed).
 The default should be that if this happens workflow execution should halt and a detailed message
  on why the transition failed should be provided.
+ 
+#### Chosing to end workflow execution inside transition definitions
+It is at times useful to end workflow execution inside transition definitions. This can be done 
+via the transition "end" property. 
+
+A common example for this are transitions inside [choices](#switch-state-choices) of [switch states](#Switch-State):
+
+```json
+{  
+     "name":"CheckJobCompletion",
+     "type":"SWITCH",
+     "choices": [
+         {
+           "path": "$.jobstatus",
+           "value": "SUCCEEDED",
+           "operator": "Equals",
+           "transition": {
+             "nextState": "ReportJobCompletion"
+           }
+         },
+         {
+           "path": "$.jobstatus",
+           "value": "FAILED",
+           "operator": "Equals",
+           "transition": {
+             "end": true
+           }
+         }
+      ],
+      "default": "SomeNextState"
+   }
+```
+
+In this example, if job status is "FAILED" we just want to stop workflow execution. Setting the "end" property to true
+allows us not to have to add another state which would do nothing (except be an end state).
+
+Another common example are transition definitions inside [onError](#Error-Definition):
+
+```json
+{
+    "name":"ProvisionOrder",
+    "type":"OPERATION",
+    "actionMode":"SEQUENTIAL",
+    "actions":[  
+       {  
+          "function":{
+             "name": "provisionOrder",
+             "resource": "functionResourse",
+             "parameters": {
+               "order": "$.order"
+             }
+          }
+       }
+    ],
+    "onError": [
+      {
+         "condition": {
+           "expressionLanguage": "spel",
+           "body": "$.exception.name is 'MissingOrderItemException'"
+         },
+         "transition": {
+           "nextState": "MissingItem"
+         }
+       },
+       {
+         "condition": {
+           "expressionLanguage": "spel",
+           "body": "$.exception.name not 'MissingOrderIdException'"
+         },
+         "transition": {
+          "end": true
+        }
+      }
+    ],
+    "transition": {
+       "nextState":"ApplyOrder"
+    }
+}
+```
+
+In this case if the "provisionOrder" function causes a runtime error, we only want to handle the "MissingOrderItemException" by 
+transitioning to the "MissingItem" state. For all other errors we just want to end workflow execution and not have to create 
+an addition end state to do that.
 
 ## Workflow Data
 

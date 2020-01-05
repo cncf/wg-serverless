@@ -121,11 +121,24 @@
           "type": "string",
           "description": "State to transition to next",
           "minLength": 1
+        },
+        "end": {
+          "type": "boolean",
+          "default": false,
+          "description": "Instead of transitioning to nextState, end workflow execution instead"
         }
       },
-      "required": [
-        "nextState"
-      ]
+      "if": {
+        "properties": {
+          "end": { "const": true }
+        }
+      },
+      "then": {
+        "required": ["end"]
+      },
+      "else": {
+        "required": ["nextState"]
+      }
     },
     "error": {
       "type": "object",
