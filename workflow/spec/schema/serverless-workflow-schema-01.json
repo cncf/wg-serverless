@@ -125,7 +125,7 @@
         "end": {
           "type": "boolean",
           "default": false,
-          "description": "Instead of transitioning to nextState, end workflow execution instead"
+          "description": "Instead of transitioning to nextState, end workflow execution"
         }
       },
       "if": {

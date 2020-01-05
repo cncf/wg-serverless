@@ -627,7 +627,7 @@ as well as define parameters (key/value pairs).
 | --- | --- | --- | --- |
 | [condition](#Condition-Definition) |Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid. | object | no |
 | [nextState](#Transitions) |State to transition to next | string | yes |
-| end | Instead of transitioning to nextState, end workflow execution instead | boolean | no |
+| end | Instead of transitioning to nextState, end workflow execution | boolean | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -647,7 +647,7 @@ as well as define parameters (key/value pairs).
     "end": {
         "type": "boolean",
         "default": false,
-        "description": "Instead of transitioning to nextState, end workflow execution instead"
+        "description": "Instead of transitioning to nextState, end workflow execution"
     }
   },
   "if": {
