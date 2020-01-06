@@ -178,7 +178,7 @@ Here we define details of the Serverless Workflow definitions:
         },
         "triggerDefs": {
             "type": "array",
-            "description": "Trigger Definitions",
+            "description": "Workflow Trigger Definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/triggerevent"
@@ -186,7 +186,7 @@ Here we define details of the Serverless Workflow definitions:
         },
         "actionDefs": {
             "type": "array",
-            "description": "Action Definitions",
+            "description": "Workflow Action Definitions",
             "items": {
               "type": "object",
               "$ref": "#/definitions/action"
@@ -277,7 +277,6 @@ events for same workflow instance, must be specified in that event trigger.
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | name | Action unique name | string |yes |
-| group | Action group | string |no |
 | [function](#Function-Definition) |Function to be invoked | object | yes |
 | timeout |Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | integer | no |
 | [retry](#Retry-Definition) |Defines if function execution needs a retry | array | no |
@@ -293,10 +292,6 @@ events for same workflow instance, must be specified in that event trigger.
         "name": {
             "type": "string",
             "description": "Action unique name"
-        },
-        "group": {
-            "type": "string",
-            "description": "Action group name"
         },
         "function": {
             "$ref": "#/definitions/function",
@@ -318,7 +313,7 @@ events for same workflow instance, must be specified in that event trigger.
           "$ref": "#/definitions/filter"
         }
     },
-    "required": ["name", "group", "function"]
+    "required": ["name", "function"]
 }
 ```
 
@@ -329,11 +324,8 @@ Each action includes a [Function](#Function-Definition) definition and a [Retry]
 Function definition describes execution of a serverless function. Retry definition describes the retry policy for the serverless
 function call.
 
-Actions can be grouped into logical units via the "group" parameter. The name of each group has to be unique
-and it is recommended to name them according to their functionality, for example "Login", "Onboarding", "Payroll", etc.
-
-Once defined, actions can be executed within Event and Operation states. Actions can be referenced by their
-group name. All actions included in the group are then executed in the order their are defined.
+Actions have a name which must be unique. Defined actions can be referenced by name within defined Event and Operation states via their
+"actions" property. 
 
 ### Error Definition
 
@@ -503,14 +495,14 @@ Incoming events are matched against the states condition parameter. If they matc
             "enum": ["SEQUENTIAL", "PARALLEL"],
             "description": "Specifies whether functions are executed in sequence or in parallel"
         },
-            "actions": {
-              "type": "array",
-              "description": "String array containing the defined action group names to be executed. Groups are executed in order defined.",
-              "default": [""],
-              "items": {
-                "type": "string"
-              }
-            },
+        "actions": {
+          "type": "array",
+          "description": "String array containing action names to be executed. Actions are executed in the order defined.",
+          "default": [""],
+          "items": {
+            "type": "string"
+          }
+        },
         "filter": {
           "$ref": "#/definitions/filter"
         },
@@ -730,7 +722,7 @@ Defines Transitions from point A to point B in the serverless workflow. For more
         },
         "actions": {
           "type": "array",
-          "description": "String array containing the defined action group names to be executed. Groups are executed in order defined.",
+          "description": "String array containing actions names to be executed. Actions are executed in order defined.",
           "default": [""],
           "items": {
             "type": "string"
@@ -1647,10 +1639,9 @@ Here is an example of an Operation state which sends a confirmation email for ea
    "name": "Send order confirmation email",
    "description": "Send email for each confirmed oreder",
    "startsAt": "sendConfirmationEmail",
-   "actionDefs": [
+   "actions": [
     {
-      "name": "Send Confirmation",
-      "group": "Orders",
+      "name": "SendConfirmation",
       "function": {
         "name": "sendConfirmationEmailFunction",
         "resource": "functionResourse"
@@ -1662,7 +1653,7 @@ Here is an example of an Operation state which sends a confirmation email for ea
          "name":"sendConfirmationEmail",
          "type":"OPERATION",
          "actionMode":"SEQUENTIAL",
-         "actions": ["Orders"],
+         "actions": ["SendConfirmation"],
          "end": true,
          "loop": {
             "inputCollection": "$.orders[?(@.completed == true)]"
@@ -1733,18 +1724,16 @@ output of the state to transition from includes an user with the title "MANAGER"
 ```json
 {  
    "startsAt": "lowRiskState",
-   "actionDefs": [
+   "actions": [
     {
-      "name": "Some Low Risk Operation",
-      "group": "LowRisk",
+      "name": "LowRiskAction",
       "function": {
         "name": "doLowRistOperation",
         "resource": "functionResourse"
       }
     },
     {
-      "name": "Some High Risk Operation",
-      "group": "HighRisk",
+      "name": "HighRiskAction",
       "function": {
         "name": "doHighRistOperation",
         "resource": "functionResourse"
@@ -1756,7 +1745,7 @@ output of the state to transition from includes an user with the title "MANAGER"
          "name":"lowRiskState",
          "type":"OPERATION",
          "actionMode":"Sequential",
-         "actions":["LowRisk"],
+         "actions":["LowRiskAction"],
          "transition": {
             "nextState":"highRiskState",
             "condition": {
@@ -1768,9 +1757,9 @@ output of the state to transition from includes an user with the title "MANAGER"
       {  
          "name":"highRiskState",
          "type":"OPERATION",
-         "end":true,
          "actionMode":"Sequential",
-         "actions":["HighRisk"]
+         "actions":["HighRiskAction"],
+         "end":true
       }
    ]
 }
@@ -1930,10 +1919,9 @@ Let's take a look at a small example:
 {
   ...
   "startsAt": "HandleErrors",
-  "actionDefs": [
+  "actions": [
      {
-       "name": "Throw Runtime Error",
-       "group": "RuntimeError",
+       "name": "ThrowErrorAction",
        "function": {
           "name": "FunctionThatThrowsRuntimeError",
           "resource": "function-resource-info:throw-runtime-error-function"
@@ -1946,7 +1934,7 @@ Let's take a look at a small example:
        "type":"OPERATION",
        "end": false,
        "actionMode":"SEQUENTIAL",
-       "actions":["RuntimeError"],
+       "actions":["ThrowErrorAction"],
        "onError": [
           {
             "condition": {
@@ -1986,10 +1974,9 @@ workflow definition. Let's take a look:
 {
   ...
   "startsAt": "HandleErrors1",
-  "actionDefs": [
+  "actions": [
      {
-       "name": "Throw Runtime Error",
-       "group": "RuntimeError",
+       "name": "ThrowsErrorAction",
        "function": {
           "name": "FunctionThatThrowsRuntimeError",
           "resource": "function-resource-info:throw-runtime-error-function"
@@ -2017,7 +2004,7 @@ workflow definition. Let's take a look:
        "type":"OPERATION",
        "end": false,
        "actionMode":"SEQUENTIAL",
-       "actions": ["RuntimeError"],
+       "actions": ["ThrowsErrorAction"],
        "transition": {
           "nextState": "doSomethingElse"
        }
@@ -2027,7 +2014,7 @@ workflow definition. Let's take a look:
        "type":"OPERATION",
        "end": false,
        "actionMode":"SEQUENTIAL",
-       "actions": ["RuntimeError"],
+       "actions": ["ThrowsErrorAction"],
        "transition": {
           "nextState": "doSomethingElse"
        }

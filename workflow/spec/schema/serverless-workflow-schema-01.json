@@ -45,17 +45,17 @@
       "type": "string",
       "description": "Default expression language to be used throughout the workflow definition"
     },
-    "triggerDefs": {
+    "triggers": {
       "type": "array",
-      "description": "Trigger Definitions",
+      "description": "Workflow Triggers",
       "items": {
         "type": "object",
         "$ref": "#/definitions/triggerevent"
       }
     },
-    "actionDefs": {
+    "actions": {
       "type": "array",
-      "description": "Action Definitions",
+      "description": "Workflow Actions",
       "items": {
         "type": "object",
         "$ref": "#/definitions/action"
@@ -227,7 +227,7 @@
         },
         "actions": {
           "type": "array",
-          "description": "String array containing the defined action group names to be executed. Groups are executed in order defined.",
+          "description": "String array containing action names to be executed. Actions are executed in order defined.",
           "default": [""],
           "items": {
             "type": "string"
@@ -555,7 +555,7 @@
           },
           "actions": {
             "type": "array",
-            "description": "String array containing the defined action group names to be executed. Groups are executed in order defined.",
+            "description": "String array containing action group names to be executed. Actions are executed in order defined.",
             "default": [""],
             "items": {
               "type": "string"

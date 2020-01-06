@@ -111,8 +111,7 @@ output, which then becomes the data output of the workflow itself (as it is the 
    "startsAt": "Greet",
    "actionDefs": [
       {
-        "name": "Greet Action",
-        "group": "Greetings",
+        "name": "GreetingAction",
         "function": {
             "name": "greetingFunction",
             "resource": "functionResourse",
@@ -127,7 +126,7 @@ output, which then becomes the data output of the workflow itself (as it is the 
          "name":"Greet",
          "type":"OPERATION",
          "actionMode":"SEQUENTIAL",
-         "actions":["Greetings"],
+         "actions":["GreetingAction"],
          "filter": {
             "resultPath": "$.out",
             "outputPath": "$.out.payload.greeting"
@@ -180,8 +179,7 @@ The state filter is then used to only return the results of the solved math expr
    "startsAt": "Solve",
    "actionDefs": [
      {
-        "name": "Math Action",
-        "group": "Math",
+        "name": "MathAction",
         "function": {
            "name": "solveMathExpressionFunction",
            "resource": "functionResourse",
@@ -196,7 +194,7 @@ The state filter is then used to only return the results of the solved math expr
          "name":"Solve",
          "type":"OPERATION",
          "actionMode":"SEQUENTIAL",
-         "actions":["Math"],
+         "actions":["MathAction"],
          "loop": {
              "inputCollection": "$.expressions",
              "outputCollection": "$.answers"
@@ -306,8 +304,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
    "startsAt": "CheckApplication",
    "actionDefs": [
      {
-        "name": "Reject Order Action",
-        "group": "OrderRejection",
+        "name": "RejectOrderAction",
         "function": {
            "name": "sendRejectionEmailFunction",
            "resource": "functionResourse",
@@ -351,7 +348,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
         "name":"RejectApplication",
         "type":"OPERATION",
         "actionMode":"SEQUENTIAL",
-        "actions":["OrderRejection"],
+        "actions":["RejectOrderAction"],
         "end": true
     }
    ]
@@ -396,8 +393,7 @@ The data output of the workflow contains the information of the exception caught
    "startsAt": "ProvisionOrder",
    "actionDefs": [
     {
-       "name": "Provision Order Action",
-       "group": "Provisioning",
+       "name": "ProvisionOrderAction",
        "function":{
           "name": "provisionOrderFunction",
           "resource": "functionResourse",
@@ -412,7 +408,7 @@ The data output of the workflow contains the information of the exception caught
         "name":"ProvisionOrder",
         "type":"OPERATION",
         "actionMode":"SEQUENTIAL",
-        "actions":["Provisioning"],
+        "actions":["ProvisionOrderAction"],
         "filter": {
            "resultPath": "$.exception"
         },
