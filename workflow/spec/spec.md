@@ -86,7 +86,7 @@ You can find different Serverless Workflow use cases [here](spec-usecases.md)
 
 Following sections provide detailed descriptions of the Serverless Workflow Model. For each part of the model we provide:
 - Parameter description in table format
-- JSON Schema definition 
+- [JSON Schema](https://json-schema.org/) definition 
 
 You can find the entire Serverless Workflow JSON Schema [here](schema/serverless-workflow-schema-01.json).
 Note that this schema reflects the current status of the specification as is updated alongside this document. 
@@ -103,7 +103,7 @@ Additional workflow functionality includes:
 
 * Results from a cloud function can be used to initiate retry operations or determine which function to execute next or which state to transition to.
 
-* Provide a way to filter and transform the JSON event payload as it progresses through the Serverless Workflow.
+* Provide a way to filter and transform the [JSON](https://tools.ietf.org/html/rfc7159) event payload as it progresses through the Serverless Workflow.
 
 * Provide a way for the application developer to specify a unique field in the event that can be used to correlate events from the event sources to the same serverless workflow instance
 
@@ -545,7 +545,7 @@ It also defines a timeout wait period if one is needed, as well as a retry defin
 | name |Function name | string | yes |
 | resource |Function resource (URI) | string | yes |
 | type |Function type. Implementers may define custom types. | string | yes |
-| parameters |Function parameters. Can be either static string values, or selected from the state input using a JSON Path expression. | object | no |
+| parameters |Function parameters. Can be either static string values, or selected from the state input using a [JSONPath](https://github.com/json-path/JsonPath) expression. | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -567,7 +567,7 @@ It also defines a timeout wait period if one is needed, as well as a retry defin
     },
     "parameters": {
       "type": "object",
-      "description": "Function parameters. Can be either static string values, or selected from the state input using a JSON Path expression."
+      "description": "Function parameters. Can be either static string values, or selected from the state input using a JSONPath expression."
     }
   },
   "required": ["name", "resource", "type"]
@@ -870,7 +870,7 @@ There are found types of choices defined:
     "properties": {
         "path": {
             "type": "string",
-            "description": "JSON Path that selects the data input value to be matched"
+            "description": "JSONPath that selects the data input value to be matched"
         },
         "value": {
             "type": "string",
@@ -915,7 +915,7 @@ There are found types of choices defined:
             "items": {
                 "path": {
                     "type": "string",
-                    "description": "JSON Path that selects the data input value to be matched"
+                    "description": "JSONPath that selects the data input value to be matched"
                 },
                 "value": {
                     "type": "string",
@@ -961,7 +961,7 @@ There are found types of choices defined:
             "properties": {
                 "path": {
                     "type": "string",
-                    "description": "JSON Path that selects the data input value to be matched"
+                    "description": "JSONPath that selects the data input value to be matched"
                 },
                 "value": {
                     "type": "string",
@@ -1008,7 +1008,7 @@ There are found types of choices defined:
             "items": {
                 "path": {
                     "type": "string",
-                    "description": "JSON Path that selects the data input value to be matched"
+                    "description": "JSONPath that selects the data input value to be matched"
                 },
                 "value": {
                     "type": "string",
@@ -1420,11 +1420,11 @@ Filters are used for data flow through the workflow. This is described in detail
   "properties": {
     "inputCollection": {
       "type": "string",
-      "description": "JSON Path, selects a collection of the states inputPath"
+      "description": "JSONPath, selects a collection of the states inputPath"
     },
     "outputCollection": {
       "type": "string",
-      "description": "JSON Path, selects a collection of the states outputPath"
+      "description": "JSONPath, selects a collection of the states outputPath"
     },
     "completionCondition": {
       "type": "string",
@@ -1599,7 +1599,7 @@ serverless workflow execution can be divided into the following constructs:
 
 ### Workflow data input
 
-The initial data input into a workflow instance must be a valid JSON object. If no input is provided
+The initial data input into a workflow instance must be a valid [JSON object](https://tools.ietf.org/html/rfc7159#section-4). If no input is provided
 the default data input is the empty object:
 ```json
 {
@@ -1628,10 +1628,10 @@ There are two of rules to consider here:
 <img src="media/basic-state-data-passing.png" with="500px" height="300px" alt="Basic state data passing"/>
 </p>
 
-Within states the JSON data can be accessed and manipulated via [filters](#Filter-Definition). 
+Within states the [JSON](https://tools.ietf.org/html/rfc7159) data can be accessed and manipulated via [filters](#Filter-Definition). 
 Filters are also used within [actions](#Action-Definition) and [events]((#eventstate-eventdef)). 
-Filters use JSONPath to do things like select a portion of data that you care about, filter unwanted information, 
-or combine/merge data to pass to the next state or action. The JSONPath expression must start with "$.". 
+Filters use [JSONPath](https://github.com/json-path/JsonPath) to do things like select a portion of data that you care about, filter unwanted information, 
+or combine/merge data to pass to the next state or action. The [JSONPath](https://github.com/json-path/JsonPath) expression must start with "$.". 
  
 Filters have three properties namely inputPath, outputPath, an resultPath.
 
