@@ -222,17 +222,21 @@ Here we define details of the Serverless Workflow definitions:
 </details>
 
 ### Trigger Definition
-
-Triggers define incoming events which can be associated with invocation of one or more states.
-If there are multiple events involved in an application workflow, a 'correlationToken', which is used to correlate an event with other 
-events for same workflow instance, must be specified in that event trigger.
+Triggers define incoming events from various event sources that are asscociated with
+a serverless application and will invoke transition to one or more states of the application workflow.
+If there are a group of events involved in an application workflow, a token,
+which is embedded in the event message, must be specified to correlate one event with
+the other events for the same workflow instance. Since the token is embedded in the event message,
+the location path of the token must be specified so that the backend implementation can
+extract the token and map the event instance to the correct application workflow instance.
+Different application workflow specifications will have different tokens.
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | name | Unique trigger name | string |yes |
 | source |CloudEvent source | string | yes |
 | type |CloudEvent type | string | yes |
-| correlationToken | Path used for event correlation | string | no |
+| correlationToken | Location Path in the event message used to retrieve a token for event correlation | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
