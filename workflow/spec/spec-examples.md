@@ -7,6 +7,7 @@
 - [Parallel Execution](#Parallel-Execution-Example)
 - [Applicant Request Decision (Switch + SubFlow)](#Applicant-Request-Decision-Example)
 - [Provision Orders (Error Handling)](#Provision-Orders-Example)
+- [Monitor Job for completion (Polling)](#Monitor-Job-Example)
 
 
 ### Greeting Example
@@ -408,4 +409,163 @@ The data output of the workflow contains the information of the exception caught
 
 <p align="center">
 <img src="media/handlerrorsexample.png" with="400px" height="400px" alt="Handle Errors Example"/>
+</p>
+
+### Monitor Job Example
+
+#### Description
+
+In this example we submit a job via an operation state action (serverless function call). It is assumed that it takes some time for 
+the submitted job to complete and that it's completion can be checked via another separate serverless function call.
+ 
+To check for completion we first wait 5 seconds and then get the results of the "CheckJob" serverless function. 
+Depending on the results of this we either return the results or transition back to waiting and checking the job completion. 
+This is done until the job submission returns "SUCCEEDED" or "FAILED" and the job submission results are reported before workflow
+finishes execution.
+
+In the case job submission raises a runtime error, we transition to a SubFlow state which handles the job submission issue.
+
+
+#### Workflow JSON
+
+```json
+{  
+   "name": "Job Monitoring",
+   "description": "Monitor finished execution of a submitted job",
+   "startsAt": "SubmitJob",
+   "states":[  
+      {  
+        "name":"SubmitJob",
+        "type":"OPERATION",
+        "actionMode":"SEQUENTIAL",
+        "actions":[  
+           {  
+              "function":{
+                 "name": "submitJob",
+                 "resource": "submitJobResource",
+                 "parameters": {
+                   "name": "$.job.name"
+                 }
+              }
+           }
+        ],
+        "filter": {
+           "resultPath": "$.jobuid"
+        },
+        "onError": [
+           {
+             "condition": {
+                "expressionLanguage": "spel",
+                "body": "$.exception != null"
+             },
+             "transition": {
+               "nextState": "SubmitError"
+             }
+           }
+        ],
+        "transition": {
+           "nextState":"WaitForCompletion"
+        }
+    },
+    {
+       "name": "SubmitError",
+       "type": "SUBFLOW",
+       "workflowId": "handleJobSubmissionErrorWorkflow",
+       "end": true
+    },
+    {
+       "name": "WaitForCompletion",
+       "type": "DELAY",
+       "timeDelay": "PT5S",
+       "transition": {
+          "nextState":"GetJobStatus"
+       }
+    },
+    {  
+        "name":"GetJobStatus",
+        "type":"OPERATION",
+        "actionMode":"SEQUENTIAL",
+        "actions":[  
+           {  
+              "function":{
+                 "name": "checkJobStatus",
+                 "resource": "checkJobStatusResource",
+                 "parameters": {
+                   "name": "$.jobuid"
+                 }
+              }
+           }
+        ],
+        "filter": {
+           "resultPath": "$.jobstatus"
+        },
+        "transition": {
+           "nextState":"DetermineCompletion"
+        }
+    },
+    {  
+     "name":"DetermineCompletion",
+     "type":"SWITCH",
+     "choices": [
+         {
+           "path": "$.jobstatus",
+           "value": "SUCCEEDED",
+           "operator": "Equals",
+           "transition": {
+             "nextState": "JobSucceeded"
+           }
+         },
+         {
+           "path": "$.jobstatus",
+           "value": "FAILED",
+           "operator": "Equals",
+           "transition": {
+             "nextState": "JobFailed"
+           }
+         }
+      ],
+      "default": "WaitForCompletion"
+   },
+   {  
+       "name":"JobSucceeded",
+       "type":"OPERATION",
+       "actionMode":"SEQUENTIAL",
+       "actions":[  
+          {  
+             "function":{
+                "name": "reportJobSuceeded",
+                "resource": "reportJobSuceededResource",
+                "parameters": {
+                  "name": "$.jobuid"
+                }
+             }
+          }
+       ],
+       "end": true
+   },
+   {  
+      "name":"JobFailed",
+      "type":"OPERATION",
+      "actionMode":"SEQUENTIAL",
+      "actions":[  
+         {  
+            "function":{
+               "name": "reportJobFailed",
+               "resource": "reportJobFailedResource",
+               "parameters": {
+                 "name": "$.jobuid"
+               }
+            }
+         }
+      ],
+      "end": true
+  }
+  ]
+}
+```
+
+#### Worfklow Diagram
+
+<p align="center">
+<img src="media/jobmonitoringexample.png" with="400px" height="400px" alt="Job Monitoring Example"/>
 </p>
