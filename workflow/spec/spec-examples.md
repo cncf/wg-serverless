@@ -394,7 +394,7 @@ The data output of the workflow contains the information of the exception caught
    "actionDefs": [
     {
        "name": "ProvisionOrderAction",
-       "function":{
+       "function": {
           "name": "provisionOrderFunction",
           "resource": "functionResourse",
           "parameters": {
@@ -508,7 +508,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
         "actionMode":"SEQUENTIAL",
         "actions":[  
            {  
-              "function":{
+              "function": {
                  "name": "submitJob",
                  "resource": "submitJobResource",
                  "parameters": {
@@ -555,7 +555,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
         "actionMode":"SEQUENTIAL",
         "actions":[  
            {  
-              "function":{
+              "function": {
                  "name": "checkJobStatus",
                  "resource": "checkJobStatusResource",
                  "parameters": {
@@ -600,7 +600,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
        "actionMode":"SEQUENTIAL",
        "actions":[  
           {  
-             "function":{
+             "function": {
                 "name": "reportJobSuceeded",
                 "resource": "reportJobSuceededResource",
                 "parameters": {
@@ -617,7 +617,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
       "actionMode":"SEQUENTIAL",
       "actions":[  
          {  
-            "function":{
+            "function": {
                "name": "reportJobFailed",
                "resource": "reportJobFailedResource",
                "parameters": {
