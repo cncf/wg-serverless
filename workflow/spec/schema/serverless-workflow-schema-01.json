@@ -82,6 +82,10 @@
           {
             "title": "SubFlow State",
             "$ref": "#/definitions/subflowstate"
+          },
+          {
+            "title": "Relay State",
+            "$ref": "#/definitions/relaystate"
           }
         ]
       }
@@ -348,6 +352,10 @@
                 {
                   "title": "SubFlow State",
                   "$ref": "#/definitions/subflowstate"
+                },
+                {
+                  "title": "Relay State",
+                  "$ref": "#/definitions/relaystate"
                 }
               ]
             }
@@ -817,6 +825,53 @@
             "workflowId",
             "transition"
           ]
+        }
+      },
+      "relaystate": {
+        "type": "object",
+        "description": "Set up and relay the state's data input to data output. Does not perform any actions",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique State id",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "State name"
+          },
+          "type": {
+            "type" : "string",
+            "enum": ["RELAY"],
+            "description": "State type"
+          },
+          "end": {
+            "type": "boolean",
+            "default": false,
+            "description": "Is this state an end state"
+          },
+          "inject": {
+            "type": "object",
+            "description": "JSON object which can be set as states data input and can be manipulated via filters"
+          },
+          "filter": {
+            "$ref": "#/definitions/filter"
+          },
+          "transition": {
+            "description": "Next transition of the workflow after subflow has completed",
+            "$ref": "#/definitions/transition"
+          }
+        },
+        "if": {
+          "properties": {
+            "end": { "const": true }
+          }
+        },
+        "then": {
+          "required": ["name", "type"]
+        },
+        "else": {
+          "required": ["name", "type", "transition"]
         }
       },
       "defaultchoice": {

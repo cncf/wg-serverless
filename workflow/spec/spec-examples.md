@@ -2,6 +2,7 @@
 
 ## Table of Contents
 
+- [Hello World](#Hello-World-Example)
 - [Greeting](#Greeting-Example)
 - [Solving Math Problems (Looping)](#Solving-Math-Problems-Example)
 - [Parallel Execution](#Parallel-Execution-Example)
@@ -9,6 +10,65 @@
 - [Provision Orders (Error Handling)](#Provision-Orders-Example)
 - [Monitor Job for completion (Polling)](#Monitor-Job-Example)
 
+
+### Hello World Example
+
+#### Description
+
+This example uses two relay states. The "Hello" state statically injects the following JSON into its data input:
+
+```json
+{
+  "result": "Hello"
+}
+```
+
+which then becomes the data input of the transition "World" state.
+The "World" state merges its data input with it's injected JSON and uses a filter to set its data output to the 
+value of the "result" property. Since it is an end state, it's data output becomes the workflow data output:
+
+```
+"Hello World!"
+```
+
+#### Workflow JSON
+
+```json
+{  
+   "name": "Hello World Workflow",
+   "description": "Static Hello World",
+   "startsAt": "Hello",
+   "states":[  
+      {  
+         "name":"Hello",
+         "type":"RELAY",
+         "inject": {
+            "result": "Hello"
+         },
+         "transition": {
+           "nextState": "World"
+         }
+      },
+      {  
+         "name":"World",
+         "type":"RELAY",
+         "inject": {
+            "result": " World!"
+         },
+         "filter": {
+           "outputPath": "$.result"
+         },
+         "end": true 
+      }
+   ]
+}
+```
+
+#### Worfklow Diagram
+
+<p align="center">
+<img src="media/helloworldexample.png" with="250px" height="400px" alt="Hello World Example"/>
+</p>
 
 ### Greeting Example
 

@@ -304,7 +304,8 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 
 ### State Definition
 
-States define building blocks of the Serverless Workflow. The specification defines six different types of states:
+States define building blocks of the Serverless Workflow. The specification defines the following states:
+
 - **[Event State](#Event-state)**: Used to wait for events from event sources and
     then to invoke one or more functions to run in sequence or in parallel.
 
@@ -321,7 +322,9 @@ States define building blocks of the Serverless Workflow. The specification defi
 - **[Parallel State](#Parallel-State)**: Allows a number of states to execute in
     parallel.
     
-- **[SubFlow State](#SubFlow-State)**: Allows execution of a sub-workflow.   
+- **[SubFlow State](#SubFlow-State)**: Allows execution of a sub-workflow. 
+  
+- **[Relay State](#Relay-State)**: Used to relay state's data input to output without executing any actions. State's data input can be filtered. 
     
 We will start defining each individual state:
 
@@ -1364,6 +1367,164 @@ is completed or not.
 Each sub-workflow receives a copy of the SubFlow state's input data.
 If waitForCompletion property is set to true, sub-workflows have the ability to edit the parent's workflow data.
 If this property is set to false, data access to parent's workflow should not be allowed.
+
+### Relay State
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| id | Unique state id | string | no |
+| name |State name | string | yes | 
+| type |State type | string | yes | 
+| inject |JSON object which can be set as state's data input and can be manipulated via filter | object | no |
+| [filter](#Filter-Definition) |State data filter | object | no |
+| [transition](#Transitions) |Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "Set up and relay the state's data input to data output. Does not perform any actions",
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Unique State id",
+            "minLength": 1
+        },
+        "name": {
+            "type": "string",
+            "description": "State name"
+        },
+        "type": {
+            "type" : "string",
+            "enum": ["RELAY"],
+            "description": "State type"
+        },
+        "end": {
+            "type": "boolean",
+            "default": false,
+            "description": "Is this state an end state"
+        },  
+        "inject": {
+            "type": "object",
+            "description": "JSON object which can be set as states data input and can be manipulated via filters"
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "transition": {
+          "description": "Next transition of the workflow after subflow has completed",
+          "$ref": "#/definitions/transition"
+        }
+    },
+    "if": {
+      "properties": {
+        "end": { "const": true }
+      }
+    },
+    "then": {
+      "required": ["name", "type"]
+    },
+    "else": {
+      "required": ["name", "type", "transition"]
+    }
+}
+```
+
+</details>
+
+Relay state can be used to statically set up and relay the state's data input to data output.
+It is very useful for debugging for example as you can test/simulate workflow execution with pre-set data that would typically 
+be dynamic in nature (e.g. function calls, events etc). 
+
+It is also useful for production workflows where you want to just relay workflow data without performaing any actions (function calls).
+
+The relay state "inject" property allows you to statically define a JSON object which gets added to the states data input.
+You can use the filter property to control the states data output to the transition state.
+
+Here is a typical example of how to use the relay state to inject static data into its data input, which then will be passed
+as data output to the transition state:
+
+```json
+{  
+     "name":"SimpleRelayState",
+     "type":"RELAY",
+     "inject": {
+        "person": {
+          "fnam": "John",
+          "lname": "Doe",
+          "address": "1234 SomeStreet",
+          "age": 40
+        }
+     },
+     "transition": {
+        "nextState": "GreetPersonState"
+     }
+}
+```
+
+The data output of the "SimpleRelayState" which then is passed as input to the transition state would be:
+
+```json
+{
+ "person": {
+      "fnam": "John",
+      "lname": "Doe",
+      "address": "1234 SomeStreet",
+      "age": 40
+ }
+}
+
+```
+
+If the relay state already receives a data input from the previous transition state, the inject data will be merged 
+with its data input.
+
+You can also use the filter property to further relay the set-up data input and pass only
+what you need as data output of the state. Let's say we have:
+
+```json
+{  
+     "name":"SimpleRelayState",
+     "type":"RELAY",
+     "inject": {
+        "people": [
+          {
+             "fnam": "John",
+             "lname": "Doe",
+             "address": "1234 SomeStreet",
+             "age": 40
+          },
+          {
+             "fnam": "Marry",
+             "lname": "Allice",
+             "address": "1234 SomeStreet",
+             "age": 25
+          },
+          {
+             "fnam": "Kelly",
+             "lname": "Mill",
+             "address": "1234 SomeStreet",
+             "age": 30
+          }
+        ]
+     },
+     "filter": {
+        "outputPath": "$.people[?(@.age < 40)]"
+     },
+     "transition": {
+        "nextState": "GreetPersonState"
+     }
+}
+```
+
+In which case the states data output would include people whos age is less than 40. You can then easily during testing 
+change your output path to for example:
+
+```
+$.people[?(@.age >= 40)]
+```
+to test if your workflow behaves properly for the case when there are people who's age is greater or equal 40.
 
 
 ### Filter Definition
