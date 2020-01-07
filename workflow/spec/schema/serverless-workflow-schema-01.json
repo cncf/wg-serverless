@@ -255,10 +255,6 @@
           "type": "string",
           "description": "Action unique name"
         },
-        "group": {
-          "type": "string",
-          "description": "Action group name"
-        },
         "function": {
           "description": "Specifies the function that must be invoked",
           "$ref": "#/definitions/function"
@@ -277,8 +273,7 @@
       },
       "required": [
         "name",
-        "function",
-        "group"
+        "function"
       ]
     },
     "retry": {

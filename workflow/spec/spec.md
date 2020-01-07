@@ -471,7 +471,7 @@ Incoming events are matched against the states condition parameter. If they matc
 | [condition](#Condition-Definition) |Condition consisting of Boolean operation of events that will trigger the event state | object | yes |
 | timeout |Time period to wait for the events in the condition (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | actionMode |Specifies if functions are executed in sequence of parallel | string | no |
-| actions |String array containing the defined action group names to be executed. Groups are executed in order defined. | array | yes |
+| actions |String array containing the defined action names to be executed. Actions are executed in order defined. | array | yes |
 | [filter](#Filter-Definition) |Event data filter | object | yes |
 | [transition](#Transitions) |Next transition of the workflow after all the actions for the matching event have been successfully executed | string | yes |
 
@@ -683,7 +683,7 @@ Defines Transitions from point A to point B in the serverless workflow. For more
 | type |State type | string | yes |
 | end |Is this state an end state | boolean | no |
 | actionMode |Should actions be executed sequentially or in parallel | string | yes |
-| actions |String array containing the defined action group names to be executed. Groups are executed in order defined. | array | yes |
+| actions |String array containing the defined action names to be executed. Actions are executed in order defined. | array | yes |
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
