@@ -586,7 +586,7 @@ Each event state's event definition includes one or more actions:
 ```
 
 </details>
-
+ 
 Actions reference a reusable function definition to be invoked when this action is executed.
 They define a timeout wait period as well as a retry policy.
 
