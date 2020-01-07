@@ -724,8 +724,8 @@
             }
           },
           "default": {
-            "type": "string",
-            "description": "Specifies the name of the next state if there is no match for any choices value"
+            "description": "Next transition of the workflow if there is no match for any choices",
+            "$ref": "#/definitions/transition"
           }
         },
         "if": {

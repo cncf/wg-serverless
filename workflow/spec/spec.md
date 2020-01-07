@@ -768,7 +768,7 @@ actions execute, a transition to "next state" happens.
 | [filter](#Filter-Definition) |State data filter | object | yes |
 | [loop](#Loop-Definition) |State loop information | object | yes |
 | [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
-| default |Name of the next state if there is no match for any choices value | string | yes (if end is set to false) |
+| default |Next transition of the workflow if there is no match for any choices | object | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -824,8 +824,8 @@ actions execute, a transition to "next state" happens.
             }
         },
         "default": {
-            "type": "string",
-            "description": "Specifies the name of the next state if there is no match for any choices value"
+            "description": "Next transition of the workflow if there is no match for any choices",
+            "$ref": "#/definitions/transition"
         }
     },
     "if": {
