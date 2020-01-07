@@ -32,6 +32,16 @@ So let's define a simple example workflow model and then add our custom extensio
 {  
    "name": "Simple Workflow",
    "startsAt": "FirstOperation",
+   "functions": [
+      {
+         "name": "firstFunction",
+         "type": "serverless"
+      },
+      {
+         "name": "secondFunction",
+         "type": "serverless"
+      }
+   ],
    "states":[  
       {  
          "name":"FirstOperation",
@@ -41,9 +51,8 @@ So let's define a simple example workflow model and then add our custom extensio
          "actions":[  
             {  
                "name": "callFirstFunction",
-               "function": {
-                  "name": "firstFunction",
-                  "type": "serverless"
+               "functionref": {
+                  "refname": "firstFunction"
                }
             }
          ],
@@ -59,9 +68,8 @@ So let's define a simple example workflow model and then add our custom extensio
          "actions":[  
               {  
                  "name": "callSecondFunction",
-                 "function": {
-                   "name": "secondFunction",
-                   "type": "serverless"
+                 "functionref": {
+                   "refname": "secondFunction"
                 }
               }
          ]
