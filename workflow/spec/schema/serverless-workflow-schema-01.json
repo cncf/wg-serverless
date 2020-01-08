@@ -206,16 +206,16 @@
         "inputPath"
       ]
     },
-    "event": {
+    "onreceive": {
       "type": "object",
       "properties": {
         "condition": {
-          "description": "Boolean expression which consists of one or more Event operands and the Boolean operators",
+          "description": "Condition matching a received event with one or more defined triggers",
           "$ref": "#/definitions/condition"
         },
         "timeout": {
           "type": "string",
-          "description": "Specifies the time period waiting for the events in the condition (ISO 8601 format)"
+          "description": "Time period to wait for incoming events which match the condition (ISO 8601 format)"
         },
         "actionMode": {
           "type": "string",
@@ -223,18 +223,19 @@
             "SEQUENTIAL",
             "PARALLEL"
           ],
-          "description": "Specifies whether functions are executed in sequence or in parallel"
+          "description": "Specifies how actions are to be performed (in sequence of parallel)",
+          "default": "SEQUENTIAL"
         },
         "actions": {
           "type": "array",
-          "description": "Action Definitions",
+          "description": "Actions to be performed if condition matches",
           "items": {
             "type": "object",
             "$ref": "#/definitions/action"
           }
         },
         "transition": {
-          "description": "Next transition of the workflow after all the actions for the matching event have been successfully executed",
+          "description": "Next transition of the workflow after all the actions have been performed",
           "$ref": "#/definitions/transition"
         },
         "filter": {
@@ -495,12 +496,12 @@
           "filter": {
             "$ref": "#/definitions/filter"
           },
-          "events": {
+          "onReceive": {
             "type": "array",
-            "description": "Event State Definitions",
+            "description": "Define what events to act upon and actions to be performed",
             "items": {
               "type": "object",
-              "$ref": "#/definitions/event"
+              "$ref": "#/definitions/onreceive"
             }
           },
           "loop": {
@@ -523,7 +524,7 @@
       },
       "operationstate": {
         "type": "object",
-        "description": "This state allows one or more functions to run in sequence or in parallel without waiting for any event.",
+        "description": "Defines actions be performed. Does not wait for incoming events.",
         "properties": {
           "id": {
             "type": "string",
@@ -555,11 +556,12 @@
               "SEQUENTIAL",
               "PARALLEL"
             ],
-            "description": "Specifies whether functions are executed in sequence or in parallel."
+            "description": "Specifies whether actions are performed in sequence or in parallel",
+            "default": "SEQUENTIAL"
           },
           "actions": {
             "type": "array",
-            "description": "Actions Definitions",
+            "description": "Actions to be performed",
             "items": {
               "type": "object",
               "$ref": "#/definitions/action"
@@ -577,7 +579,7 @@
             }
           },
           "transition": {
-            "description": "Next transition of the workflow after all the actions have been successfully executed",
+            "description": "Next transition of the workflow after all the actions have been performed",
             "$ref": "#/definitions/transition"
           }
         },

@@ -421,11 +421,11 @@ We will start defining each individual state:
 | id | Unique state id | string | no |
 | name | State name | string | yes |
 | type | State type | string | yes |
-| end | Is this state an end state | boolean | no |
-| [events](#eventstate-eventdef) | State events | array | yes |
+| end |Is this state an end state | boolean | no |
+| [onReceive](#eventstate-onreceivedef) | Define what events to act upon and actions to be performed | array | yes |
 | [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop information | object | no |
-| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
+| [loop](#Loop-Definition) | State loop information | object | yes |
+| [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
  
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -433,7 +433,7 @@ We will start defining each individual state:
 ```json
 {
     "type": "object",
-    "description": "This state is used to wait for events from event sources and then to invoke one or more functions to run in sequence or in parallel.",
+    "description": "This state is used to wait for events from event sources and then to invoke one or more actions to run in sequence or parallel.",
     "properties": {
         "id": {
             "type": "string",
@@ -454,12 +454,12 @@ We will start defining each individual state:
             "default": false,
             "description": "Is this an end state"
         },
-        "events": {
+        "onReceive": {
             "type": "array",
-            "description": "Event State Definitions",
+            "description": "Define what events to act upon and actions to be performed",
             "items": {
                 "type": "object",
-                "$ref": "#/definitions/event"
+                "$ref": "#/definitions/onreceive"
             }
         },
         "filter": {
@@ -477,32 +477,32 @@ We will start defining each individual state:
             }
         }
     },
-    "required": ["name", "type", "events"]
+    "required": ["name", "type", "onReceive"]
 }
 ```
 
 </p>
 </details>
 
-Event state can hold one or more events definitions, so let's define those:
+Event state can hold one or more onReceive definitions:
 
-#### <a name="eventstate-eventdef"></a> Event State: Event Definitions
+#### <a name="eventstate-onreceivedef"></a> Event State: onReceive Definitions
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [condition](#Condition-Definition) | Condition consisting of Boolean operation of events that will trigger the event state | object | yes |
-| timeout | Time period to wait for the events in the condition (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
-| actionMode | Specifies if functions are executed in sequence of parallel | string | no |
-| [actions](#Action-Definition) | State actions | array | yes |
-| [filter](#Filter-Definition) | Event data filter | object | yes |
-| [transition](#Transitions) | Next transition of the workflow after all the actions for the matching event have been successfully executed | string | yes |
+| [condition](#Condition-Definition) | Condition matching a received event with one or more defined triggers. If matched all defined actions are executed | object | yes |
+| timeout | Time period to wait for incoming events which match the condition (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
+| actionMode | Specifies how actions are to be performed (in sequence of parallel) | string | no |
+| [actions](#Action-Definition) | Actions to be performed if condition matches | array | yes |
+| [filter](#Filter-Definition) |Event data filter | object | yes |
+| [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
 {
     "type": "object",
-    "description": "Event associated with a State",
+    "description": "Defines what events to act upon and actions to be executed",
     "properties": {
         "condition": {
           "description": "Condition consisting of Boolean operation of events that will trigger ",
@@ -510,16 +510,17 @@ Event state can hold one or more events definitions, so let's define those:
         },
         "timeout": {
             "type": "string",
-            "description": "Specifies the time period waiting for the events in the condition (ISO 8601 format)"
+            "description": "Time period to wait for incoming events which match the condition (ISO 8601 format)"
         }, 
         "actionMode": {
             "type" : "string",
             "enum": ["SEQUENTIAL", "PARALLEL"],
-            "description": "Specifies whether functions are executed in sequence or in parallel"
+            "description": "Specifies how actions are to be performed (in sequence of parallel)"
+            "default": "SEQUENTIAL" 
         },
         "actions": {
             "type": "array",
-            "description": "Action Definitions",
+            "description": "Actions to be performed if condition matches",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/action"
@@ -529,7 +530,7 @@ Event state can hold one or more events definitions, so let's define those:
           "$ref": "#/definitions/filter"
         },
         "transition": {
-          "description": "Next transition of the workflow after all the actions for the matching event have been successfully executed",
+          "description": "Next transition of the workflow after all the actions have been performed",
           "$ref": "#/definitions/transition"
         }
     },
@@ -539,11 +540,46 @@ Event state can hold one or more events definitions, so let's define those:
 
 </details>
 
-The event condition attribute is used to associate this event state with one or more trigger events. 
+As events are received the event state can use the "condition" parameter to match the event with one or 
+more defined [triggers](#Trigger-Definition). If the condition evaluates to true, 
+a set of defined actions can be performed in sequence or in parallel.
 
-The events "transition" property defines the workflow transition after all actions of an event are completed.
+Once all defined actions have been performed, a transition to another state can occur.
 
-Each event state's event definition includes one or more actions:
+#### Condition Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| expressionLanguage |Expression language. For example 'spel', 'jexl', 'cel', etc| string | no |
+| body |Expression body | string | yes |
+
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "description": "Defines the language and body of expression.",
+  "properties": {
+    "expressionLanguage": {
+      "type": "string",
+      "description": "Expression language. For example 'spel', 'jexl', 'cel', etc"
+    },
+    "body": {
+      "type": "string",
+      "description": "The expression body. For example, (event1 or event2) and event3"
+    }
+  },
+  "required": ["body"]
+}
+```
+
+</details>
+
+Serverless workflow does not limit implementors to use any expression language they choose to
+evaluate expressions with. Expressions define a "language" and a "body". 
+Note that top-level workflow "expressionLanguage" property can be set to define the default
+expression language used for all expressions defined.
 
 #### Action Definition
 
@@ -705,23 +741,23 @@ Defines a transition from point A to point B in the serverless workflow. For mor
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | Unique state id | string | no |
+| id |  Unique state id | string | no |
 | name | State name | string | yes |
 | type | State type | string | yes |
 | end | Is this state an end state | boolean | no |
-| actionMode | Should actions be executed sequentially or in parallel | string | yes |
-| [actions](#Action-Definition) | State actions | array | yes |
+| actionMode | Should actions be performed sequentially or in parallel | string | no |
+| [actions](#Action-Definition) | Actions to be performed | array | yes |
 | [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop information | object | no |
+| [loop](#Loop-Definition) | State loop information | object | yes |
 | [onError](#Error-Handling) | States error handling definitions | array | no |
-| [transition](#Transitions) | Next transition of the workflow after all the actions have been successfully executed | string | yes (if end is set to false) |
+| [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
 {
     "type": "object",
-    "description": "This state allows one or more functions to run in sequence or in parallel without waiting for any event.",
+    "description": "Defines actions be performed. Does not wait for incoming events",
     "properties": {
         "id": {
             "type": "string",
@@ -745,11 +781,12 @@ Defines a transition from point A to point B in the serverless workflow. For mor
         "actionMode": {
             "type" : "string",
             "enum": ["SEQUENTIAL", "PARALLEL"],
-            "description": "Specifies whether actions are executed in sequence or in parallel."
+            "description": "Specifies whether actions are performed in sequence or in parallel",
+            "default": "SEQUENTIAL" 
         },
         "actions": {
             "type": "array",
-            "description": "Actions Definitions",
+            "description": "Actions to be performed",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/action"
@@ -770,7 +807,7 @@ Defines a transition from point A to point B in the serverless workflow. For mor
             }
         },
         "transition": {
-          "description": "Next transition of the workflow after all the actions have been successfully executed",
+          "description": "Next transition of the workflow after all the actions have been performed",
           "$ref": "#/definitions/transition"
         }
     },
@@ -780,20 +817,18 @@ Defines a transition from point A to point B in the serverless workflow. For mor
       }
     },
     "then": {
-      "required": ["name", "type", "actionMode", "actions"]
+      "required": ["name", "type", "actions"]
     },
     "else": {
-      "required": ["name", "type", "actionMode", "actions", "transition"]
+      "required": ["name", "type", "actions", "transition"]
     }
 }
 ```
 
 </details>
 
-Unlike Event states, Operation states do not wait for incoming trigger events. 
-Operation states define a set of actions to be executed sequentially or in parallel.
-Once all actions are completed, workflow execution continues as defined by the states "transition" 
-property.
+Operation state defines a set of actions to be performed in sequence or in parallel. 
+Once all actions have been performed, a transition to another state can occur.
 
 ### Switch State
 
