@@ -125,7 +125,8 @@ Here we define details of the Serverless Workflow definitions:
 | startsAt | Workflow starting state | string |yes |
 | execStatus |Workflow execution status | string |no |
 | expressionLanguage |Default expression language to be used throughout the workflow definition | string |no |
-| [triggerDefs](#Trigger-Definition) |Workflow triggers | array | no |
+| [triggers](#Trigger-Definition) |Workflow trigger events | array | no |
+| [functions](#Function-Definition) |Workflow functions | array | no |
 | [states](#State-Definition) | Workflow states | array | yes |
 | [onError](#Error-Handling) |Workflow error handling definitions | array | no |
 | [extensions](#Extending) | Workflow custom extensions | array | no |
@@ -176,12 +177,20 @@ Here we define details of the Serverless Workflow definitions:
           "type": "string",
           "description": "Default expression language to be used throughout the workflow definition"
         },
-        "triggerDefs": {
+        "triggers": {
             "type": "array",
-            "description": "Trigger Definitions",
+            "description": "Workflow trigger events",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/triggerevent"
+            }
+        },
+        "functions": {
+            "type": "array",
+            "description": "Workflow functions",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/function"
             }
         },
         "states": {
@@ -222,6 +231,7 @@ Here we define details of the Serverless Workflow definitions:
 </details>
 
 ### Trigger Definition
+
 Triggers define incoming events from various event sources that are asscociated with
 a serverless application and will invoke transition to one or more states of the application workflow.
 If there are a group of events involved in an application workflow, a token,
@@ -263,6 +273,46 @@ Different application workflow specifications will have different tokens.
         }
     },
     "required": ["name", "source", "type"]
+}
+```
+
+</details>
+
+#### Function Definition
+
+Allows you to define a reusable function definition. It can be referenced in [actions](#Action-Definition) defined in [event](#Event-State) and [operation](#Operation-State)
+workflow states. Functions must have an unique name. The resource parameter of a function evaluates to execution of
+an existing serverless function. Implementations can use the type parameter to define communication information such as protocols. 
+
+Since function definitions are reusable, their parameters are defined within actions that declare to use them.
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name |Function name | string | yes |
+| resource |Function resource (URI) | string | yes |
+| type |Function type. Can be defined by implementations | string | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Function unique name"
+      "minLength": 1 
+    },
+    "resource": {
+      "type": "string",
+      "description": "Function resource (URI)"
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of function to implement. Can be defined by implementations"
+    }
+  },
+  "required": ["name", "resource"]
 }
 ```
 
@@ -310,7 +360,7 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 
 States define building blocks of the Serverless Workflow. The specification defines the following states:
 
-- **[Event State](#Event-state)**: Used to wait for events from event sources and
+- **[Event State](#Event-State)**: Used to wait for events from event sources and
     then to invoke one or more functions to run in sequence or in parallel.
 
 - **[Operation State](#Operation-State)**: Allows one or more functions to run in sequence
@@ -503,7 +553,7 @@ expression language used for all expressions defined.
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [function](#Function-Definition) |Function to be invoked | object | yes |
+| [functionref](#Functionref-Definition) |References a reusable function definition to be invoked | object | yes |
 | timeout |Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | integer | no |
 | [retry](#Retry-Definition) |Defines if function execution needs a retry | array | no |
 | [filter](#Filter-Definition) |Action data filter | object | yes |
@@ -515,9 +565,9 @@ expression language used for all expressions defined.
     "type": "object",
     "description": "Action Definition",
     "properties": {
-        "function": {
-            "$ref": "#/definitions/function",
-            "description": "Function to be invoked"
+        "functionref": {
+            "$ref": "#/definitions/functionref",
+            "description": "References a reusable function definition to be invoked"
         },
         "timeout": {
             "type": "string",
@@ -535,63 +585,54 @@ expression language used for all expressions defined.
           "$ref": "#/definitions/filter"
         }
     },
-    "required": ["function"]
+    "required": ["functionref"]
 }
 ```
 
 </details>
 
-An action defines a collection of functions that are to be invoked when this action is triggered.
-It also defines a timeout wait period if one is needed, as well as a retry definition, so lets look at those now:
+Actions reference a reusable function definition to be invoked when this action is executed.
+They define a timeout wait period as well as a retry policy.
 
-
-#### Function Definition
+#### Functionref Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| name |Function name | string | yes |
-| resource |Function resource (URI) | string | yes |
-| type |Function type. Implementers may define custom types. | string | yes |
-| parameters |Function parameters. Can be either static string values, or selected from the state input using a [JSONPath](https://github.com/json-path/JsonPath) expression. | object | no |
+| refname | Name of the referenced function | string | yes |
+| parameters | Parameters to be passed to the referenced function | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
 {
   "type": "object",
+  "description": "Function Reference",
   "properties": {
-    "name": {
+    "refname": {
       "type": "string",
-      "description": "Function name"
-    },
-    "resource": {
-      "type": "string",
-      "description": "Function resource (URI)"
-    },
-    "type": {
-      "type": "string",
-      "description": "Type of function to implement. Implementers may define custom types here."
+      "desription": "Name of the referenced function"
     },
     "parameters": {
       "type": "object",
-      "description": "Function parameters. Can be either static string values, or selected from the state input using a JSONPath expression."
+      "description": "Function parameters"
     }
   },
-  "required": ["name", "resource", "type"]
+  "required": [
+    "refname"
+  ]
 }
 ```
 
-</details>
+Used by actions to reference a defined serverless function by its unique name. Parameters are values passed to the
+function. They can include either static values or reference the states data input. 
 
-The function name is a string that can evaluate to a call and execution of a serverless function. Implementers
-can define how this string maps to their actual function call(s). Functions can have a type
-as well as define parameters (key/value pairs).
+</details>
 
 #### Retry Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| match |Result matching value | string | yes |
+| [condition](#Condition-Definition) | Boolean condition that matches against the function results. Must be evaluated to true for retry policy to trigger | string |yes |
 | interval |Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| integer | no |
 | max |Max retry value | integer | no |
 | [transition](#Transitions) |Next transition of the workflow when exceeding max limit | string | yes |
@@ -603,9 +644,9 @@ as well as define parameters (key/value pairs).
     "type": "object",
     "description": "Retry Definition",
     "properties": {
-        "match": {
-            "type": "string",
-            "description": "Specifies the matching value for the result"
+        "condition": {
+          "description": "Boolean condition that matches against the function results. Must be evaluated to true for retry policy to trigger",
+          "$ref": "#/definitions/condition"
         },
         "interval": {
             "type": "string",
@@ -627,6 +668,9 @@ as well as define parameters (key/value pairs).
 ```
 
 </details>
+
+Defines a retry policy for an action. The Condition parameter is a condition that matches against 
+the functions results. If it is evaluated to true, the retry policy is triggers.
 
 #### Transition Definition
 
@@ -659,7 +703,7 @@ as well as define parameters (key/value pairs).
 
 </details>
 
-Defines Transitions from point A to point B in the serverless workflow. For more information see the
+Defines a transition from point A to point B in the serverless workflow. For more information see the
 [Transitions section](#Transitions).
 
 ### Operation State
@@ -1625,8 +1669,14 @@ Here is an example of an Operation state which sends a confirmation email for ea
 ```json
 {  
    "name": "Send order confirmation email",
-   "description": "Send email for each confirmed oreder",
+   "description": "Send email for each confirmed order",
    "startsAt": "sendConfirmationEmail",
+   "functions": [
+      {
+       "name": "sendConfirmationEmailFunction",
+       "resource": "functionResourse"
+      }
+   ],
    "states":[  
       {  
          "name":"sendConfirmationEmail",
@@ -1634,9 +1684,8 @@ Here is an example of an Operation state which sends a confirmation email for ea
          "actionMode":"SEQUENTIAL",
          "actions": [  
             {  
-               "function": {
-                "name": "sendConfirmationEmailFunction",
-                "resource": "functionResourse"
+               "functionref": {
+                  "refname": "sendConfirmationEmailFunction"
                }
             }
          ],
@@ -1710,6 +1759,16 @@ output of the state to transition from includes an user with the title "MANAGER"
 ```json
 {  
    "startsAt": "lowRiskState",
+   "functions": [
+      {
+         "name": "doLowRistOperationFunction",
+         "resource": "functionResourse"
+      },
+      {
+         "name": "doHighRistOperationFunction",
+         "resource": "functionResourse"
+      }
+   ],
    "states":[  
       {  
          "name":"lowRiskState",
@@ -1717,9 +1776,8 @@ output of the state to transition from includes an user with the title "MANAGER"
          "actionMode":"Sequential",
          "actions":[  
           {  
-            "function":{
-               "name": "doLowRistOperation",
-               "resource": "functionResourse"
+            "functionref":{
+               "refname": "doLowRistOperationFunction"
             }
           }
          ],
@@ -1738,9 +1796,8 @@ output of the state to transition from includes an user with the title "MANAGER"
          "actionMode":"Sequential",
          "actions":[  
             {  
-              "function":{
-                "name": "doHighRistOperation",
-                "resource": "functionResourse"
+              "functionref":{
+                "refname": "doHighRistOperationFunction"
               }
            }
          ]
@@ -1903,6 +1960,12 @@ Let's take a look at a small example:
 {
   ...
   "startsAt": "HandleErrors",
+  "functions": [
+      {
+         "name": "throwRuntimeErrorFunction",
+         "resource": "functionResource"
+      }
+  ],
   "states": [
     {  
        "name":"HandleErrors",
@@ -1911,9 +1974,8 @@ Let's take a look at a small example:
        "actionMode":"SEQUENTIAL",
        "actions":[  
           {  
-             "function": {
-               "name": "throw runtime error function",
-               "resource": "function-resource-info:throw-runtime-error-function"
+             "functionref": {
+               "refname": "throwRuntimeErrorFunction"
              }
           }
        ],
@@ -1971,6 +2033,12 @@ workflow definition. Let's take a look:
        }
      }
   ],
+  "functions": [
+    {
+       "name": "throwRuntimeErrorFunction",
+       "resource": "functionResource"
+    }
+  ],
   "states": [
     {  
        "name":"HandleErrors1",
@@ -1979,9 +2047,8 @@ workflow definition. Let's take a look:
        "actionMode":"SEQUENTIAL",
        "actions":[  
           {  
-             "function": {
-               "name": "throw runtime error function",
-               "resource": "function-resource-info:throw-runtime-error-function"
+             "functionref": {
+               "refname": "throwRuntimeErrorFunction"
              }
           }
        ],
@@ -1996,9 +2063,8 @@ workflow definition. Let's take a look:
        "actionMode":"SEQUENTIAL",
        "actions":[  
           {  
-             "function": {
-               "name": "throw runtime error function",
-               "resource": "function-resource-info:throw-runtime-error-function"
+             "functionref": {
+               "refname": "throwRuntimeErrorFunction"
              }
           }
        ],

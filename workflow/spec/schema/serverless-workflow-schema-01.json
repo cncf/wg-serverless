@@ -45,12 +45,20 @@
       "type": "string",
       "description": "Default expression language to be used throughout the workflow definition"
     },
-    "triggerDefs": {
+    "triggers": {
       "type": "array",
-      "description": "Trigger Definitions",
+      "description": "Workflow event triggers",
       "items": {
         "type": "object",
         "$ref": "#/definitions/triggerevent"
+      }
+    },
+    "functions": {
+      "type": "array",
+      "description": "Workflow functions",
+      "items": {
+        "type": "object",
+        "$ref": "#/definitions/function"
       }
     },
     "states": {
@@ -243,9 +251,9 @@
     "action": {
       "type": "object",
       "properties": {
-        "function": {
-          "description": "Specifies the function that must be invoked",
-          "$ref": "#/definitions/function"
+        "functionref": {
+          "description": "References a reusable function definition to be invoked",
+          "$ref": "#/definitions/functionref"
         },
         "retry": {
           "type": "array",
@@ -260,16 +268,16 @@
         }
       },
       "required": [
-        "function"
+        "functionref"
       ]
     },
     "retry": {
       "type": "object",
       "description": "Retry Definition",
       "properties": {
-        "match": {
-          "type": "string",
-          "description": "Specifies the matching value for the result"
+        "condition": {
+          "description": "Boolean condition that matches against the function results. Must be evaluated to true for retry policy to trigger",
+          "$ref": "#/definitions/condition"
         },
         "interval": {
           "type": "string",
@@ -295,7 +303,8 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Function name"
+            "description": "Function unique name",
+            "minLength": 1
           },
           "resource": {
             "type": "string",
@@ -303,7 +312,21 @@
           },
           "type": {
             "type": "string",
-            "description": "Type of function to implement. Implementors may define custom types here."
+            "description": "Type of function to implement. Can be defined by implementations"
+          }
+        },
+        "required": [
+          "name",
+          "resource"
+        ]
+      },
+      "functionref": {
+        "type": "object",
+        "description": "Function Reference",
+        "properties": {
+          "refname": {
+            "type": "string",
+            "desription": "Name of the referenced function"
           },
           "parameters": {
             "type": "object",
@@ -311,8 +334,7 @@
           }
         },
         "required": [
-          "name",
-          "type"
+          "refname"
         ]
       },
       "branch": {

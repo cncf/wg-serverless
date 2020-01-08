@@ -109,6 +109,12 @@ output, which then becomes the data output of the workflow itself (as it is the 
    "name": "Greeting Workflow",
    "description": "Greet Someone",
    "startsAt": "Greet",
+   "functions": [
+      {
+         "name": "greetingFunction",
+         "resource": "functionResourse"
+      }
+   ],
    "states":[  
       {  
          "name":"Greet",
@@ -116,9 +122,8 @@ output, which then becomes the data output of the workflow itself (as it is the 
          "actionMode":"SEQUENTIAL",
          "actions":[  
             {  
-               "function":{
-                  "name": "greetingFunction",
-                  "resource": "functionResourse",
+               "functionref": {
+                  "refname": "greetingFunction",
                   "parameters": {
                     "name": "$.greet.name"
                   }
@@ -175,6 +180,12 @@ The state filter is then used to only return the results of the solved math expr
    "name": "Solve Math Problems Workflow",
    "description": "Solve math problems",
    "startsAt": "Solve",
+   "functions": [
+       {
+          "name": "solveMathExpressionFunction",
+          "resource": "functionResourse"
+       }
+   ],
    "states":[  
       {  
          "name":"Solve",
@@ -182,9 +193,8 @@ The state filter is then used to only return the results of the solved math expr
          "actionMode":"SEQUENTIAL",
          "actions":[  
             {  
-               "function":{
-                  "name": "solveMathExpressionFunction",
-                  "resource": "functionResourse",
+               "functionref": {
+                  "refname": "solveMathExpressionFunction",
                   "parameters": {
                     "expression": "$."
                   }
@@ -298,6 +308,12 @@ If the applicants age is over 18 we start the application (subflow state). Other
    "name": "Applicant Request Decision Workflow",
    "description": "Determine if applicant request is valid",
    "startsAt": "CheckApplication",
+   "functions": [
+     {
+        "name": "sendRejectionEmailFunction",
+        "resource": "functionResourse"
+     }
+   ],
    "states":[  
       {  
          "name":"CheckApplication",
@@ -334,9 +350,8 @@ If the applicants age is over 18 we start the application (subflow state). Other
         "actionMode":"SEQUENTIAL",
         "actions":[  
            {  
-              "function":{
-                 "name": "sendRejectionEmailFunction",
-                 "resource": "functionResourse",
+              "functionref": {
+                 "refname": "sendRejectionEmailFunction",
                  "parameters": {
                    "applicant": "$.applicant"
                  }
@@ -385,6 +400,12 @@ The data output of the workflow contains the information of the exception caught
    "name": "Provision Orders",
    "description": "Provision Orders and handle errors thrown",
    "startsAt": "ProvisionOrder",
+   "functions": [
+      {
+         "name": "provisionOrderFunction",
+         "resource": "functionResourse"
+      }
+   ],
    "states":[  
       {  
         "name":"ProvisionOrder",
@@ -392,9 +413,8 @@ The data output of the workflow contains the information of the exception caught
         "actionMode":"SEQUENTIAL",
         "actions":[  
            {  
-              "function":{
-                 "name": "provisionOrderFunction",
-                 "resource": "functionResourse",
+              "functionref": {
+                 "refname": "provisionOrderFunction",
                  "parameters": {
                    "order": "$.order"
                  }
@@ -493,6 +513,24 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
    "name": "Job Monitoring",
    "description": "Monitor finished execution of a submitted job",
    "startsAt": "SubmitJob",
+   "functions": [
+     {
+       "name": "submitJob",
+       "resource": "submitJobResource"
+     },
+     {
+        "name": "checkJobStatus",
+        "resource": "checkJobStatusResource"
+     },
+     {
+        "name": "reportJobSuceeded",
+        "resource": "reportJobSuceededResource"
+     },
+     {
+        "name": "reportJobFailed",
+        "resource": "reportJobFailedResource"
+     }
+   ],
    "states":[  
       {  
         "name":"SubmitJob",
@@ -500,9 +538,8 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
         "actionMode":"SEQUENTIAL",
         "actions":[  
            {  
-              "function":{
-                 "name": "submitJob",
-                 "resource": "submitJobResource",
+              "functionref": {
+                 "refname": "submitJob",
                  "parameters": {
                    "name": "$.job.name"
                  }
@@ -547,9 +584,8 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
         "actionMode":"SEQUENTIAL",
         "actions":[  
            {  
-              "function":{
-                 "name": "checkJobStatus",
-                 "resource": "checkJobStatusResource",
+              "functionref": {
+                 "refname": "checkJobStatus",
                  "parameters": {
                    "name": "$.jobuid"
                  }
@@ -592,9 +628,8 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
        "actionMode":"SEQUENTIAL",
        "actions":[  
           {  
-             "function":{
-                "name": "reportJobSuceeded",
-                "resource": "reportJobSuceededResource",
+             "functionref": {
+                "refname": "reportJobSuceeded",
                 "parameters": {
                   "name": "$.jobuid"
                 }
@@ -609,9 +644,8 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
       "actionMode":"SEQUENTIAL",
       "actions":[  
          {  
-            "function":{
+            "functionref": {
                "name": "reportJobFailed",
-               "resource": "reportJobFailedResource",
                "parameters": {
                  "name": "$.jobuid"
                }
