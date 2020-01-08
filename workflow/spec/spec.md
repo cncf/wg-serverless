@@ -424,7 +424,7 @@ We will start defining each individual state:
 | end | Is this state an end state | boolean | no |
 | [events](#eventstate-eventdef) | State events | array | yes |
 | [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop information | object | yes |
+| [loop](#Loop-Definition) | State loop information | object | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
  
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -712,7 +712,7 @@ Defines a transition from point A to point B in the serverless workflow. For mor
 | actionMode | Should actions be executed sequentially or in parallel | string | yes |
 | [actions](#Action-Definition) | State actions | array | yes |
 | [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop information | object | yes |
+| [loop](#Loop-Definition) | State loop information | object | no |
 | [onError](#Error-Handling) | States error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been successfully executed | string | yes (if end is set to false) |
 
@@ -805,7 +805,7 @@ property.
 | end | Is this state an end start | boolean | no | 
 | [choices](#switch-state-choices) | Ordered set of matching rules to determine which state to trigger next | array | yes |
 | [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop information | object | yes |
+| [loop](#Loop-Definition) | State loop information | object | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
 | default | Next transition of the workflow if there is no match for any choices | object | yes (if end is set to false) |
 
@@ -1084,7 +1084,7 @@ There are four types of choices defined:
 | end | If this state an end state | boolean | no |
 | timeDelay | Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
 | [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop information | object | yes |
+| [loop](#Loop-Definition) | State loop information | object | no |
 | [onError](#Error-Handling) | States error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after the delay | string | yes (if end is set to false) |
 
@@ -1166,7 +1166,7 @@ Delay state simply waits for a certain amount of time before transitioning to a 
 | end | If this state and end state | boolean | no |
 | [branches](#parallel-state-branch) | List of branches for this parallel state| array | yes |
 | [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop behavior | object | yes |
+| [loop](#Loop-Definition) | State loop behavior | object | no |
 | [onError](#Error-Handling) | States error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after all branches have completed execution | string | yes (if end is set to false) |
 
@@ -1314,7 +1314,7 @@ Parallel state must wait for all branches which have this property set to "true"
 | waitForCompletion | If workflow execution must wait for sub-workflow to finish before continuing | boolean | yes |
 | workflowId | Sub-workflow unique id | boolean | no |
 | [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop information | object | yes |
+| [loop](#Loop-Definition) | State loop information | object | no |
 | [onError](#State-Exception-Handling) | States error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
 
