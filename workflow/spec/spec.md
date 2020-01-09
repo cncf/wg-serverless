@@ -322,7 +322,7 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 | --- | --- | --- | --- |
 | [condition](#Condition-Definition) | Condition that matches against the error in the state data input | string |yes |
 | [filter](#Filter-Definition) | Error data filter | object | yes |
-| [transition](#Transitions) |   when an errors expressed in errorExpression are matched | string | yes |
+| [transition](#Transitions) | Next transition of the workflow when condition matches | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -340,7 +340,7 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
       "description": "Error data filter"
     },
     "transition": {
-      "description": "Next transition of the workflow when an errors expressed in errorExpression are matched",
+      "description": "Next transition of the workflow when condition matches",
       "$ref": "#/definitions/transition"
     }
   },
@@ -1297,6 +1297,7 @@ Branches contain one or more states. Each branch must define a starting state vi
 Each branch receives a copy of the Parallel state's input data.
 States within each branch are only allowed to transition to states defined in the same branch. 
 Transitions to other branches or workflow states are not allowed.
+States outside a parallel state cannot transition to a state within a branch of a parallel state.
 
 Data output of the Parallel state includes the data output of each executed branch.
 
@@ -1805,7 +1806,7 @@ The default should be that if this happens workflow execution should halt and a 
 ## Workflow Data
 
 Serverless Workflow data is represented in [JSON](https://www.json.org/json-en.html) format. 
-Flow of data during workflow execution can divided into:
+Flow of data during workflow execution can be divided into:
 
 - [Workfow data input](#Workflow-data-input)
 - [Information passing between states](#Information-passing-between-states)
