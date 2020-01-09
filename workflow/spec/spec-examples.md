@@ -4,7 +4,7 @@
 
 - [Hello World](#Hello-World-Example)
 - [Greeting](#Greeting-Example)
-- [Solving Math Problems (Looping)](#Solving-Math-Problems-Example)
+- [Solving Math Problems (ForEach)](#Solving-Math-Problems-Example)
 - [Parallel Execution](#Parallel-Execution-Example)
 - [Applicant Request Decision (Switch + SubFlow)](#Applicant-Request-Decision-Example)
 - [Provision Orders (Error Handling)](#Provision-Orders-Example)
@@ -149,7 +149,8 @@ output, which then becomes the data output of the workflow itself (as it is the 
 
 #### Description
 
-In this example we show off looping in an Operation state. The state will loop over a collection of simple math expressions which are 
+In this example we show how to iterate over some data input using the ForEach state. 
+The state will iterate over a collection of simple math expressions which are 
 passed in as the workflow data input:
 
 ```json
@@ -157,21 +158,12 @@ passed in as the workflow data input:
       "expressions": ["2+2", "4-1", "10x3", "20/2"]
     }
 ```
+The ForEach state will execute a single defined operation state for each math expression. The operation
+state contains an action which calls a serverless function which actually solves the expression
+and returns its result.
 
-The operation state contains an action which calls the serverless function that solves the math expression and returns its answer.
-
-The results of the action is assumed to be the answer, for example for the first expression:
-
-```
-"4"
-```
-
-The state filter is then used to only return the results of the solved math expressions which becomes the workflow data output:
-
-
-```json
-["4", "3", "30", "10"]
-```
+Results of all mathe expressions are accumulated into the data output of the ForEach state which become the final
+result of the workflow execution.
 
 #### Workflow JSON
 
@@ -187,26 +179,33 @@ The state filter is then used to only return the results of the solved math expr
        }
    ],
    "states":[  
-      {  
+      {   
          "name":"Solve",
-         "type":"OPERATION",
-         "actionMode":"SEQUENTIAL",
-         "actions":[  
+         "type":"FOREACH",
+         "inputCollection": "$.expressions",
+         "inputParameter": "$.singleexpression",
+         "outputCollection": "$.results",
+         "startsAt": "GetResults",
+         "states": [
             {  
-               "functionref": {
-                  "refname": "solveMathExpressionFunction",
-                  "parameters": {
-                    "expression": "$."
-                  }
-               }
+                "name":"GetResults",
+                "type":"OPERATION",
+                "actionMode":"SEQUENTIAL",
+                "actions":[  
+                   {  
+                      "functionref": {
+                         "refname": "solveMathExpressionFunction",
+                         "parameters": {
+                           "expression": "$.singleexpression"
+                         }
+                      }
+                   }
+                ],
+                "end": true
             }
          ],
-         "loop": {
-             "inputCollection": "$.expressions",
-             "outputCollection": "$.answers"
-         },
          "filter": {
-            "outputPath": "$.answers"
+            "outputPath": "$.results"
          },
          "end": true
       }

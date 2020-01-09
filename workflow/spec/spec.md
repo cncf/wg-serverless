@@ -192,13 +192,38 @@ Here we define details of the Serverless Workflow definitions:
             "items": {
                 "type": "object",
                 "anyOf": [
-                    { "$ref": "#definitions/delaystate" },
-                    { "$ref": "#definitions/eventstate" },
-                    { "$ref": "#definitions/operationstate" },
-                    { "$ref": "#definitions/parallelstate" },
-                    { "$ref": "#definitions/switchstate" },
-                    { "$ref": "#definitions/subflowstate" },
-                    { "$ref": "#definitions/relaystate" }
+                    {
+                      "title": "Delay State",
+                      "$ref": "#/definitions/delaystate"
+                    },
+                    {
+                      "title": "Event State",
+                      "$ref": "#/definitions/eventstate"
+                    },
+                    {
+                      "title": "Operation State",
+                      "$ref": "#/definitions/operationstate"
+                    },
+                    {
+                      "title": "Parallel State",
+                      "$ref": "#/definitions/parallelstate"
+                    },
+                    {
+                      "title": "Switch State",
+                      "$ref": "#/definitions/switchstate"
+                    },
+                    {
+                      "title": "SubFlow State",
+                      "$ref": "#/definitions/subflowstate"
+                    },
+                    {
+                      "title": "Relay State",
+                      "$ref": "#/definitions/relaystate"
+                    },
+                    {
+                      "title": "ForEach State",
+                      "$ref": "#/definitions/foreachstate"
+                    }
                 ]
             }
         },
@@ -412,7 +437,10 @@ States define building blocks of the Serverless Workflow. The specification defi
 - **[SubFlow State](#SubFlow-State)**: Allows execution of a sub-workflow. 
   
 - **[Relay State](#Relay-State)**: Used to relay state's data input to output without executing any actions. State's data input can be filtered. 
-    
+
+- **[ForEach State](#ForEach-State)**: Allows a set of defined states to be executed for each element of a data input array.
+
+
 We will start defining each individual state:
 
 ### Event State
@@ -425,7 +453,6 @@ We will start defining each individual state:
 | end |Is this state an end state | boolean | no |
 | [eventActions](#eventstate-eventactions) | Define what events trigger one or more actions to be performed | array | yes |
 | [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop information | object | yes |
 | [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
  
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -466,9 +493,6 @@ We will start defining each individual state:
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "loop": {
-          "$ref": "#/definitions/loop"
-        }, 
         "onError": {
             "type": "array",
             "description": "States error handling definitions",
@@ -795,9 +819,6 @@ Defines a transition from point A to point B in the serverless workflow. For mor
         },
         "filter": {
           "$ref": "#/definitions/filter"
-        },
-        "loop": {
-          "$ref": "#/definitions/loop"
         }, 
         "onError": {
             "type": "array",
@@ -836,14 +857,13 @@ Once all actions have been performed, a transition to another state can occur.
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | id | Unique state id | string | no |
-| name | State name | string | yes |
-| type | State type | string | yes |
-| end | Is this state an end start | boolean | no | 
-| [choices](#switch-state-choices) | Ordered set of matching rules to determine which state to trigger next | array | yes |
-| [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop information | object | no |
-| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
-| default | Next transition of the workflow if there is no match for any choices | object | yes (if end is set to false) |
+| name |State name | string | yes |
+| type |State type | string | yes |
+| end |Is this state an end start | boolean | no | 
+| [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
+| [filter](#Filter-Definition) |State data filter | object | yes |
+| [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
+| default |Next transition of the workflow if there is no match for any choices | object | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -886,9 +906,6 @@ Once all actions have been performed, a transition to another state can occur.
         },
         "filter": {
           "$ref": "#/definitions/filter"
-        },
-        "loop": {
-          "$ref": "#/definitions/loop"
         }, 
         "onError": {
             "type": "array",
@@ -1115,14 +1132,13 @@ There are four types of choices defined:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | id | Unique state id | string | no |
-| name | State name | string | yes |
-| type | State type | string | yes |
-| end | If this state an end state | boolean | no |
-| timeDelay | Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
-| [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop information | object | no |
-| [onError](#Error-Handling) | States error handling definitions | array | no |
-| [transition](#Transitions) | Next transition of the workflow after the delay | string | yes (if end is set to false) |
+| name |State name | string | yes |
+| type |State type | string | yes |
+| end |If this state an end state | boolean | no |
+| timeDelay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
+| [filter](#Filter-Definition) |State data filter | object | yes |
+| [onError](#Error-Handling) |States error handling definitions | array | no |
+| [transition](#Transitions) |Next transition of the workflow after the delay | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary> 
 
@@ -1157,9 +1173,6 @@ There are four types of choices defined:
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "loop": {
-          "$ref": "#/definitions/loop"
-        }, 
         "onError": {
             "type": "array",
             "description": "States error handling definitions",
@@ -1196,14 +1209,13 @@ Delay state waits for a certain amount of time before transitioning to a next st
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | id | Unique state id | string | no |
-| name | State name | string | yes | 
-| type | State type | string | yes | 
-| end | If this state and end state | boolean | no |
-| [branches](#parallel-state-branch) | List of branches for this parallel state| array | yes |
-| [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop behavior | object | no |
-| [onError](#Error-Handling) | States error handling definitions | array | no |
-| [transition](#Transitions) | Next transition of the workflow after all branches have completed execution | string | yes (if end is set to false) |
+| name |State name | string | yes | 
+| type |State type | string | yes | 
+| end |If this state and end state | boolean | no |
+| [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
+| [filter](#Filter-Definition) |State data filter | object | yes |
+| [onError](#Error-Handling) |States error handling definitions | array | no |
+| [transition](#Transitions) |Next transition of the workflow after all branches have completed execution | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1242,9 +1254,6 @@ Delay state waits for a certain amount of time before transitioning to a next st
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "loop": {
-          "$ref": "#/definitions/loop"
-        }, 
         "onError": {
             "type": "array",
             "description": "States error handling definitions",
@@ -1308,13 +1317,34 @@ Branches contain one or more states. Each branch must define a starting state vi
             "items": {
                         "type": "object",
                         "anyOf": [
-                            { "$ref": "#definitions/delaystate" },
-                            { "$ref": "#definitions/eventstate" },
-                            { "$ref": "#definitions/operationstate" },
-                            { "$ref": "#definitions/parallelstate" },
-                            { "$ref": "#definitions/switchstate" },
-                            { "$ref": "#definitions/subflowstate" },
-                            { "$ref": "#definitions/relaystate" }
+                            {
+                              "title": "Delay State",
+                              "$ref": "#/definitions/delaystate"
+                            },
+                            {
+                              "title": "Event State",
+                              "$ref": "#/definitions/eventstate"
+                            },
+                            {
+                              "title": "Operation State",
+                              "$ref": "#/definitions/operationstate"
+                            },
+                            {
+                              "title": "Switch State",
+                              "$ref": "#/definitions/switchstate"
+                            },
+                            {
+                              "title": "SubFlow State",
+                              "$ref": "#/definitions/subflowstate"
+                            },
+                            {
+                              "title": "Relay State",
+                              "$ref": "#/definitions/relaystate"
+                            },
+                            {
+                              "title": "ForEach State",
+                              "$ref": "#/definitions/foreachstate"
+                            }
                         ]
                     }
         },
@@ -1345,15 +1375,14 @@ Parallel state must wait for all branches which have this property set to "true"
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | id | Unique state id | string | no |
-| name | State name | string | yes | 
-| type | State type | string | yes | 
-| end | If this state and end state | boolean | no |
-| waitForCompletion | If workflow execution must wait for sub-workflow to finish before continuing | boolean | yes |
-| workflowId | Sub-workflow unique id | boolean | no |
-| [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop information | object | no |
-| [onError](#State-Exception-Handling) | States error handling definitions | array | no |
-| [transition](#Transitions) | Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
+| name |State name | string | yes | 
+| type |State type | string | yes | 
+| end |If this state and end state | boolean | no |
+| waitForCompletion |If workflow execution must wait for sub-workflow to finish before continuing | boolean | yes |
+| workflowId |Sub-workflow unique id | boolean | no |
+| [filter](#Filter-Definition) |State data filter | object | yes |
+| [onError](#State-Exception-Handling) |States error handling definitions | array | no |
+| [transition](#Transitions) |Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1392,9 +1421,6 @@ Parallel state must wait for all branches which have this property set to "true"
         },
         "filter": {
           "$ref": "#/definitions/filter"
-        },
-        "loop": {
-            "$ref": "#/definitions/loop"
         },
         "onError": {
             "type": "array",
@@ -1603,14 +1629,243 @@ $.people[?(@.age >= 40)]
 to test if your workflow behaves properly for the case when there are people who's age is greater or equal 40.
 
 
+### ForEach State
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| id | Unique state id | string | no |
+| name | State name | string | yes | 
+| type | State type | string | yes | 
+| end |Is this state an end state | boolean | no |
+| inputCollection | JSONPath expression selecting an JSON array element of the states data input | string | yes |
+| inputParameter | JSONPath expression specifying an JSON object field of the states data input. For each iteration this field is populated with the object being iterated from the inputCollection | string | yes |
+| outputCollection | JSONPath expression specifying where in the states data output to place the final data output of each iteration of the executed states | string | no |
+| [completionCondition](#Condition-Definition) | Condition (evaluated after each iteration) evaluated against the inputParameter. If this condition is true iterations stops even if not all elements of inputCollection are processesd | string | no |
+| timeDelay | Amount of time (ISO 8601 format) to wait between each iteration | string | no |
+| startsAt | Unique name of a states in the states array representing the starting state to be executed | string |yes |
+| [states](#State-Definition) | States to be executed for each of the elements of inputCollection | array | yes |
+| [filter](#Filter-Definition) | State data filter | object | no |
+| [onError](#Error-Handling) | States error handling definitions | array | no |
+| [transition](#Transitions) | Next transition of the workflow after state has completed | string | yes (if end is set to false) |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+    "type": "object",
+    "description": "Execute a set of defined states for each element of the data input array",
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Unique State id",
+            "minLength": 1
+        },
+        "name": {
+            "type": "string",
+            "description": "State name"
+        },
+        "type": {
+            "type" : "string",
+            "enum": ["FOREACH"],
+            "description": "State type"
+        },
+        "end": {
+            "type": "boolean",
+            "default": false,
+            "description": "Is this state an end state"
+        },  
+        "inputCollection": {
+           "type": "string",
+           "description": "JSONPath expression selecting an JSON array element of the states data input"
+         },
+         "outputCollection": {
+           "type": "string",
+           "description": "JSONPath expression specifying where in the states data output to place the final data output of each iteration of the executed states"
+         },
+         "completionCondition": {
+           "$ref": "#/definitions/condition",
+           "description": "Boolean condition (evaluated after each iteration) evaluated against the inputParameter. If this condition is true iterations stops even if not all elements of inputCollection are processesd"
+         },
+         "timeDelay": {
+             "type": "string",
+             "description": "|Amount of time (ISO 8601 format) to wait between each iteration "
+         },
+         "startsAt": {
+          "type": "string",
+          "description": "Unique name of a states in the states array representing the starting state to be executed"
+        },
+        "states": {
+            "type": "array",
+            "description": "States to be executed for each of the elements of inputCollection",
+            "items": {
+                "type": "object",
+                "anyOf": [
+                    {
+                      "title": "Delay State",
+                      "$ref": "#/definitions/delaystate"
+                    },
+                    {
+                      "title": "Event State",
+                      "$ref": "#/definitions/eventstate"
+                    },
+                    {
+                      "title": "Operation State",
+                      "$ref": "#/definitions/operationstate"
+                    },
+                    {
+                      "title": "Switch State",
+                      "$ref": "#/definitions/switchstate"
+                    },
+                    {
+                      "title": "SubFlow State",
+                      "$ref": "#/definitions/subflowstate"
+                    },
+                    {
+                      "title": "Relay State",
+                      "$ref": "#/definitions/relaystate"
+                    },
+                    {
+                      "title": "ForEach State",
+                      "$ref": "#/definitions/foreachstate"
+                    }
+                ]
+            }
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "onError": {
+            "type": "array",
+            "description": "States error handling definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/error"
+            }
+        },
+        "transition": {
+          "description": "Next transition of the workflow after subflow has completed",
+          "$ref": "#/definitions/transition"
+        }
+    },
+    "if": {
+      "properties": {
+        "end": { "const": true }
+      }
+    },
+    "then": {
+      "required": ["name", "type", "inputCollection", "inputParameter", "startsAt", "states"]
+    },
+    "else": {
+      "required": ["name", "type", "transition", "inputCollection", "inputParameter", "startsAt", "states"]
+    }
+}
+```
+
+</details>
+
+Foreach state can be used to execute a set of defined states for each element of the states data input JSON array object.
+While the [parallel state](#Parallel-State) executes a set of defined branches (which include states) passing in the
+ same data (the parallel states data input) the ForEach state executes the same set of defined states 
+ for each entries of an array in the state data input.
+ 
+Note that states defined in the "states" property of the ForEach state can only transition to eachother and 
+cannot transition to states outside of this state. Similarly other workflow states cannot transition to one of the states
+defined within the ForEach state.
+
+States defined in the "states" property must contain at least one state which is an end state (has the end property set to true).
+
+Let's take a look at a simple ForEach state example through which we can explain this state:
+ 
+Let's say that the data input to our ForEach state is an array of orders:
+
+```json
+{
+    "orders": [
+        {
+            "orderNumber": "1234",
+            "completed": true,
+            "email": "firstBuyer@buyer.com"
+        },
+        {
+            "orderNumber": "5678",
+            "completed": true,
+            "email": "secondBuyer@buyer.com"
+        },
+        {
+            "orderNumber": "9910",
+            "completed": false,
+            "email": "thirdBuyer@buyer.com"
+        }
+    ]
+}
+```
+
+and our "SendConfirmationForEachCompletedhOrder" ForEach state:
+
+```json
+{
+"functions": [
+  {
+    "name": "sendConfirmationFunction",
+    "resource": "functionResourse"
+  }
+],
+"states": [
+  {   
+     "name":"SendConfirmationForEachCompletedhOrder",
+     "type":"FOREACH",
+     "inputCollection": "$.orders[?(@.completed == true)]",
+     "inputParameter": "$.completedorder",
+     "startsAt": "SendConfirmation",
+     "states": [
+        {  
+            "name":"SendConfirmation",
+            "type":"OPERATION",
+            "actionMode":"SEQUENTIAL",
+            "actions":[  
+               {  
+                  "functionref": {
+                     "refname": "sendConfirmationFunction",
+                     "parameters": {
+                       "orderNumber": "$.completedorder.orderNumber",
+                       "email": "$.completedorder.email"
+                     }
+                  }
+               }
+            ],
+            "end": true
+        }
+     ],
+     "end": true
+  } 
+]
+}
+```
+
+This ForEach state will first look at its inputCollection path to determine what objects in the states data input
+to iterate over.
+In this case it will be the two order objects representing completed orders (have the completed property set to true).
+
+For each of these completed orders an iteration is started. The completd order being iterated against 
+is placed in the JSON object selected by the inputParameter property. If one does not exist, it is created, in this 
+case the "completedorder" object of the states data input. 
+
+The ForEach states data input is fully placed as the data input of the starting state in the states parameter (defined by the startsAt property).
+In this example this state is an operation state which calls the sendConfirmationFunction serverless function. 
+It passes as function parameters two objects, orderNumber, and email which it gets from the completedorder parameters that 
+contains the currently iterated orders element.
+Once iterations over the completed orders complete, workflow execution finishes as our ForEach state is an end state (has the end property set to true).
+
+So in this example, our ForEach state will send two confirmation emails, one for each of the completed orders
+passed to its data input.
+
 ### Filter Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| inputPath | Input path (JSONPath) | string | yes |
-| resultPath | Result Path (JSONPath) | string | no |
-| outputPath | Output Path (JSONPath) | string | no |
-
+| inputPath |Input path (JSONPath) | string | yes |
+| resultPath |Result Path (JSONPath) | string | no |
+| outputPath |Output Path (JSONPath) | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1637,121 +1892,7 @@ to test if your workflow behaves properly for the case when there are people who
 
 </details>
 
-Filters are used for managing workflow data flow. 
-This is described in detail in the [Information Passing](#Information-Passing) section.
-
-### Loop Definition
-
-| Parameter | Description | Type | Required |
-| --- | --- | --- | --- |
-| inputCollection | Selects a collection of the states inputPath | string | yes |
-| outputCollection | Selects a collection of the states outputPath | string | no |
-| completionCondition | Boolean expression (evaluated after each iteration) that controls the loop. If this expression is true looping stops even if not all collection elements are processesd | string | no |
-| timeDelay | Amount of time (ISO 8601 format) to wait between each loop | string | no |
-
-<details><summary><strong>Click to view JSON Schema</strong></summary>
-
-```json
-{
-  "type": "object",
-  "description": "Defines state Looping Information",
-  "properties": {
-    "inputCollection": {
-      "type": "string",
-      "description": "JSONPath, selects a collection of the states inputPath"
-    },
-    "outputCollection": {
-      "type": "string",
-      "description": "JSONPath, selects a collection of the states outputPath"
-    },
-    "completionCondition": {
-      "type": "string",
-      "description": "Boolean expression (evaluated after each iteration) that controls the loop. If this expression is true looping stops even if not all collection elements are processesd."
-    },
-    "timeDelay": {
-        "type": "string",
-        "description": "|Amount of time (ISO 8601 format) to wait between each loop "
-    }
-  },
-  "required": ["inputCollection"]
-}
-```
-
-</details>
-
-Loop definition allows states to be executed in a loop until a completion condition becomes true. 
-
-Looping happens over each element of the inputCollection parameter. This parameter must evaluate to a collection
-of the states input data.
-
-If the completionCondition expression is defined, this expression must be checked after each loop iteration.
-If it evaluates to true, looping must stop even if looping over all elements of the inputCollection have not finished. 
-In addtion, the time delay property defines a wait period betwen each loop iteration.
-
-If the state defines a result, the outputCollection parameter must resolve to a collection element of the states
-output data. After each iteration the state data result is added to the collection evaluated by this expression.
-
-Once looping has completed the state may transition to the next state defined, or end the workflow in case of an end state.
-
-Here is an example of an Operation state which sends a confirmation email for each completed sales order
-
-```json
-{  
-   "name": "Send order confirmation email",
-   "description": "Send email for each confirmed order",
-   "startsAt": "sendConfirmationEmail",
-   "functions": [
-      {
-       "name": "sendConfirmationEmailFunction",
-       "resource": "functionResourse"
-      }
-   ],
-   "states":[  
-      {  
-         "name":"sendConfirmationEmail",
-         "type":"OPERATION",
-         "actionMode":"SEQUENTIAL",
-         "actions": [  
-            {  
-               "functionref": {
-                  "refname": "sendConfirmationEmailFunction"
-               }
-            }
-         ],
-         "end": true,
-         "loop": {
-            "inputCollection": "$.orders[?(@.completed == true)]"
-         }
-      }
-   ]
-}
-```
-
-The data input to the "sendConfirmationEmail" state could be for example:
-
-```json
-{
-    "orders": [
-        {
-            "orderNumber": "1234",
-            "completed": true,
-            "email": "firstBuyer@buyer.com"
-        },
-        {
-            "orderNumber": "5678",
-            "completed": true,
-            "email": "secondBuyer@buyer.com"
-        },
-        {
-            "orderNumber": "9910",
-            "completed": false,
-            "email": "thirdBuyer@buyer.com"
-        }
-    ]
-}
-```
-
-in which case this state will loop two times for each of the completed orders.
+Filters are used for data flow through the workflow. This is described in detail in the [Information Passing](#Information-Passing) section.
 
 ### Transitions
 
