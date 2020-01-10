@@ -1560,7 +1560,7 @@ as data output to the transition state:
     <th>YAML</th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
   ```json
   {  
@@ -1580,7 +1580,7 @@ as data output to the transition state:
   }
   ```
 </td>
-<td>
+<td valign="top">
 
   ```yaml
   name: SimpleRelayState
@@ -1624,7 +1624,7 @@ what you need as data output of the state. Let's say we have:
     <th>YAML</th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
   ```json
   {  
@@ -1661,7 +1661,7 @@ what you need as data output of the state. Let's say we have:
     }
   ```
 </td>
-<td>
+<td valign="top">
 
   ```yaml
   name: SimpleRelayState
@@ -1887,7 +1887,7 @@ and the state is defined as:
     <th>YAML</th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
 ```json
 {
@@ -1929,7 +1929,7 @@ and the state is defined as:
 }
 ```
 </td>
-<td>
+<td valign="top">
 
   ```yaml
 functions:
@@ -2102,7 +2102,7 @@ output of the state to transition from includes an user with the title "MANAGER"
     <th>YAML</th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
 ```json
 {  
@@ -2154,7 +2154,7 @@ output of the state to transition from includes an user with the title "MANAGER"
 }
 ```
 </td>
-<td>
+<td valign="top">
 
   ```yaml
 startsAt: lowRiskState
@@ -2344,7 +2344,7 @@ Let's take a look at a small example:
     <th>YAML</th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
 ```json
 {
@@ -2391,7 +2391,7 @@ Let's take a look at a small example:
 }
 ```
 </td>
-<td>
+<td valign="top">
 
 ```yaml
 startsAt: HandleErrors
@@ -2440,7 +2440,7 @@ workflow definition. Let's take a look:
     <th>YAML</th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
 ```json
 {
@@ -2503,7 +2503,7 @@ workflow definition. Let's take a look:
 }
 ```
 </td>
-<td>
+<td valign="top">
 
 ```yaml
 startsAt: HandleErrors1

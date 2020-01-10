@@ -39,7 +39,7 @@ value of the "result" property. Since it is an end state, it's data output becom
     <th>YAML</th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
 ```json
 {  
@@ -72,7 +72,7 @@ value of the "result" property. Since it is an end state, it's data output becom
 }
 ```
 </td>
-<td>
+<td valign="top">
 
 ```yaml
 name: Hello World Workflow
@@ -143,7 +143,7 @@ output, which then becomes the data output of the workflow itself (as it is the 
     <th>YAML</th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
 ```json
 {  
@@ -181,7 +181,7 @@ output, which then becomes the data output of the workflow itself (as it is the 
 }
 ```
 </td>
-<td>
+<td valign="top">
 
 ```yaml
 name: Greeting Workflow
@@ -242,7 +242,7 @@ result of the workflow execution.
     <th>YAML</th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
 ```json
 {  
@@ -290,7 +290,7 @@ result of the workflow execution.
 }
 ```
 </td>
-<td>
+<td valign="top">
 
 ```yaml
 name: Solve Math Problems Workflow
@@ -347,7 +347,7 @@ of the branches are done.
     <th>YAML</th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
 ```json
 {  
@@ -392,7 +392,7 @@ of the branches are done.
 }
 ```
 </td>
-<td>
+<td valign="top">
 
 ```yaml
 name: Parallel Execution Workflow
@@ -459,7 +459,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
     <th>YAML</th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
 ```json
 {  
@@ -524,7 +524,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
 } 
 ```
 </td>
-<td>
+<td valign="top">
 
 ```yaml
 name: Applicant Request Decision Workflow
@@ -604,7 +604,7 @@ The data output of the workflow contains the information of the exception caught
     <th>YAML</th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
 ```json
 {  
@@ -696,7 +696,7 @@ The data output of the workflow contains the information of the exception caught
 }
 ```
 </td>
-<td>
+<td valign="top">
 
 ```yaml
 name: Provision Orders
@@ -784,7 +784,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
     <th>YAML</th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
 ```json
 {   
@@ -936,7 +936,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
 }
 ```
 </td>
-<td valign="bottom">
+<td valign="top">
 
 ```yaml
 name: Job Monitoring
