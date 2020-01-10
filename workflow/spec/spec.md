@@ -1930,6 +1930,14 @@ For each of the completed order the state will then execute the defined set of s
 
 For this example, the data inputs of staring states for the two itererations would be: 
 
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td>
+
 ```json
 {
     "orders": [
@@ -1956,6 +1964,30 @@ For this example, the data inputs of staring states for the two itererations wou
     }
 }
 ```
+</td>
+<td>
+
+  ```yaml
+  name: Send order confirmation email
+  description: Send email for each confirmed order
+  startsAt: sendConfirmationEmail
+  functions:
+  - name: sendConfirmationEmailFunction
+    resource: functionResourse
+  states:
+  - name: sendConfirmationEmail
+    type: OPERATION
+    actionMode: SEQUENTIAL
+    actions:
+    - functionref:
+        refname: sendConfirmationEmailFunction
+    end: true
+    loop:
+      inputCollection: "$.orders[?(@.completed == true)]"
+  ```
+</td>
+</tr>
+</table>
 
 and:
 
@@ -2058,6 +2090,14 @@ if the expression evaluates to true.
 Here is an example of a restricted transition which only allows transition to the "highRiskState" if the 
 output of the state to transition from includes an user with the title "MANAGER".
 
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td>
+
 ```json
 {  
    "startsAt": "lowRiskState",
@@ -2107,6 +2147,39 @@ output of the state to transition from includes an user with the title "MANAGER"
    ]
 }
 ```
+</td>
+<td>
+
+  ```yaml
+startsAt: lowRiskState
+functions:
+- name: doLowRistOperationFunction
+  resource: functionResourse
+- name: doHighRistOperationFunction
+  resource: functionResourse
+states:
+- name: lowRiskState
+  type: OPERATION
+  actionMode: Sequential
+  actions:
+  - functionref:
+      refname: doLowRistOperationFunction
+  transition:
+    nextState: highRiskState
+    condition:
+      expressionLanguage: spel
+      body: "#jsonPath(stateOutputData,'$..user.title') eq 'MANAGER'"
+- name: highRiskState
+  type: OPERATION
+  end: true
+  actionMode: Sequential
+  actions:
+  - functionref:
+      refname: doHighRistOperationFunction
+  ```
+</td>
+</tr>
+</table>
 
 Implementers should decide how to handle data-base transitions which return false (do not proceed).
 The default should be that if this happens workflow execution should halt and a detailed message
@@ -2259,9 +2332,16 @@ execution should handle them.
 
 Let's take a look at a small example:
 
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td>
+
 ```json
 {
-  ...
   "startsAt": "HandleErrors",
   "functions": [
       {
@@ -2286,7 +2366,7 @@ Let's take a look at a small example:
           {
             "condition": {
               "expressionLanguage": "spel",
-              "body": "$.exception.name matches '^\w+Exception$'"
+              "body": "$.exception.name matches '^\\w+Exception$'"
             },
             "filter": {
               "resultPath": "$.trace",
@@ -2300,11 +2380,41 @@ Let's take a look at a small example:
        "transition": {
           "nextState":"doSomethingElse"
        }
-    },
-    ...
+    }
   ]
 }
 ```
+</td>
+<td>
+
+```yaml
+startsAt: HandleErrors
+functions:
+- name: throwRuntimeErrorFunction
+  resource: functionResource
+states:
+- name: HandleErrors
+  type: OPERATION
+  end: false
+  actionMode: SEQUENTIAL
+  actions:
+  - functionref:
+      refname: throwRuntimeErrorFunction
+  onError:
+  - condition:
+      expressionLanguage: spel
+      body: "$.exception.name matches '^\\w+Exception$'"
+    filter:
+      resultPath: "$.trace"
+      outputPath: "$.stateerror"
+    transition:
+      nextState: afterErrorState
+  transition:
+    nextState: doSomethingElse
+```
+</td>
+</tr>
+</table>
 
 Here we have an operation state with one action that executes a function call. For our example the function call
 results in a runtime exception. In the "onError" definition we state we want to catch all errors whose name ends in "Exception".
@@ -2317,15 +2427,23 @@ Having to define explicit error handling inside every state of your workflow mig
 hard to maintain. To alleviate this the workflow model also allows you to define the "onError" parameter as part of the main
 workflow definition. Let's take a look:
 
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td>
+
 ```json
 {
-  ...
   "startsAt": "HandleErrors1",
   "onError": [
      {
        "condition": {
          "expressionLanguage": "spel",
-         "body": "$.exception.name matches '^\w+Exception$'"
+         "body": "$.exception.name matches '^\\w+Exception$'"
        },
        "filter": {
          "resultPath": "$.trace",
@@ -2374,11 +2492,50 @@ workflow definition. Let's take a look:
        "transition": {
           "nextState": "doSomethingElse"
        }
-    },
-    ...
+    }
   ]
 }
 ```
+</td>
+<td>
+
+```yaml
+startsAt: HandleErrors1
+onError:
+- condition:
+    expressionLanguage: spel
+    body: "$.exception.name matches '^\\w+Exception$'"
+  filter:
+    resultPath: "$.trace"
+    outputPath: "$.stateerror"
+  transition:
+    nextState: afterErrorState
+functions:
+- name: throwRuntimeErrorFunction
+  resource: functionResource
+states:
+- name: HandleErrors1
+  type: OPERATION
+  end: false
+  actionMode: SEQUENTIAL
+  actions:
+  - functionref:
+      refname: throwRuntimeErrorFunction
+  transition:
+    nextState: doSomethingElse
+- name: HandleErrors2
+  type: OPERATION
+  end: false
+  actionMode: SEQUENTIAL
+  actions:
+  - functionref:
+      refname: throwRuntimeErrorFunction
+  transition:
+    nextState: doSomethingElse
+```
+</td>
+</tr>
+</table>
 
 Here we define our error handling as a top-level workflow property and will handle errors that happen in all states 
 of the workflow, in this example both the "HandleErrors1" and "HandleErrors2" states.
