@@ -1660,9 +1660,6 @@ what you need as data output of the state. Let's say we have:
         nextState: GreetPersonState
   ```
 </td>
-<td>
-  Variables defined with <code>def</code> cannot be changed once defined. This is similar to <code>readonly</code> or <code>const</code> in C# or <code>final</code> in Java. Most variables in Nemerle aren't explicitly typed like this.
-</td>
 </tr>
 </table>
 
