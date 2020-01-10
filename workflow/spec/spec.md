@@ -1598,7 +1598,7 @@ what you need as data output of the state. Let's say we have a workflow definiti
 <tr>
 <td>
 
-  ```json
+  <pre>
   {  
        "name":"SimpleRelayState",
        "type":"RELAY",
@@ -1631,11 +1631,11 @@ what you need as data output of the state. Let's say we have a workflow definiti
           "nextState": "GreetPersonState"
        }
   }
-  ```
+  </pre>
 </td>
 <td>
 
-  ```json
+  <pre>
     {  
          "name":"SimpleRelayState",
          "type":"RELAY",
@@ -1668,7 +1668,7 @@ what you need as data output of the state. Let's say we have a workflow definiti
             "nextState": "GreetPersonState"
          }
     }
-    ```
+    </pre>
 </td>
 </tr>
 </table>
