@@ -27,6 +27,7 @@ The goal of the Serverless Workflow sub-group is to:
 - Facilitate Serverless Workflow portability
 - Be completely vendor neutral
 - Support both stateless and stateful Serverless Workflow implementations
+- Supply a light-weight, human-readable, and embeddable format for describing serverless workflows
 
 The Serverless Workflow specification defined in this document incorporates all of these goals.
 
@@ -37,6 +38,7 @@ This document is a working draft.
 ## Table of Contents
 
 - [Introduction](#Introduction)
+- [Workflow Format](#Workflow-Format)
 - [Functional Scope](#Functional-Scope)
 - [Specification Details](#Specification-Details)
     - [Workflow Model](#Workflow-Model)
@@ -59,6 +61,14 @@ simplifies orchestration of the app logic.
 control flow and how/which functions are to be invoked on arrival of events.
 * **Define and manage application data flow**: allows the users to define how data is passed and filtered from incoming events to states, 
 from states to functions, from one function to another function, and from one state to another state.
+
+### Workflow Format
+
+Serverless workflows are defined with [JSON](https://www.json.org/json-en.html) or [YAML](https://yaml.org/) formats.
+Structure of serverless workflows is described via [JSON Schema](https://json-schema.org/).
+
+Serverless Workflow definitions are considered specification-compliant if they conform to the [workflow schema](schema/serverless-workflow-schema-01.json).
+Note that this schema reflects the current status of the specification as is updated alongside this document. 
 
 ### Functional Scope
 
@@ -85,9 +95,6 @@ incoming events can trigger function calls during flow execution.
 Following sections provide detailed descriptions of the Serverless Workflow Model. For each part of the model we provide:
 - Parameter description in table format
 - [JSON Schema](https://json-schema.org/) definition 
-
-You can find the entire Serverless Workflow JSON Schema [here](schema/serverless-workflow-schema-01.json).
-Note that this schema reflects the current status of the specification as is updated alongside this document. 
 
 ### Workflow Model
 
@@ -1583,42 +1590,89 @@ If the relay state already receives a data input from the previous transition st
 with its data input.
 
 You can also use the filter property to further relay the set-up data input and pass only
-what you need as data output of the state. Let's say we have:
+what you need as data output of the state. Let's say we have a workflow definition:
 
-```json
-{  
-     "name":"SimpleRelayState",
-     "type":"RELAY",
-     "inject": {
-        "people": [
-          {
-             "fnam": "John",
-             "lname": "Doe",
-             "address": "1234 SomeStreet",
-             "age": 40
-          },
-          {
-             "fnam": "Marry",
-             "lname": "Allice",
-             "address": "1234 SomeStreet",
-             "age": 25
-          },
-          {
-             "fnam": "Kelly",
-             "lname": "Mill",
-             "address": "1234 SomeStreet",
-             "age": 30
-          }
-        ]
-     },
-     "filter": {
-        "outputPath": "$.people[?(@.age < 40)]"
-     },
-     "transition": {
-        "nextState": "GreetPersonState"
-     }
-}
-```
+
+
+<table>
+<tr>
+<td>
+
+  ```json
+  {  
+       "name":"SimpleRelayState",
+       "type":"RELAY",
+       "inject": {
+          "people": [
+            {
+               "fnam": "John",
+               "lname": "Doe",
+               "address": "1234 SomeStreet",
+               "age": 40
+            },
+            {
+               "fnam": "Marry",
+               "lname": "Allice",
+               "address": "1234 SomeStreet",
+               "age": 25
+            },
+            {
+               "fnam": "Kelly",
+               "lname": "Mill",
+               "address": "1234 SomeStreet",
+               "age": 30
+            }
+          ]
+       },
+       "filter": {
+          "outputPath": "$.people[?(@.age < 40)]"
+       },
+       "transition": {
+          "nextState": "GreetPersonState"
+       }
+  }
+  ```
+</td>
+<td>
+
+  ```json
+    {  
+         "name":"SimpleRelayState",
+         "type":"RELAY",
+         "inject": {
+            "people": [
+              {
+                 "fnam": "John",
+                 "lname": "Doe",
+                 "address": "1234 SomeStreet",
+                 "age": 40
+              },
+              {
+                 "fnam": "Marry",
+                 "lname": "Allice",
+                 "address": "1234 SomeStreet",
+                 "age": 25
+              },
+              {
+                 "fnam": "Kelly",
+                 "lname": "Mill",
+                 "address": "1234 SomeStreet",
+                 "age": 30
+              }
+            ]
+         },
+         "filter": {
+            "outputPath": "$.people[?(@.age < 40)]"
+         },
+         "transition": {
+            "nextState": "GreetPersonState"
+         }
+    }
+    ```
+</td>
+</tr>
+</table>
+
 
 In which case the states data output would include people whos age is less than 40. You can then easily during testing 
 change your output path to for example:
