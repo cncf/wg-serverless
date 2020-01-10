@@ -1892,7 +1892,7 @@ and the state is defined as:
 ```json
 {
 "functions": [ 
-{
+{ 
 "name": "sendConfirmationFunction",
 "resource": "functionResourse"
 }
