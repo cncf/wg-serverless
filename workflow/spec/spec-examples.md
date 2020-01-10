@@ -815,28 +815,28 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
     "type":"OPERATION",
     "actionMode":"SEQUENTIAL",
     "actions":[  
-       {  
-          "functionref": {
-             "refname": "submitJob",
-             "parameters": {
-               "name": "$.job.name"
-             }
+    {  
+       "functionref": {
+          "refname": "submitJob",
+          "parameters": {
+            "name": "$.job.name"
           }
        }
+    }
     ],
     "filter": {
        "resultPath": "$.jobuid"
     },
     "onError": [
-       {
-         "condition": {
-            "expressionLanguage": "spel",
-            "body": "$.exception != null"
-         },
-         "transition": {
-           "nextState": "SubmitError"
-         }
-       }
+    {
+     "condition": {
+         "expressionLanguage": "spel",
+         "body": "$.exception != null"
+      },
+      "transition": {
+        "nextState": "SubmitError"
+      }
+    }
     ],
     "transition": {
        "nextState":"WaitForCompletion"
@@ -861,14 +861,14 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
     "type":"OPERATION",
     "actionMode":"SEQUENTIAL",
     "actions":[  
-       {  
-          "functionref": {
-             "refname": "checkJobStatus",
-             "parameters": {
-               "name": "$.jobuid"
-             }
+    {  
+      "functionref": {
+          "refname": "checkJobStatus",
+          "parameters": {
+            "name": "$.jobuid"
           }
        }
+    }
     ],
     "filter": {
        "resultPath": "$.jobstatus"
@@ -881,22 +881,22 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
  "name":"DetermineCompletion",
  "type":"SWITCH",
  "choices": [
-     {
-       "path": "$.jobstatus",
-       "value": "SUCCEEDED",
-       "operator": "Equals",
-       "transition": {
-         "nextState": "JobSucceeded"
-       }
-     },
-     {
-       "path": "$.jobstatus",
-       "value": "FAILED",
-       "operator": "Equals",
-       "transition": {
-         "nextState": "JobFailed"
-       }
+   {
+     "path": "$.jobstatus",
+     "value": "SUCCEEDED",
+     "operator": "Equals",
+     "transition": {
+       "nextState": "JobSucceeded"
      }
+   },
+   {
+     "path": "$.jobstatus",
+     "value": "FAILED",
+     "operator": "Equals",
+     "transition": {
+       "nextState": "JobFailed"
+     }
+   }
   ],
   "default": "WaitForCompletion"
 },
@@ -905,14 +905,14 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
    "type":"OPERATION",
    "actionMode":"SEQUENTIAL",
    "actions":[  
-      {  
-         "functionref": {
-            "refname": "reportJobSuceeded",
-            "parameters": {
-              "name": "$.jobuid"
-            }
+   {  
+      "functionref": {
+         "refname": "reportJobSuceeded",
+         "parameters": {
+           "name": "$.jobuid"
          }
       }
+   }
    ],
    "end": true
 },
@@ -921,14 +921,14 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
   "type":"OPERATION",
   "actionMode":"SEQUENTIAL",
   "actions":[  
-     {  
-        "functionref": {
-           "name": "reportJobFailed",
-           "parameters": {
-             "name": "$.jobuid"
-           }
+  {  
+     "functionref": {
+        "name": "reportJobFailed",
+        "parameters": {
+          "name": "$.jobuid"
         }
      }
+  }
   ],
   "end": true
 }
@@ -936,7 +936,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
 }
 ```
 </td>
-<td>
+<td valign="bottom">
 
 ```yaml
 name: Job Monitoring
