@@ -2106,51 +2106,51 @@ output of the state to transition from includes an user with the title "MANAGER"
 
 ```json
 {  
-   "startsAt": "lowRiskState",
-   "functions": [
-      {
-         "name": "doLowRistOperationFunction",
-         "resource": "functionResourse"
-      },
-      {
-         "name": "doHighRistOperationFunction",
-         "resource": "functionResourse"
+"startsAt": "lowRiskState",
+"functions": [
+  {
+   "name": "doLowRistOperationFunction",
+   "resource": "functionResourse"
+  },
+  {
+   "name": "doHighRistOperationFunction",
+   "resource": "functionResourse"
+  }
+],
+"states":[  
+  {  
+   "name":"lowRiskState",
+   "type":"OPERATION",
+   "actionMode":"Sequential",
+   "actions":[  
+    {  
+     "functionref":{
+        "refname": "doLowRistOperationFunction"
+     }
+    }
+    ],
+    "transition": {
+      "nextState":"highRiskState",
+      "condition": {
+         "expressionLanguage": "spel",
+         "body": "#jsonPath(stateOutputData,'$..user.title') eq 'MANAGER'"
       }
-   ],
-   "states":[  
-      {  
-         "name":"lowRiskState",
-         "type":"OPERATION",
-         "actionMode":"Sequential",
-         "actions":[  
-          {  
-            "functionref":{
-               "refname": "doLowRistOperationFunction"
-            }
-          }
-         ],
-         "transition": {
-            "nextState":"highRiskState",
-            "condition": {
-               "expressionLanguage": "spel",
-               "body": "#jsonPath(stateOutputData,'$..user.title') eq 'MANAGER'"
-            }
-         }
-      },
-      {  
-         "name":"highRiskState",
-         "type":"OPERATION",
-         "end":true,
-         "actionMode":"Sequential",
-         "actions":[  
-            {  
-              "functionref":{
-                "refname": "doHighRistOperationFunction"
-              }
-           }
-         ]
-      }
+    }
+  },
+  {  
+   "name":"highRiskState",
+   "type":"OPERATION",
+   "end":true,
+   "actionMode":"Sequential",
+   "actions":[  
+    {  
+     "functionref":{
+       "refname": "doHighRistOperationFunction"
+     }
+    }
    ]
+  }
+]
 }
 ```
 </td>
