@@ -1590,89 +1590,74 @@ If the relay state already receives a data input from the previous transition st
 with its data input.
 
 You can also use the filter property to further relay the set-up data input and pass only
-what you need as data output of the state. Let's say we have the following workflow definition:
-
-<table><tr>
-    <th>JSON</th>
-    <th>YAML</th>
-  </tr>
-<tr><td>
-  <pre>
-  {  
-       "name":"SimpleRelayState",
-       "type":"RELAY",
-       "inject": {
-          "people": [
-            {
-               "fnam": "John",
-               "lname": "Doe",
-               "address": "1234 SomeStreet",
-               "age": 40
-            },
-            {
-               "fnam": "Marry",
-               "lname": "Allice",
-               "address": "1234 SomeStreet",
-               "age": 25
-            },
-            {
-               "fnam": "Kelly",
-               "lname": "Mill",
-               "address": "1234 SomeStreet",
-               "age": 30
-            }
-          ]
-       },
-       "filter": {
-          "outputPath": "$.people[?(@.age < 40)]"
-       },
-       "transition": {
-          "nextState": "GreetPersonState"
-       }
-  }
-  </pre>
-</td><td>
-  <pre>
-    name: SimpleRelayState
-    type: RELAY
-    inject:
-      people:
-      - fnam: John
-        lname: Doe
-        address: 1234 SomeStreet
-        age: 40
-      - fnam: Marry
-        lname: Allice
-        address: 1234 SomeStreet
-        age: 25
-      - fnam: Kelly
-        lname: Mill
-        address: 1234 SomeStreet
-        age: 30
-    filter:
-      outputPath: "$.people[?(@.age < 40)]"
-    transition:
-      nextState: GreetPersonState
-    </pre>
-</td></tr></table>
-
+what you need as data output of the state. Let's say we have:
 
 <table>
 <tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
 <td>
 
-  ```csharp
-  const int x = 3;
-  const string y = "foo";
-  readonly Object obj = getObject();
+  ```json
+  {  
+         "name":"SimpleRelayState",
+         "type":"RELAY",
+         "inject": {
+            "people": [
+              {
+                 "fnam": "John",
+                 "lname": "Doe",
+                 "address": "1234 SomeStreet",
+                 "age": 40
+              },
+              {
+                 "fnam": "Marry",
+                 "lname": "Allice",
+                 "address": "1234 SomeStreet",
+                 "age": 25
+              },
+              {
+                 "fnam": "Kelly",
+                 "lname": "Mill",
+                 "address": "1234 SomeStreet",
+                 "age": 30
+              }
+            ]
+         },
+         "filter": {
+            "outputPath": "$.people[?(@.age < 40)]"
+         },
+         "transition": {
+            "nextState": "GreetPersonState"
+         }
+    }
   ```
 </td>
 <td>
 
-  ```nemerle
-  def x : int = 3;
-  def y : string = "foo";
-  def obj : Object = getObject();
+  ```yaml
+      name: SimpleRelayState
+      type: RELAY
+      inject:
+        people:
+        - fnam: John
+          lname: Doe
+          address: 1234 SomeStreet
+          age: 40
+        - fnam: Marry
+          lname: Allice
+          address: 1234 SomeStreet
+          age: 25
+        - fnam: Kelly
+          lname: Mill
+          address: 1234 SomeStreet
+          age: 30
+      filter:
+        outputPath: "$.people[?(@.age < 40)]"
+      transition:
+        nextState: GreetPersonState
   ```
 </td>
 <td>
