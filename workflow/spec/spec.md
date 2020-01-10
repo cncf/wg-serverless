@@ -1632,7 +1632,6 @@ what you need as data output of the state. Let's say we have the following workf
   }
   </pre>
 </td><td>
-<tr><td>
   <pre>
     {  
          "name":"SimpleRelayState",
