@@ -505,7 +505,7 @@ Event state can hold one or more onReceive definitions:
     "description": "Defines what events to act upon and actions to be executed",
     "properties": {
         "condition": {
-          "description": "Condition consisting of Boolean operation of events that will trigger ",
+          "description": "Condition matching a received event with one or more defined triggers",
           "$ref": "#/definitions/condition"
         },
         "timeout": {
