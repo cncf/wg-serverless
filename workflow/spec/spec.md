@@ -490,7 +490,7 @@ Event state can hold one or more onReceive definitions:
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [condition](#Condition-Definition) | Condition matching a received event with one or more defined triggers. If matched all defined actions are executed | object | yes |
+| [condition](#Condition-Definition) | Boolean expression matching received events with one or more defined triggers. If matched all defined actions are executed | object | yes |
 | timeout | Time period to wait for incoming events which match the condition (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | actionMode | Specifies how actions are to be performed (in sequence of parallel) | string | no |
 | [actions](#Action-Definition) | Actions to be performed if condition matches | array | yes |
@@ -505,7 +505,7 @@ Event state can hold one or more onReceive definitions:
     "description": "Defines what events to act upon and actions to be executed",
     "properties": {
         "condition": {
-          "description": "Condition matching a received event with one or more defined triggers",
+          "description": "Boolean expression matching a received event with one or more defined triggers",
           "$ref": "#/definitions/condition"
         },
         "timeout": {
