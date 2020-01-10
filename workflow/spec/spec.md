@@ -1602,36 +1602,36 @@ what you need as data output of the state. Let's say we have:
 
   ```json
   {  
-         "name":"SimpleRelayState",
-         "type":"RELAY",
-         "inject": {
-            "people": [
-              {
-                 "fnam": "John",
-                 "lname": "Doe",
-                 "address": "1234 SomeStreet",
-                 "age": 40
-              },
-              {
-                 "fnam": "Marry",
-                 "lname": "Allice",
-                 "address": "1234 SomeStreet",
-                 "age": 25
-              },
-              {
-                 "fnam": "Kelly",
-                 "lname": "Mill",
-                 "address": "1234 SomeStreet",
-                 "age": 30
-              }
-            ]
-         },
-         "filter": {
-            "outputPath": "$.people[?(@.age < 40)]"
-         },
-         "transition": {
-            "nextState": "GreetPersonState"
-         }
+     "name":"SimpleRelayState",
+     "type":"RELAY",
+     "inject": {
+        "people": [
+          {
+             "fnam": "John",
+             "lname": "Doe",
+             "address": "1234 SomeStreet",
+             "age": 40
+          },
+          {
+             "fnam": "Marry",
+             "lname": "Allice",
+             "address": "1234 SomeStreet",
+             "age": 25
+          },
+          {
+             "fnam": "Kelly",
+             "lname": "Mill",
+             "address": "1234 SomeStreet",
+             "age": 30
+          }
+        ]
+     },
+     "filter": {
+        "outputPath": "$.people[?(@.age < 40)]"
+     },
+     "transition": {
+        "nextState": "GreetPersonState"
+     }
     }
   ```
 </td>
