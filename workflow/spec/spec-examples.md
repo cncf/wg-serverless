@@ -31,38 +31,71 @@ value of the "result" property. Since it is an end state, it's data output becom
 "Hello World!"
 ```
 
-#### Workflow JSON
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td>
 
 ```json
 {  
-   "name": "Hello World Workflow",
-   "description": "Static Hello World",
-   "startsAt": "Hello",
-   "states":[  
-      {  
-         "name":"Hello",
-         "type":"RELAY",
-         "inject": {
-            "result": "Hello"
-         },
-         "transition": {
-           "nextState": "World"
-         }
-      },
-      {  
-         "name":"World",
-         "type":"RELAY",
-         "inject": {
-            "result": " World!"
-         },
-         "filter": {
-           "outputPath": "$.result"
-         },
-         "end": true 
-      }
-   ]
+"name": "Hello World Workflow",
+"description": "Static Hello World",
+"startsAt": "Hello",
+"states":[  
+  {  
+     "name":"Hello",
+     "type":"RELAY",
+     "inject": {
+        "result": "Hello"
+     },
+     "transition": {
+       "nextState": "World"
+     }
+  },
+  {  
+     "name":"World",
+     "type":"RELAY",
+     "inject": {
+        "result": " World!"
+     },
+     "filter": {
+       "outputPath": "$.result"
+     },
+     "end": true 
+  }
+]
 }
 ```
+</td>
+<td>
+
+```yaml
+name: Hello World Workflow
+description: Static Hello World
+startsAt: Hello
+states:
+- name: Hello
+  type: RELAY
+  inject:
+    result: Hello
+  transition:
+    nextState: World
+- name: World
+  type: RELAY
+  inject:
+    result: " World!"
+  filter:
+    outputPath: "$.result"
+  end: true
+```
+</td>
+</tr>
+</table>
 
 #### Worfklow Diagram
 
@@ -102,43 +135,79 @@ output, which then becomes the data output of the workflow itself (as it is the 
    "Welcome to Serverless Workflow, John!" 
 ```
 
-#### Workflow JSON
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td>
 
 ```json
 {  
-   "name": "Greeting Workflow",
-   "description": "Greet Someone",
-   "startsAt": "Greet",
-   "functions": [
-      {
-         "name": "greetingFunction",
-         "resource": "functionResourse"
-      }
-   ],
-   "states":[  
-      {  
-         "name":"Greet",
-         "type":"OPERATION",
-         "actionMode":"SEQUENTIAL",
-         "actions":[  
-            {  
-               "functionref": {
-                  "refname": "greetingFunction",
-                  "parameters": {
-                    "name": "$.greet.name"
-                  }
-               }
-            }
-         ],
-         "filter": {
-            "resultPath": "$.out",
-            "outputPath": "$.out.payload.greeting"
-         },
-         "end": true
-      }
-   ]
+"name": "Greeting Workflow",
+"description": "Greet Someone",
+"startsAt": "Greet",
+"functions": [
+  {
+     "name": "greetingFunction",
+     "resource": "functionResourse"
+  }
+],
+"states":[  
+  {  
+     "name":"Greet",
+     "type":"OPERATION",
+     "actionMode":"SEQUENTIAL",
+     "actions":[  
+        {  
+           "functionref": {
+              "refname": "greetingFunction",
+              "parameters": {
+                "name": "$.greet.name"
+              }
+           }
+        }
+     ],
+     "filter": {
+        "resultPath": "$.out",
+        "outputPath": "$.out.payload.greeting"
+     },
+     "end": true
+  }
+]
 }
 ```
+</td>
+<td>
+
+```yaml
+name: Greeting Workflow
+description: Greet Someone
+startsAt: Greet
+functions:
+- name: greetingFunction
+  resource: functionResourse
+states:
+- name: Greet
+  type: OPERATION
+  actionMode: SEQUENTIAL
+  actions:
+  - functionref:
+      refname: greetingFunction
+      parameters:
+        name: "$.greet.name"
+  filter:
+    resultPath: "$.out"
+    outputPath: "$.out.payload.greeting"
+  end: true
+```
+</td>
+</tr>
+</table>
+
 #### Worfklow Diagram
 
 <p align="center">
@@ -165,53 +234,95 @@ and returns its result.
 Results of all mathe expressions are accumulated into the data output of the ForEach state which become the final
 result of the workflow execution.
 
-#### Workflow JSON
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td>
 
 ```json
 {  
-   "name": "Solve Math Problems Workflow",
-   "description": "Solve math problems",
-   "startsAt": "Solve",
-   "functions": [
-       {
-          "name": "solveMathExpressionFunction",
-          "resource": "functionResourse"
+"name": "Solve Math Problems Workflow",
+"description": "Solve math problems",
+"startsAt": "Solve",
+"functions": [
+{
+  "name": "solveMathExpressionFunction",
+  "resource": "functionResourse"
+}
+],
+"states":[  
+{   
+ "name":"Solve",
+ "type":"FOREACH",
+ "inputCollection": "$.expressions",
+ "inputParameter": "$.singleexpression",
+ "outputCollection": "$.results",
+ "startsAt": "GetResults",
+ "states": [
+{  
+    "name":"GetResults",
+    "type":"OPERATION",
+    "actionMode":"SEQUENTIAL",
+    "actions":[  
+       {  
+          "functionref": {
+             "refname": "solveMathExpressionFunction",
+             "parameters": {
+               "expression": "$.singleexpression"
+             }
+          }
        }
-   ],
-   "states":[  
-      {   
-         "name":"Solve",
-         "type":"FOREACH",
-         "inputCollection": "$.expressions",
-         "inputParameter": "$.singleexpression",
-         "outputCollection": "$.results",
-         "startsAt": "GetResults",
-         "states": [
-            {  
-                "name":"GetResults",
-                "type":"OPERATION",
-                "actionMode":"SEQUENTIAL",
-                "actions":[  
-                   {  
-                      "functionref": {
-                         "refname": "solveMathExpressionFunction",
-                         "parameters": {
-                           "expression": "$.singleexpression"
-                         }
-                      }
-                   }
-                ],
-                "end": true
-            }
-         ],
-         "filter": {
-            "outputPath": "$.results"
-         },
-         "end": true
-      }
-   ]
+    ],
+    "end": true
+}
+ ],
+ "filter": {
+    "outputPath": "$.results"
+ },
+ "end": true
+}
+]
 }
 ```
+</td>
+<td>
+
+```yaml
+name: Solve Math Problems Workflow
+description: Solve math problems
+startsAt: Solve
+functions:
+- name: solveMathExpressionFunction
+  resource: functionResourse
+states:
+- name: Solve
+  type: FOREACH
+  inputCollection: "$.expressions"
+  inputParameter: "$.singleexpression"
+  outputCollection: "$.results"
+  startsAt: GetResults
+  states:
+  - name: GetResults
+    type: OPERATION
+    actionMode: SEQUENTIAL
+    actions:
+    - functionref:
+        refname: solveMathExpressionFunction
+        parameters:
+          expression: "$.singleexpression"
+    end: true
+  filter:
+    outputPath: "$.results"
+  end: true
+```
+</td>
+</tr>
+</table>
 
 #### Worfklow Diagram
 
@@ -228,50 +339,90 @@ Note that the waitForCompletion flag is set to "false" so as soon as the "ShortD
 the workflow complete execution. If waitForCompletion was set to true, the workflow would complete after both
 of the branches are done.
 
-#### Workflow JSON
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td>
 
 ```json
 {  
-   "name": "Parallel Execution Workflow",
-   "description": "Executes two branches in parallel",
-   "startsAt": "ParallelExec",
-   "states":[  
-      {  
-         "name":"ParallelExec",
-         "type":"PARALLEL",
-         "branches": [
+"name": "Parallel Execution Workflow",
+"description": "Executes two branches in parallel",
+"startsAt": "ParallelExec",
+"states":[  
+  {  
+     "name":"ParallelExec",
+     "type":"PARALLEL",
+     "branches": [
+        {
+          "name": "Branch1",
+          "startsAt": "ShortDelay",
+          "states": [
             {
-              "name": "Branch1",
-              "startsAt": "ShortDelay",
-              "states": [
-                {
-                    "name":"ShortDelay",
-                     "type":"DELAY",
-                     "timeDelay": "PT15S",
-                     "end": true
-                }
-              ],
-              "waitForCompletion": false
-            },
-            {
-              "name": "Branch2",
-              "startsAt": "LongDelay",
-              "states": [
-                 {
-                     "name":"LongDelay",
-                      "type":"DELAY",
-                      "timeDelay": "PT2M",
-                      "end": true
-                 }      
-              ],
-              "waitForCompletion": false
+                "name":"ShortDelay",
+                 "type":"DELAY",
+                 "timeDelay": "PT15S",
+                 "end": true
             }
-         ],
-         "end": true
-      }
-   ]
+          ],
+          "waitForCompletion": false
+        },
+        {
+          "name": "Branch2",
+          "startsAt": "LongDelay",
+          "states": [
+             {
+                 "name":"LongDelay",
+                  "type":"DELAY",
+                  "timeDelay": "PT2M",
+                  "end": true
+             }      
+          ],
+          "waitForCompletion": false
+        }
+     ],
+     "end": true
+  }
+]
 }
 ```
+</td>
+<td>
+
+```yaml
+name: Parallel Execution Workflow
+description: Executes two branches in parallel
+startsAt: ParallelExec
+states:
+- name: ParallelExec
+  type: PARALLEL
+  branches:
+  - name: Branch1
+    startsAt: ShortDelay
+    states:
+    - name: ShortDelay
+      type: DELAY
+      timeDelay: PT15S
+      end: true
+    waitForCompletion: false
+  - name: Branch2
+    startsAt: LongDelay
+    states:
+    - name: LongDelay
+      type: DELAY
+      timeDelay: PT2M
+      end: true
+    waitForCompletion: false
+  end: true
+```
+</td>
+</tr>
+</table>
 
 #### Worfklow Diagram
 
@@ -300,7 +451,15 @@ We use the switch state with two choices to determine if the application should 
 If the applicants age is over 18 we start the application (subflow state). Otherwise the workflow notifies the 
  applicant of the rejection. 
 
-#### Workflow JSON
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td>
 
 ```json
 {  
@@ -362,8 +521,51 @@ If the applicants age is over 18 we start the application (subflow state). Other
         "end": true
     }
    ]
-}
+} 
 ```
+</td>
+<td>
+
+```yaml
+name: Applicant Request Decision Workflow
+description: Determine if applicant request is valid
+startsAt: CheckApplication
+functions:
+- name: sendRejectionEmailFunction
+  resource: functionResourse
+states:
+- name: CheckApplication
+  type: SWITCH
+  choices:
+  - path: "$.applicant.age"
+    value: '18'
+    operator: GreaterThanEquals
+    transition:
+      nextState: StartApplication
+  - path: "$.applicant.age"
+    value: '18'
+    operator: LessThan
+    transition:
+      nextState: RejectApplication
+  default:
+    nextState: RejectApplication
+- name: StartApplication
+  type: SUBFLOW
+  workflowId: startApplicationWorkflowId
+  end: true
+- name: RejectApplication
+  type: OPERATION
+  actionMode: SEQUENTIAL
+  actions:
+  - functionref:
+      refname: sendRejectionEmailFunction
+      parameters:
+        applicant: "$.applicant"
+  end: true
+```
+</td>
+</tr>
+</table>
 
 #### Worfklow Diagram
 
@@ -394,97 +596,164 @@ Workflow data is assumed to me:
 
 The data output of the workflow contains the information of the exception caught during workflow execution.
 
-#### Workflow JSON
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td>
 
 ```json
 {  
-   "name": "Provision Orders",
-   "description": "Provision Orders and handle errors thrown",
-   "startsAt": "ProvisionOrder",
-   "functions": [
-      {
-         "name": "provisionOrderFunction",
-         "resource": "functionResourse"
-      }
-   ],
-   "states":[  
-      {  
-        "name":"ProvisionOrder",
-        "type":"OPERATION",
-        "actionMode":"SEQUENTIAL",
-        "actions":[  
-           {  
-              "functionref": {
-                 "refname": "provisionOrderFunction",
-                 "parameters": {
-                   "order": "$.order"
-                 }
-              }
-           }
-        ],
-        "filter": {
-           "resultPath": "$.exception"
+"name": "Provision Orders",
+"description": "Provision Orders and handle errors thrown",
+"startsAt": "ProvisionOrder",
+"functions": [
+  {
+     "name": "provisionOrderFunction",
+     "resource": "functionResourse"
+  }
+],
+"states":[  
+  {  
+    "name":"ProvisionOrder",
+    "type":"OPERATION",
+    "actionMode":"SEQUENTIAL",
+    "actions":[  
+       {  
+          "functionref": {
+             "refname": "provisionOrderFunction",
+             "parameters": {
+               "order": "$.order"
+             }
+          }
+       }
+    ],
+    "filter": {
+       "resultPath": "$.exception"
+    },
+    "onError": [
+       {
+         "condition": {
+            "expressionLanguage": "spel",
+            "body": "$.exception.name is 'MissingOrderIdException'"
+         },
+         "transition": {
+           "nextState": "MissingId"
+         }
+       },
+       {
+         "condition": {
+           "expressionLanguage": "spel",
+           "body": "$.exception.name is 'MissingOrderItemException'"
+         },
+         "transition": {
+           "nextState": "MissingItem"
+         }
+       },
+       {
+        "condition": {
+          "expressionLanguage": "spel",
+          "body": "$.exception.name is 'MissingOrderQuantityException'"
         },
-        "onError": [
-           {
-             "condition": {
-                "expressionLanguage": "spel",
-                "body": "$.exception.name is 'MissingOrderIdException'"
-             },
-             "transition": {
-               "nextState": "MissingId"
-             }
-           },
-           {
-             "condition": {
-               "expressionLanguage": "spel",
-               "body": "$.exception.name is 'MissingOrderItemException'"
-             },
-             "transition": {
-               "nextState": "MissingItem"
-             }
-           },
-           {
-            "condition": {
-              "expressionLanguage": "spel",
-              "body": "$.exception.name is 'MissingOrderQuantityException'"
-            },
-            "transition": {
-              "nextState": "MissingQuantity"
-            }
-           }
-        ],
         "transition": {
-           "nextState":"ApplyOrder"
+          "nextState": "MissingQuantity"
         }
-    },
-    {
-       "name": "MissingId",
-       "type": "SUBFLOW",
-       "workflowId": "handleMissingIdExceptionWorkflow",
-       "end": true
-    },
-    {
-       "name": "MissingItem",
-       "type": "SUBFLOW",
-       "workflowId": "handleMissingItemExceptionWorkflow",
-       "end": true
-    },
-    {
-       "name": "MissingQuantity",
-       "type": "SUBFLOW",
-       "workflowId": "handleMissingQuantityExceptionWorkflow",
-       "end": true
-    },
-    {
-       "name": "ApplyOrder",
-       "type": "SUBFLOW",
-       "workflowId": "applyOrderWorkflowId",
-       "end": true
+       }
+    ],
+    "transition": {
+       "nextState":"ApplyOrder"
     }
-   ]
+},
+{
+   "name": "MissingId",
+   "type": "SUBFLOW",
+   "workflowId": "handleMissingIdExceptionWorkflow",
+   "end": true
+},
+{
+   "name": "MissingItem",
+   "type": "SUBFLOW",
+   "workflowId": "handleMissingItemExceptionWorkflow",
+   "end": true
+},
+{
+   "name": "MissingQuantity",
+   "type": "SUBFLOW",
+   "workflowId": "handleMissingQuantityExceptionWorkflow",
+   "end": true
+},
+{
+   "name": "ApplyOrder",
+   "type": "SUBFLOW",
+   "workflowId": "applyOrderWorkflowId",
+   "end": true
+}
+]
 }
 ```
+</td>
+<td>
+
+```yaml
+name: Provision Orders
+description: Provision Orders and handle errors thrown
+startsAt: ProvisionOrder
+functions:
+- name: provisionOrderFunction
+  resource: functionResourse
+states:
+- name: ProvisionOrder
+  type: OPERATION
+  actionMode: SEQUENTIAL
+  actions:
+  - functionref:
+      refname: provisionOrderFunction
+      parameters:
+        order: "$.order"
+  filter:
+    resultPath: "$.exception"
+  onError:
+  - condition:
+      expressionLanguage: spel
+      body: "$.exception.name is 'MissingOrderIdException'"
+    transition:
+      nextState: MissingId
+  - condition:
+      expressionLanguage: spel
+      body: "$.exception.name is 'MissingOrderItemException'"
+    transition:
+      nextState: MissingItem
+  - condition:
+      expressionLanguage: spel
+      body: "$.exception.name is 'MissingOrderQuantityException'"
+    transition:
+      nextState: MissingQuantity
+  transition:
+    nextState: ApplyOrder
+- name: MissingId
+  type: SUBFLOW
+  workflowId: handleMissingIdExceptionWorkflow
+  end: true
+- name: MissingItem
+  type: SUBFLOW
+  workflowId: handleMissingItemExceptionWorkflow
+  end: true
+- name: MissingQuantity
+  type: SUBFLOW
+  workflowId: handleMissingQuantityExceptionWorkflow
+  end: true
+- name: ApplyOrder
+  type: SUBFLOW
+  workflowId: applyOrderWorkflowId
+  end: true
+```
+</td>
+</tr>
+</table>
 
 #### Worfklow Diagram
 
@@ -507,157 +776,257 @@ finishes execution.
 In the case job submission raises a runtime error, we transition to a SubFlow state which handles the job submission issue.
 
 
-#### Workflow JSON
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td>
 
 ```json
-{  
-   "name": "Job Monitoring",
-   "description": "Monitor finished execution of a submitted job",
-   "startsAt": "SubmitJob",
-   "functions": [
-     {
-       "name": "submitJob",
-       "resource": "submitJobResource"
-     },
-     {
-        "name": "checkJobStatus",
-        "resource": "checkJobStatusResource"
-     },
-     {
-        "name": "reportJobSuceeded",
-        "resource": "reportJobSuceededResource"
-     },
-     {
-        "name": "reportJobFailed",
-        "resource": "reportJobFailedResource"
-     }
-   ],
-   "states":[  
-      {  
-        "name":"SubmitJob",
-        "type":"OPERATION",
-        "actionMode":"SEQUENTIAL",
-        "actions":[  
-           {  
-              "functionref": {
-                 "refname": "submitJob",
-                 "parameters": {
-                   "name": "$.job.name"
-                 }
-              }
-           }
-        ],
-        "filter": {
-           "resultPath": "$.jobuid"
-        },
-        "onError": [
-           {
-             "condition": {
-                "expressionLanguage": "spel",
-                "body": "$.exception != null"
-             },
-             "transition": {
-               "nextState": "SubmitError"
-             }
-           }
-        ],
-        "transition": {
-           "nextState":"WaitForCompletion"
-        }
-    },
-    {
-       "name": "SubmitError",
-       "type": "SUBFLOW",
-       "workflowId": "handleJobSubmissionErrorWorkflow",
-       "end": true
-    },
-    {
-       "name": "WaitForCompletion",
-       "type": "DELAY",
-       "timeDelay": "PT5S",
-       "transition": {
-          "nextState":"GetJobStatus"
-       }
-    },
-    {  
-        "name":"GetJobStatus",
-        "type":"OPERATION",
-        "actionMode":"SEQUENTIAL",
-        "actions":[  
-           {  
-              "functionref": {
-                 "refname": "checkJobStatus",
-                 "parameters": {
-                   "name": "$.jobuid"
-                 }
-              }
-           }
-        ],
-        "filter": {
-           "resultPath": "$.jobstatus"
-        },
-        "transition": {
-           "nextState":"DetermineCompletion"
-        }
-    },
-    {  
-     "name":"DetermineCompletion",
-     "type":"SWITCH",
-     "choices": [
-         {
-           "path": "$.jobstatus",
-           "value": "SUCCEEDED",
-           "operator": "Equals",
-           "transition": {
-             "nextState": "JobSucceeded"
-           }
-         },
-         {
-           "path": "$.jobstatus",
-           "value": "FAILED",
-           "operator": "Equals",
-           "transition": {
-             "nextState": "JobFailed"
-           }
-         }
-      ],
-      "default": "WaitForCompletion"
-   },
-   {  
-       "name":"JobSucceeded",
-       "type":"OPERATION",
-       "actionMode":"SEQUENTIAL",
-       "actions":[  
-          {  
-             "functionref": {
-                "refname": "reportJobSuceeded",
-                "parameters": {
-                  "name": "$.jobuid"
-                }
+{   
+"name": "Job Monitoring",
+"description": "Monitor finished execution of a submitted job",
+"startsAt": "SubmitJob",
+"functions": [
+ {
+   "name": "submitJob",
+   "resource": "submitJobResource"
+ },
+ {
+    "name": "checkJobStatus",
+    "resource": "checkJobStatusResource"
+ },
+ {
+    "name": "reportJobSuceeded",
+    "resource": "reportJobSuceededResource"
+ },
+ {
+    "name": "reportJobFailed",
+    "resource": "reportJobFailedResource"
+ }
+],
+"states":[  
+  {  
+    "name":"SubmitJob",
+    "type":"OPERATION",
+    "actionMode":"SEQUENTIAL",
+    "actions":[  
+       {  
+          "functionref": {
+             "refname": "submitJob",
+             "parameters": {
+               "name": "$.job.name"
              }
           }
-       ],
-       "end": true
-   },
-   {  
-      "name":"JobFailed",
-      "type":"OPERATION",
-      "actionMode":"SEQUENTIAL",
-      "actions":[  
-         {  
-            "functionref": {
-               "name": "reportJobFailed",
-               "parameters": {
-                 "name": "$.jobuid"
-               }
+       }
+    ],
+    "filter": {
+       "resultPath": "$.jobuid"
+    },
+    "onError": [
+       {
+         "condition": {
+            "expressionLanguage": "spel",
+            "body": "$.exception != null"
+         },
+         "transition": {
+           "nextState": "SubmitError"
+         }
+       }
+    ],
+    "transition": {
+       "nextState":"WaitForCompletion"
+    }
+},
+{
+   "name": "SubmitError",
+   "type": "SUBFLOW",
+   "workflowId": "handleJobSubmissionErrorWorkflow",
+   "end": true
+},
+{
+   "name": "WaitForCompletion",
+   "type": "DELAY",
+   "timeDelay": "PT5S",
+   "transition": {
+      "nextState":"GetJobStatus"
+   }
+},
+{  
+    "name":"GetJobStatus",
+    "type":"OPERATION",
+    "actionMode":"SEQUENTIAL",
+    "actions":[  
+       {  
+          "functionref": {
+             "refname": "checkJobStatus",
+             "parameters": {
+               "name": "$.jobuid"
+             }
+          }
+       }
+    ],
+    "filter": {
+       "resultPath": "$.jobstatus"
+    },
+    "transition": {
+       "nextState":"DetermineCompletion"
+    }
+},
+{  
+ "name":"DetermineCompletion",
+ "type":"SWITCH",
+ "choices": [
+     {
+       "path": "$.jobstatus",
+       "value": "SUCCEEDED",
+       "operator": "Equals",
+       "transition": {
+         "nextState": "JobSucceeded"
+       }
+     },
+     {
+       "path": "$.jobstatus",
+       "value": "FAILED",
+       "operator": "Equals",
+       "transition": {
+         "nextState": "JobFailed"
+       }
+     }
+  ],
+  "default": "WaitForCompletion"
+},
+{  
+   "name":"JobSucceeded",
+   "type":"OPERATION",
+   "actionMode":"SEQUENTIAL",
+   "actions":[  
+      {  
+         "functionref": {
+            "refname": "reportJobSuceeded",
+            "parameters": {
+              "name": "$.jobuid"
             }
          }
-      ],
-      "end": true
-  }
-  ]
+      }
+   ],
+   "end": true
+},
+{  
+  "name":"JobFailed",
+  "type":"OPERATION",
+  "actionMode":"SEQUENTIAL",
+  "actions":[  
+     {  
+        "functionref": {
+           "name": "reportJobFailed",
+           "parameters": {
+             "name": "$.jobuid"
+           }
+        }
+     }
+  ],
+  "end": true
+}
+]
 }
 ```
+</td>
+<td>
+
+```yaml
+name: Job Monitoring
+description: Monitor finished execution of a submitted job
+startsAt: SubmitJob
+functions:
+- name: submitJob
+  resource: submitJobResource
+- name: checkJobStatus
+  resource: checkJobStatusResource
+- name: reportJobSuceeded
+  resource: reportJobSuceededResource
+- name: reportJobFailed
+  resource: reportJobFailedResource
+states:
+- name: SubmitJob
+  type: OPERATION
+  actionMode: SEQUENTIAL
+  actions:
+  - functionref:
+      refname: submitJob
+      parameters:
+        name: "$.job.name"
+  filter:
+    resultPath: "$.jobuid"
+  onError:
+  - condition:
+      expressionLanguage: spel
+      body: "$.exception != null"
+    transition:
+      nextState: SubmitError
+  transition:
+    nextState: WaitForCompletion
+- name: SubmitError
+  type: SUBFLOW
+  workflowId: handleJobSubmissionErrorWorkflow
+  end: true
+- name: WaitForCompletion
+  type: DELAY
+  timeDelay: PT5S
+  transition:
+    nextState: GetJobStatus
+- name: GetJobStatus
+  type: OPERATION
+  actionMode: SEQUENTIAL
+  actions:
+  - functionref:
+      refname: checkJobStatus
+      parameters:
+        name: "$.jobuid"
+  filter:
+    resultPath: "$.jobstatus"
+  transition:
+    nextState: DetermineCompletion
+- name: DetermineCompletion
+  type: SWITCH
+  choices:
+  - path: "$.jobstatus"
+    value: SUCCEEDED
+    operator: Equals
+    transition:
+      nextState: JobSucceeded
+  - path: "$.jobstatus"
+    value: FAILED
+    operator: Equals
+    transition:
+      nextState: JobFailed
+  default: WaitForCompletion
+- name: JobSucceeded
+  type: OPERATION
+  actionMode: SEQUENTIAL
+  actions:
+  - functionref:
+      refname: reportJobSuceeded
+      parameters:
+        name: "$.jobuid"
+  end: true
+- name: JobFailed
+  type: OPERATION
+  actionMode: SEQUENTIAL
+  actions:
+  - functionref:
+      name: reportJobFailed
+      parameters:
+        name: "$.jobuid"
+  end: true
+```
+</td>
+</tr>
+</table>
 
 #### Worfklow Diagram
 
