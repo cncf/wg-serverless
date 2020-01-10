@@ -1597,7 +1597,8 @@ what you need as data output of the state. Let's say we have the following workf
     <th>YAML</th>
   </tr>
 <tr><td>
-  <pre>
+
+  ```json
   {  
        "name":"SimpleRelayState",
        "type":"RELAY",
@@ -1630,9 +1631,10 @@ what you need as data output of the state. Let's say we have the following workf
           "nextState": "GreetPersonState"
        }
   }
-  </pre>
+  ```
 </td><td>
-  <pre>
+
+  ```yaml
     {  
          "name":"SimpleRelayState",
          "type":"RELAY",
@@ -1665,7 +1667,7 @@ what you need as data output of the state. Let's say we have the following workf
             "nextState": "GreetPersonState"
          }
     }
-    </pre>
+    ```
 </td></tr></table>
 
 In which case the states data output would include people whos age is less than 40. You can then easily during testing 
