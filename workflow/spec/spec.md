@@ -1554,23 +1554,49 @@ You can use the filter property to control the states data output to the transit
 Here is a typical example of how to use the relay state to inject static data into its data input, which then will be passed
 as data output to the transition state:
 
-```json
-{  
-     "name":"SimpleRelayState",
-     "type":"RELAY",
-     "inject": {
-        "person": {
-          "fnam": "John",
-          "lname": "Doe",
-          "address": "1234 SomeStreet",
-          "age": 40
-        }
-     },
-     "transition": {
-        "nextState": "GreetPersonState"
-     }
-}
-```
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td>
+
+  ```json
+  {  
+   "name":"SimpleRelayState",
+   "type":"RELAY",
+   "inject": {
+      "person": {
+        "fnam": "John",
+        "lname": "Doe",
+        "address": "1234 SomeStreet",
+        "age": 40
+      }
+   },
+   "transition": {
+      "nextState": "GreetPersonState"
+   }
+  }
+  ```
+</td>
+<td>
+
+  ```yaml
+  name: SimpleRelayState
+  type: RELAY
+  inject:
+    person:
+      fnam: John
+      lname: Doe
+      address: 1234 SomeStreet
+      age: 40
+  transition:
+    nextState: GreetPersonState
+  ```
+</td>
+</tr>
+</table>
 
 The data output of the "SimpleRelayState" which then is passed as input to the transition state would be:
 
@@ -1638,26 +1664,26 @@ what you need as data output of the state. Let's say we have:
 <td>
 
   ```yaml
-      name: SimpleRelayState
-      type: RELAY
-      inject:
-        people:
-        - fnam: John
-          lname: Doe
-          address: 1234 SomeStreet
-          age: 40
-        - fnam: Marry
-          lname: Allice
-          address: 1234 SomeStreet
-          age: 25
-        - fnam: Kelly
-          lname: Mill
-          address: 1234 SomeStreet
-          age: 30
-      filter:
-        outputPath: "$.people[?(@.age < 40)]"
-      transition:
-        nextState: GreetPersonState
+  name: SimpleRelayState
+  type: RELAY
+  inject:
+    people:
+    - fnam: John
+      lname: Doe
+      address: 1234 SomeStreet
+      age: 40
+    - fnam: Marry
+      lname: Allice
+      address: 1234 SomeStreet
+      age: 25
+    - fnam: Kelly
+      lname: Mill
+      address: 1234 SomeStreet
+      age: 30
+  filter:
+    outputPath: "$.people[?(@.age < 40)]"
+  transition:
+    nextState: GreetPersonState
   ```
 </td>
 </tr>
