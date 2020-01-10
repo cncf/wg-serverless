@@ -210,7 +210,7 @@
       "type": "object",
       "properties": {
         "condition": {
-          "description": "Condition matching a received event with one or more defined triggers",
+          "description": "Boolean expression which consists of one or more Event operands and the Boolean operators",
           "$ref": "#/definitions/condition"
         },
         "timeout": {
