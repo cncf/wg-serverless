@@ -1891,7 +1891,7 @@ and the state is defined as:
 
 ```json
 {
-"functions": [
+"functions": [ 
 {
 "name": "sendConfirmationFunction",
 "resource": "functionResourse"
