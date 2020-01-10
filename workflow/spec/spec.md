@@ -1590,14 +1590,13 @@ If the relay state already receives a data input from the previous transition st
 with its data input.
 
 You can also use the filter property to further relay the set-up data input and pass only
-what you need as data output of the state. Let's say we have a workflow definition:
+what you need as data output of the state. Let's say we have the following workflow definition:
 
-
-
-<table>
-<tr>
-<td>
-
+<table><tr>
+    <th>JSON</th>
+    <th>YAML</th>
+  </tr>
+<tr><td>
   <pre>
   {  
        "name":"SimpleRelayState",
@@ -1632,9 +1631,8 @@ what you need as data output of the state. Let's say we have a workflow definiti
        }
   }
   </pre>
-</td>
-<td>
-
+</td><td>
+<tr><td>
   <pre>
     {  
          "name":"SimpleRelayState",
@@ -1669,10 +1667,7 @@ what you need as data output of the state. Let's say we have a workflow definiti
          }
     }
     </pre>
-</td>
-</tr>
-</table>
-
+</td></tr></table>
 
 In which case the states data output would include people whos age is less than 40. You can then easily during testing 
 change your output path to for example:
