@@ -1880,45 +1880,83 @@ In this example the data input to our ForEach state is an array of orders:
 
 and the state is defined as:
 
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td>
+
 ```json
 {
 "functions": [
-  {
-    "name": "sendConfirmationFunction",
-    "resource": "functionResourse"
-  }
+{
+"name": "sendConfirmationFunction",
+"resource": "functionResourse"
+}
 ],
 "states": [
-  {   
-     "name":"SendConfirmationForEachCompletedhOrder",
-     "type":"FOREACH",
-     "inputCollection": "$.orders[?(@.completed == true)]",
-     "inputParameter": "$.completedorder",
-     "startsAt": "SendConfirmation",
-     "states": [
-        {  
-            "name":"SendConfirmation",
-            "type":"OPERATION",
-            "actionMode":"SEQUENTIAL",
-            "actions":[  
-               {  
-                  "functionref": {
-                     "refname": "sendConfirmationFunction",
-                     "parameters": {
-                       "orderNumber": "$.completedorder.orderNumber",
-                       "email": "$.completedorder.email"
-                     }
-                  }
-               }
-            ],
-            "end": true
-        }
-     ],
-     "end": true
-  } 
+{   
+ "name":"SendConfirmationForEachCompletedhOrder",
+ "type":"FOREACH",
+ "inputCollection": "$.orders[?(@.completed == true)]",
+ "inputParameter": "$.completedorder",
+ "startsAt": "SendConfirmation",
+ "states": [
+    {  
+    "name":"SendConfirmation",
+    "type":"OPERATION",
+    "actionMode":"SEQUENTIAL",
+    "actions":[  
+       {  
+          "functionref": {
+             "refname": "sendConfirmationFunction",
+             "parameters": {
+               "orderNumber": "$.completedorder.orderNumber",
+               "email": "$.completedorder.email"
+             }
+          }
+       }
+    ],
+    "end": true
+    }
+ ],
+ "end": true
+} 
 ]
 }
 ```
+</td>
+<td>
+
+  ```yaml
+functions:
+- name: sendConfirmationFunction
+  resource: functionResourse
+states:
+- name: SendConfirmationForEachCompletedhOrder
+  type: FOREACH
+  inputCollection: "$.orders[?(@.completed == true)]"
+  inputParameter: "$.completedorder"
+  startsAt: SendConfirmation
+  states:
+  - name: SendConfirmation
+    type: OPERATION
+    actionMode: SEQUENTIAL
+    actions:
+    - functionref:
+        refname: sendConfirmationFunction
+        parameters:
+          orderNumber: "$.completedorder.orderNumber"
+          email: "$.completedorder.email"
+    end: true
+  end: true
+  ```
+</td>
+</tr>
+</table>
 
 This ForEach state will first look at its inputCollection path to determine which array in the states data input
 to iterate over.
@@ -1929,14 +1967,6 @@ set to true.
 For each of the completed order the state will then execute the defined set of states in parallel.
 
 For this example, the data inputs of staring states for the two itererations would be: 
-
-<table>
-<tr>
-    <th>JSON</th>
-    <th>YAML</th>
-</tr>
-<tr>
-<td>
 
 ```json
 {
@@ -1963,31 +1993,7 @@ For this example, the data inputs of staring states for the two itererations wou
         "email": "firstBuyer@buyer.com"
     }
 }
-```
-</td>
-<td>
-
-  ```yaml
-  name: Send order confirmation email
-  description: Send email for each confirmed order
-  startsAt: sendConfirmationEmail
-  functions:
-  - name: sendConfirmationEmailFunction
-    resource: functionResourse
-  states:
-  - name: sendConfirmationEmail
-    type: OPERATION
-    actionMode: SEQUENTIAL
-    actions:
-    - functionref:
-        refname: sendConfirmationEmailFunction
-    end: true
-    loop:
-      inputCollection: "$.orders[?(@.completed == true)]"
-  ```
-</td>
-</tr>
-</table>
+```    
 
 and:
 
