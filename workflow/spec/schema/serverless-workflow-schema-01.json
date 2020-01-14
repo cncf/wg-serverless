@@ -206,7 +206,7 @@
         "inputPath"
       ]
     },
-    "onreceive": {
+    "eventactions": {
       "type": "object",
       "properties": {
         "condition": {
@@ -496,12 +496,12 @@
           "filter": {
             "$ref": "#/definitions/filter"
           },
-          "onReceive": {
+          "eventActions": {
             "type": "array",
-            "description": "Define what events to act upon and actions to be performed",
+            "description": "Define what events trigger one or more actions to be performed",
             "items": {
               "type": "object",
-              "$ref": "#/definitions/onreceive"
+              "$ref": "#/definitions/eventactions"
             }
           },
           "loop": {

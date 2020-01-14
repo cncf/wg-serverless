@@ -422,7 +422,7 @@ We will start defining each individual state:
 | name | State name | string | yes |
 | type | State type | string | yes |
 | end |Is this state an end state | boolean | no |
-| [onReceive](#eventstate-onreceivedef) | Define what events to act upon and actions to be performed | array | yes |
+| [eventActions](#eventstate-eventactions) | Define what events trigger one or more actions to be performed | array | yes |
 | [filter](#Filter-Definition) | State data filter | object | yes |
 | [loop](#Loop-Definition) | State loop information | object | yes |
 | [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
@@ -454,12 +454,12 @@ We will start defining each individual state:
             "default": false,
             "description": "Is this an end state"
         },
-        "onReceive": {
+        "eventActions": {
             "type": "array",
-            "description": "Define what events to act upon and actions to be performed",
+            "description": "Define what events trigger one or more actions to be performed",
             "items": {
                 "type": "object",
-                "$ref": "#/definitions/onreceive"
+                "$ref": "#/definitions/eventactions"
             }
         },
         "filter": {
@@ -477,16 +477,16 @@ We will start defining each individual state:
             }
         }
     },
-    "required": ["name", "type", "onReceive"]
+    "required": ["name", "type", "eventActions"]
 }
 ```
 
 </p>
 </details>
 
-Event state can hold one or more onReceive definitions:
+Event state can define what events to be triggered by and define actions to be performed:
 
-#### <a name="eventstate-onreceivedef"></a> Event State: onReceive Definitions
+#### <a name="eventstate-eventactions"></a> Event State: eventActions Definitions
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -502,7 +502,7 @@ Event state can hold one or more onReceive definitions:
 ```json
 {
     "type": "object",
-    "description": "Defines what events to act upon and actions to be executed",
+    "description": "Defines what events to act upon and actions to be performed",
     "properties": {
         "condition": {
           "description": " Boolean expression which consists of one or more Event operands and the Boolean operators",
