@@ -1763,20 +1763,19 @@ to test if your workflow behaves properly for the case when there are people who
 
 </details>
 
-Foreach state can be used to execute a set of defined states for each element of the states data input JSON array object.
-While the [parallel state](#Parallel-State) executes a set of defined branches (which include states) passing in the
- same data (the parallel states data input) the ForEach state executes the same set of defined states 
- for each entries of an array in the state data input.
+The ForEach state can be used to execute a defined set of states for each element of an array (defined in the states data input).
+Whole the [Parallel state](#Parallel-State) performs multiple braches of states using the 
+same data input, the ForEach state performs the defined steps for multiple entries of an array in the states data input.
  
-Note that states defined in the "states" property of the ForEach state can only transition to eachother and 
-cannot transition to states outside of this state. Similarly other workflow states cannot transition to one of the states
-defined within the ForEach state.
+Note that states defined in the "states" property of the ForEach state can only transition to each other and 
+cannot transition to states outside of this state. 
+Similarly other workflow states cannot transition to one of the states defined within the ForEach state.
 
 States defined in the "states" property must contain at least one state which is an end state (has the end property set to true).
 
 Let's take a look at a simple ForEach state example through which we can explain this state:
  
-Let's say that the data input to our ForEach state is an array of orders:
+In this example the data input to our ForEach state is an array of orders:
 
 ```json
 {
@@ -1800,7 +1799,7 @@ Let's say that the data input to our ForEach state is an array of orders:
 }
 ```
 
-and our "SendConfirmationForEachCompletedhOrder" ForEach state:
+and the state is defined as:
 
 ```json
 {
@@ -1842,22 +1841,79 @@ and our "SendConfirmationForEachCompletedhOrder" ForEach state:
 }
 ```
 
-This ForEach state will first look at its inputCollection path to determine what objects in the states data input
+This ForEach state will first look at its inputCollection path to determine which array in the states data input
 to iterate over.
-In this case it will be the two order objects representing completed orders (have the completed property set to true).
+In this case it will be "orders" array which contains orders information. The states inputCollection property
+then further filters this array, only selecting elements of the orders array which have the completed property 
+set to true.
 
-For each of these completed orders an iteration is started. The completd order being iterated against 
-is placed in the JSON object selected by the inputParameter property. If one does not exist, it is created, in this 
-case the "completedorder" object of the states data input. 
+For each of the completed order the state will then execute the defined set of states.
+Before each iteration the next item of the input collection is added to an element of the ForEach states data input
+as defined by the inputParameter property. Then the ForEach states data input becomes the
+ data input for the starting state to be executed.
 
-The ForEach states data input is fully placed as the data input of the starting state in the states parameter (defined by the startsAt property).
-In this example this state is an operation state which calls the sendConfirmationFunction serverless function. 
-It passes as function parameters two objects, orderNumber, and email which it gets from the completedorder parameters that 
-contains the currently iterated orders element.
+For this example then, for the first iteration the data input to the "startsAt" state would be:
+
+```json
+{
+    "orders": [
+        {
+            "orderNumber": "1234",
+            "completed": true,
+            "email": "firstBuyer@buyer.com"
+        },
+        {
+            "orderNumber": "5678",
+            "completed": true,
+            "email": "secondBuyer@buyer.com"
+        },
+        {
+            "orderNumber": "9910",
+            "completed": false,
+            "email": "thirdBuyer@buyer.com"
+        }
+    ],
+    "completedorder": {
+        "orderNumber": "1234",
+        "completed": true,
+        "email": "firstBuyer@buyer.com"
+    }
+}
+```
+
+and for the second:
+
+```json
+{
+    "orders": [
+        {
+            "orderNumber": "1234",
+            "completed": true,
+            "email": "firstBuyer@buyer.com"
+        },
+        {
+            "orderNumber": "5678",
+            "completed": true,
+            "email": "secondBuyer@buyer.com"
+        },
+        {
+            "orderNumber": "9910",
+            "completed": false,
+            "email": "thirdBuyer@buyer.com"
+        }
+    ],
+    "completedorder": {
+        "orderNumber": "5678",
+        "completed": true,
+        "email": "secondBuyer@buyer.com"
+    }
+}
+```
+
 Once iterations over the completed orders complete, workflow execution finishes as our ForEach state is an end state (has the end property set to true).
 
 So in this example, our ForEach state will send two confirmation emails, one for each of the completed orders
-passed to its data input.
+defined in the orders array of its data input.
 
 ### Filter Definition
 
