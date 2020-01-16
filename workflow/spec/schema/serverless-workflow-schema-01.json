@@ -919,9 +919,15 @@
             "type": "string",
             "description": "JSONPath expression specifying where in the states data output to place the final data output of each iteration of the executed states"
           },
-          "completionCondition": {
-            "$ref": "#/definitions/condition",
-            "description": "Boolean condition (evaluated after each iteration) evaluated against the inputParameter. If this condition is true iterations stops even if not all elements of inputCollection are processesd"
+          "inputParameter": {
+            "type": "object",
+            "description": "JSONPath expression specifying an JSON object field of the states data input. For each parallel iteration, this field will get populated with a unique element of the inputCollection array"
+          },
+          "max": {
+            "type": "integer",
+            "default": "0",
+            "minimum": 0,
+            "description": "Specifies how upper bound on how many iterations may run in parallel"
           },
           "timeDelay": {
             "type": "string",

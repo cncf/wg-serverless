@@ -1638,9 +1638,9 @@ to test if your workflow behaves properly for the case when there are people who
 | type | State type | string | yes | 
 | end |Is this state an end state | boolean | no |
 | inputCollection | JSONPath expression selecting an JSON array element of the states data input | string | yes |
-| inputParameter | JSONPath expression specifying an JSON object field of the states data input. For each iteration this field is populated with the object being iterated from the inputCollection | string | yes |
 | outputCollection | JSONPath expression specifying where in the states data output to place the final data output of each iteration of the executed states | string | no |
-| [completionCondition](#Condition-Definition) | Condition (evaluated after each iteration) evaluated against the inputParameter. If this condition is true iterations stops even if not all elements of inputCollection are processesd | string | no |
+| inputParameter | JSONPath expression specifying an JSON object field of the states data input. For each parallel iteration, this field will get populated with an unique element of the inputCollection array. | string | yes |
+| max | Specifies how upper bound on how many iterations may run in parallel | integer | no |
 | timeDelay | Amount of time (ISO 8601 format) to wait between each iteration | string | no |
 | startsAt | Unique name of a states in the states array representing the starting state to be executed | string |yes |
 | [states](#State-Definition) | States to be executed for each of the elements of inputCollection | array | yes |
@@ -1682,9 +1682,15 @@ to test if your workflow behaves properly for the case when there are people who
            "type": "string",
            "description": "JSONPath expression specifying where in the states data output to place the final data output of each iteration of the executed states"
          },
-         "completionCondition": {
-           "$ref": "#/definitions/condition",
-           "description": "Boolean condition (evaluated after each iteration) evaluated against the inputParameter. If this condition is true iterations stops even if not all elements of inputCollection are processesd"
+         "inputParameter": {
+            "type": "object",
+             "description": "JSONPath expression specifying an JSON object field of the states data input. For each parallel iteration, this field will get populated with a unique element of the inputCollection array"
+         },
+         "max": {
+           "type": "integer",
+            "default": 0,
+            "minimum": 0, 
+            "description": "Specifies how upper bound on how many iterations may run in parallel"
          },
          "timeDelay": {
              "type": "string",
@@ -1764,10 +1770,14 @@ to test if your workflow behaves properly for the case when there are people who
 </details>
 
 The ForEach state can be used to execute a defined set of states for each element of an array (defined in the states data input).
-Whole the [Parallel state](#Parallel-State) performs multiple braches of states using the 
+While the [Parallel state](#Parallel-State) performs multiple branches of states using the 
 same data input, the ForEach state performs the defined steps for multiple entries of an array in the states data input.
+
+Note that each iteration of the ForEach state should be executed in parallel.
+You can use the "max" property to set the upper bound on how many iterations may run in parallel. The default 
+of the "max" property is zero, which places no limit on number of parallel executions.
  
-Note that states defined in the "states" property of the ForEach state can only transition to each other and 
+States defined in the "states" property of the ForEach state can only transition to each other and 
 cannot transition to states outside of this state. 
 Similarly other workflow states cannot transition to one of the states defined within the ForEach state.
 
@@ -1847,12 +1857,9 @@ In this case it will be "orders" array which contains orders information. The st
 then further filters this array, only selecting elements of the orders array which have the completed property 
 set to true.
 
-For each of the completed order the state will then execute the defined set of states.
-Before each iteration the next item of the input collection is added to an element of the ForEach states data input
-as defined by the inputParameter property. Then the ForEach states data input becomes the
- data input for the starting state to be executed.
+For each of the completed order the state will then execute the defined set of states in parallel.
 
-For this example then, for the first iteration the data input to the "startsAt" state would be:
+For this example, the data inputs of staring states for the two itererations would be: 
 
 ```json
 {
@@ -1881,7 +1888,7 @@ For this example then, for the first iteration the data input to the "startsAt" 
 }
 ```
 
-and for the second:
+and:
 
 ```json
 {
