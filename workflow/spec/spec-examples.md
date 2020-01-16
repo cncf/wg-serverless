@@ -336,7 +336,9 @@ If the applicants age is over 18 we start the application (subflow state). Other
               }
             }
          ],
-         "default": "RejectApplication"
+         "default": {
+            "nextState": "RejectApplication"
+         }
       },
       {
         "name": "StartApplication",
