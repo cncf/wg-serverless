@@ -196,7 +196,9 @@ Here we define details of the Serverless Workflow definitions:
                     { "$ref": "#definitions/eventstate" },
                     { "$ref": "#definitions/operationstate" },
                     { "$ref": "#definitions/parallelstate" },
-                    { "$ref": "#definitions/switchstate" }
+                    { "$ref": "#definitions/switchstate" },
+                    { "$ref": "#definitions/subflowstate" },
+                    { "$ref": "#definitions/relaystate" }
                 ]
             }
         },
@@ -278,7 +280,7 @@ Allows you to define a reusable function definition. It can be referenced in [ac
 workflow states. Functions must have an unique name. The resource parameter of a function evaluates to execution of
 an existing serverless function. Implementations can use the type parameter to define communication information such as protocols. 
 
-Since function definitions are reusable, their parameters are defined within actions that declare to use them.
+Since function definitions are reusable, their parameters are defined within actions that reference them.
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -398,9 +400,8 @@ States define building blocks of the Serverless Workflow. The specification defi
 - **[Operation State](#Operation-State)**: Allows one or more functions to run in sequence
     or in parallel without waiting for any event.
 
-- **[Switch State](#Switch-State)**: Permits transitions to multiple other states (eg.
-    Different function results in the previous state trigger
-    branching/transition to different next states).
+- **[Switch State](#Switch-State)**: Gateways, allow workflow transitions to multiple different states 
+    based on data inputs.
 
 - **[Delay State](#Delay-State)**: Causes the workflow execution to delay for a
     specified duration or until a specified time/date.
@@ -1188,8 +1189,7 @@ There are four types of choices defined:
 
 </details>
 
-Delay state simply waits for a certain amount of time before transitioning to a next state.
-
+Delay state waits for a certain amount of time before transitioning to a next state.
 
 ### Parallel State
 
@@ -1312,7 +1312,9 @@ Branches contain one or more states. Each branch must define a starting state vi
                             { "$ref": "#definitions/eventstate" },
                             { "$ref": "#definitions/operationstate" },
                             { "$ref": "#definitions/parallelstate" },
-                            { "$ref": "#definitions/switchstate" }
+                            { "$ref": "#definitions/switchstate" },
+                            { "$ref": "#definitions/subflowstate" },
+                            { "$ref": "#definitions/relaystate" }
                         ]
                     }
         },
@@ -1322,17 +1324,16 @@ Branches contain one or more states. Each branch must define a starting state vi
             "description": "Workflow execution must wait for this branch to finish before continuing"
         }
     },
-    "required": ["name", "startsAt", "states", "waitForCompletion"]
+    "required": ["name", "states", "waitForCompletion"]
 }
 ```
 
 </details>
 
-
-Each branch receives a copy of the Parallel state's input data.
+Each branch receives the same copy of the Parallel state's data input.
 States within each branch are only allowed to transition to states defined in the same branch. 
 Transitions to other branches or workflow states are not allowed.
-States outside a parallel state cannot transition to a state within a branch of a parallel state.
+States outside a parallel state cannot transition to a states declared within branches.
 
 Data output of the Parallel state includes the data output of each executed branch.
 
@@ -1424,7 +1425,7 @@ Parallel state must wait for all branches which have this property set to "true"
 
 </details>
 
-It is often the case that you want to group your workflows into small, **reusable** logical units that perform certain needed functionality.
+It is often the case that you want to group your workflows into small, reusable logical units that perform certain needed functionality.
 Even though you can use the Event state to call an externally deployed services (via function), at times
 there is a need to include/inject another serverless workflow (from classpath/local file system etc, depending on the implementation logic). 
 In that case you would use the SubFlow State.
@@ -1439,7 +1440,7 @@ Sub-workflows must have a defined start and end states.
 The waitForCompletion property defines if the SubFlow state should wait until execution of the sub-workflow
 is completed or not. 
 
-Each sub-workflow receives a copy of the SubFlow state's input data.
+Each sub-workflow receives the same copy of the SubFlow state's data input.
 If waitForCompletion property is set to true, sub-workflows have the ability to edit the parent's workflow data.
 If this property is set to false, data access to parent's workflow should not be allowed.
 
