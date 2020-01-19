@@ -1910,15 +1910,15 @@ and the state is defined as:
     "type":"OPERATION",
     "actionMode":"SEQUENTIAL",
     "actions":[  
-       {  
-          "functionref": {
-             "refname": "sendConfirmationFunction",
-             "parameters": {
-               "orderNumber": "$.completedorder.orderNumber",
-               "email": "$.completedorder.email"
-             }
-          }
-       }
+   {  
+   "functionref": {
+      "refname": "sendConfirmationFunction",
+      "parameters": {
+        "orderNumber": "$.completedorder.orderNumber",
+        "email": "$.completedorder.email"
+      }
+   }
+   }
     ],
     "end": true
     }
