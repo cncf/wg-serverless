@@ -27,6 +27,7 @@ The goal of the Serverless Workflow sub-group is to:
 - Facilitate Serverless Workflow portability
 - Be completely vendor neutral
 - Support both stateless and stateful Serverless Workflow implementations
+- Supply a light-weight, human-readable, and embeddable format for describing serverless workflows
 
 The Serverless Workflow specification defined in this document incorporates all of these goals.
 
@@ -37,6 +38,7 @@ This document is a working draft.
 ## Table of Contents
 
 - [Introduction](#Introduction)
+- [Workflow Format](#Workflow-Format)
 - [Functional Scope](#Functional-Scope)
 - [Specification Details](#Specification-Details)
     - [Workflow Model](#Workflow-Model)
@@ -59,6 +61,14 @@ simplifies orchestration of the app logic.
 control flow and how/which functions are to be invoked on arrival of events.
 * **Define and manage application data flow**: allows the users to define how data is passed and filtered from incoming events to states, 
 from states to functions, from one function to another function, and from one state to another state.
+
+### Workflow Format
+
+Serverless workflows are defined with [JSON](https://www.json.org/json-en.html) or [YAML](https://yaml.org/) formats.
+Structure of serverless workflows is described via [JSON Schema](https://json-schema.org/).
+
+Serverless Workflow definitions are considered specification-compliant if they conform to the [workflow schema](schema/serverless-workflow-schema-01.json).
+Note that this schema reflects the current status of the specification as is updated alongside this document. 
 
 ### Functional Scope
 
@@ -85,9 +95,6 @@ incoming events can trigger function calls during flow execution.
 Following sections provide detailed descriptions of the Serverless Workflow Model. For each part of the model we provide:
 - Parameter description in table format
 - [JSON Schema](https://json-schema.org/) definition 
-
-You can find the entire Serverless Workflow JSON Schema [here](schema/serverless-workflow-schema-01.json).
-Note that this schema reflects the current status of the specification as is updated alongside this document. 
 
 ### Workflow Model
 
@@ -1547,23 +1554,49 @@ You can use the filter property to control the states data output to the transit
 Here is a typical example of how to use the relay state to inject static data into its data input, which then will be passed
 as data output to the transition state:
 
-```json
-{  
-     "name":"SimpleRelayState",
-     "type":"RELAY",
-     "inject": {
-        "person": {
-          "fnam": "John",
-          "lname": "Doe",
-          "address": "1234 SomeStreet",
-          "age": 40
-        }
-     },
-     "transition": {
-        "nextState": "GreetPersonState"
-     }
-}
-```
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td valign="top">
+
+  ```json
+  {  
+   "name":"SimpleRelayState",
+   "type":"RELAY",
+   "inject": {
+      "person": {
+        "fnam": "John",
+        "lname": "Doe",
+        "address": "1234 SomeStreet",
+        "age": 40
+      }
+   },
+   "transition": {
+      "nextState": "GreetPersonState"
+   }
+  }
+  ```
+</td>
+<td valign="top">
+
+  ```yaml
+  name: SimpleRelayState
+  type: RELAY
+  inject:
+    person:
+      fnam: John
+      lname: Doe
+      address: 1234 SomeStreet
+      age: 40
+  transition:
+    nextState: GreetPersonState
+  ```
+</td>
+</tr>
+</table>
 
 The data output of the "SimpleRelayState" which then is passed as input to the transition state would be:
 
@@ -1585,8 +1618,16 @@ with its data input.
 You can also use the filter property to further relay the set-up data input and pass only
 what you need as data output of the state. Let's say we have:
 
-```json
-{  
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td valign="top">
+
+  ```json
+  {  
      "name":"SimpleRelayState",
      "type":"RELAY",
      "inject": {
@@ -1617,8 +1658,36 @@ what you need as data output of the state. Let's say we have:
      "transition": {
         "nextState": "GreetPersonState"
      }
-}
-```
+    }
+  ```
+</td>
+<td valign="top">
+
+  ```yaml
+  name: SimpleRelayState
+  type: RELAY
+  inject:
+    people:
+    - fnam: John
+      lname: Doe
+      address: 1234 SomeStreet
+      age: 40
+    - fnam: Marry
+      lname: Allice
+      address: 1234 SomeStreet
+      age: 25
+    - fnam: Kelly
+      lname: Mill
+      address: 1234 SomeStreet
+      age: 30
+  filter:
+    outputPath: "$.people[?(@.age < 40)]"
+  transition:
+    nextState: GreetPersonState
+  ```
+</td>
+</tr>
+</table>
 
 In which case the states data output would include people whos age is less than 40. You can then easily during testing 
 change your output path to for example:
@@ -1811,45 +1880,83 @@ In this example the data input to our ForEach state is an array of orders:
 
 and the state is defined as:
 
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td valign="top">
+
 ```json
 {
-"functions": [
-  {
-    "name": "sendConfirmationFunction",
-    "resource": "functionResourse"
-  }
+"functions": [ 
+{ 
+"name": "sendConfirmationFunction",
+"resource": "functionResourse"
+}
 ],
 "states": [
-  {   
-     "name":"SendConfirmationForEachCompletedhOrder",
-     "type":"FOREACH",
-     "inputCollection": "$.orders[?(@.completed == true)]",
-     "inputParameter": "$.completedorder",
-     "startsAt": "SendConfirmation",
-     "states": [
-        {  
-            "name":"SendConfirmation",
-            "type":"OPERATION",
-            "actionMode":"SEQUENTIAL",
-            "actions":[  
-               {  
-                  "functionref": {
-                     "refname": "sendConfirmationFunction",
-                     "parameters": {
-                       "orderNumber": "$.completedorder.orderNumber",
-                       "email": "$.completedorder.email"
-                     }
-                  }
-               }
-            ],
-            "end": true
-        }
-     ],
-     "end": true
-  } 
+{   
+ "name":"SendConfirmationForEachCompletedhOrder",
+ "type":"FOREACH",
+ "inputCollection": "$.orders[?(@.completed == true)]",
+ "inputParameter": "$.completedorder",
+ "startsAt": "SendConfirmation",
+ "states": [
+    {  
+    "name":"SendConfirmation",
+    "type":"OPERATION",
+    "actionMode":"SEQUENTIAL",
+    "actions":[  
+   {  
+   "functionref": {
+      "refname": "sendConfirmationFunction",
+      "parameters": {
+        "orderNumber": "$.completedorder.orderNumber",
+        "email": "$.completedorder.email"
+      }
+   }
+   }
+    ],
+    "end": true
+    }
+ ],
+ "end": true
+} 
 ]
 }
 ```
+</td>
+<td valign="top">
+
+  ```yaml
+functions:
+- name: sendConfirmationFunction
+  resource: functionResourse
+states:
+- name: SendConfirmationForEachCompletedhOrder
+  type: FOREACH
+  inputCollection: "$.orders[?(@.completed == true)]"
+  inputParameter: "$.completedorder"
+  startsAt: SendConfirmation
+  states:
+  - name: SendConfirmation
+    type: OPERATION
+    actionMode: SEQUENTIAL
+    actions:
+    - functionref:
+        refname: sendConfirmationFunction
+        parameters:
+          orderNumber: "$.completedorder.orderNumber"
+          email: "$.completedorder.email"
+    end: true
+  end: true
+  ```
+</td>
+</tr>
+</table>
 
 This ForEach state will first look at its inputCollection path to determine which array in the states data input
 to iterate over.
@@ -1886,7 +1993,7 @@ For this example, the data inputs of staring states for the two itererations wou
         "email": "firstBuyer@buyer.com"
     }
 }
-```
+```    
 
 and:
 
@@ -1989,55 +2096,96 @@ if the expression evaluates to true.
 Here is an example of a restricted transition which only allows transition to the "highRiskState" if the 
 output of the state to transition from includes an user with the title "MANAGER".
 
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td valign="top">
+
 ```json
 {  
-   "startsAt": "lowRiskState",
-   "functions": [
-      {
-         "name": "doLowRistOperationFunction",
-         "resource": "functionResourse"
-      },
-      {
-         "name": "doHighRistOperationFunction",
-         "resource": "functionResourse"
+"startsAt": "lowRiskState",
+"functions": [
+  {
+   "name": "doLowRistOperationFunction",
+   "resource": "functionResourse"
+  },
+  {
+   "name": "doHighRistOperationFunction",
+   "resource": "functionResourse"
+  }
+],
+"states":[  
+  {  
+   "name":"lowRiskState",
+   "type":"OPERATION",
+   "actionMode":"Sequential",
+   "actions":[  
+    {  
+     "functionref":{
+        "refname": "doLowRistOperationFunction"
+     }
+    }
+    ],
+    "transition": {
+      "nextState":"highRiskState",
+      "condition": {
+         "expressionLanguage": "spel",
+         "body": "#jsonPath(stateOutputData,'$..user.title') eq 'MANAGER'"
       }
-   ],
-   "states":[  
-      {  
-         "name":"lowRiskState",
-         "type":"OPERATION",
-         "actionMode":"Sequential",
-         "actions":[  
-          {  
-            "functionref":{
-               "refname": "doLowRistOperationFunction"
-            }
-          }
-         ],
-         "transition": {
-            "nextState":"highRiskState",
-            "condition": {
-               "expressionLanguage": "spel",
-               "body": "#jsonPath(stateOutputData,'$..user.title') eq 'MANAGER'"
-            }
-         }
-      },
-      {  
-         "name":"highRiskState",
-         "type":"OPERATION",
-         "end":true,
-         "actionMode":"Sequential",
-         "actions":[  
-            {  
-              "functionref":{
-                "refname": "doHighRistOperationFunction"
-              }
-           }
-         ]
-      }
+    }
+  },
+  {  
+   "name":"highRiskState",
+   "type":"OPERATION",
+   "end":true,
+   "actionMode":"Sequential",
+   "actions":[  
+    {  
+     "functionref":{
+       "refname": "doHighRistOperationFunction"
+     }
+    }
    ]
+  }
+]
 }
 ```
+</td>
+<td valign="top">
+
+  ```yaml
+startsAt: lowRiskState
+functions:
+- name: doLowRistOperationFunction
+  resource: functionResourse
+- name: doHighRistOperationFunction
+  resource: functionResourse
+states:
+- name: lowRiskState
+  type: OPERATION
+  actionMode: Sequential
+  actions:
+  - functionref:
+      refname: doLowRistOperationFunction
+  transition:
+    nextState: highRiskState
+    condition:
+      expressionLanguage: spel
+      body: "#jsonPath(stateOutputData,'$..user.title') eq 'MANAGER'"
+- name: highRiskState
+  type: OPERATION
+  end: true
+  actionMode: Sequential
+  actions:
+  - functionref:
+      refname: doHighRistOperationFunction
+  ```
+</td>
+</tr>
+</table>
 
 Implementers should decide how to handle data-base transitions which return false (do not proceed).
 The default should be that if this happens workflow execution should halt and a detailed message
@@ -2190,9 +2338,16 @@ execution should handle them.
 
 Let's take a look at a small example:
 
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td valign="top">
+
 ```json
 {
-  ...
   "startsAt": "HandleErrors",
   "functions": [
       {
@@ -2217,7 +2372,7 @@ Let's take a look at a small example:
           {
             "condition": {
               "expressionLanguage": "spel",
-              "body": "$.exception.name matches '^\w+Exception$'"
+              "body": "$.exception.name matches '^\\w+Exception$'"
             },
             "filter": {
               "resultPath": "$.trace",
@@ -2231,11 +2386,41 @@ Let's take a look at a small example:
        "transition": {
           "nextState":"doSomethingElse"
        }
-    },
-    ...
+    }
   ]
 }
 ```
+</td>
+<td valign="top">
+
+```yaml
+startsAt: HandleErrors
+functions:
+- name: throwRuntimeErrorFunction
+  resource: functionResource
+states:
+- name: HandleErrors
+  type: OPERATION
+  end: false
+  actionMode: SEQUENTIAL
+  actions:
+  - functionref:
+      refname: throwRuntimeErrorFunction
+  onError:
+  - condition:
+      expressionLanguage: spel
+      body: "$.exception.name matches '^\\w+Exception$'"
+    filter:
+      resultPath: "$.trace"
+      outputPath: "$.stateerror"
+    transition:
+      nextState: afterErrorState
+  transition:
+    nextState: doSomethingElse
+```
+</td>
+</tr>
+</table>
 
 Here we have an operation state with one action that executes a function call. For our example the function call
 results in a runtime exception. In the "onError" definition we state we want to catch all errors whose name ends in "Exception".
@@ -2248,15 +2433,23 @@ Having to define explicit error handling inside every state of your workflow mig
 hard to maintain. To alleviate this the workflow model also allows you to define the "onError" parameter as part of the main
 workflow definition. Let's take a look:
 
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td valign="top">
+
 ```json
 {
-  ...
   "startsAt": "HandleErrors1",
   "onError": [
      {
        "condition": {
          "expressionLanguage": "spel",
-         "body": "$.exception.name matches '^\w+Exception$'"
+         "body": "$.exception.name matches '^\\w+Exception$'"
        },
        "filter": {
          "resultPath": "$.trace",
@@ -2305,11 +2498,50 @@ workflow definition. Let's take a look:
        "transition": {
           "nextState": "doSomethingElse"
        }
-    },
-    ...
+    }
   ]
 }
 ```
+</td>
+<td valign="top">
+
+```yaml
+startsAt: HandleErrors1
+onError:
+- condition:
+    expressionLanguage: spel
+    body: "$.exception.name matches '^\\w+Exception$'"
+  filter:
+    resultPath: "$.trace"
+    outputPath: "$.stateerror"
+  transition:
+    nextState: afterErrorState
+functions:
+- name: throwRuntimeErrorFunction
+  resource: functionResource
+states:
+- name: HandleErrors1
+  type: OPERATION
+  end: false
+  actionMode: SEQUENTIAL
+  actions:
+  - functionref:
+      refname: throwRuntimeErrorFunction
+  transition:
+    nextState: doSomethingElse
+- name: HandleErrors2
+  type: OPERATION
+  end: false
+  actionMode: SEQUENTIAL
+  actions:
+  - functionref:
+      refname: throwRuntimeErrorFunction
+  transition:
+    nextState: doSomethingElse
+```
+</td>
+</tr>
+</table>
 
 Here we define our error handling as a top-level workflow property and will handle errors that happen in all states 
 of the workflow, in this example both the "HandleErrors1" and "HandleErrors2" states.
