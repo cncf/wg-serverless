@@ -302,833 +302,863 @@
       "required": [
         "match",
         "transition"
-      ],
-      "function": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Function unique name",
-            "minLength": 1
-          },
-          "resource": {
-            "type": "string",
-            "desription": "Function resource (URI)"
-          },
-          "type": {
-            "type": "string",
-            "description": "Type of function to implement. Can be defined by implementations"
-          }
+      ]
+    },
+    "function": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Function unique name",
+          "minLength": 1
         },
-        "required": [
-          "name",
-          "resource"
-        ]
-      },
-      "functionref": {
-        "type": "object",
-        "description": "Function Reference",
-        "properties": {
-          "refname": {
-            "type": "string",
-            "desription": "Name of the referenced function"
-          },
-          "parameters": {
-            "type": "object",
-            "description": "Function parameters"
-          }
+        "resource": {
+          "type": "string",
+          "desription": "Function resource (URI)"
         },
-        "required": [
-          "refname"
-        ]
-      },
-      "branch": {
-        "type": "object",
-        "description": "Branch Definition",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Branch name"
-          },
-          "startsAt": {
-            "type": "string",
-            "description": "Starts at state name"
-          },
-          "states": {
-            "type": "array",
-            "description": "State Definitions",
-            "items": {
-              "type": "object",
-              "anyOf": [
-                {
-                  "title": "Delay State",
-                  "$ref": "#/definitions/delaystate"
-                },
-                {
-                  "title": "Event State",
-                  "$ref": "#/definitions/eventstate"
-                },
-                {
-                  "title": "Operation State",
-                  "$ref": "#/definitions/operationstate"
-                },
-                {
-                  "title": "Switch State",
-                  "$ref": "#/definitions/switchstate"
-                },
-                {
-                  "title": "SubFlow State",
-                  "$ref": "#/definitions/subflowstate"
-                },
-                {
-                  "title": "Relay State",
-                  "$ref": "#/definitions/relaystate"
-                },
-                {
-                  "title": "ForEach State",
-                  "$ref": "#/definitions/foreachstate"
-                }
-              ]
-            }
-          },
-          "waitForCompletion": {
-            "type": "boolean",
-            "default": false,
-            "description": "Flow must wait for this branch to finish before continuing"
-          }
-        },
-        "required": [
-          "name",
-          "startsAt",
-          "states",
-          "waitForCompletion"
-        ]
-      },
-      "delaystate": {
-        "type": "object",
-        "description": "Causes the workflow execution to delay for a specified duration",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique State id",
-            "minLength": 1
-          },
-          "name": {
-            "type": "string",
-            "description": "State name"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "DELAY"
-            ],
-            "description": "State type"
-          },
-          "end": {
-            "type": "boolean",
-            "default": false,
-            "description": "Is this state an end state"
-          },
-          "filter": {
-            "$ref": "#/definitions/filter"
-          },
-          "timeDelay": {
-            "type": "string",
-            "description": "Amount of time (ISO 8601 format) to delay"
-          },
-          "onError": {
-            "type": "array",
-            "description": "OnError Definition",
-            "items": {
-              "type": "object",
-              "$ref": "#/definitions/error"
-            }
-          },
-          "transition": {
-            "description": "Next transition of the workflow after the time delay",
-            "$ref": "#/definitions/transition"
-          }
-        },
-        "if": {
-          "properties": {
-            "end": {
-              "const": true
-            }
-          }
-        },
-        "then": {
-          "required": [
-            "name",
-            "type",
-            "timeDelay",
-            "end"
-          ]
-        },
-        "else": {
-          "required": [
-            "name",
-            "type",
-            "timeDelay",
-            "transition"
-          ]
+        "type": {
+          "type": "string",
+          "description": "Type of function to implement. Can be defined by implementations"
         }
       },
-      "eventstate": {
-        "type": "object",
-        "description": "This state is used to wait for events from event sources and then to invoke one or more functions to run in sequence or in parallel.",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique State id",
-            "minLength": 1
-          },
-          "name": {
-            "type": "string",
-            "description": "State name"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "EVENT"
-            ],
-            "description": "State type"
-          },
-          "end": {
-            "type": "boolean",
-            "default": false,
-            "description": "Is this state an end state"
-          },
-          "filter": {
-            "$ref": "#/definitions/filter"
-          },
-          "eventActions": {
-            "type": "array",
-            "description": "Define what events trigger one or more actions to be performed",
-            "items": {
-              "type": "object",
-              "$ref": "#/definitions/eventactions"
-            }
-          },
-          "onError": {
-            "type": "array",
-            "description": "States runtime error handling definitions",
-            "items": {
-              "type": "object",
-              "$ref": "#/definitions/error"
-            }
+      "required": [
+        "name",
+        "resource"
+      ]
+    },
+    "functionref": {
+      "type": "object",
+      "description": "Function Reference",
+      "properties": {
+        "refname": {
+          "type": "string",
+          "desription": "Name of the referenced function"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Function parameters"
+        }
+      },
+      "required": [
+        "refname"
+      ]
+    },
+    "branch": {
+      "type": "object",
+      "description": "Branch Definition",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Branch name"
+        },
+        "startsAt": {
+          "type": "string",
+          "description": "Starts at state name"
+        },
+        "states": {
+          "type": "array",
+          "description": "State Definitions",
+          "items": {
+            "type": "object",
+            "anyOf": [
+              {
+                "title": "Delay State",
+                "$ref": "#/definitions/delaystate"
+              },
+              {
+                "title": "Event State",
+                "$ref": "#/definitions/eventstate"
+              },
+              {
+                "title": "Operation State",
+                "$ref": "#/definitions/operationstate"
+              },
+              {
+                "title": "Switch State",
+                "$ref": "#/definitions/switchstate"
+              },
+              {
+                "title": "SubFlow State",
+                "$ref": "#/definitions/subflowstate"
+              },
+              {
+                "title": "Relay State",
+                "$ref": "#/definitions/relaystate"
+              },
+              {
+                "title": "ForEach State",
+                "$ref": "#/definitions/foreachstate"
+              }
+            ]
           }
         },
+        "waitForCompletion": {
+          "type": "boolean",
+          "default": false,
+          "description": "Flow must wait for this branch to finish before continuing"
+        }
+      },
+      "required": [
+        "name",
+        "startsAt",
+        "states",
+        "waitForCompletion"
+      ]
+    },
+    "delaystate": {
+      "type": "object",
+      "description": "Causes the workflow execution to delay for a specified duration",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique State id",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "State name"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "DELAY"
+          ],
+          "description": "State type"
+        },
+        "end": {
+          "type": "boolean",
+          "default": false,
+          "description": "Is this state an end state"
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "timeDelay": {
+          "type": "string",
+          "description": "Amount of time (ISO 8601 format) to delay"
+        },
+        "onError": {
+          "type": "array",
+          "description": "OnError Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
+        },
+        "transition": {
+          "description": "Next transition of the workflow after the time delay",
+          "$ref": "#/definitions/transition"
+        }
+      },
+      "if": {
+        "properties": {
+          "end": {
+            "const": true
+          }
+        }
+      },
+      "then": {
         "required": [
           "name",
           "type",
-          "events"
+          "timeDelay",
+          "end"
         ]
       },
-      "operationstate": {
-        "type": "object",
-        "description": "Defines actions be performed. Does not wait for incoming events.",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique State id",
-            "minLength": 1
-          },
-          "name": {
-            "type": "string",
-            "description": "State name"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "OPERATION"
-            ],
-            "description": "State type"
-          },
-          "end": {
-            "type": "boolean",
-            "default": false,
-            "description": "Is this state an end state"
-          },
-          "filter": {
-            "$ref": "#/definitions/filter"
-          },
-          "actionMode": {
-            "type": "string",
-            "enum": [
-              "SEQUENTIAL",
-              "PARALLEL"
-            ],
-            "description": "Specifies whether actions are performed in sequence or in parallel",
-            "default": "SEQUENTIAL"
-          },
-          "actions": {
-            "type": "array",
-            "description": "Actions to be performed",
-            "items": {
-              "type": "object",
-              "$ref": "#/definitions/action"
-            }
-          },
-          "onError": {
-            "type": "array",
-            "description": "OnError Definition",
-            "items": {
-              "type": "object",
-              "$ref": "#/definitions/error"
-            }
-          },
-          "transition": {
-            "description": "Next transition of the workflow after all the actions have been performed",
-            "$ref": "#/definitions/transition"
-          }
-        },
-        "if": {
-          "properties": {
-            "end": {
-              "const": true
-            }
-          }
-        },
-        "then": {
-          "required": [
-            "name",
-            "type",
-            "actionMode",
-            "actions"
-          ]
-        },
-        "else": {
-          "required": [
-            "name",
-            "type",
-            "actionMode",
-            "actions",
-            "transition"
-          ]
-        }
-      },
-      "parallelstate": {
-        "type": "object",
-        "description": "Consists of a number of states that are executed in parallel",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique State id",
-            "minLength": 1
-          },
-          "name": {
-            "type": "string",
-            "description": "State name"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "PARALLEL"
-            ],
-            "description": "State type"
-          },
-          "end": {
-            "type": "boolean",
-            "default": false,
-            "description": "Is this state an end state"
-          },
-          "filter": {
-            "$ref": "#/definitions/filter"
-          },
-          "branches": {
-            "type": "array",
-            "description": "Branch Definitions",
-            "items": {
-              "type": "object",
-              "$ref": "#/definitions/branch"
-            }
-          },
-          "onError": {
-            "type": "array",
-            "description": "OnError Definition",
-            "items": {
-              "type": "object",
-              "$ref": "#/definitions/error"
-            }
-          },
-          "transition": {
-            "description": "Next transition of the workflow after all branches have completed execution",
-            "$ref": "#/definitions/transition"
-          }
-        },
-        "if": {
-          "properties": {
-            "end": {
-              "const": true
-            }
-          }
-        },
-        "then": {
-          "required": [
-            "name",
-            "type",
-            "branches"
-          ]
-        },
-        "else": {
-          "required": [
-            "name",
-            "type",
-            "branches",
-            "transition"
-          ]
-        }
-      },
-      "switchstate": {
-        "type": "object",
-        "description": "Permits transitions to other states based on criteria matching",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique State id",
-            "minLength": 1
-          },
-          "name": {
-            "type": "string",
-            "description": "State name"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "SWITCH"
-            ],
-            "description": "State type"
-          },
-          "end": {
-            "type": "boolean",
-            "default": false,
-            "description": "Is this state an end state"
-          },
-          "filter": {
-            "$ref": "#/definitions/filter"
-          },
-          "choices": {
-            "type": "array",
-            "description": "Defines an ordered set of Match Rules against the input data to this state",
-            "items": {
-              "type": "object",
-              "anyOf": [
-                {
-                  "title": "Single Choice",
-                  "$ref": "#/definitions/singlechoice"
-                },
-                {
-                  "title": "And Choice",
-                  "$ref": "#/definitions/andchoice"
-                },
-                {
-                  "title": "Not Choice",
-                  "$ref": "#/definitions/notchoice"
-                },
-                {
-                  "title": "Or Choice",
-                  "$ref": "#/definitions/orchoice"
-                }
-              ]
-            }
-          },
-          "onError": {
-            "type": "array",
-            "description": "OnError Definition",
-            "items": {
-              "type": "object",
-              "$ref": "#/definitions/error"
-            }
-          },
-          "default": {
-            "description": "Next transition of the workflow if there is no match for any choices",
-            "$ref": "#/definitions/transition"
-          }
-        },
-        "if": {
-          "properties": {
-            "end": {
-              "const": true
-            }
-          }
-        },
-        "then": {
-          "required": [
-            "name",
-            "type",
-            "choices"
-          ]
-        },
-        "else": {
-          "required": [
-            "name",
-            "type",
-            "choices",
-            "default"
-          ]
-        }
-      },
-      "subflowstate": {
-        "type": "object",
-        "description": "Defines a sub-workflow to be executed",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique State id",
-            "minLength": 1
-          },
-          "name": {
-            "type": "string",
-            "description": "State name"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "SUBFLOW"
-            ],
-            "description": "State type"
-          },
-          "end": {
-            "type": "boolean",
-            "default": false,
-            "description": "Is this state an end state"
-          },
-          "waitForCompletion": {
-            "type": "boolean",
-            "default": false,
-            "description": "Workflow execution must wait for sub-workflow to finish before continuing."
-          },
-          "workflowId": {
-            "type": "string",
-            "description": "Sub-workflow unique id."
-          },
-          "filter": {
-            "$ref": "#/definitions/filter"
-          },
-          "onError": {
-            "type": "array",
-            "description": "OnError Definition",
-            "items": {
-              "type": "object",
-              "$ref": "#/definitions/error"
-            }
-          },
-          "transition": {
-            "description": "Next transition of the workflow after SubFlow has completed execution",
-            "$ref": "#/definitions/transition"
-          }
-        },
-        "if": {
-          "properties": {
-            "end": {
-              "const": true
-            }
-          }
-        },
-        "then": {
-          "required": [
-            "name",
-            "type",
-            "workflowId"
-          ]
-        },
-        "else": {
-          "required": [
-            "name",
-            "type",
-            "workflowId",
-            "transition"
-          ]
-        }
-      },
-      "relaystate": {
-        "type": "object",
-        "description": "Set up and relay the state's data input to data output. Does not perform any actions",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique State id",
-            "minLength": 1
-          },
-          "name": {
-            "type": "string",
-            "description": "State name"
-          },
-          "type": {
-            "type" : "string",
-            "enum": ["RELAY"],
-            "description": "State type"
-          },
-          "end": {
-            "type": "boolean",
-            "default": false,
-            "description": "Is this state an end state"
-          },
-          "inject": {
-            "type": "object",
-            "description": "JSON object which can be set as states data input and can be manipulated via filters"
-          },
-          "filter": {
-            "$ref": "#/definitions/filter"
-          },
-          "transition": {
-            "description": "Next transition of the workflow after subflow has completed",
-            "$ref": "#/definitions/transition"
-          }
-        },
-        "if": {
-          "properties": {
-            "end": { "const": true }
-          }
-        },
-        "then": {
-          "required": ["name", "type"]
-        },
-        "else": {
-          "required": ["name", "type", "transition"]
-        }
-      },
-      "foreachstate": {
-        "type": "object",
-        "description": "Execute a set of defined states for each element of the data input array",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique State id",
-            "minLength": 1
-          },
-          "name": {
-            "type": "string",
-            "description": "State name"
-          },
-          "type": {
-            "type" : "string",
-            "enum": ["FOREACH"],
-            "description": "State type"
-          },
-          "end": {
-            "type": "boolean",
-            "default": false,
-            "description": "Is this state an end state"
-          },
-          "inputCollection": {
-            "type": "string",
-            "description": "JSONPath expression selecting an JSON array element of the states data input"
-          },
-          "outputCollection": {
-            "type": "string",
-            "description": "JSONPath expression specifying where in the states data output to place the final data output of each iteration of the executed states"
-          },
-          "inputParameter": {
-            "type": "object",
-            "description": "JSONPath expression specifying an JSON object field of the states data input. For each parallel iteration, this field will get populated with a unique element of the inputCollection array"
-          },
-          "max": {
-            "type": "integer",
-            "default": "0",
-            "minimum": 0,
-            "description": "Specifies how upper bound on how many iterations may run in parallel"
-          },
-          "timeDelay": {
-            "type": "string",
-            "description": "|Amount of time (ISO 8601 format) to wait between each iteration "
-          },
-          "startsAt": {
-            "type": "string",
-            "description": "Unique name of a states in the states array representing the starting state to be executed"
-          },
-          "states": {
-            "type": "array",
-            "description": "States to be executed for each of the elements of inputCollection",
-            "items": {
-              "type": "object",
-              "anyOf": [
-                {
-                  "title": "Delay State",
-                  "$ref": "#/definitions/delaystate"
-                },
-                {
-                  "title": "Event State",
-                  "$ref": "#/definitions/eventstate"
-                },
-                {
-                  "title": "Operation State",
-                  "$ref": "#/definitions/operationstate"
-                },
-                {
-                  "title": "Switch State",
-                  "$ref": "#/definitions/switchstate"
-                },
-                {
-                  "title": "SubFlow State",
-                  "$ref": "#/definitions/subflowstate"
-                },
-                {
-                  "title": "Relay State",
-                  "$ref": "#/definitions/relaystate"
-                },
-                {
-                  "title": "ForEach State",
-                  "$ref": "#/definitions/foreachstate"
-                }
-              ]
-            }
-          },
-          "filter": {
-            "$ref": "#/definitions/filter"
-          },
-          "onError": {
-            "type": "array",
-            "description": "States error handling definitions",
-            "items": {
-              "type": "object",
-              "$ref": "#/definitions/error"
-            }
-          },
-          "transition": {
-            "description": "Next transition of the workflow after subflow has completed",
-            "$ref": "#/definitions/transition"
-          }
-        },
-        "if": {
-          "properties": {
-            "end": { "const": true }
-          }
-        },
-        "then": {
-          "required": ["name", "type", "inputCollection", "inputParameter", "startsAt", "states"]
-        },
-        "else": {
-          "required": ["name", "type", "transition", "inputCollection", "inputParameter", "startsAt", "states"]
-        }
-      },
-      "defaultchoice": {
-        "type": "object",
-        "description": "Default Choice",
-        "properties": {
-          "path": {
-            "type": "string",
-            "description": "JSONPath that selects the value of the input data to be matched"
-          },
-          "value": {
-            "type": "string",
-            "description": "Matching value"
-          },
-          "operator": {
-            "type": "string",
-            "enum": [
-              "Exists",
-              "Equals",
-              "LessThan",
-              "LessThanEquals",
-              "GreaterThan",
-              "GreaterThanEquals"
-            ],
-            "description": "Specifies how the input data is compared with the values"
-          }
-        },
+      "else": {
         "required": [
-          "path",
-          "value",
-          "operator"
-        ]
-      },
-      "singlechoice": {
-        "type": "object",
-        "description": "Single Choice",
-        "allOf": [
-          {
-            "$ref": "#/definitions/defaultchoice"
-          },
-          {
-            "$ref": "#/definitions/transition",
-            "description": "Next transition of the workflow if there is a value match"
-          }
-        ],
-        "required": [
+          "name",
+          "type",
+          "timeDelay",
           "transition"
-        ]
-      },
-      "andchoice": {
-        "type": "object",
-        "description": "And Choice",
-        "properties": {
-          "and": {
-            "type": "array",
-            "description": "List of choices",
-            "items": {
-              "type": "object",
-              "$ref": "#/definitions/defaultchoice"
-            }
-          },
-          "transition": {
-            "description": "Next transition of the workflow if there is a valid match",
-            "$ref": "#/definitions/transition"
-          }
-        },
-        "required": [
-          "and",
-          "transition"
-        ]
-      },
-      "orchoice": {
-        "type": "object",
-        "description": "Or Choice",
-        "properties": {
-          "or": {
-            "type": "array",
-            "description": "List of choices",
-            "items": {
-              "type": "object",
-              "$ref": "#/definitions/defaultchoice"
-            }
-          },
-          "transition": {
-            "description": "Next transition of the workflow if there is a valid match",
-            "$ref": "#/definitions/transition"
-          }
-        },
-        "required": [
-          "or",
-          "transition"
-        ]
-      },
-      "notchoice": {
-        "type": "object",
-        "description": "Not Choice",
-        "properties": {
-          "not": {
-            "type": "object",
-            "$ref": "#/definitions/defaultchoice",
-            "description": "Not Choice"
-          },
-          "transition": {
-            "description": "Next transition of the workflow if there is a valid match",
-            "$ref": "#/definitions/transition"
-          }
-        },
-        "required": [
-          "not",
-          "transition"
-        ]
-      },
-      "condition": {
-        "type": "object",
-        "description": "Defines the expression language and body of condition.",
-        "properties": {
-          "expressionLanguage": {
-            "type": "string",
-            "description": "Expression language. For example 'spel', 'jexl', 'cel', etc"
-          },
-          "body": {
-            "type": "string",
-            "description": "The expression body."
-          }
-        },
-        "required": [
-          "body"
         ]
       }
+    },
+    "eventstate": {
+      "type": "object",
+      "description": "This state is used to wait for events from event sources and then to invoke one or more functions to run in sequence or in parallel.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique State id",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "State name"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "EVENT"
+          ],
+          "description": "State type"
+        },
+        "end": {
+          "type": "boolean",
+          "default": false,
+          "description": "Is this state an end state"
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "eventActions": {
+          "type": "array",
+          "description": "Define what events trigger one or more actions to be performed",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/eventactions"
+          }
+        },
+        "onError": {
+          "type": "array",
+          "description": "States runtime error handling definitions",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "events"
+      ]
+    },
+    "operationstate": {
+      "type": "object",
+      "description": "Defines actions be performed. Does not wait for incoming events.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique State id",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "State name"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "OPERATION"
+          ],
+          "description": "State type"
+        },
+        "end": {
+          "type": "boolean",
+          "default": false,
+          "description": "Is this state an end state"
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "actionMode": {
+          "type": "string",
+          "enum": [
+            "SEQUENTIAL",
+            "PARALLEL"
+          ],
+          "description": "Specifies whether actions are performed in sequence or in parallel",
+          "default": "SEQUENTIAL"
+        },
+        "actions": {
+          "type": "array",
+          "description": "Actions to be performed",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/action"
+          }
+        },
+        "onError": {
+          "type": "array",
+          "description": "OnError Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
+        },
+        "transition": {
+          "description": "Next transition of the workflow after all the actions have been performed",
+          "$ref": "#/definitions/transition"
+        }
+      },
+      "if": {
+        "properties": {
+          "end": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "name",
+          "type",
+          "actionMode",
+          "actions"
+        ]
+      },
+      "else": {
+        "required": [
+          "name",
+          "type",
+          "actionMode",
+          "actions",
+          "transition"
+        ]
+      }
+    },
+    "parallelstate": {
+      "type": "object",
+      "description": "Consists of a number of states that are executed in parallel",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique State id",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "State name"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "PARALLEL"
+          ],
+          "description": "State type"
+        },
+        "end": {
+          "type": "boolean",
+          "default": false,
+          "description": "Is this state an end state"
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "branches": {
+          "type": "array",
+          "description": "Branch Definitions",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/branch"
+          }
+        },
+        "onError": {
+          "type": "array",
+          "description": "OnError Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
+        },
+        "transition": {
+          "description": "Next transition of the workflow after all branches have completed execution",
+          "$ref": "#/definitions/transition"
+        }
+      },
+      "if": {
+        "properties": {
+          "end": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "name",
+          "type",
+          "branches"
+        ]
+      },
+      "else": {
+        "required": [
+          "name",
+          "type",
+          "branches",
+          "transition"
+        ]
+      }
+    },
+    "switchstate": {
+      "type": "object",
+      "description": "Permits transitions to other states based on criteria matching",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique State id",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "State name"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "SWITCH"
+          ],
+          "description": "State type"
+        },
+        "end": {
+          "type": "boolean",
+          "default": false,
+          "description": "Is this state an end state"
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "choices": {
+          "type": "array",
+          "description": "Defines an ordered set of Match Rules against the input data to this state",
+          "items": {
+            "type": "object",
+            "anyOf": [
+              {
+                "title": "Single Choice",
+                "$ref": "#/definitions/singlechoice"
+              },
+              {
+                "title": "And Choice",
+                "$ref": "#/definitions/andchoice"
+              },
+              {
+                "title": "Not Choice",
+                "$ref": "#/definitions/notchoice"
+              },
+              {
+                "title": "Or Choice",
+                "$ref": "#/definitions/orchoice"
+              }
+            ]
+          }
+        },
+        "onError": {
+          "type": "array",
+          "description": "OnError Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
+        },
+        "default": {
+          "description": "Next transition of the workflow if there is no match for any choices",
+          "$ref": "#/definitions/transition"
+        }
+      },
+      "if": {
+        "properties": {
+          "end": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "name",
+          "type",
+          "choices"
+        ]
+      },
+      "else": {
+        "required": [
+          "name",
+          "type",
+          "choices",
+          "default"
+        ]
+      }
+    },
+    "subflowstate": {
+      "type": "object",
+      "description": "Defines a sub-workflow to be executed",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique State id",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "State name"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "SUBFLOW"
+          ],
+          "description": "State type"
+        },
+        "end": {
+          "type": "boolean",
+          "default": false,
+          "description": "Is this state an end state"
+        },
+        "waitForCompletion": {
+          "type": "boolean",
+          "default": false,
+          "description": "Workflow execution must wait for sub-workflow to finish before continuing."
+        },
+        "workflowId": {
+          "type": "string",
+          "description": "Sub-workflow unique id."
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "onError": {
+          "type": "array",
+          "description": "OnError Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
+        },
+        "transition": {
+          "description": "Next transition of the workflow after SubFlow has completed execution",
+          "$ref": "#/definitions/transition"
+        }
+      },
+      "if": {
+        "properties": {
+          "end": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "name",
+          "type",
+          "workflowId"
+        ]
+      },
+      "else": {
+        "required": [
+          "name",
+          "type",
+          "workflowId",
+          "transition"
+        ]
+      }
+    },
+    "relaystate": {
+      "type": "object",
+      "description": "Set up and relay the state's data input to data output. Does not perform any actions",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique State id",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "State name"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "RELAY"
+          ],
+          "description": "State type"
+        },
+        "end": {
+          "type": "boolean",
+          "default": false,
+          "description": "Is this state an end state"
+        },
+        "inject": {
+          "type": "object",
+          "description": "JSON object which can be set as states data input and can be manipulated via filters"
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "transition": {
+          "description": "Next transition of the workflow after subflow has completed",
+          "$ref": "#/definitions/transition"
+        }
+      },
+      "if": {
+        "properties": {
+          "end": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "name",
+          "type"
+        ]
+      },
+      "else": {
+        "required": [
+          "name",
+          "type",
+          "transition"
+        ]
+      }
+    },
+    "foreachstate": {
+      "type": "object",
+      "description": "Execute a set of defined states for each element of the data input array",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique State id",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "State name"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "FOREACH"
+          ],
+          "description": "State type"
+        },
+        "end": {
+          "type": "boolean",
+          "default": false,
+          "description": "Is this state an end state"
+        },
+        "inputCollection": {
+          "type": "string",
+          "description": "JSONPath expression selecting an JSON array element of the states data input"
+        },
+        "outputCollection": {
+          "type": "string",
+          "description": "JSONPath expression specifying where in the states data output to place the final data output of each iteration of the executed states"
+        },
+        "inputParameter": {
+          "type": "object",
+          "description": "JSONPath expression specifying an JSON object field of the states data input. For each parallel iteration, this field will get populated with a unique element of the inputCollection array"
+        },
+        "max": {
+          "type": "integer",
+          "default": "0",
+          "minimum": 0,
+          "description": "Specifies how upper bound on how many iterations may run in parallel"
+        },
+        "timeDelay": {
+          "type": "string",
+          "description": "|Amount of time (ISO 8601 format) to wait between each iteration "
+        },
+        "startsAt": {
+          "type": "string",
+          "description": "Unique name of a states in the states array representing the starting state to be executed"
+        },
+        "states": {
+          "type": "array",
+          "description": "States to be executed for each of the elements of inputCollection",
+          "items": {
+            "type": "object",
+            "anyOf": [
+              {
+                "title": "Delay State",
+                "$ref": "#/definitions/delaystate"
+              },
+              {
+                "title": "Event State",
+                "$ref": "#/definitions/eventstate"
+              },
+              {
+                "title": "Operation State",
+                "$ref": "#/definitions/operationstate"
+              },
+              {
+                "title": "Switch State",
+                "$ref": "#/definitions/switchstate"
+              },
+              {
+                "title": "SubFlow State",
+                "$ref": "#/definitions/subflowstate"
+              },
+              {
+                "title": "Relay State",
+                "$ref": "#/definitions/relaystate"
+              },
+              {
+                "title": "ForEach State",
+                "$ref": "#/definitions/foreachstate"
+              }
+            ]
+          }
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "onError": {
+          "type": "array",
+          "description": "States error handling definitions",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
+        },
+        "transition": {
+          "description": "Next transition of the workflow after subflow has completed",
+          "$ref": "#/definitions/transition"
+        }
+      },
+      "if": {
+        "properties": {
+          "end": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "name",
+          "type",
+          "inputCollection",
+          "inputParameter",
+          "startsAt",
+          "states"
+        ]
+      },
+      "else": {
+        "required": [
+          "name",
+          "type",
+          "transition",
+          "inputCollection",
+          "inputParameter",
+          "startsAt",
+          "states"
+        ]
+      }
+    },
+    "defaultchoice": {
+      "type": "object",
+      "description": "Default Choice",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "JSONPath that selects the value of the input data to be matched"
+        },
+        "value": {
+          "type": "string",
+          "description": "Matching value"
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "Exists",
+            "Equals",
+            "LessThan",
+            "LessThanEquals",
+            "GreaterThan",
+            "GreaterThanEquals"
+          ],
+          "description": "Specifies how the input data is compared with the values"
+        }
+      },
+      "required": [
+        "path",
+        "value",
+        "operator"
+      ]
+    },
+    "singlechoice": {
+      "type": "object",
+      "description": "Single Choice",
+      "allOf": [
+        {
+          "$ref": "#/definitions/defaultchoice"
+        },
+        {
+          "$ref": "#/definitions/transition",
+          "description": "Next transition of the workflow if there is a value match"
+        }
+      ],
+      "required": [
+        "transition"
+      ]
+    },
+    "andchoice": {
+      "type": "object",
+      "description": "And Choice",
+      "properties": {
+        "and": {
+          "type": "array",
+          "description": "List of choices",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/defaultchoice"
+          }
+        },
+        "transition": {
+          "description": "Next transition of the workflow if there is a valid match",
+          "$ref": "#/definitions/transition"
+        }
+      },
+      "required": [
+        "and",
+        "transition"
+      ]
+    },
+    "orchoice": {
+      "type": "object",
+      "description": "Or Choice",
+      "properties": {
+        "or": {
+          "type": "array",
+          "description": "List of choices",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/defaultchoice"
+          }
+        },
+        "transition": {
+          "description": "Next transition of the workflow if there is a valid match",
+          "$ref": "#/definitions/transition"
+        }
+      },
+      "required": [
+        "or",
+        "transition"
+      ]
+    },
+    "notchoice": {
+      "type": "object",
+      "description": "Not Choice",
+      "properties": {
+        "not": {
+          "type": "object",
+          "$ref": "#/definitions/defaultchoice",
+          "description": "Not Choice"
+        },
+        "transition": {
+          "description": "Next transition of the workflow if there is a valid match",
+          "$ref": "#/definitions/transition"
+        }
+      },
+      "required": [
+        "not",
+        "transition"
+      ]
+    },
+    "condition": {
+      "type": "object",
+      "description": "Defines the expression language and body of condition.",
+      "properties": {
+        "expressionLanguage": {
+          "type": "string",
+          "description": "Expression language. For example 'spel', 'jexl', 'cel', etc"
+        },
+        "body": {
+          "type": "string",
+          "description": "The expression body."
+        }
+      },
+      "required": [
+        "body"
+      ]
     }
   }
 }
