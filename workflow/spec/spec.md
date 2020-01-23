@@ -251,7 +251,7 @@ Here we define details of the Serverless Workflow definitions:
 </p>
 </details>
 
-### Event Definition
+### Events Definition
 
 Describe events that can be consumed or produced during workflow execution.
 Cunsumed events can trigger actions to be executed. Events can also be produced during workflow
