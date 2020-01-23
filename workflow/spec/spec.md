@@ -123,7 +123,6 @@ Here we define details of the Serverless Workflow definitions:
 | version | Workflow version | string |no |
 | schemaVersion | Workflow schema version | string |no |
 | startsAt | Workflow starting state | string |yes |
-| execStatus |Workflow execution status | string |no |
 | expressionLanguage |Default expression language to be used throughout the workflow definition | string |no |
 | [triggers](#Trigger-Definition) |Workflow trigger events | array | no |
 | [functions](#Function-Definition) |Workflow functions | array | no |
@@ -167,11 +166,6 @@ Here we define details of the Serverless Workflow definitions:
         "startsAt": {
             "type": "string",
             "description": "State name which is the starting state"
-        },
-        "execStatus": {
-            "type" : "string",
-            "enum": ["Success", "Fail", "Timeout", "Invalid"],
-            "description": "Execution status"
         },
         "expressionLanguage": {
           "type": "string",
