@@ -780,7 +780,6 @@ Defines a transition from point A to point B in the serverless workflow. For mor
 | actionMode | Should actions be performed sequentially or in parallel | string | no |
 | [actions](#Action-Definition) | Actions to be performed | array | yes |
 | [filter](#Filter-Definition) | State data filter | object | yes |
-| [loop](#Loop-Definition) | State loop information | object | yes |
 | [onError](#Error-Handling) | States error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes (if end is set to false) |
 
