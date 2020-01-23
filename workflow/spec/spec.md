@@ -123,9 +123,9 @@ Here we define details of the Serverless Workflow definitions:
 | version | Workflow version | string |no |
 | schemaVersion | Workflow schema version | string |no |
 | startsAt | Workflow starting state | string |yes |
-| expressionLanguage |Default expression language to be used throughout the workflow definition | string |no |
-| [triggers](#Trigger-Definition) |Workflow trigger events | array | no |
-| [functions](#Function-Definition) |Workflow functions | array | no |
+| expressionLanguage | Default expression language to be used throughout the workflow definition | string |no |
+| [events](#Event-Definition) | Workflow event definitions. Defines events that can be consumed or produced | array | no |
+| [functions](#Function-Definition) | Workflow functions | array | no |
 | [states](#State-Definition) | Workflow states | array | yes |
 | [onError](#Error-Handling) |Workflow error handling definitions | array | no |
 | [extensions](#Extending) | Workflow custom extensions | array | no |
@@ -171,12 +171,12 @@ Here we define details of the Serverless Workflow definitions:
           "type": "string",
           "description": "Default expression language to be used throughout the workflow definition"
         },
-        "triggers": {
+        "events": {
             "type": "array",
-            "description": "Workflow trigger events",
+            "description": "Workflow event definitions. Defines events that can be consumed or produced",
             "items": {
                 "type": "object",
-                "$ref": "#/definitions/triggerevent"
+                "$ref": "#/definitions/eventdef"
             }
         },
         "functions": {
@@ -251,22 +251,24 @@ Here we define details of the Serverless Workflow definitions:
 </p>
 </details>
 
-### Trigger Definition
+### Event Definition
 
-Triggers define incoming events from various event sources that are asscociated with
-a serverless application and will invoke transition to one or more states of the application workflow.
+Describe events that can be consumed or produced during workflow execution.
+Cunsumed events can trigger actions to be executed. Events can also be produced during workflow
+execution to be consumed by clients.
 
-If there are a group of events involved in an application workflow, a token,
-which is embedded in the event message, must be specified to correlate one event with
-the other events for the same workflow instance. Since the token is embedded in the event message,
-the location path of the token must be specified so that the backend implementation can
-extract the token and map the event instance to the correct application workflow instance.
-Different application workflow specifications will have different tokens.
+As serverless workflow definitions are vendor neutral, so should be the events definitions that they consume and produce.
+As such event format within serverless workflows uses the [CloudEvents](https://github.com/cloudevents/spec) specification to describe events.
+
+To support the use case where a serverless workflows need to perform actions across multiple types
+of events, users can specify a correlation token. This token is used to associate multiple events
+with each other, and is embedded into the event message.
+Workflow implementations can use this token to map a particular event to a particular workflow instance.
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| name | Unique trigger name | string |yes |
-| source |CloudEvent source | string | yes |
+| name | Unique event name | string |yes |
+| source | CloudEvent source | string | yes |
 | type | CloudEvent type | string | yes |
 | correlationToken | Location Path in the event message used to retrieve a token for event correlation | string | no |
 
@@ -279,7 +281,7 @@ Different application workflow specifications will have different tokens.
     "properties": {
         "name": {
             "type": "string",
-            "description": "Trigger unique name"
+            "description": "Unique event name"
         },
         "source": {
             "type": "string",
@@ -383,7 +385,7 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | expressionLanguage | Expression language. For example 'spel', 'jexl', 'cel', etc| string | no |
-| body | Expression body | string | yes |
+| body | Expression body, for example "(event1 or event2) and event3" | string | yes |
 
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -452,7 +454,7 @@ We will start defining each individual state:
 | name | State name | string | yes |
 | type | State type | string | yes |
 | end |Is this state an end state | boolean | no |
-| [eventActions](#eventstate-eventactions) | Define what events trigger one or more actions to be performed | array | yes |
+| [consume](#eventstate-consume) | Define what events are to be consumed and one or more actions to be performed | array | yes |
 | [filter](#Filter-Definition) | State data filter | object | yes |
 | [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
  
@@ -462,7 +464,7 @@ We will start defining each individual state:
 ```json
 {
     "type": "object",
-    "description": "This state is used to wait for events from event sources and then to invoke one or more actions to run in sequence or parallel.",
+    "description": "This state is used to consume events from event sources and then invoke one or more actions to run in sequence or parallel.",
     "properties": {
         "id": {
             "type": "string",
@@ -483,12 +485,12 @@ We will start defining each individual state:
             "default": false,
             "description": "Is this an end state"
         },
-        "eventActions": {
+        "consume": {
             "type": "array",
-            "description": "Define what events trigger one or more actions to be performed",
+            "description": "Define what events to be consumed and one or more actions to be performed",
             "items": {
                 "type": "object",
-                "$ref": "#/definitions/eventactions"
+                "$ref": "#/definitions/consume"
             }
         },
         "filter": {
@@ -510,17 +512,18 @@ We will start defining each individual state:
 </p>
 </details>
 
-Event state can define what events to be triggered by and define actions to be performed:
+Event state consumes events from different event sources and defines one or more 
+actions to be performed.
 
-#### <a name="eventstate-eventactions"></a> Event State: eventActions Definitions
+#### <a name="eventstate-consume"></a> Event State: Consume Definitions
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [condition](#Condition-Definition) | Boolean expression which consists of one or more Event operands and the Boolean operators. If is true all defined actions are executed | object | yes |
+| [eventCondition](#Condition-Definition) | Boolean expression which consists of one or more Event operands and the Boolean operators. If is true all defined actions are executed | object | yes |
 | timeout | Time period to wait for incoming events which match the condition (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | actionMode | Specifies how actions are to be performed (in sequence of parallel) | string | no |
 | [actions](#Action-Definition) | Actions to be performed if condition matches | array | yes |
-| [filter](#Filter-Definition) |Event data filter | object | yes |
+| [filter](#Filter-Definition) | Event data filter | object | yes |
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -530,7 +533,7 @@ Event state can define what events to be triggered by and define actions to be p
     "type": "object",
     "description": "Defines what events to act upon and actions to be performed",
     "properties": {
-        "condition": {
+        "eventCondition": {
           "description": " Boolean expression which consists of one or more Event operands and the Boolean operators",
           "$ref": "#/definitions/condition"
         },
@@ -566,11 +569,11 @@ Event state can define what events to be triggered by and define actions to be p
 
 </details>
 
-As events are received the event state can use the "condition" parameter to match the event with one or 
-more defined [triggers](#Trigger-Definition). If the condition evaluates to true, 
-a set of defined actions can be performed in sequence or in parallel.
+As events are received the event state can use the "eventCondition" parameter to match the event with one or 
+more defined in the [events](#Event Definition) section. If the eventCondition evaluates to true, 
+a set of defined actions is performed in sequence or in parallel.
 
-Once all defined actions have been performed, a transition to another state can occur.
+Once defined actions finished execution, a transition to the next state can occur.
 
 #### Condition Definition
 

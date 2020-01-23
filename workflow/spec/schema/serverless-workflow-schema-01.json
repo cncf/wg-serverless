@@ -35,12 +35,12 @@
       "type": "string",
       "description": "Default expression language to be used throughout the workflow definition"
     },
-    "triggers": {
+    "events": {
       "type": "array",
-      "description": "Workflow event triggers",
+      "description": "Workflow event definitions. Defines events that can be consumed or produced",
       "items": {
         "type": "object",
-        "$ref": "#/definitions/triggerevent"
+        "$ref": "#/definitions/eventdef"
       }
     },
     "functions": {
@@ -203,7 +203,7 @@
     "eventactions": {
       "type": "object",
       "properties": {
-        "condition": {
+        "eventCondition": {
           "description": "Boolean expression which consists of one or more Event operands and the Boolean operators",
           "$ref": "#/definitions/condition"
         },
@@ -466,7 +466,7 @@
     },
     "eventstate": {
       "type": "object",
-      "description": "This state is used to wait for events from event sources and then to invoke one or more functions to run in sequence or in parallel.",
+      "description": "This state is used to consume events from event sources and then invoke one or more actions to run in sequence or parallel",
       "properties": {
         "id": {
           "type": "string",
@@ -492,12 +492,12 @@
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "eventActions": {
+        "consume": {
           "type": "array",
           "description": "Define what events trigger one or more actions to be performed",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/eventactions"
+            "$ref": "#/definitions/consume"
           }
         },
         "onError": {
