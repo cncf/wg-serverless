@@ -119,9 +119,9 @@
     "transition": {
       "type": "object",
       "properties": {
-        "condition": {
+        "expression": {
           "description": "Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid.",
-          "$ref": "#/definitions/condition"
+          "$ref": "#/definitions/expression"
         },
         "nextState": {
           "type": "string",
@@ -136,9 +136,9 @@
     "error": {
       "type": "object",
       "properties": {
-        "condition": {
-          "description": "Condition that matches against the error in the state data input",
-          "$ref": "#/definitions/condition"
+        "expression": {
+          "description": "Expression that matches against the error in the state data input",
+          "$ref": "#/definitions/expression"
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -149,7 +149,7 @@
         }
       },
       "required": [
-        "condition",
+        "expression",
         "transition"
       ]
     },
@@ -203,13 +203,13 @@
     "eventactions": {
       "type": "object",
       "properties": {
-        "eventCondition": {
+        "expression": {
           "description": "Boolean expression which consists of one or more Event operands and the Boolean operators",
-          "$ref": "#/definitions/condition"
+          "$ref": "#/definitions/expression"
         },
         "timeout": {
           "type": "string",
-          "description": "Time period to wait for incoming events which match the condition (ISO 8601 format)"
+          "description": "Time period to wait for incoming events which match the expression (ISO 8601 format)"
         },
         "actionMode": {
           "type": "string",
@@ -222,7 +222,7 @@
         },
         "actions": {
           "type": "array",
-          "description": "Actions to be performed if condition matches",
+          "description": "Actions to be performed if expression matches",
           "items": {
             "type": "object",
             "$ref": "#/definitions/action"
@@ -237,7 +237,7 @@
         }
       },
       "required": [
-        "condition",
+        "expression",
         "actions",
         "timeout",
         "transition"
@@ -270,9 +270,9 @@
       "type": "object",
       "description": "Retry Definition",
       "properties": {
-        "condition": {
-          "description": "Boolean condition that matches against the function results. Must be evaluated to true for retry policy to trigger",
-          "$ref": "#/definitions/condition"
+        "expression": {
+          "description": "Boolean expression that matches against the function results. Must be evaluated to true for retry policy to trigger",
+          "$ref": "#/definitions/expression"
         },
         "interval": {
           "type": "string",
@@ -1133,11 +1133,11 @@
         "transition"
       ]
     },
-    "condition": {
+    "expression": {
       "type": "object",
-      "description": "Defines the expression language and body of condition.",
+      "description": "Defines the expression language and body of the expression.",
       "properties": {
-        "expressionLanguage": {
+        "language": {
           "type": "string",
           "description": "Expression language. For example 'spel', 'jexl', 'cel', etc"
         },

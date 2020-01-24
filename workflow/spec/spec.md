@@ -350,9 +350,9 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [condition](#Condition-Definition) |Boolean expression which consists of one or more Error operands and the Boolean operators | string |yes |
+| [expression](#Expression-Definition) | Boolean expression which consists of one or more Error operands and the Boolean operators | string |yes |
 | [filter](#Filter-Definition) | Error data filter | object | yes |
-| [transition](#Transitions) | Next transition of the workflow when condition matches | string | yes |
+| [transition](#Transitions) | Next transition of the workflow when expression matches | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -361,30 +361,30 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 {
   "type": "object",
   "properties": {
-     "condition": {
+     "expression": {
        "description": "Boolean expression which consists of one or more Error operands and the Boolean operators",
-       "$ref": "#/definitions/condition"
+       "$ref": "#/definitions/expression"
      },
      "filter": {
       "$ref": "#/definitions/filter",
       "description": "Error data filter"
     },
     "transition": {
-      "description": "Next transition of the workflow when condition matches",
+      "description": "Next transition of the workflow when expression matches",
       "$ref": "#/definitions/transition"
     }
   },
-  "required": ["condition", "transition"]
+  "required": ["expression", "transition"]
 }
 ```
 
 </details>
 
-#### Condition Definition
+#### Expression Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| expressionLanguage | Expression language. For example 'spel', 'jexl', 'cel', etc| string | no |
+| language | Expression language. For example 'spel', 'jexl', 'cel', etc| string | no |
 | body | Expression body, for example "(event1 or event2) and event3" | string | yes |
 
 
@@ -395,7 +395,7 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
   "type": "object",
   "description": "Defines the language and body of expression.",
   "properties": {
-    "expressionLanguage": {
+    "language": {
       "type": "string",
       "description": "Expression language. For example 'spel', 'jexl', 'cel', etc"
     },
@@ -412,7 +412,7 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 
 Serverless workflow does not limit implementors to use any expression language they choose to
 evaluate expressions with. 
-Expressions define a "expressionLanguage" parameter which uniquely identifies the expression language to be used
+Expressions define "language" parameter to be used
  for evaluation, and a "body" parameter which defines the actual expression.
  
 Note that top-level workflow "expressionLanguage" property can be set to define the default
@@ -519,10 +519,10 @@ actions to be performed.
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [eventCondition](#Condition-Definition) | Boolean expression which consists of one or more Event operands and the Boolean operators. If is true all defined actions are executed | object | yes |
-| timeout | Time period to wait for incoming events which match the condition (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
+| [expression](#Expression-Definition) | Boolean expression which consists of one or more Event operands and the Boolean operators. If is true all defined actions are executed | object | yes |
+| timeout | Time period to wait for incoming events which match the expression (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | actionMode | Specifies how actions are to be performed (in sequence of parallel) | string | no |
-| [actions](#Action-Definition) | Actions to be performed if condition matches | array | yes |
+| [actions](#Action-Definition) | Actions to be performed if expression matches | array | yes |
 | [filter](#Filter-Definition) | Event data filter | object | yes |
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes |
 
@@ -533,13 +533,13 @@ actions to be performed.
     "type": "object",
     "description": "Defines what events to act upon and actions to be performed",
     "properties": {
-        "eventCondition": {
+        "expression": {
           "description": " Boolean expression which consists of one or more Event operands and the Boolean operators",
-          "$ref": "#/definitions/condition"
+          "$ref": "#/definitions/expression"
         },
         "timeout": {
             "type": "string",
-            "description": "Time period to wait for incoming events which match the condition (ISO 8601 format)"
+            "description": "Time period to wait for incoming events which match the expression (ISO 8601 format)"
         }, 
         "actionMode": {
             "type" : "string",
@@ -549,7 +549,7 @@ actions to be performed.
         },
         "actions": {
             "type": "array",
-            "description": "Actions to be performed if condition matches",
+            "description": "Actions to be performed if expression matches",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/action"
@@ -563,52 +563,17 @@ actions to be performed.
           "$ref": "#/definitions/transition"
         }
     },
-    "required": ["condition", "actions", "transition"]
+    "required": ["expression", "actions", "transition"]
 }
 ```
 
 </details>
 
-As events are received the event state can use the "eventCondition" parameter to match the event with one or 
-more defined in the [events](#Event Definition) section. If the eventCondition evaluates to true, 
+As events are received the event state can use the "expression" parameter to match the event with one or 
+more defined in the [events](#Event Definition) section. If the expression evaluates to true, 
 a set of defined actions is performed in sequence or in parallel.
 
 Once defined actions finished execution, a transition to the next state can occur.
-
-#### Condition Definition
-
-| Parameter | Description | Type | Required |
-| --- | --- | --- | --- |
-| expressionLanguage |Expression language. For example 'spel', 'jexl', 'cel', etc| string | no |
-| body |Expression body | string | yes |
-
-
-<details><summary><strong>Click to view JSON Schema</strong></summary>
-
-```json
-{
-  "type": "object",
-  "description": "Defines the language and body of expression.",
-  "properties": {
-    "expressionLanguage": {
-      "type": "string",
-      "description": "Expression language. For example 'spel', 'jexl', 'cel', etc"
-    },
-    "body": {
-      "type": "string",
-      "description": "The expression body. For example, (event1 or event2) and event3"
-    }
-  },
-  "required": ["body"]
-}
-```
-
-</details>
-
-Serverless workflow does not limit implementors to use any expression language they choose to
-evaluate expressions with. Expressions define a "language" and a "body". 
-Note that top-level workflow "expressionLanguage" property can be set to define the default
-expression language used for all expressions defined.
 
 #### Action Definition
 
@@ -692,7 +657,7 @@ function. They can include either static values or reference the states data inp
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [condition](#Condition-Definition) | Boolean condition that matches against the function results. Must be evaluated to true for retry policy to trigger | string |yes |
+| [expression](#Expression-Definition) | Boolean expression that matches against the function results. Must be evaluated to true for retry policy to trigger | string |yes |
 | interval |Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| integer | no |
 | max |Max retry value | integer | no |
 | [transition](#Transitions) |Next transition of the workflow when exceeding max limit | string | yes |
@@ -704,9 +669,9 @@ function. They can include either static values or reference the states data inp
     "type": "object",
     "description": "Retry Definition",
     "properties": {
-        "condition": {
-          "description": "Boolean condition that matches against the function results. Must be evaluated to true for retry policy to trigger",
-          "$ref": "#/definitions/condition"
+        "expression": {
+          "description": "Boolean expression that matches against the function results. Must be evaluated to true for retry policy to trigger",
+          "$ref": "#/definitions/expression"
         },
         "interval": {
             "type": "string",
@@ -729,14 +694,14 @@ function. They can include either static values or reference the states data inp
 
 </details>
 
-Defines a retry policy for an action. The Condition parameter is a condition that matches against 
+Defines a retry policy for an action. The expression parameter defines the boolean expression that matches against 
 the functions results. If it is evaluated to true, the retry policy is triggers.
 
 #### Transition Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [condition](#Condition-Definition) | Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid. | object | no |
+| [expression](#Expression-Definition) | Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid. | object | no |
 | [nextState](#Transitions) | State to transition to next | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -745,9 +710,9 @@ the functions results. If it is evaluated to true, the retry policy is triggers.
 {
   "type": "object",
   "properties": {
-    "condition": {
+    "expression": {
       "description": "Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid.",
-      "$ref": "#/definitions/condition"
+      "$ref": "#/definitions/expression"
     },
     "nextState": {
       "type": "string",
@@ -2081,12 +2046,12 @@ So the options for next state transitions are:
 
 #### Restricting Transitions based on state output
 
-In addition to specifying the "nextState" property a transition also defines a "condition" which must 
+In addition to specifying the "nextState" property a transition also defines a boolean expression which must 
 evaluate to true for the transition to happen. Having this data-based restriction capabilities can help 
  stop transitions within workflow execution that can have serious and harmful business impacts.
 
-State Transitions have access to the states data output. Conditions 
-can define an expression against the states output data to make sure that this transition only happens 
+State Transitions have access to the states data output. Expressions 
+are evaluated against the states output data to make sure that this transition only happens 
 if the expression evaluates to true.
 
 Here is an example of a restricted transition which only allows transition to the "highRiskState" if the 
@@ -2127,8 +2092,8 @@ output of the state to transition from includes an user with the title "MANAGER"
     ],
     "transition": {
       "nextState":"highRiskState",
-      "condition": {
-         "expressionLanguage": "spel",
+      "expression": {
+         "language": "spel",
          "body": "#jsonPath(stateOutputData,'$..user.title') eq 'MANAGER'"
       }
     }
@@ -2168,8 +2133,8 @@ states:
       refname: doLowRistOperationFunction
   transition:
     nextState: highRiskState
-    condition:
-      expressionLanguage: spel
+    expression:
+      language: spel
       body: "#jsonPath(stateOutputData,'$..user.title') eq 'MANAGER'"
 - name: highRiskState
   type: OPERATION
@@ -2366,8 +2331,8 @@ Let's take a look at a small example:
        ],
        "onError": [
           {
-            "condition": {
-              "expressionLanguage": "spel",
+            "expression": {
+              "language": "spel",
               "body": "$.exception.name matches '^\\w+Exception$'"
             },
             "filter": {
@@ -2403,8 +2368,8 @@ states:
   - functionref:
       refname: throwRuntimeErrorFunction
   onError:
-  - condition:
-      expressionLanguage: spel
+  - expression:
+      language: spel
       body: "$.exception.name matches '^\\w+Exception$'"
     filter:
       resultPath: "$.trace"
@@ -2422,7 +2387,7 @@ Here we have an operation state with one action that executes a function call. F
 results in a runtime exception. In the "onError" definition we state we want to catch all errors whose name ends in "Exception".
 If that happens, we want to workflow to continue execution with the "afterErrorState" state. 
 
-Note that errors that don't match the "condition" may not be caught
+Note that errors that don't match the expression may not be caught
 by this explicit error handling. In those cases a "fallback" or "catch-all" error definition inside the onError block may be necessary.
 
 Having to define explicit error handling inside every state of your workflow might lead to repetitive definitions as can become
@@ -2443,8 +2408,8 @@ workflow definition. Let's take a look:
   "startsAt": "HandleErrors1",
   "onError": [
      {
-       "condition": {
-         "expressionLanguage": "spel",
+       "expression": {
+         "language": "spel",
          "body": "$.exception.name matches '^\\w+Exception$'"
        },
        "filter": {
@@ -2504,8 +2469,8 @@ workflow definition. Let's take a look:
 ```yaml
 startsAt: HandleErrors1
 onError:
-- condition:
-    expressionLanguage: spel
+- expression:
+    language: spel
     body: "$.exception.name matches '^\\w+Exception$'"
   filter:
     resultPath: "$.trace"
