@@ -4,6 +4,7 @@
 
 - [Hello World](#Hello-World-Example)
 - [Greeting](#Greeting-Example)
+- [Event-based greeting](#Event-Based-Greeting-Example)
 - [Solving Math Problems (ForEach)](#Solving-Math-Problems-Example)
 - [Parallel Execution](#Parallel-Execution-Example)
 - [Applicant Request Decision (Switch + SubFlow)](#Applicant-Request-Decision-Example)
@@ -212,6 +213,161 @@ states:
 
 <p align="center">
 <img src="media/greetingexample.png" with="400px" height="400px" alt="Greeting Example"/>
+</p>
+
+### Event Based Greeting Example
+
+#### Description
+
+This example shows a single Event state with one action that calls the "greeting" function. 
+The event state consumes cloud events of type "greetingEventType". When an even with this type
+is consumed, the Event state performs a single action that calls the defined "greeting" function.
+
+For the sake of the example we assume that the cloud event we will consume has the format:
+
+```json
+{
+    "specversion" : "1.0",
+    "type" : "greetingEventType",
+    "source" : "greetingEventSource",
+    "data" : {
+      "greet": {
+          "name": "John"
+        }
+    }
+}
+```
+
+The results of the action is assumed to be the full greeting for the provided persons name:
+
+```json
+{
+  "payload": {
+    "greeting": "Welcome to Serverless Workflow, John!"
+  }
+}
+```
+Note that in the workflow definition you can see two filters defined. The event filter defined inside the consume element:
+
+```json
+{
+  "filter": {
+    "inputPath": "$.data.greet"
+  } 
+}
+```
+
+which is triggered when the greeting event is consumed. It extracts its "data.greet" of the event and 
+merges it with the states data input.
+
+The second filter, which is defined on the event state itself:
+
+```json
+{
+  "filter": {
+     "resultPath": "$.out",
+     "outputPath": "$.out.payload.greeting"
+  }
+}
+```
+
+is the state filter which triggered after action execution. It takes the action results and merges it with the states 
+data output to become the workflow data output:
+
+```
+   "Welcome to Serverless Workflow, John!" 
+```
+
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td valign="top">
+
+```json
+{  
+"name": "Event Based Greeting Workflow",
+"description": "Event Based Greeting",
+"startsAt": "Greet",
+"functions": [
+  {
+     "name": "greetingFunction",
+     "resource": "functionResourse"
+  }
+],
+"states":[  
+  {  
+     "name":"Greet",
+     "type":"EVENT",
+     "eventsActions": [{
+         "expression": {
+           "language": "spel",
+           "body": "type eq \"greetingEventType\""
+         },
+         "filter": {
+            "inputPath": "$.data.greet"
+         },
+         "actions":[  
+            {  
+               "functionref": {
+                  "refname": "greetingFunction",
+                  "parameters": {
+                    "name": "$.greet.name"
+                  }
+               }
+            }
+         ]
+     }],
+     "filter": {
+        "resultPath": "$.out",
+        "outputPath": "$.out.payload.greeting"
+     },
+     "end": true
+  }
+]
+}
+```
+</td>
+<td valign="top">
+
+```yaml
+name: Event Based Greeting Workflow
+description: Event Based Greeting
+startsAt: Greet
+functions:
+- name: greetingFunction
+  resource: functionResourse
+states:
+- name: Greet
+  type: EVENT
+  eventsActions:
+  - expression:
+      language: spel
+      body: type eq "greetingEventType"
+    actions:
+    - functionref:
+        refname: greetingFunction
+        parameters:
+          name: "$.greet.name"
+    filter:
+      inputPath: "$.data.greet"
+  filter:
+    resultPath: "$.out"
+    outputPath: "$.out.payload.greeting"
+  end: true
+```
+</td>
+</tr>
+</table>
+
+#### Worfklow Diagram
+
+<p align="center">
+<img src="media/eventbasedgreetingexample.png" with="400px" height="400px" alt="Event Based Greeting Example"/>
 </p>
 
 ### Solving Math Problems Example
@@ -578,7 +734,7 @@ states:
 #### Description
 
 In this example we show off the states error handling capability. The workflow data input that's passed in contains 
-missing order information that causes the function in the "ProvisionOrder" state to throw a runtime exception. With the "onError" conditions we
+missing order information that causes the function in the "ProvisionOrder" state to throw a runtime exception. With the "onError" expression we
 can transition the workflow to different error handling states depending on the error thrown. Each type of error 
 in this example is handled by simple delay states, each including a data filter which sets the exception info as their 
 data output. If no error is caught the workflow can transition to the "ApplyOrder" state.
@@ -637,8 +793,8 @@ The data output of the workflow contains the information of the exception caught
     },
     "onError": [
        {
-         "condition": {
-            "expressionLanguage": "spel",
+         "expression": {
+            "language": "spel",
             "body": "$.exception.name is 'MissingOrderIdException'"
          },
          "transition": {
@@ -646,8 +802,8 @@ The data output of the workflow contains the information of the exception caught
          }
        },
        {
-         "condition": {
-           "expressionLanguage": "spel",
+         "expression": {
+           "language": "spel",
            "body": "$.exception.name is 'MissingOrderItemException'"
          },
          "transition": {
@@ -655,8 +811,8 @@ The data output of the workflow contains the information of the exception caught
          }
        },
        {
-        "condition": {
-          "expressionLanguage": "spel",
+        "expression": {
+          "language": "spel",
           "body": "$.exception.name is 'MissingOrderQuantityException'"
         },
         "transition": {
@@ -717,18 +873,18 @@ states:
   filter:
     resultPath: "$.exception"
   onError:
-  - condition:
-      expressionLanguage: spel
+  - expression:
+      language: spel
       body: "$.exception.name is 'MissingOrderIdException'"
     transition:
       nextState: MissingId
-  - condition:
-      expressionLanguage: spel
+  - expression:
+      language: spel
       body: "$.exception.name is 'MissingOrderItemException'"
     transition:
       nextState: MissingItem
-  - condition:
-      expressionLanguage: spel
+  - expression:
+      language: spel
       body: "$.exception.name is 'MissingOrderQuantityException'"
     transition:
       nextState: MissingQuantity
@@ -829,8 +985,8 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
     },
     "onError": [
     {
-     "condition": {
-         "expressionLanguage": "spel",
+     "expression": {
+         "language": "spel",
          "body": "$.exception != null"
       },
       "transition": {
@@ -963,8 +1119,8 @@ states:
   filter:
     resultPath: "$.jobuid"
   onError:
-  - condition:
-      expressionLanguage: spel
+  - expression:
+      language: spel
       body: "$.exception != null"
     transition:
       nextState: SubmitError
