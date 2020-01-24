@@ -454,7 +454,7 @@ We will start defining each individual state:
 | name | State name | string | yes |
 | type | State type | string | yes |
 | end |Is this state an end state | boolean | no |
-| [consume](#eventstate-consume) | Define what events are to be consumed and one or more actions to be performed | array | yes |
+| [eventsActions](#eventstate-eventactions) | Define what events are to be consumed and one or more actions to be performed | array | yes |
 | [filter](#Filter-Definition) | State data filter | object | yes |
 | [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
  
@@ -490,7 +490,7 @@ We will start defining each individual state:
             "description": "Define what events to be consumed and one or more actions to be performed",
             "items": {
                 "type": "object",
-                "$ref": "#/definitions/eventsAction"
+                "$ref": "#/definitions/eventactions"
             }
         },
         "filter": {
@@ -515,7 +515,7 @@ We will start defining each individual state:
 Event state waits for events from different event sources and defines one or more actions to performed when
 those events are received.
 
-#### <a name="eventstate-consume"></a> Event State: Events Action
+#### <a name="eventstate-eventactions"></a> Event State: Event Actions
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
