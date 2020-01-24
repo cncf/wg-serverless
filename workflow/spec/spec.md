@@ -324,7 +324,7 @@ Since function definitions are reusable, their parameters are defined within act
   "properties": {
     "name": {
       "type": "string",
-      "description": "Function unique name"
+      "description": "Function unique name",
       "minLength": 1 
     },
     "resource": {
@@ -544,7 +544,7 @@ those events are received.
         "actionMode": {
             "type" : "string",
             "enum": ["SEQUENTIAL", "PARALLEL"],
-            "description": "Specifies how actions are to be performed (in sequence of parallel)"
+            "description": "Specifies how actions are to be performed (in sequence of parallel)",
             "default": "SEQUENTIAL" 
         },
         "actions": {
