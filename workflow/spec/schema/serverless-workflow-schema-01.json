@@ -31,16 +31,6 @@
       "type": "string",
       "description": "Starts at state name"
     },
-    "execStatus": {
-      "type": "string",
-      "enum": [
-        "Success",
-        "Fail",
-        "Timeout",
-        "Invalid"
-      ],
-      "description": "Workflow execution status"
-    },
     "expressionLanguage": {
       "type": "string",
       "description": "Default expression language to be used throughout the workflow definition"
