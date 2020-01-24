@@ -55,7 +55,6 @@
       "type": "array",
       "description": "State Definitions",
       "items": {
-        "type": "object",
         "anyOf": [
           {
             "title": "Delay State",
@@ -153,12 +152,12 @@
         "transition"
       ]
     },
-    "triggerevent": {
+    "eventdef": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "description": "Trigger unique name",
+          "description": "Event unique name",
           "minLength": 1
         },
         "source": {
@@ -197,10 +196,10 @@
         }
       },
       "required": [
-        "inputPath"
+
       ]
     },
-    "eventactions": {
+    "eventaction": {
       "type": "object",
       "properties": {
         "expression": {
@@ -349,7 +348,6 @@
           "type": "array",
           "description": "State Definitions",
           "items": {
-            "type": "object",
             "anyOf": [
               {
                 "title": "Delay State",
@@ -466,7 +464,7 @@
     },
     "eventstate": {
       "type": "object",
-      "description": "This state is used to consume events from event sources and then invoke one or more actions to run in sequence or parallel",
+      "description": "This state is used to wait for events from event sources, then consumes them and invoke one or more actions to run in sequence or parallel",
       "properties": {
         "id": {
           "type": "string",
@@ -492,12 +490,12 @@
         "filter": {
           "$ref": "#/definitions/filter"
         },
-        "consume": {
+        "eventsActions": {
           "type": "array",
           "description": "Define what events trigger one or more actions to be performed",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/consume"
+            "$ref": "#/definitions/eventaction"
           }
         },
         "onError": {
@@ -512,7 +510,7 @@
       "required": [
         "name",
         "type",
-        "events"
+        "eventsActions"
       ]
     },
     "operationstate": {
@@ -702,7 +700,6 @@
           "type": "array",
           "description": "Defines an ordered set of Match Rules against the input data to this state",
           "items": {
-            "type": "object",
             "anyOf": [
               {
                 "title": "Single Choice",
@@ -945,7 +942,6 @@
           "type": "array",
           "description": "States to be executed for each of the elements of inputCollection",
           "items": {
-            "type": "object",
             "anyOf": [
               {
                 "title": "Delay State",

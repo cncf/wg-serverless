@@ -464,7 +464,7 @@ We will start defining each individual state:
 ```json
 {
     "type": "object",
-    "description": "This state is used to consume events from event sources and then invoke one or more actions to run in sequence or parallel.",
+    "description": "This state is used to wait for events from event sources, then consumes them and invoke one or more actions to run in sequence or parallel.",
     "properties": {
         "id": {
             "type": "string",
@@ -485,12 +485,12 @@ We will start defining each individual state:
             "default": false,
             "description": "Is this an end state"
         },
-        "consume": {
+        "eventsActions": {
             "type": "array",
             "description": "Define what events to be consumed and one or more actions to be performed",
             "items": {
                 "type": "object",
-                "$ref": "#/definitions/consume"
+                "$ref": "#/definitions/eventsAction"
             }
         },
         "filter": {
@@ -505,17 +505,17 @@ We will start defining each individual state:
             }
         }
     },
-    "required": ["name", "type", "eventActions"]
+    "required": ["name", "type", "eventsActions"]
 }
 ```
 
 </p>
 </details>
 
-Event state consumes events from different event sources and defines one or more 
-actions to be performed.
+Event state waits for events from different event sources and defines one or more actions to performed when
+those events are received.
 
-#### <a name="eventstate-consume"></a> Event State: Consume Definitions
+#### <a name="eventstate-consume"></a> Event State: Events Action
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |

@@ -303,9 +303,9 @@ data output to become the workflow data output:
   {  
      "name":"Greet",
      "type":"EVENT",
-     "consume": [{
-         "eventCondition": {
-           "expressionLanguage": "spel",
+     "eventsActions": [{
+         "expression": {
+           "language": "spel",
            "body": "type eq \"greetingEventType\""
          },
          "filter": {
@@ -344,9 +344,9 @@ functions:
 states:
 - name: Greet
   type: EVENT
-  consume:
-  - eventCondition:
-      expressionLanguage: spel
+  eventsActions:
+  - expression:
+      language: spel
       body: type eq "greetingEventType"
     actions:
     - functionref:
@@ -734,7 +734,7 @@ states:
 #### Description
 
 In this example we show off the states error handling capability. The workflow data input that's passed in contains 
-missing order information that causes the function in the "ProvisionOrder" state to throw a runtime exception. With the "onError" conditions we
+missing order information that causes the function in the "ProvisionOrder" state to throw a runtime exception. With the "onError" expression we
 can transition the workflow to different error handling states depending on the error thrown. Each type of error 
 in this example is handled by simple delay states, each including a data filter which sets the exception info as their 
 data output. If no error is caught the workflow can transition to the "ApplyOrder" state.
@@ -793,8 +793,8 @@ The data output of the workflow contains the information of the exception caught
     },
     "onError": [
        {
-         "condition": {
-            "expressionLanguage": "spel",
+         "expression": {
+            "language": "spel",
             "body": "$.exception.name is 'MissingOrderIdException'"
          },
          "transition": {
@@ -802,8 +802,8 @@ The data output of the workflow contains the information of the exception caught
          }
        },
        {
-         "condition": {
-           "expressionLanguage": "spel",
+         "expression": {
+           "language": "spel",
            "body": "$.exception.name is 'MissingOrderItemException'"
          },
          "transition": {
@@ -811,8 +811,8 @@ The data output of the workflow contains the information of the exception caught
          }
        },
        {
-        "condition": {
-          "expressionLanguage": "spel",
+        "expression": {
+          "language": "spel",
           "body": "$.exception.name is 'MissingOrderQuantityException'"
         },
         "transition": {
@@ -873,18 +873,18 @@ states:
   filter:
     resultPath: "$.exception"
   onError:
-  - condition:
-      expressionLanguage: spel
+  - expression:
+      language: spel
       body: "$.exception.name is 'MissingOrderIdException'"
     transition:
       nextState: MissingId
-  - condition:
-      expressionLanguage: spel
+  - expression:
+      language: spel
       body: "$.exception.name is 'MissingOrderItemException'"
     transition:
       nextState: MissingItem
-  - condition:
-      expressionLanguage: spel
+  - expression:
+      language: spel
       body: "$.exception.name is 'MissingOrderQuantityException'"
     transition:
       nextState: MissingQuantity
@@ -985,8 +985,8 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
     },
     "onError": [
     {
-     "condition": {
-         "expressionLanguage": "spel",
+     "expression": {
+         "language": "spel",
          "body": "$.exception != null"
       },
       "transition": {
@@ -1119,8 +1119,8 @@ states:
   filter:
     resultPath: "$.jobuid"
   onError:
-  - condition:
-      expressionLanguage: spel
+  - expression:
+      language: spel
       body: "$.exception != null"
     transition:
       nextState: SubmitError
