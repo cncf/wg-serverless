@@ -2118,7 +2118,7 @@ to complete workflow execution, which is set by the "type" property:
 
 * **DEFAULT** - Default workflow execution completion, no other special behavior
 * **TERMINATE** - Completes all execution flows in the given workflow instance. All activities/actions being executed
-are completed. If a terminate end is reached inside a SubFlow state, the entire workflow instance is terminated.
+are completed. If a terminate end is reached inside a ForEach, Parallel, or SubFlow state, the entire workflow instance is terminated.
 * **EVENT** - Workflow executions completes, and a Cloud Event is produced according to the [produceEvent](#ProduceEvent-Definition) definition.
 
 ### ProduceEvent Definition
