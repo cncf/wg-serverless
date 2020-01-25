@@ -1241,7 +1241,7 @@ states:
 <img src="media/jobmonitoringexample.png" with="400px" height="400px" alt="Job Monitoring Example"/>
 </p>
 
-### Send CloudEvent on Workflow Completion Example
+### Send CloudEvent On Workfow Completion Example
 
 #### Description
 
