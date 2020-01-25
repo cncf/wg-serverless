@@ -10,7 +10,7 @@
 - [Applicant Request Decision (Switch + SubFlow)](#Applicant-Request-Decision-Example)
 - [Provision Orders (Error Handling)](#Provision-Orders-Example)
 - [Monitor Job for completion (Polling)](#Monitor-Job-Example)
-
+- [Send CloudEvent on Workflow Completion](#Send-CloudEvent-On-Workfow-Completion-Example)
 
 ### Hello World Example
 
@@ -67,7 +67,9 @@ value of the "result" property. Since it is an end state, it's data output becom
      "filter": {
        "outputPath": "$.result"
      },
-     "end": true 
+     "end": {
+       "type": "DEFAULT"
+     }
   }
 ]
 }
@@ -92,7 +94,8 @@ states:
     result: " World!"
   filter:
     outputPath: "$.result"
-  end: true
+  end:
+    type: DEFAULT
 ```
 </td>
 </tr>
@@ -176,7 +179,9 @@ output, which then becomes the data output of the workflow itself (as it is the 
         "resultPath": "$.out",
         "outputPath": "$.out.payload.greeting"
      },
-     "end": true
+     "end": {
+       "type": "DEFAULT"
+     }
   }
 ]
 }
@@ -203,7 +208,8 @@ states:
   filter:
     resultPath: "$.out"
     outputPath: "$.out.payload.greeting"
-  end: true
+  end:
+      type: DEFAULT
 ```
 </td>
 </tr>
@@ -326,7 +332,9 @@ data output to become the workflow data output:
         "resultPath": "$.out",
         "outputPath": "$.out.payload.greeting"
      },
-     "end": true
+     "end": {
+       "type": "DEFAULT"
+     }
   }
 ]
 }
@@ -358,7 +366,8 @@ states:
   filter:
     resultPath: "$.out"
     outputPath: "$.out.payload.greeting"
-  end: true
+  end:
+    type: DEFAULT
 ```
 </td>
 </tr>
@@ -434,13 +443,17 @@ result of the workflow execution.
           }
        }
     ],
-    "end": true
+    "end": {
+      "type": "DEFAULT"
+    }
 }
  ],
  "filter": {
     "outputPath": "$.results"
  },
- "end": true
+ "end": {
+   "type": "DEFAULT"
+ }
 }
 ]
 }
@@ -471,10 +484,12 @@ states:
         refname: solveMathExpressionFunction
         parameters:
           expression: "$.singleexpression"
-    end: true
+    end:
+      type: DEFAULT
   filter:
     outputPath: "$.results"
-  end: true
+  end:
+    type: DEFAULT
 ```
 </td>
 </tr>
@@ -523,7 +538,9 @@ of the branches are done.
                 "name":"ShortDelay",
                  "type":"DELAY",
                  "timeDelay": "PT15S",
-                 "end": true
+                 "end": {
+                   "type": "DEFAULT"
+                 }
             }
           ],
           "waitForCompletion": false
@@ -536,13 +553,17 @@ of the branches are done.
                  "name":"LongDelay",
                   "type":"DELAY",
                   "timeDelay": "PT2M",
-                  "end": true
+                  "end": {
+                    "type": "DEFAULT"
+                  }
              }      
           ],
           "waitForCompletion": false
         }
      ],
-     "end": true
+     "end": {
+       "type": "DEFAULT"
+     }
   }
 ]
 }
@@ -564,7 +585,8 @@ states:
     - name: ShortDelay
       type: DELAY
       timeDelay: PT15S
-      end: true
+      end:
+        type: DEFAULT
     waitForCompletion: false
   - name: Branch2
     startsAt: LongDelay
@@ -572,9 +594,11 @@ states:
     - name: LongDelay
       type: DELAY
       timeDelay: PT2M
-      end: true
+      end:
+        type: DEFAULT
     waitForCompletion: false
-  end: true
+  end:
+    type: DEFAULT
 ```
 </td>
 </tr>
@@ -658,7 +682,9 @@ If the applicants age is over 18 we start the application (subflow state). Other
         "name": "StartApplication",
         "type": "SUBFLOW",
         "workflowId": "startApplicationWorkflowId",
-        "end": true
+        "end": {
+          "type": "DEFAULT"
+        }
       },
       {  
         "name":"RejectApplication",
@@ -674,7 +700,9 @@ If the applicants age is over 18 we start the application (subflow state). Other
               }
            }
         ],
-        "end": true
+        "end": {
+          "type": "DEFAULT"
+        }
     }
    ]
 } 
@@ -708,7 +736,8 @@ states:
 - name: StartApplication
   type: SUBFLOW
   workflowId: startApplicationWorkflowId
-  end: true
+  end:
+    type: DEFAULT
 - name: RejectApplication
   type: OPERATION
   actionMode: SEQUENTIAL
@@ -717,7 +746,8 @@ states:
       refname: sendRejectionEmailFunction
       parameters:
         applicant: "$.applicant"
-  end: true
+  end:
+    type: DEFAULT
 ```
 </td>
 </tr>
@@ -828,25 +858,33 @@ The data output of the workflow contains the information of the exception caught
    "name": "MissingId",
    "type": "SUBFLOW",
    "workflowId": "handleMissingIdExceptionWorkflow",
-   "end": true
+   "end": {
+     "type": "DEFAULT"
+   }
 },
 {
    "name": "MissingItem",
    "type": "SUBFLOW",
    "workflowId": "handleMissingItemExceptionWorkflow",
-   "end": true
+   "end": {
+     "type": "DEFAULT"
+   }
 },
 {
    "name": "MissingQuantity",
    "type": "SUBFLOW",
    "workflowId": "handleMissingQuantityExceptionWorkflow",
-   "end": true
+   "end": {
+     "type": "DEFAULT"
+   }
 },
 {
    "name": "ApplyOrder",
    "type": "SUBFLOW",
    "workflowId": "applyOrderWorkflowId",
-   "end": true
+   "end": {
+     "type": "DEFAULT"
+   }
 }
 ]
 }
@@ -893,19 +931,23 @@ states:
 - name: MissingId
   type: SUBFLOW
   workflowId: handleMissingIdExceptionWorkflow
-  end: true
+  end:
+    type: DEFAULT
 - name: MissingItem
   type: SUBFLOW
   workflowId: handleMissingItemExceptionWorkflow
-  end: true
+  end:
+    type: DEFAULT
 - name: MissingQuantity
   type: SUBFLOW
   workflowId: handleMissingQuantityExceptionWorkflow
-  end: true
+  end:
+    type: DEFAULT
 - name: ApplyOrder
   type: SUBFLOW
   workflowId: applyOrderWorkflowId
-  end: true
+  end:
+    type: DEFAULT
 ```
 </td>
 </tr>
@@ -1002,7 +1044,9 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
    "name": "SubmitError",
    "type": "SUBFLOW",
    "workflowId": "handleJobSubmissionErrorWorkflow",
-   "end": true
+   "end": {
+     "type": "DEFAULT"
+   }
 },
 {
    "name": "WaitForCompletion",
@@ -1070,7 +1114,9 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
       }
    }
    ],
-   "end": true
+   "end": {
+     "type": "DEFAULT"
+   }
 },
 {  
   "name":"JobFailed",
@@ -1086,7 +1132,9 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
      }
   }
   ],
-  "end": true
+  "end": {
+    "type": "DEFAULT"
+  }
 }
 ]
 }
@@ -1129,7 +1177,8 @@ states:
 - name: SubmitError
   type: SUBFLOW
   workflowId: handleJobSubmissionErrorWorkflow
-  end: true
+  end:
+    type: DEFAULT
 - name: WaitForCompletion
   type: DELAY
   timeDelay: PT5S
@@ -1169,7 +1218,8 @@ states:
       refname: reportJobSuceeded
       parameters:
         name: "$.jobuid"
-  end: true
+  end:
+    type: DEFAULT
 - name: JobFailed
   type: OPERATION
   actionMode: SEQUENTIAL
@@ -1178,7 +1228,8 @@ states:
       name: reportJobFailed
       parameters:
         name: "$.jobuid"
-  end: true
+  end:
+    type: DEFAULT
 ```
 </td>
 </tr>
@@ -1188,4 +1239,185 @@ states:
 
 <p align="center">
 <img src="media/jobmonitoringexample.png" with="400px" height="400px" alt="Job Monitoring Example"/>
+</p>
+
+### Send CloudEvent on Workflow Completion Example
+
+#### Description
+
+This example shows how we can produce a CloudEvent on completion of a workflow. Let's say we have the following
+workflow data:
+
+```json
+{
+  "orders": [{
+    "id": "123",
+    "item": "laptop",
+    "quantity": "10"
+  },
+  {
+      "id": "456",
+      "item": "desktop",
+      "quantity": "4"
+    }]
+}
+```
+Our workflow in this example uses a ForEach state to provision the orders in parallel. The "provisionOrder" function
+used is assumed to have the following results:
+
+```json
+{
+  "provisionedOrders": [
+      {
+        "id": "123",
+        "outcome": "SUCCESS"
+      }
+  ]
+}
+```
+
+After orders have been provisioned the ForEach states defines the end property which stops workflow execution.
+It defines its end definition to be of type "EVENT" in which case a CloudEvent will be produced which can be consumed
+by other orchestration workflows or other interested consumers. 
+Note that we define the event to be produced in the workflows "events" property.
+The data attached to the event contains the information on provisioned orders by this workflow. So the produced 
+CloudEvent upon completion of the workflow could look like:
+
+```json
+{
+  "specversion" : "1.0",
+  "type" : "provisionCompleteType",  
+  "datacontenttype" : "application/json",
+  ...
+  "data": {
+    "provisionedOrders": [
+        {
+          "id": "123",
+          "outcome": "SUCCESS"
+        },
+        {
+          "id": "456",
+          "outcome": "FAILURE"
+        }
+      ]
+  }
+}
+```
+
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td valign="top">
+
+```json
+{
+"id": "sendcloudeventonprovision",
+"name": "Send CloudEvent on provision completion",
+"version": "1.0",
+"startsAt": "ProvisionOrdersState",
+"events": [
+{
+    "name": "provisioningCompleteEvent",
+    "type": "provisionCompleteType"
+}
+],
+"functions": [
+{
+    "name": "provisionOrderFunction",
+    "resource": "functionResourse"
+}
+],
+"states": [
+{
+    "name": "ProvisionOrdersState",
+    "type": "FOREACH",
+    "inputCollection": "$.orders",
+    "inputParameter": "$.singleorder",
+    "outputCollection": "$.results",
+    "startsAt": "DoProvision",
+    "states": [
+    {
+        "name": "DoProvision",
+        "type": "OPERATION",
+        "actions": [
+        {
+            "functionref": {
+                "refname": "provisionOrderFunction",
+                "parameters": {
+                    "order": "$.order"
+                }
+            }
+        }
+        ],
+        "end": {
+            "type": "DEFAULT"
+        }
+    }
+    ],
+    "filter": {
+        "outputPath": "$.provisioningResults"
+    },
+    "end": {
+        "type": "EVENT",
+        "produceEvent": {
+            "nameRef": "provisioningCompleteEvent",
+            "data": "$.provisioningResults.provisionedOrders"
+        }
+    }
+}
+]
+}
+```
+</td>
+<td valign="top">
+
+```yaml
+id: sendcloudeventonprovision
+name: Send CloudEvent on provision completion
+version: '1.0'
+startsAt: ProvisionOrdersState
+events:
+- name: provisioningCompleteEvent
+  type: provisionCompleteType
+functions:
+- name: provisionOrderFunction
+  resource: functionResourse
+states:
+- name: ProvisionOrdersState
+  type: FOREACH
+  inputCollection: "$.orders"
+  inputParameter: "$.singleorder"
+  outputCollection: "$.results"
+  startsAt: DoProvision
+  states:
+  - name: DoProvision
+    type: OPERATION
+    actions:
+    - functionref:
+        refname: provisionOrderFunction
+        parameters:
+          order: "$.order"
+    end:
+      type: DEFAULT
+  filter:
+    outputPath: "$.provisioningResults"
+  end:
+    type: EVENT
+    produceEvent:
+      nameRef: provisioningCompleteEvent
+      data: "$.provisioningResults.provisionedOrders"
+```
+</td>
+</tr>
+</table>
+
+#### Worfklow Diagram
+
+<p align="center">
+<img src="media/sendcloudeentonworkflowcompletion.png" with="400px" height="400px" alt="Send CloudEvent on Workflow Completion Example"/>
 </p>

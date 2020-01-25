@@ -196,7 +196,6 @@
         }
       },
       "required": [
-
       ]
     },
     "eventactions": {
@@ -414,9 +413,8 @@
           "description": "State type"
         },
         "end": {
-          "type": "boolean",
-          "default": false,
-          "description": "Is this state an end state"
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -438,29 +436,24 @@
           "$ref": "#/definitions/transition"
         }
       },
-      "if": {
-        "properties": {
-          "end": {
-            "const": true
-          }
+      "oneOf": [
+        {
+          "required": [
+            "name",
+            "type",
+            "timeDelay",
+            "end"
+          ]
+        },
+        {
+          "required": [
+            "name",
+            "type",
+            "timeDelay",
+            "transition"
+          ]
         }
-      },
-      "then": {
-        "required": [
-          "name",
-          "type",
-          "timeDelay",
-          "end"
-        ]
-      },
-      "else": {
-        "required": [
-          "name",
-          "type",
-          "timeDelay",
-          "transition"
-        ]
-      }
+      ]
     },
     "eventstate": {
       "type": "object",
@@ -483,9 +476,8 @@
           "description": "State type"
         },
         "end": {
-          "type": "boolean",
-          "default": false,
-          "description": "Is this state an end state"
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -507,10 +499,23 @@
           }
         }
       },
-      "required": [
-        "name",
-        "type",
-        "eventsActions"
+      "oneOf": [
+        {
+          "required": [
+            "name",
+            "type",
+            "eventsActions",
+            "end"
+          ]
+        },
+        {
+          "required": [
+            "name",
+            "type",
+            "eventsActions",
+            "transition"
+          ]
+        }
       ]
     },
     "operationstate": {
@@ -534,9 +539,8 @@
           "description": "State type"
         },
         "end": {
-          "type": "boolean",
-          "default": false,
-          "description": "Is this state an end state"
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -571,30 +575,26 @@
           "$ref": "#/definitions/transition"
         }
       },
-      "if": {
-        "properties": {
-          "end": {
-            "const": true
-          }
+      "oneOf": [
+        {
+          "required": [
+            "name",
+            "type",
+            "actionMode",
+            "actions",
+            "end"
+          ]
+        },
+        {
+          "required": [
+            "name",
+            "type",
+            "actionMode",
+            "actions",
+            "transition"
+          ]
         }
-      },
-      "then": {
-        "required": [
-          "name",
-          "type",
-          "actionMode",
-          "actions"
-        ]
-      },
-      "else": {
-        "required": [
-          "name",
-          "type",
-          "actionMode",
-          "actions",
-          "transition"
-        ]
-      }
+      ]
     },
     "parallelstate": {
       "type": "object",
@@ -617,9 +617,8 @@
           "description": "State type"
         },
         "end": {
-          "type": "boolean",
-          "default": false,
-          "description": "Is this state an end state"
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -645,28 +644,24 @@
           "$ref": "#/definitions/transition"
         }
       },
-      "if": {
-        "properties": {
-          "end": {
-            "const": true
-          }
+      "oneOf": [
+        {
+          "required": [
+            "name",
+            "type",
+            "branches",
+            "end"
+          ]
+        },
+        {
+          "required": [
+            "name",
+            "type",
+            "branches",
+            "transition"
+          ]
         }
-      },
-      "then": {
-        "required": [
-          "name",
-          "type",
-          "branches"
-        ]
-      },
-      "else": {
-        "required": [
-          "name",
-          "type",
-          "branches",
-          "transition"
-        ]
-      }
+      ]
     },
     "switchstate": {
       "type": "object",
@@ -689,9 +684,8 @@
           "description": "State type"
         },
         "end": {
-          "type": "boolean",
-          "default": false,
-          "description": "Is this state an end state"
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         },
         "filter": {
           "$ref": "#/definitions/filter"
@@ -733,28 +727,24 @@
           "$ref": "#/definitions/transition"
         }
       },
-      "if": {
-        "properties": {
-          "end": {
-            "const": true
-          }
+      "oneOf": [
+        {
+          "required": [
+            "name",
+            "type",
+            "choices",
+            "end"
+          ]
+        },
+        {
+          "required": [
+            "name",
+            "type",
+            "choices",
+            "default"
+          ]
         }
-      },
-      "then": {
-        "required": [
-          "name",
-          "type",
-          "choices"
-        ]
-      },
-      "else": {
-        "required": [
-          "name",
-          "type",
-          "choices",
-          "default"
-        ]
-      }
+      ]
     },
     "subflowstate": {
       "type": "object",
@@ -777,9 +767,8 @@
           "description": "State type"
         },
         "end": {
-          "type": "boolean",
-          "default": false,
-          "description": "Is this state an end state"
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         },
         "waitForCompletion": {
           "type": "boolean",
@@ -806,28 +795,24 @@
           "$ref": "#/definitions/transition"
         }
       },
-      "if": {
-        "properties": {
-          "end": {
-            "const": true
-          }
+      "oneOf": [
+        {
+          "required": [
+            "name",
+            "type",
+            "workflowId",
+            "end"
+          ]
+        },
+        {
+          "required": [
+            "name",
+            "type",
+            "workflowId",
+            "transition"
+          ]
         }
-      },
-      "then": {
-        "required": [
-          "name",
-          "type",
-          "workflowId"
-        ]
-      },
-      "else": {
-        "required": [
-          "name",
-          "type",
-          "workflowId",
-          "transition"
-        ]
-      }
+      ]
     },
     "relaystate": {
       "type": "object",
@@ -850,9 +835,8 @@
           "description": "State type"
         },
         "end": {
-          "type": "boolean",
-          "default": false,
-          "description": "Is this state an end state"
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         },
         "inject": {
           "type": "object",
@@ -866,26 +850,22 @@
           "$ref": "#/definitions/transition"
         }
       },
-      "if": {
-        "properties": {
-          "end": {
-            "const": true
-          }
+      "oneOf": [
+        {
+          "required": [
+            "name",
+            "type",
+            "end"
+          ]
+        },
+        {
+          "required": [
+            "name",
+            "type",
+            "transition"
+          ]
         }
-      },
-      "then": {
-        "required": [
-          "name",
-          "type"
-        ]
-      },
-      "else": {
-        "required": [
-          "name",
-          "type",
-          "transition"
-        ]
-      }
+      ]
     },
     "foreachstate": {
       "type": "object",
@@ -908,9 +888,8 @@
           "description": "State type"
         },
         "end": {
-          "type": "boolean",
-          "default": false,
-          "description": "Is this state an end state"
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         },
         "inputCollection": {
           "type": "string",
@@ -921,7 +900,7 @@
           "description": "JSONPath expression specifying where in the states data output to place the final data output of each iteration of the executed states"
         },
         "inputParameter": {
-          "type": "object",
+          "type": "string",
           "description": "JSONPath expression specifying an JSON object field of the states data input. For each parallel iteration, this field will get populated with a unique element of the inputCollection array"
         },
         "max": {
@@ -990,34 +969,30 @@
           "$ref": "#/definitions/transition"
         }
       },
-      "if": {
-        "properties": {
-          "end": {
-            "const": true
-          }
+      "oneOf": [
+        {
+          "required": [
+            "name",
+            "type",
+            "inputCollection",
+            "inputParameter",
+            "startsAt",
+            "states",
+            "end"
+          ]
+        },
+        {
+          "required": [
+            "name",
+            "type",
+            "inputCollection",
+            "inputParameter",
+            "startsAt",
+            "states",
+            "transition"
+          ]
         }
-      },
-      "then": {
-        "required": [
-          "name",
-          "type",
-          "inputCollection",
-          "inputParameter",
-          "startsAt",
-          "states"
-        ]
-      },
-      "else": {
-        "required": [
-          "name",
-          "type",
-          "transition",
-          "inputCollection",
-          "inputParameter",
-          "startsAt",
-          "states"
-        ]
-      }
+      ]
     },
     "defaultchoice": {
       "type": "object",
@@ -1144,6 +1119,60 @@
       },
       "required": [
         "body"
+      ]
+    },
+    "end": {
+      "type": "object",
+      "description": "State end definition",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "DEFAULT",
+            "TERMINATE",
+            "EVENT"
+          ],
+          "description": "Type of end definition"
+        },
+        "produceEvent": {
+          "description": "If end type is EVENT, select one of the defined events by name and set its data",
+          "$ref": "#/definitions/produceevent"
+        }
+      },
+      "if": {
+        "properties": {
+          "type": {
+            "const": "EVENT"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "type",
+          "produceEvent"
+        ]
+      },
+      "else": {
+        "required": [
+          "type"
+        ]
+      }
+    },
+    "produceevent": {
+      "type": "object",
+      "description": "Produce an event and set its data",
+      "properties": {
+        "nameRef": {
+          "type": "string",
+          "description": "References a name of a defined event"
+        },
+        "data": {
+          "type": "string",
+          "description": "JSONPath expression which selects parts of the states data output to become the data of the produced event"
+        }
+      },
+      "required": [
+        "nameRef"
       ]
     }
   }

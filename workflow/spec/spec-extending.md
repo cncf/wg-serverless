@@ -47,7 +47,6 @@ So let's define a simple example workflow model and then add our custom extensio
          "name":"FirstOperation",
          "type":"OPERATION",
          "actionMode":"Sequential",
-         "end": false,
          "actions":[  
             {  
                "name": "callFirstFunction",
@@ -63,7 +62,9 @@ So let's define a simple example workflow model and then add our custom extensio
       {  
          "name":"SecondOperation",
          "type":"OPERATION",
-         "end":true,
+         "end": {
+           "type": "DEFAULT"
+         },
          "actionMode":"Sequential",
          "actions":[  
               {  
