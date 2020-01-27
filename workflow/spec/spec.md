@@ -2386,9 +2386,9 @@ There are two of rules to consider here:
 States can access and manipulate data via data filters. There are several types of data filters defined:
 
 - [State Data Filter](#state-data-filter)
-- [Action Data Filter](#action-Filter)
-- [Event Data Filter](#event-Filter)
-- [Error Data Filter](#error-Filter)
+- [Action Data Filter](#action-data-filter)
+- [Event Data Filter](#event-data-filter)
+- [Error Data Filter](#error-data-filter)
 
 All states can define state and error data filters. States which can receive events ([Event states](#Event-State)) can define event data filters, and states
 that can perform actions ([Event states](#Event-State), [Operation states](#Operation-State)) can define action data filters for each of the 
@@ -2514,7 +2514,7 @@ The second way would be to directly filter only the "veggie like" vegetables wit
 }
 ```
 
-### <a name="state-data-filter"></a> State information filtering - Action Data Filter
+### <a name="action-data-filter"></a> State information filtering - Action Data Filter
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -2542,10 +2542,10 @@ The second way would be to directly filter only the "veggie like" vegetables wit
 
 </details>
 
-Actions have access to the state data. They can filter it before executing any functions via the dataInputPath parameter. 
-This is useful if you want to restrict the data function performed by actions have to pass as their function paramers.
+[Actions](#Action-Definition) have access to the state data. They can filter it before executing any functions via the dataInputPath parameter. 
+This is useful if you want to restrict the data function definitions have available to pass to serverless function as parameters.
 
-Actions can execute functions. The results data of these functions is considered the output of the action which is then after completion 
+Actions can execute [functions](#Function-Definition). The results data of these functions is considered the output of the action which is then after completion 
 merged back into the state data. You can filter the results of actions with the dataResultsPath parameter, to only select
 parts of the action results that need to be merged back into the state data. 
 
@@ -2553,9 +2553,44 @@ To give an example, let's say we have an action which returns a list of breads a
 
 
 <p align="center">
-<img src="media/event-data-filter-example1.png" with="300px" height="400px" alt="Event Data Filter Example"/>
+<img src="media/action-data-filter-example1.png" with="300px" height="400px" alt="Action Data Filter Example"/>
 </p>
 
+
+### <a name="event-data-filter"></a> State information filtering - Event Data Filter
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| dataOutputPath | JSONPath definition that selects parts of the event data, to be merged with the states data | string | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "dataOutputPath": {
+      "type": "string",
+      "description": "JSONPath definition that selects parts of the event data, to be merged with the states data"
+    }
+  },
+  "required": []
+}
+```
+
+</details>
+
+CloudEvents can be consumed by [Event states](#Event-State) and trigger one or more [actions](#Action-Definition) to be performed. CloudEvents
+can include data which needs to be merged with the state data before actions are executed. 
+You can filter the event data with the dataOutputPath parameter, selecting only the portion of the event data
+that you need to be merged with the state data. 
+Event data filters can only be currently used within Event state definitions.
+
+Here is an example using an even filter:
+
+<p align="center">
+<img src="media/event-data-filter-example1.png" with="300px" height="400px" alt="Event Data Filter Example"/>
+</p>
 
 TODO - REMOVE BELOW
 
