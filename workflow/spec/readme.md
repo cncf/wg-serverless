@@ -11,8 +11,8 @@ Workflows have become key components of serverless applications as they excel at
 of their functional flow. 
 
 The goal of the Serverless Workflow sub-group is two-fold:
--  Come up with a standard language for users to specify their serverless application workflow, as well as 
-- Provide a Kubernetes Standard API to integrate Workflows into the ecosystem
+- Come up with a standard language for users to specify their serverless application workflow, as well as 
+- Provide a Cloud Provider agnostic API to integrate Workflows into the ecosystem
 
 This will facilitate the portability of serverless applications across different vendor platforms.
 
