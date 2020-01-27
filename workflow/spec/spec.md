@@ -2592,6 +2592,39 @@ Here is an example using an even filter:
 <img src="media/event-data-filter-example1.png" with="300px" height="400px" alt="Event Data Filter Example"/>
 </p>
 
+### <a name="event-data-filter"></a> State information filtering - Error Data Filter
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| dataOutputPath | JSONPath definition that selects parts of the error data, to be merged with the states data | string | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "dataOutputPath": {
+      "type": "string",
+      "description": "JSONPath definition that selects parts of the event data, to be merged with the states data"
+    }
+  },
+  "required": []
+}
+```
+
+</details>
+
+States can define [error handling](#Workflow-Error-Handling) with the onError property. The runtime error contains data
+which is merged with the states data. You can use the error data filter to select portion of the error data to be merged
+with the states data.
+
+Here is an example using an error filter:
+
+<p align="center">
+<img src="media/error-data-filter-example1.png" with="300px" height="400px" alt="Error Data Filter Example"/>
+</p>
+
 TODO - REMOVE BELOW
 
 
