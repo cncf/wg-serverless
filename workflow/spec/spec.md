@@ -2333,7 +2333,9 @@ Serverless Workflow data is represented in [JSON](https://www.json.org/json-en.h
 Flow of data during workflow execution can be divided into:
 
 - [Workfow data input](#Workflow-data-input)
+- [Event data](#Event-data)
 - [Information passing between states](#Information-passing-between-states)
+- [State information filtering](#State-information-filtering)
 - [Workflow data output](#Workflow-data-output)
 
 ### Workflow data input
@@ -2353,12 +2355,22 @@ Workflow data input is passed to the workflow's "startsAt" state (the starting s
 <img src="media/workflowdatainput.png" with="500px" height="300px" alt="Workflow data input"/>
 </p>
 
+### Event data
+
+[Event states](#Event-State) wait for arrival of defined CloudEvents, and when consumed perform a number of defined actions.
+CloudEvents can contain data which is needed to make further orchestration decisions. Data from consumed CloudEvents 
+is merged with the data input of the Event state, so it can be used inside defined actions
+or be passed as data output to transition states.
+
+<p align="center">
+<img src="media/eventdatamerged.png" with="500px" height="300px" alt="Event data merged with state data input"/>
+</p>
+
 ### Information passing between states
 
-States in Serverless workflow can receive data (data input) as well as produce a data result (data output).
-The states data input is typically the previous states data output. 
-When a state completes its tasks, its data output is passed to the data input of the state it
-transitions to.
+States in Serverless workflow can receive data (data input) as well as produce a data result (data output). T
+he states data input is typically the previous states data output. 
+When a state completes its tasks, its data output is passed to the data input of the state it transitions to.
 
 There are two of rules to consider here:
 
@@ -2368,6 +2380,188 @@ There are two of rules to consider here:
 <p align="center">
 <img src="media/basic-state-data-passing.png" with="500px" height="300px" alt="Basic state data passing"/>
 </p>
+
+### State information filtering
+
+States can access and manipulate data via data filters. There are several types of data filters defined:
+
+- [State Data Filter](#state-data-filter)
+- [Action Data Filter](#action-Filter)
+- [Event Data Filter](#event-Filter)
+- [Error Data Filter](#error-Filter)
+
+All states can define state and error data filters. States which can receive events ([Event states](#Event-State)) can define event data filters, and states
+that can perform actions ([Event states](#Event-State), [Operation states](#Operation-State)) can define action data filters for each of the 
+actions they perform.
+
+### <a name="state-data-filter"></a> State information filtering - State Data Filter
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| dataInputPath | JSONPath definition that selects parts of the states data input | string | no |
+| dataOutputPath | JSONPath definition that selects parts of the states data output | string | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "dataInputPath": {
+      "type": "string",
+      "description": "JSONPath definition that selects parts of the states data input"
+    },
+    "dataOutputPath": {
+      "type": "string",
+      "description": "JSONPath definition that selects parts of the states data output"
+    }
+  },
+  "required": []
+}
+```
+
+</details>
+
+State data filters defines the states data input and data output filtering. 
+
+The state filters inputPath is applied when the workflow transitions to the current state and it receives its data input. 
+It filters this data input selecting parts of it (only the selected data is considered part of the states data during its execution). 
+If inputPath is not defined, or it does not select any parts of the states data input, the states data input is not filtered.
+
+The state filter outputPath is applied right before the state transitions to the next state defined. It filters the states data
+output to be passed as data input to the transitioning state. If outputPath is not defined, or it does not
+select any parts of the states data output, the states data output is not filtered.
+
+Let's take a look at some examples of state filters. For our example the data input to our state is as follows:
+
+```json
+{
+  "fruits": [ "apple", "orange", "pear" ],
+  "vegetables": [
+    {
+      "veggieName": "potato",
+      "veggieLike": true
+    },
+    {
+      "veggieName": "broccoli",
+      "veggieLike": false
+    }
+  ]
+}
+```
+
+For the first example our state only cares about fruits data, and we want to disregard the vegetables. To do this 
+we can define a state filter:
+
+```json
+{
+  "name": "FruitsOnlyState",
+  "type": "RELAY",
+  "stateDataFilter": {
+    "dataInputPath": "$.fruits"
+  },
+  "transition": {
+     "nextState": "someNextState"
+  }
+}
+```
+
+The state data output then would include only the fruits data. 
+
+<p align="center">
+<img src="media/state-data-filter-example1.png" with="300px" height="400px" alt="State Data Filter Example"/>
+</p>
+
+For our second example lets say that we are interested in only vegetable that are "veggie like". 
+Here we have two ways of filtering our data, depending on if actions within our state need access to all vegetables, or 
+only the ones that are "veggie like". 
+The first way would be to use both dataInputPath, and dataOutputPath:
+
+```json
+{
+  "name": "VegetablesOnlyState",
+  "type": "RELAY",
+  "stateDataFilter": {
+    "dataInputPath": "$.vegetables",
+    "dataOutputPath": "$.[?(@.veggieLike)]"
+  },
+  "transition": {
+     "nextState": "someNextState"
+  }
+}
+```
+
+The states data input filter selects all the vegetables from the main data input. Once all actions have performed, before the state transition
+or workflow execution completion (if this is an end state), the dataOutput path of the state filter selects only the vegetables which are "veggie like".
+
+<p align="center">
+<img src="media/state-data-filter-example2.png" with="300px" height="400px" alt="State Data Filter Example"/>
+</p>
+
+
+The second way would be to directly filter only the "veggie like" vegetables with just the data input path:
+
+```json
+{
+  "name": "VegetablesOnlyState", 
+  "type": "RELAY",
+  "stateDataFilter": {
+    "dataInputPath": "$.vegetables.[?(@.veggieLike)]"
+  },
+  "transition": {
+     "nextState": "someNextState"
+  }
+}
+```
+
+### <a name="state-data-filter"></a> State information filtering - Action Data Filter
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| dataInputPath | JSONPath definition that selects parts of the states data input to be the action data | string | no |
+| dataResultsPath | JSONPath definition that selects parts of the actions data result, to be merged with the states data | string | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "dataInputPath": {
+      "type": "string",
+      "description": "JSONPath definition that selects parts of the states data input to be the action data"
+    },
+    "dataResultsPath": {
+      "type": "string",
+      "description": "JSONPath definition that selects parts of the actions data result, to be merged with the states data"
+    }
+  },
+  "required": []
+}
+```
+
+</details>
+
+Actions have access to the state data. They can filter it before executing any functions via the dataInputPath parameter. 
+This is useful if you want to restrict the data function performed by actions have to pass as their function paramers.
+
+Actions can execute functions. The results data of these functions is considered the output of the action which is then after completion 
+merged back into the state data. You can filter the results of actions with the dataResultsPath parameter, to only select
+parts of the action results that need to be merged back into the state data. 
+
+To give an example, let's say we have an action which returns a list of breads and we want to add this list our fruits and vegetables data:
+
+
+<p align="center">
+<img src="media/event-data-filter-example1.png" with="300px" height="400px" alt="Event Data Filter Example"/>
+</p>
+
+
+TODO - REMOVE BELOW
+
+
+Serverless Workflow data is represented in [JSON](https://www.json.org/json-en.html) format
+
 
 Within states the [JSON](https://tools.ietf.org/html/rfc7159) data can be accessed and manipulated via [filters](#Filter-Definition). 
 Filters are also used within [actions](#Action-Definition) and [events]((#eventstate-eventdef)). 
@@ -2408,7 +2602,7 @@ Serverless workflow defines four types of data filters:
 - **Error Filter** 
   - Invoked when a state encounters runtime exceptions
 
-The following diagrams show different filters in an Event state. Note that data merging can depend on the "actionModel" of
+The following diagrams show different filters in an Event state. Note that data merging can depend on the "actionMode" of
 the event states actions (sequential or parallel).
 
 <p align="center">
