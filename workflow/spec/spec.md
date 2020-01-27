@@ -2592,7 +2592,7 @@ Here is an example using an even filter:
 <img src="media/event-data-filter-example1.png" with="300px" height="400px" alt="Event Data Filter Example"/>
 </p>
 
-### <a name="event-data-filter"></a> State information filtering - Error Data Filter
+### <a name="error-data-filter"></a> State information filtering - Error Data Filter
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
