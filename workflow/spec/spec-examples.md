@@ -64,8 +64,8 @@ value of the "result" property. Since it is an end state, it's data output becom
      "inject": {
         "result": " World!"
      },
-     "filter": {
-       "outputPath": "$.result"
+     "stateDataFilter": {
+       "dataOutputPath": "$.result"
      },
      "end": {
        "type": "DEFAULT"
@@ -92,8 +92,8 @@ states:
   type: RELAY
   inject:
     result: " World!"
-  filter:
-    outputPath: "$.result"
+  stateDataFilter:
+    dataOutputPath: "$.result"
   end:
     type: DEFAULT
 ```
@@ -132,9 +132,9 @@ The results of the action is assumed to be the full greeting for the provided pe
 }
 ```
 
-The state filter merges the action results into its output, and then uses outputPath to only return the greeting as its data
-output, which then becomes the data output of the workflow itself (as it is the end state).
-
+The states action data filter selects the greeting object from the function return to be placed into the state data.
+Then the states state data filter selects only the greeting object to be returned as its data output, which 
+becomes the workflow data output (as it is an end state):
 ```
    "Welcome to Serverless Workflow, John!" 
 ```
@@ -172,12 +172,14 @@ output, which then becomes the data output of the workflow itself (as it is the 
               "parameters": {
                 "name": "$.greet.name"
               }
+           },
+           "actionDataFilter": {
+              "dataResultsPath": "$.payload.greeting"
            }
         }
      ],
-     "filter": {
-        "resultPath": "$.out",
-        "outputPath": "$.out.payload.greeting"
+     "stateDataFilter": {
+        "dataOutputPath": "$.greeting"
      },
      "end": {
        "type": "DEFAULT"
@@ -205,11 +207,12 @@ states:
       refname: greetingFunction
       parameters:
         name: "$.greet.name"
-  filter:
-    resultPath: "$.out"
-    outputPath: "$.out.payload.greeting"
+    actionDataFilter:
+      dataResultsPath: "$.payload.greeting"
+  stateDataFilter:
+    dataOutputPath: "$.greeting"
   end:
-      type: DEFAULT
+    type: DEFAULT
 ```
 </td>
 </tr>
@@ -253,32 +256,30 @@ The results of the action is assumed to be the full greeting for the provided pe
   }
 }
 ```
-Note that in the workflow definition you can see two filters defined. The event filter defined inside the consume element:
+Note that in the workflow definition you can see two filters defined. The event data filter defined inside the consume element:
 
 ```json
 {
-  "filter": {
-    "inputPath": "$.data.greet"
+  "eventDataFilter": {
+    "dataOutputPath": "$.data.greet"
   } 
 }
 ```
 
 which is triggered when the greeting event is consumed. It extracts its "data.greet" of the event and 
-merges it with the states data input.
+merges it with the states data.
 
-The second filter, which is defined on the event state itself:
+The second, a state data filter, which is defined on the event state itself:
 
 ```json
 {
-  "filter": {
-     "resultPath": "$.out",
-     "outputPath": "$.out.payload.greeting"
+  "stateDataFilter": {
+     "dataOutputPath": "$.payload.greeting"
   }
 }
 ```
 
-is the state filter which triggered after action execution. It takes the action results and merges it with the states 
-data output to become the workflow data output:
+filters what is selected to be the state data output which then becomes the workflow data output (as it is an end state):
 
 ```
    "Welcome to Serverless Workflow, John!" 
@@ -314,7 +315,7 @@ data output to become the workflow data output:
            "language": "spel",
            "body": "type eq \"greetingEventType\""
          },
-         "filter": {
+         "eventDataFilter": {
             "inputPath": "$.data.greet"
          },
          "actions":[  
@@ -328,9 +329,8 @@ data output to become the workflow data output:
             }
          ]
      }],
-     "filter": {
-        "resultPath": "$.out",
-        "outputPath": "$.out.payload.greeting"
+     "stateDataFilter": {
+        "dataOutputPath": "$.payload.greeting"
      },
      "end": {
        "type": "DEFAULT"
@@ -356,16 +356,15 @@ states:
   - expression:
       language: spel
       body: type eq "greetingEventType"
+    eventDataFilter:
+      inputPath: "$.data.greet"
     actions:
     - functionref:
         refname: greetingFunction
         parameters:
           name: "$.greet.name"
-    filter:
-      inputPath: "$.data.greet"
-  filter:
-    resultPath: "$.out"
-    outputPath: "$.out.payload.greeting"
+  stateDataFilter:
+    dataOutputPath: "$.payload.greeting"
   end:
     type: DEFAULT
 ```
@@ -448,8 +447,8 @@ result of the workflow execution.
     }
 }
  ],
- "filter": {
-    "outputPath": "$.results"
+ "stateDataFilter": {
+    "dataOutputPath": "$.results"
  },
  "end": {
    "type": "DEFAULT"
@@ -486,10 +485,11 @@ states:
           expression: "$.singleexpression"
     end:
       type: DEFAULT
-  filter:
-    outputPath: "$.results"
+  stateDataFilter:
+    dataOutputPath: "$.results"
   end:
     type: DEFAULT
+
 ```
 </td>
 </tr>
@@ -766,7 +766,7 @@ states:
 In this example we show off the states error handling capability. The workflow data input that's passed in contains 
 missing order information that causes the function in the "ProvisionOrder" state to throw a runtime exception. With the "onError" expression we
 can transition the workflow to different error handling states depending on the error thrown. Each type of error 
-in this example is handled by simple delay states, each including a data filter which sets the exception info as their 
+in this example is handled by simple delay states, each including an error data filter which sets the exception info as their 
 data output. If no error is caught the workflow can transition to the "ApplyOrder" state.
 
 Workflow data is assumed to me:
@@ -818,9 +818,6 @@ The data output of the workflow contains the information of the exception caught
           }
        }
     ],
-    "filter": {
-       "resultPath": "$.exception"
-    },
     "onError": [
        {
          "expression": {
@@ -829,6 +826,9 @@ The data output of the workflow contains the information of the exception caught
          },
          "transition": {
            "nextState": "MissingId"
+         },
+         "errorDataFilter": {
+          "dataOutputPath": "$.exception"
          }
        },
        {
@@ -838,7 +838,10 @@ The data output of the workflow contains the information of the exception caught
          },
          "transition": {
            "nextState": "MissingItem"
-         }
+         },
+         "errorDataFilter": {
+           "dataOutputPath": "$.exception"
+          }
        },
        {
         "expression": {
@@ -847,9 +850,15 @@ The data output of the workflow contains the information of the exception caught
         },
         "transition": {
           "nextState": "MissingQuantity"
-        }
+        },
+        "errorDataFilter": {
+          "dataOutputPath": "$.exception"
+         }
        }
     ],
+    "stateDataFilter": {
+       "dataOutputPath": "$.exception"
+    },
     "transition": {
        "nextState":"ApplyOrder"
     }
@@ -908,24 +917,30 @@ states:
       refname: provisionOrderFunction
       parameters:
         order: "$.order"
-  filter:
-    resultPath: "$.exception"
   onError:
   - expression:
       language: spel
       body: "$.exception.name is 'MissingOrderIdException'"
     transition:
       nextState: MissingId
+    errorDataFilter:
+      dataOutputPath: "$.exception"
   - expression:
       language: spel
       body: "$.exception.name is 'MissingOrderItemException'"
     transition:
       nextState: MissingItem
+    errorDataFilter:
+      dataOutputPath: "$.exception"
   - expression:
       language: spel
       body: "$.exception.name is 'MissingOrderQuantityException'"
     transition:
       nextState: MissingQuantity
+    errorDataFilter:
+      dataOutputPath: "$.exception"
+  stateDataFilter:
+    dataOutputPath: "$.exception"
   transition:
     nextState: ApplyOrder
 - name: MissingId
@@ -1019,23 +1034,29 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
           "parameters": {
             "name": "$.job.name"
           }
+       },
+       "actionDataFilter": {
+          "dataResultsPath": "$.jobuid" 
        }
     }
     ],
-    "filter": {
-       "resultPath": "$.jobuid"
-    },
     "onError": [
     {
      "expression": {
          "language": "spel",
          "body": "$.exception != null"
       },
+      "errorDataFilter": {
+        "dataOutputPath": "$.exception"
+      },
       "transition": {
         "nextState": "SubmitError"
       }
     }
     ],
+    "stateDataFilter": {
+       "dataOutputPath": "$.jobuid"
+    },
     "transition": {
        "nextState":"WaitForCompletion"
     }
@@ -1067,11 +1088,14 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
           "parameters": {
             "name": "$.jobuid"
           }
+       },
+       "actionDataFilter": {
+        "dataResultsPath": "$.jobstatus"
        }
     }
     ],
-    "filter": {
-       "resultPath": "$.jobstatus"
+    "stateDataFilter": {
+       "dataOutputPath": "$.jobstatus"
     },
     "transition": {
        "nextState":"DetermineCompletion"
@@ -1164,14 +1188,18 @@ states:
       refname: submitJob
       parameters:
         name: "$.job.name"
-  filter:
-    resultPath: "$.jobuid"
+    actionDataFilter:
+      dataResultsPath: "$.jobuid"
   onError:
   - expression:
       language: spel
       body: "$.exception != null"
+    errorDataFilter:
+      dataOutputPath: "$.exception"
     transition:
       nextState: SubmitError
+  stateDataFilter:
+    dataOutputPath: "$.jobuid"
   transition:
     nextState: WaitForCompletion
 - name: SubmitError
@@ -1192,8 +1220,10 @@ states:
       refname: checkJobStatus
       parameters:
         name: "$.jobuid"
-  filter:
-    resultPath: "$.jobstatus"
+    actionDataFilter:
+      dataResultsPath: "$.jobstatus"
+  stateDataFilter:
+    dataOutputPath: "$.jobstatus"
   transition:
     nextState: DetermineCompletion
 - name: DetermineCompletion

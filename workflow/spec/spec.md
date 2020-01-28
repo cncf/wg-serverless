@@ -351,7 +351,7 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | [expression](#Expression-Definition) | Boolean expression which consists of one or more Error operands and the Boolean operators | string |yes |
-| [filter](#Filter-Definition) | Error data filter | object | yes |
+| [errorDataFilter](#error-data-filter) | Error data filter definition | object | yes |
 | [transition](#Transitions) | Next transition of the workflow when expression matches | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -365,8 +365,8 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
        "description": "Boolean expression which consists of one or more Error operands and the Boolean operators",
        "$ref": "#/definitions/expression"
      },
-     "filter": {
-      "$ref": "#/definitions/filter",
+     "errorDataFilter": {
+      "$ref": "#/definitions/errordatafilter",
       "description": "Error data filter"
     },
     "transition": {
@@ -455,7 +455,7 @@ We will start defining each individual state:
 | type | State type | string | yes |
 | [end](#End-Definition) | Is this state an end state | object | no |
 | [eventsActions](#eventstate-eventactions) | Define what events are to be consumed and one or more actions to be performed | array | yes |
-| [filter](#Filter-Definition) | State data filter | object | yes |
+| [stateDataFilter](#state-data-filter) | State data filter definition| object | no |
 | [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
  
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -492,8 +492,8 @@ We will start defining each individual state:
                 "$ref": "#/definitions/eventactions"
             }
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "onError": {
             "type": "array",
@@ -539,7 +539,7 @@ those events are received.
 | timeout | Time period to wait for incoming events which match the expression (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | actionMode | Specifies how actions are to be performed (in sequence of parallel) | string | no |
 | [actions](#Action-Definition) | Actions to be performed if expression matches | array | yes |
-| [filter](#Filter-Definition) | Event data filter | object | yes |
+| [eventDataFilter](#event-data-filter) | Event data filter definition | object | no |
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -571,8 +571,8 @@ those events are received.
                 "$ref": "#/definitions/action"
             }
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "eventDataFilter": {
+          "$ref": "#/definitions/eventdatafilter"
         },
         "transition": {
           "description": "Next transition of the workflow after all the actions have been performed",
@@ -598,7 +598,7 @@ Once defined actions finished execution, a transition to the next state can occu
 | [functionref](#Functionref-Definition) | References a reusable function definition to be invoked | object | yes |
 | timeout |Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | integer | no |
 | [retry](#Retry-Definition) |Defines if function execution needs a retry | array | no |
-| [filter](#Filter-Definition) |Action data filter | object | yes |
+| [actionDataFilter](#action-data-filter) | Action data filter definition | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -623,8 +623,8 @@ Once defined actions finished execution, a transition to the next state can occu
                 "$ref": "#/definitions/retry"
             }
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "actionDataFilter": {
+          "$ref": "#/definitions/actiondatafilter"
         }
     },
     "required": ["functionref"]
@@ -757,7 +757,7 @@ Defines a transition from point A to point B in the serverless workflow. For mor
 | [end](#End-Definition) | Is this state an end state | object | no |
 | actionMode | Should actions be performed sequentially or in parallel | string | no |
 | [actions](#Action-Definition) | Actions to be performed | array | yes |
-| [filter](#Filter-Definition) | State data filter | object | yes |
+| [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Error-Handling) | States error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes (if end is not defined) |
 
@@ -800,8 +800,8 @@ Defines a transition from point A to point B in the serverless workflow. For mor
                 "$ref": "#/definitions/action"
             }
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         }, 
         "onError": {
             "type": "array",
@@ -853,7 +853,7 @@ Once all actions have been performed, a transition to another state can occur.
 | type |State type | string | yes |
 | [end](#End-Definition) | Is this state an end start | object | no | 
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
-| [filter](#Filter-Definition) |State data filter | object | yes |
+| [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
 | default |Next transition of the workflow if there is no match for any choices | object | yes (if end is not defined) |
 
@@ -895,8 +895,8 @@ Once all actions have been performed, a transition to another state can occur.
                 ]
             }
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         }, 
         "onError": {
             "type": "array",
@@ -1134,7 +1134,7 @@ There are four types of choices defined:
 | type |State type | string | yes |
 | [end](#End-Definition) |If this state an end state | object | no |
 | timeDelay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
-| [filter](#Filter-Definition) |State data filter | object | yes |
+| [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
 | [transition](#Transitions) |Next transition of the workflow after the delay | string | yes (if end is not defined) |
 
@@ -1167,8 +1167,8 @@ There are four types of choices defined:
             "type": "string",
             "description": "Amount of time (ISO 8601 format) to delay"
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "onError": {
             "type": "array",
@@ -1217,7 +1217,7 @@ Delay state waits for a certain amount of time before transitioning to a next st
 | type |State type | string | yes | 
 | [end](#End-Definition) | If this state and end state | object | no |
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
-| [filter](#Filter-Definition) |State data filter | object | yes |
+| [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
 | [transition](#Transitions) |Next transition of the workflow after all branches have completed execution | string | yes (if end is not defined) |
 
@@ -1254,8 +1254,8 @@ Delay state waits for a certain amount of time before transitioning to a next st
                 "$ref": "#/definitions/branch"
             }
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "onError": {
             "type": "array",
@@ -1390,7 +1390,7 @@ Parallel state must wait for all branches which have this property set to "true"
 | [end](#End-Definition) | If this state and end state | object | no |
 | waitForCompletion |If workflow execution must wait for sub-workflow to finish before continuing | boolean | yes |
 | workflowId |Sub-workflow unique id | boolean | no |
-| [filter](#Filter-Definition) |State data filter | object | yes |
+| [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#State-Exception-Handling) |States error handling definitions | array | no |
 | [transition](#Transitions) |Next transition of the workflow after subflow has completed | string | yes (if end is not defined) |
 
@@ -1428,8 +1428,8 @@ Parallel state must wait for all branches which have this property set to "true"
             "type": "string",
             "description": "Sub-workflow unique id."
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "onError": {
             "type": "array",
@@ -1495,8 +1495,8 @@ If this property is set to false, data access to parent's workflow should not be
 | type | State type | string | yes |
 | [end](#End-Definition) | If this state and end state | object | no |
 | inject | JSON object which can be set as state's data input and can be manipulated via filter | object | no |
-| [filter](#Filter-Definition) | State data filter | object | no |
-| [transition](#Transitions) | Next transition of the workflow after subflow has completed | string | yes (if end is not defined) |
+| [stateDataFilter](#state-data-filter) | State data filter | object | no |
+| [transition](#Transitions) | Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1527,8 +1527,8 @@ If this property is set to false, data access to parent's workflow should not be
             "type": "object",
             "description": "JSON object which can be set as states data input and can be manipulated via filters"
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "transition": {
           "description": "Next transition of the workflow after subflow has completed",
@@ -1666,8 +1666,8 @@ what you need as data output of the state. Let's say we have:
           }
         ]
      },
-     "filter": {
-        "outputPath": "$.people[?(@.age < 40)]"
+     "stateDataFilter": {
+        "dataOutputPath": "$.people[?(@.age < 40)]"
      },
      "transition": {
         "nextState": "GreetPersonState"
@@ -1694,8 +1694,8 @@ what you need as data output of the state. Let's say we have:
       lname: Mill
       address: 1234 SomeStreet
       age: 30
-  filter:
-    outputPath: "$.people[?(@.age < 40)]"
+  stateDataFilter:
+    dataOutputPath: "$.people[?(@.age < 40)]"
   transition:
     nextState: GreetPersonState
   ```
@@ -1727,7 +1727,7 @@ to test if your workflow behaves properly for the case when there are people who
 | timeDelay | Amount of time (ISO 8601 format) to wait between each iteration | string | no |
 | startsAt | Unique name of a states in the states array representing the starting state to be executed | string |yes |
 | [states](#State-Definition) | States to be executed for each of the elements of inputCollection | array | yes |
-| [filter](#Filter-Definition) | State data filter | object | no |
+| [stateDataFilter](#state-data-filter) | State data filter definition | object | no |
 | [onError](#Error-Handling) | States error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after state has completed | string | yes (if end is not defined) |
 
@@ -1819,8 +1819,8 @@ to test if your workflow behaves properly for the case when there are people who
                 ]
             }
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "onError": {
             "type": "array",
@@ -2387,7 +2387,6 @@ States can access and manipulate data via data filters. Since all data during wo
 in [JSON](https://tools.ietf.org/html/rfc7159) format, data filters use [JSONPath](https://github.com/json-path/JsonPath) queries 
 to do data manipulation/selection.
 
-
 There are several types of data filters defined:
 
 - [State Data Filter](#state-data-filter)
@@ -2873,9 +2872,8 @@ Let's take a look at a small example:
               "language": "spel",
               "body": "$.exception.name matches '^\\w+Exception$'"
             },
-            "filter": {
-              "resultPath": "$.trace",
-              "outputPath": "$.stateerror"
+            "errorDataFilter": {
+              "dataOutputPath": "$.trace"
             },
             "transition": {
               "nextState": "afterErrorState"
@@ -2909,9 +2907,8 @@ states:
   - expression:
       language: spel
       body: "$.exception.name matches '^\\w+Exception$'"
-    filter:
-      resultPath: "$.trace"
-      outputPath: "$.stateerror"
+    errorDataFilter:
+      dataOutputPath: "$.trace"
     transition:
       nextState: afterErrorState
   transition:
@@ -2950,9 +2947,8 @@ workflow definition. Let's take a look:
          "language": "spel",
          "body": "$.exception.name matches '^\\w+Exception$'"
        },
-       "filter": {
-         "resultPath": "$.trace",
-         "outputPath": "$.stateerror"
+       "errorDataFilter": {
+         "dataOutputPath": "$.trace"
        },
        "transition": {
           "nextState": "afterErrorState"
@@ -3008,9 +3004,8 @@ onError:
 - expression:
     language: spel
     body: "$.exception.name matches '^\\w+Exception$'"
-  filter:
-    resultPath: "$.trace"
-    outputPath: "$.stateerror"
+  errorDataFilter:
+    dataOutputPath: "$.trace"
   transition:
     nextState: afterErrorState
 functions:
