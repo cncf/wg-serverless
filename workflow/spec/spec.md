@@ -2383,18 +2383,23 @@ There are two of rules to consider here:
 
 ### State information filtering
 
-States can access and manipulate data via data filters. There are several types of data filters defined:
+States can access and manipulate data via data filters. Since all data during workflow execution is described
+in [JSON](https://tools.ietf.org/html/rfc7159) format, data filters use [JSONPath](https://github.com/json-path/JsonPath) queries 
+to do data manipulation/selection.
+
+
+There are several types of data filters defined:
 
 - [State Data Filter](#state-data-filter)
 - [Action Data Filter](#action-data-filter)
 - [Event Data Filter](#event-data-filter)
 - [Error Data Filter](#error-data-filter)
 
-All states can define state and error data filters. States which can receive events ([Event states](#Event-State)) can define event data filters, and states
+All states can define state and error data filters. States which can consume events ([Event states](#Event-State)) can define event data filters, and states
 that can perform actions ([Event states](#Event-State), [Operation states](#Operation-State)) can define action data filters for each of the 
 actions they perform.
 
-### <a name="state-data-filter"></a> State information filtering - State Data Filter
+#### <a name="state-data-filter"></a> State information filtering - State Data Filter
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -2492,7 +2497,7 @@ The first way would be to use both dataInputPath, and dataOutputPath:
 ```
 
 The states data input filter selects all the vegetables from the main data input. Once all actions have performed, before the state transition
-or workflow execution completion (if this is an end state), the dataOutput path of the state filter selects only the vegetables which are "veggie like".
+or workflow execution completion (if this is an end state), the dataOutputPath of the state filter selects only the vegetables which are "veggie like".
 
 <p align="center">
 <img src="media/state-data-filter-example2.png" with="300px" height="400px" alt="State Data Filter Example"/>
@@ -2514,7 +2519,7 @@ The second way would be to directly filter only the "veggie like" vegetables wit
 }
 ```
 
-### <a name="action-data-filter"></a> State information filtering - Action Data Filter
+#### <a name="action-data-filter"></a> State information filtering - Action Data Filter
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -2557,7 +2562,7 @@ To give an example, let's say we have an action which returns a list of breads a
 </p>
 
 
-### <a name="event-data-filter"></a> State information filtering - Event Data Filter
+#### <a name="event-data-filter"></a> State information filtering - Event Data Filter
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -2581,10 +2586,9 @@ To give an example, let's say we have an action which returns a list of breads a
 </details>
 
 CloudEvents can be consumed by [Event states](#Event-State) and trigger one or more [actions](#Action-Definition) to be performed. CloudEvents
-can include data which needs to be merged with the state data before actions are executed. 
+can include data which needs to be merged with the state data before associated actions are executed. 
 You can filter the event data with the dataOutputPath parameter, selecting only the portion of the event data
 that you need to be merged with the state data. 
-Event data filters can only be currently used within Event state definitions.
 
 Here is an example using an even filter:
 
@@ -2592,7 +2596,7 @@ Here is an example using an even filter:
 <img src="media/event-data-filter-example1.png" with="300px" height="400px" alt="Event Data Filter Example"/>
 </p>
 
-### <a name="error-data-filter"></a> State information filtering - Error Data Filter
+#### <a name="error-data-filter"></a> State information filtering - Error Data Filter
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -2625,97 +2629,194 @@ Here is an example using an error filter:
 <img src="media/error-data-filter-example1.png" with="300px" height="400px" alt="Error Data Filter Example"/>
 </p>
 
-TODO - REMOVE BELOW
 
+#### <a name="error-data-filter"></a> State information filtering - Using multiple filters
 
-Serverless Workflow data is represented in [JSON](https://www.json.org/json-en.html) format
+As [Event states](#Event-State) can take advantage of all defined filters, it is probably the best way to 
+show how we can combine them all to filter state data. 
 
+Let's say we have a workflow which consumes events defining a customer arrival (to your store for example), 
+and then lets us know how to greet this customer in different languages. We could model this workflow as follows:
 
-Within states the [JSON](https://tools.ietf.org/html/rfc7159) data can be accessed and manipulated via [filters](#Filter-Definition). 
-Filters are also used within [actions](#Action-Definition) and [events]((#eventstate-eventdef)). 
-Filters use [JSONPath](https://github.com/json-path/JsonPath) to do things like select a portion of data that you care about, filter unwanted information, 
-or combine/merge data to pass to the next state or action. The [JSONPath](https://github.com/json-path/JsonPath) expression must start with "$.". 
+```json
+{
+    "name": "Greet Customers when they arrive",
+    "startsAt": "WaitForCustomerToArrive",
+    "events": [{
+        "name": "CustomerArrivesEvent",
+        "type": "customer-arrival-type",
+        "source": "customer-arrival-event-source"
+     }],
+    "functions": [{
+        "name": "greetingFunction",
+        "resource": "functionResourse"
+    }],
+    "states":[
+        {
+            "name":"WaitForCustomerToArrive",
+            "type":"EVENT",
+            "eventsActions": [{
+                "expression": {
+                    "language": "spel",
+                    "body": "type eq \"customer-arrival-type\""
+                },
+                "eventDataFilter": {
+                    "dataInputPath": "$.customer"
+                },
+                "actions":[
+                    {
+                        "functionref": {
+                            "refname": "greetingFunction",
+                            "parameters": {
+                                "greeting": "$.languageGreetings.spanish",
+                                "customerName": "$.customer.name"
+                            }
+                        },
+                        "actionDataFilter": {
+                            "dataInputPath": "$.",
+                            "dataResultsPath": "$.finalCustomerGreeting"
+                        }
+                    }
+                ]
+            }],
+            "stateDataFilter": {
+                "dataInputPath": "$.hello",
+                "dataOutputPath": "$.finalCustomerGreeting"
+            },
+            "end": true
+        }
+    ]
+}
+```
+
+The example workflow contains an event state which consumes CloudEvents of type "customer-arrival-type", and then 
+calls the "greetingFunction" serverless function passing in the greeting in spanish and the name of the customer to greet.
+
+The workflow data input when starting workflow execution is assumed to include greetings in different languages:
+
+```json
+{
+  "hello": {
+    "english": "Hello",
+    "spanish": "Hola",
+    "german": "Hallo",
+    "russian": "Здравствуйте"
+  },
+  "goodbye": {
+    "english": "Hello",
+    "spanish": "Hola",
+    "german": "Hallo",
+    "russian": "Здравствуйте"
+  }
+}
+```
+We also assume for this example that the CloudEvent that our event state is set to consume (has the "customer-arrival-type" type) include the data:
+
+```json
+{
+  "data": {
+     "customer": {
+       "name": "John Michaels",
+       "address": "111 Some Street, SomeCity, SomeCountry",
+       "age": 40
+     }
+  }
+}
+```
+
+Here is a sample diagram showing our workflow, each numbered step on this diagram shows a certain defined point during
+workflow execution at which data filters are invoked and correspond to the numbered items below.
+
+<p align="center">
+<img src="media/using-multiple-filters-example.png" with="400px" height="400px" alt="Using Multple Filters Example"/>
+</p>
+
+1. **Workflow execution starts**: Workflow data is passed to our "WaitForCustomerToArrive" event state as data input.
+Workflow transitions to its starting state, namely the "WaitForCustomerToArrive" event state.
+
+The event state **stateDataFilter** is invoked to filter this data input. Its "dataInputPath" is evaluated and filters
+ only the "hello" greetings in different languages. At this point our event state data contains:
  
-Filters have three properties namely inputPath, outputPath, an resultPath.
+```json
+{
+  "hello": {
+      "english": "Hello",
+      "spanish": "Hola",
+      "german": "Hallo",
+      "russian": "Здравствуйте"
+    }
+}
+```
 
-**InputPath** is used to select a portion of the states, event, or action data input.
+2. **CloudEvent of type "customer-arrival-type" is consumed**: First the eventDataFilter is triggered. Its "dataInputPath"
+expression selects the "customer" object from the events data and places it into the state data.
 
-<p align="center">
-<img src="media/state-filter-inputpath.png" with="350px" height="500px" alt="State Filter InputPath"/>
-</p>
+At this point our event state data contains:
 
-**OutputPath** is used to select a portion of the states or actions data output.
+```json
+{
+  "hello": {
+      "english": "Hello",
+      "spanish": "Hola",
+      "german": "Hallo",
+      "russian": "Здравствуйте"
+    },
+    "customer": {
+       "name": "John Michaels",
+       "address": "111 Some Street, SomeCity, SomeCountry",
+       "age": 40
+     }
+}
+```
 
-<p align="center">
-<img src="media/state-filter-outputpath.png" with="350px" height="500px" alt="State Filter OutputPath"/>
-</p>
+Secondly the actions associated with this event 
+are executed.  Before the first action is executed, its actionDataFilter is invoked. Its "dataInputPath" expression selects 
+the entire state data as the data available to functions that should be executed. Its "dataResultsPath" expression
+specifies that results of all functions executed in this action should be placed back to the state data as part 
+of a new "finalCustomerGreeting" object.
 
-**ResultPath** is used to select a portion of the actions output and use it to replace or combine it with the states data output.
-
-<p align="center">
-<img src="media/state-filter-resultpath.png" with="350px" height="500px" alt="State Filter ResultPath"/>
-</p>
+The action then calls the "greetingFunction" serverless function passing in as parameters the spanish greeting and the name of the customer that arrived.
  
-Serverless workflow defines four types of data filters:
+We assume that for this example "greetingFunction" returns:
 
-- **Event Filter**
-  - Invoked when data is passed from an event to the current state
-- **State Filter**
-  - Invoked when data is passed from the previous state to the current state
-  - Invoked when data is passed from the current state to the next state
-- **Action Filter** 
-  - Invoked when data is passed from the current state to the first action
-  - Invoked when data is passed from an action to another action
-  - Invoked when data is passed from the last action to the current state
-- **Error Filter** 
-  - Invoked when a state encounters runtime exceptions
+```
+"Hola John Michaels!"
+```
 
-The following diagrams show different filters in an Event state. Note that data merging can depend on the "actionMode" of
-the event states actions (sequential or parallel).
+Note that in case of multiple actions with each containing an actionDataFilter, you must be careful for their results 
+not to overwrite each other after actions complete and their results are added to the state data.
+Also note that in case of parallel execution of actions, the results of only those that complete before the state 
+transitions to the next one or ends workflow execution (end state) can be considered to be added to the state data.
 
-<p align="center">
-<img src="media/event-state-filters-sequential.png" with="350px" height="500px" alt="Event State Filters Sequential"/>
-</p>
+3. **Execution of actions complete**: The results of action executions as defined in the actionDataFilter are placed into the 
+states data under the "finalCustomerGreeting" object. So at this point our event state data contains:
 
-<p align="center">
-<img src="media/event-state-filters-parallel.png" with="350px" height="500px" alt="Event State Filters Parallel"/>
-</p>
+```json
+{
+  "hello": {
+      "english": "Hello",
+      "spanish": "Hola",
+      "german": "Hallo",
+      "russian": "Здравствуйте"
+    },
+    "customer": {
+       "name": "John Michaels",
+       "address": "111 Some Street, SomeCity, SomeCountry",
+       "age": 40
+     },
+     "finalCustomerGreeting": "Hola John Michaels!"
+}
+```
 
-As previously mentioned [CloudEvents](https://cloudevents.io/) are first-class citizens of serverless workflows. Filters can be used
-just as previously mentioned to filter CloudEvents seamlessly.  
+Since our event state has performed all actions it is ready to either transition to the next state or end workflow execution if it is an end state.
+Before this happens tho, the stateDataFilter is again invoked to filter this states data, specifically the "dataOutputPath" expression
+selects only the "finalCustomerGreeting" object to make it the data output of the state.
 
-The diagram below shows data flow through a Serverless Workflow that includes an
-Event state that invokes two serverless functions. Output data from one state is
-passed as input data to the next state. Filters are used to filter and transform
-the data on ingress to and egress from each state. Input data from a previous
-state may be delivered to serverless function when it is invoked from an
-Operation state in the Workflow.
+Because our event state is also an end state, its data output becomes the [workflow data output](#Workflow-data-output) namely:
 
-Data contained in a response from a serverless function is sent as output data
-to the next state. If a state (Operation state or Event state) includes a list
-of sequential actions, data contained in the response from one serverless
-function is filtered and then sent in the request to the next function.
-
-In an Event state, CloudEvent metadata received in a request from an event
-source may be transformed and combined with data received from a previous state
-before it is delivered to a serverless function. Likewise CloudEvent metadata
-received in a response from a serverless function may be transformed and
-combined with data received from a previous state before it is delivered in a
-response sent to the event source.
-
-<p align="center">
-<img src="media/event-state-info-passing1.png" with="350px" height="500px" alt="Event State Information Passing"/>
-</p>
-
-There may be cases where an event source such as an API gateway expects to
-receive a response from the workflow. In this case CloudEvent metadata received
-in a response from a serverless function may be transformed and combined with
-data received from a previous state before it is delivered in a response sent to
-the event source as shown below.
-
-<p align="center">
-<img src="media/event-state-info-passing2.png" with="350px" height="500px" alt="Event State Information Passing"/>
-</p>
+```
+"Hola John Michaels!"
+```
 
 ### Workflow data output
 
