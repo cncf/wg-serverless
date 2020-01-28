@@ -2782,10 +2782,7 @@ We assume that for this example "greetingFunction" returns:
 "Hola John Michaels!"
 ```
 
-Note that in case of multiple actions with each containing an actionDataFilter, you must be careful for their results 
-not to overwrite each other after actions complete and their results are added to the state data.
-Also note that in case of parallel execution of actions, the results of only those that complete before the state 
-transitions to the next one or ends workflow execution (end state) can be considered to be added to the state data.
+Which becomes the result of the action.
 
 **(4) Event State Completes Workflow Execution**: The results of action executions as defined in the actionDataFilter are placed into the 
 states data under the "finalCustomerGreeting" object. So at this point our event state data contains:
@@ -2816,6 +2813,11 @@ Because our event state is also an end state, its data output becomes the final 
 ```
 "Hola John Michaels!"
 ```
+
+Note that in case of multiple actions with each containing an actionDataFilter, you must be careful for their results 
+not to overwrite each other after actions complete and their results are added to the state data.
+Also note that in case of parallel execution of actions, the results of only those that complete before the state 
+transitions to the next one or ends workflow execution (end state) can be considered to be added to the state data.
 
 ### Workflow data output
 
