@@ -12,7 +12,7 @@ of their functional flow.
 
 The goal of the Serverless Workflow sub-group is two-fold:
 - Come up with a standard language for users to specify their serverless application workflow, as well as 
-- Provide a Cloud Provider agnostic API to integrate Workflows into the ecosystem
+- Provide a Cloud Provider agnostic API to integrate Workflows into the ecosystem.
 
 This will facilitate the portability of serverless applications across different vendor platforms.
 
