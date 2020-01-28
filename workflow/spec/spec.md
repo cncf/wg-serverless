@@ -2429,11 +2429,11 @@ actions they perform.
 
 State data filters defines the states data input and data output filtering. 
 
-The state filters inputPath is applied when the workflow transitions to the current state and it receives its data input. 
+The state data filters inputPath is applied when the workflow transitions to the current state and it receives its data input. 
 It filters this data input selecting parts of it (only the selected data is considered part of the states data during its execution). 
 If inputPath is not defined, or it does not select any parts of the states data input, the states data input is not filtered.
 
-The state filter outputPath is applied right before the state transitions to the next state defined. It filters the states data
+The state data filter outputPath is applied right before the state transitions to the next state defined. It filters the states data
 output to be passed as data input to the transitioning state. If outputPath is not defined, or it does not
 select any parts of the states data output, the states data output is not filtered.
 
@@ -2547,15 +2547,14 @@ The second way would be to directly filter only the "veggie like" vegetables wit
 
 </details>
 
-[Actions](#Action-Definition) have access to the state data. They can filter it before executing any functions via the dataInputPath parameter. 
-This is useful if you want to restrict the data function definitions have available to pass to serverless function as parameters.
+[Actions](#Action-Definition) have access to the state data. They can filter this data using an action data filter (dataInputPath) before executing any functions. 
+This is useful if you want to restrict the data to be passed as parameters to serverless functions during action executions.
 
-Actions can execute [functions](#Function-Definition). The results data of these functions is considered the output of the action which is then after completion 
+Actions can define [functions](#Function-Definition). The results data of these functions is considered the output of the action which is then after completion 
 merged back into the state data. You can filter the results of actions with the dataResultsPath parameter, to only select
 parts of the action results that need to be merged back into the state data. 
 
 To give an example, let's say we have an action which returns a list of breads and we want to add this list our fruits and vegetables data:
-
 
 <p align="center">
 <img src="media/action-data-filter-example1.png" with="300px" height="400px" alt="Action Data Filter Example"/>
@@ -2632,7 +2631,7 @@ Here is an example using an error filter:
 
 #### <a name="error-data-filter"></a> State information filtering - Using multiple filters
 
-As [Event states](#Event-State) can take advantage of all defined filters, it is probably the best way to 
+As [Event states](#Event-State) can take advantage of all defined data filters, it is probably the best way to 
 show how we can combine them all to filter state data. 
 
 Let's say we have a workflow which consumes events defining a customer arrival (to your store for example), 
@@ -2703,10 +2702,10 @@ The workflow data input when starting workflow execution is assumed to include g
     "russian": "Здравствуйте"
   },
   "goodbye": {
-    "english": "Hello",
-    "spanish": "Hola",
-    "german": "Hallo",
-    "russian": "Здравствуйте"
+    "english": "Goodbye",
+    "spanish": "Adiós",
+    "german": "Auf Wiedersehen",
+    "russian": "Прощай"
   }
 }
 ```
@@ -2731,7 +2730,7 @@ workflow execution at which data filters are invoked and correspond to the numbe
 <img src="media/using-multiple-filters-example.png" with="400px" height="400px" alt="Using Multple Filters Example"/>
 </p>
 
-1. **Workflow execution starts**: Workflow data is passed to our "WaitForCustomerToArrive" event state as data input.
+**(1) Workflow execution starts**: Workflow data is passed to our "WaitForCustomerToArrive" event state as data input.
 Workflow transitions to its starting state, namely the "WaitForCustomerToArrive" event state.
 
 The event state **stateDataFilter** is invoked to filter this data input. Its "dataInputPath" is evaluated and filters
@@ -2748,7 +2747,7 @@ The event state **stateDataFilter** is invoked to filter this data input. Its "d
 }
 ```
 
-2. **CloudEvent of type "customer-arrival-type" is consumed**: First the eventDataFilter is triggered. Its "dataInputPath"
+**(2) CloudEvent of type "customer-arrival-type" is consumed**: First the eventDataFilter is triggered. Its "dataInputPath"
 expression selects the "customer" object from the events data and places it into the state data.
 
 At this point our event state data contains:
@@ -2769,8 +2768,8 @@ At this point our event state data contains:
 }
 ```
 
-Secondly the actions associated with this event 
-are executed.  Before the first action is executed, its actionDataFilter is invoked. Its "dataInputPath" expression selects 
+**(3) Event state performs its actions**: 
+Before the first action is executed, its actionDataFilter is invoked. Its "dataInputPath" expression selects 
 the entire state data as the data available to functions that should be executed. Its "dataResultsPath" expression
 specifies that results of all functions executed in this action should be placed back to the state data as part 
 of a new "finalCustomerGreeting" object.
@@ -2788,7 +2787,7 @@ not to overwrite each other after actions complete and their results are added t
 Also note that in case of parallel execution of actions, the results of only those that complete before the state 
 transitions to the next one or ends workflow execution (end state) can be considered to be added to the state data.
 
-3. **Execution of actions complete**: The results of action executions as defined in the actionDataFilter are placed into the 
+**(4) Event State Completes Workflow Execution**: The results of action executions as defined in the actionDataFilter are placed into the 
 states data under the "finalCustomerGreeting" object. So at this point our event state data contains:
 
 ```json
@@ -2812,7 +2811,7 @@ Since our event state has performed all actions it is ready to either transition
 Before this happens tho, the stateDataFilter is again invoked to filter this states data, specifically the "dataOutputPath" expression
 selects only the "finalCustomerGreeting" object to make it the data output of the state.
 
-Because our event state is also an end state, its data output becomes the [workflow data output](#Workflow-data-output) namely:
+Because our event state is also an end state, its data output becomes the final [workflow data output](#Workflow-data-output) namely:
 
 ```
 "Hola John Michaels!"
