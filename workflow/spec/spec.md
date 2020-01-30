@@ -758,13 +758,14 @@ Being able to match events based on their event payload (data) is important if y
 produce a high number of events and our workflow event states should not trigger actions 
 on every single one.
 
-Note that a Serverless workflow definition cannot be a substitute to a Complex Event Processing or Event Stream processing engine.
-Complex event rules which can include things like temporal reasoning are hard to express as a single expression in the workflow 
-definition. Serverless workflows are intended to consume "orchestration events". 
+Note that the specification does not provide means to express complex and temporal event reasoning / expressions.
+In cases where you might have complex event rules it is typical to use a CEP (Complex Event Processing) middleware 
+entity that handles these rules and produces a CloudEvent that can be consumed to trigger actions defined in
+workflow event states.
 
-Looking at our previous example, there may be many sensors and services involved that combined make up 
-the fire alarm. Complex rules on how to combine events send from all these different sensors and sources should be processed 
-by such complex event processing services which then can issue the "FireAlarmEvent" event which as we defined 
+To explain this further given our previous example, there may be many sensors and services involved that in combination make up 
+the fire alarm event. Complex rules on how to reason over events send from all these different sensors and sources should be processed 
+by such CEP services which then can issue the "FireAlarmEvent" event that as we defined 
 should trigger actions in our workflow event state.
 
 #### Action Definition
