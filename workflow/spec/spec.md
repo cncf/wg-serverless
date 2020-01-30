@@ -664,7 +664,7 @@ so if our workflow definition has for example:
 ```
 
 event matching should be performed on the "type", "source", and "dataContentType" properties of the referenced "FireAlarmEvent" event definition.
-An event that would match or eventRef and trigger associated actions could be:
+An event that would match and trigger associated actions could be:
 
 ```json
 {
@@ -682,8 +682,8 @@ An event that would match or eventRef and trigger associated actions could be:
 }
 ```
 
-You can add additional matching rules based on the data via the dataExpression property.
-This expression is evaluated against the event payload (its data property).
+You can add additional matching rules based on the data via the "dataExpression" property.
+This expression is evaluated against the event payload.
 Going back to our example, we can change the workflow definition to:
 
 ```json
@@ -717,7 +717,7 @@ Going back to our example, we can change the workflow definition to:
 ]
 }
 ```
-In this case we only considering "FireAlarmEvent" events which define a temperature over 90 in their event payload.
+In this case we only considering "FireAlarmEvent" events which define a temperature over 90 degrees in their event payload.
 So an event with format:
 
 ```json
