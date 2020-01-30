@@ -1389,14 +1389,14 @@ CloudEvent upon completion of the workflow could look like:
         }
     }
     ],
-    "filter": {
-        "outputPath": "$.provisioningResults"
+    "stateDataFilter": {
+        "dataOutputPath": "$.provisionedOrders"
     },
     "end": {
         "type": "EVENT",
         "produceEvent": {
             "nameRef": "provisioningCompleteEvent",
-            "data": "$.provisioningResults.provisionedOrders"
+            "data": "$.provisionedOrders"
         }
     }
 }
@@ -1434,13 +1434,14 @@ states:
           order: "$.order"
     end:
       type: DEFAULT
-  filter:
-    outputPath: "$.provisioningResults"
+  stateDataFilter:
+    dataOutputPath: "$.provisionedOrders"
   end:
     type: EVENT
     produceEvent:
       nameRef: provisioningCompleteEvent
-      data: "$.provisioningResults.provisionedOrders"
+      data: "$.provisionedOrders"
+
 ```
 </td>
 </tr>
