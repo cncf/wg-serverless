@@ -167,8 +167,8 @@ becomes the workflow data output (as it is an end state):
      "actionMode":"SEQUENTIAL",
      "actions":[  
         {  
-           "functionref": {
-              "refname": "greetingFunction",
+           "functionRef": {
+              "name": "greetingFunction",
               "parameters": {
                 "name": "$.greet.name"
               }
@@ -203,8 +203,8 @@ states:
   type: OPERATION
   actionMode: SEQUENTIAL
   actions:
-  - functionref:
-      refname: greetingFunction
+  - functionRef:
+      name: greetingFunction
       parameters:
         name: "$.greet.name"
     actionDataFilter:
@@ -300,6 +300,13 @@ filters what is selected to be the state data output which then becomes the work
 "name": "Event Based Greeting Workflow",
 "description": "Event Based Greeting",
 "startsAt": "Greet",
+"events": [
+ {
+  "name": "GreetingEvent",
+  "type": "greetingEventType",
+  "source": "greetingEventSource"
+ }
+],
 "functions": [
   {
      "name": "greetingFunction",
@@ -311,17 +318,16 @@ filters what is selected to be the state data output which then becomes the work
      "name":"Greet",
      "type":"EVENT",
      "eventsActions": [{
-         "expression": {
-           "language": "spel",
-           "body": "type eq \"greetingEventType\""
+         "eventRef": {
+            "name": "GreetingEvent"
          },
          "eventDataFilter": {
             "inputPath": "$.data.greet"
          },
          "actions":[  
             {  
-               "functionref": {
-                  "refname": "greetingFunction",
+               "functionRef": {
+                  "name": "greetingFunction",
                   "parameters": {
                     "name": "$.greet.name"
                   }
@@ -346,6 +352,10 @@ filters what is selected to be the state data output which then becomes the work
 name: Event Based Greeting Workflow
 description: Event Based Greeting
 startsAt: Greet
+events:
+- name: GreetingEvent
+  type: greetingEventType
+  source: greetingEventSource
 functions:
 - name: greetingFunction
   resource: functionResourse
@@ -353,14 +363,13 @@ states:
 - name: Greet
   type: EVENT
   eventsActions:
-  - expression:
-      language: spel
-      body: type eq "greetingEventType"
+  - eventRef:
+      name: GreetingEvent
     eventDataFilter:
       inputPath: "$.data.greet"
     actions:
-    - functionref:
-        refname: greetingFunction
+    - functionRef:
+        name: greetingFunction
         parameters:
           name: "$.greet.name"
   stateDataFilter:
@@ -434,8 +443,8 @@ result of the workflow execution.
     "actionMode":"SEQUENTIAL",
     "actions":[  
        {  
-          "functionref": {
-             "refname": "solveMathExpressionFunction",
+          "functionRef": {
+             "name": "solveMathExpressionFunction",
              "parameters": {
                "expression": "$.singleexpression"
              }
@@ -479,8 +488,8 @@ states:
     type: OPERATION
     actionMode: SEQUENTIAL
     actions:
-    - functionref:
-        refname: solveMathExpressionFunction
+    - functionRef:
+        name: solveMathExpressionFunction
         parameters:
           expression: "$.singleexpression"
     end:
@@ -692,8 +701,8 @@ If the applicants age is over 18 we start the application (subflow state). Other
         "actionMode":"SEQUENTIAL",
         "actions":[  
            {  
-              "functionref": {
-                 "refname": "sendRejectionEmailFunction",
+              "functionRef": {
+                 "name": "sendRejectionEmailFunction",
                  "parameters": {
                    "applicant": "$.applicant"
                  }
@@ -742,8 +751,8 @@ states:
   type: OPERATION
   actionMode: SEQUENTIAL
   actions:
-  - functionref:
-      refname: sendRejectionEmailFunction
+  - functionRef:
+      name: sendRejectionEmailFunction
       parameters:
         applicant: "$.applicant"
   end:
@@ -810,8 +819,8 @@ The data output of the workflow contains the information of the exception caught
     "actionMode":"SEQUENTIAL",
     "actions":[  
        {  
-          "functionref": {
-             "refname": "provisionOrderFunction",
+          "functionRef": {
+             "name": "provisionOrderFunction",
              "parameters": {
                "order": "$.order"
              }
@@ -913,8 +922,8 @@ states:
   type: OPERATION
   actionMode: SEQUENTIAL
   actions:
-  - functionref:
-      refname: provisionOrderFunction
+  - functionRef:
+      name: provisionOrderFunction
       parameters:
         order: "$.order"
   onError:
@@ -1029,8 +1038,8 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
     "actionMode":"SEQUENTIAL",
     "actions":[  
     {  
-       "functionref": {
-          "refname": "submitJob",
+       "functionRef": {
+          "name": "submitJob",
           "parameters": {
             "name": "$.job.name"
           }
@@ -1083,8 +1092,8 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
     "actionMode":"SEQUENTIAL",
     "actions":[  
     {  
-      "functionref": {
-          "refname": "checkJobStatus",
+      "functionRef": {
+          "name": "checkJobStatus",
           "parameters": {
             "name": "$.jobuid"
           }
@@ -1130,8 +1139,8 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
    "actionMode":"SEQUENTIAL",
    "actions":[  
    {  
-      "functionref": {
-         "refname": "reportJobSuceeded",
+      "functionRef": {
+         "name": "reportJobSuceeded",
          "parameters": {
            "name": "$.jobuid"
          }
@@ -1148,7 +1157,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
   "actionMode":"SEQUENTIAL",
   "actions":[  
   {  
-     "functionref": {
+     "functionRef": {
         "name": "reportJobFailed",
         "parameters": {
           "name": "$.jobuid"
@@ -1184,8 +1193,8 @@ states:
   type: OPERATION
   actionMode: SEQUENTIAL
   actions:
-  - functionref:
-      refname: submitJob
+  - functionRef:
+      name: submitJob
       parameters:
         name: "$.job.name"
     actionDataFilter:
@@ -1216,8 +1225,8 @@ states:
   type: OPERATION
   actionMode: SEQUENTIAL
   actions:
-  - functionref:
-      refname: checkJobStatus
+  - functionRef:
+      name: checkJobStatus
       parameters:
         name: "$.jobuid"
     actionDataFilter:
@@ -1244,8 +1253,8 @@ states:
   type: OPERATION
   actionMode: SEQUENTIAL
   actions:
-  - functionref:
-      refname: reportJobSuceeded
+  - functionRef:
+      name: reportJobSuceeded
       parameters:
         name: "$.jobuid"
   end:
@@ -1254,7 +1263,7 @@ states:
   type: OPERATION
   actionMode: SEQUENTIAL
   actions:
-  - functionref:
+  - functionRef:
       name: reportJobFailed
       parameters:
         name: "$.jobuid"

@@ -168,6 +168,18 @@
           "type": "string",
           "description": "CloudEvent type"
         },
+        "subject": {
+          "type": "string",
+          "description": "CloudEvent data subject"
+        },
+        "dataContentType": {
+          "type": "string",
+          "description": "CloudEvent data content type"
+        },
+        "specVersion": {
+          "type": "string",
+          "description": "CloudEvents specification version"
+        },
         "correlationToken": {
           "type": "string",
           "description": "Path used for event correlation."
@@ -182,13 +194,13 @@
     "eventactions": {
       "type": "object",
       "properties": {
-        "expression": {
-          "description": "Boolean expression which consists of one or more Event operands and the Boolean operators",
-          "$ref": "#/definitions/expression"
+        "eventRef": {
+          "description": "References an event definition. If incoming events match the eventRef criteria associated actions are executed",
+          "$ref": "#/definitions/eventref"
         },
         "timeout": {
           "type": "string",
-          "description": "Time period to wait for incoming events which match the expression (ISO 8601 format)"
+          "description": "Time period to wait for incoming events which match the eventRef (ISO 8601 format)"
         },
         "actionMode": {
           "type": "string",
@@ -201,7 +213,7 @@
         },
         "actions": {
           "type": "array",
-          "description": "Actions to be performed if expression matches",
+          "description": "Actions to be performed if events match the eventRef criteria",
           "items": {
             "type": "object",
             "$ref": "#/definitions/action"
@@ -225,7 +237,7 @@
     "action": {
       "type": "object",
       "properties": {
-        "functionref": {
+        "functionRef": {
           "description": "References a reusable function definition to be invoked",
           "$ref": "#/definitions/functionref"
         },
@@ -242,7 +254,7 @@
         }
       },
       "required": [
-        "functionref"
+        "functionRef"
       ]
     },
     "retry": {
@@ -299,7 +311,7 @@
       "type": "object",
       "description": "Function Reference",
       "properties": {
-        "refname": {
+        "name": {
           "type": "string",
           "desription": "Name of the referenced function"
         },
@@ -309,7 +321,7 @@
         }
       },
       "required": [
-        "refname"
+        "name"
       ]
     },
     "branch": {
@@ -1203,6 +1215,23 @@
         }
       },
       "required": []
+    },
+    "eventref": {
+      "type": "object",
+      "description": "Event Reference",
+      "properties": {
+        "name": {
+          "type": "string",
+          "desription": "Name of the referenced event"
+        },
+        "dataExpression": {
+          "description": "Expression that can be used to restrict events based on their data content",
+          "$ref": "#/definitions/expression"
+        }
+      },
+      "required": [
+        "name"
+      ]
     }
   }
 }

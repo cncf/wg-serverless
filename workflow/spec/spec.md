@@ -267,10 +267,12 @@ Workflow implementations can use this token to map a particular event to a parti
 | name | Unique event name | string |yes |
 | source | CloudEvent source | string | yes |
 | type | CloudEvent type | string | yes |
+| subject | CloudEvent subject | string | no |
+| dataContentType | CloudEvent data content type | string | no |
+| specVersion | CloudEvent specification version | string | no |
 | correlationToken | Location Path in the event message used to retrieve a token for event correlation | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
-
 
 ```json
 {
@@ -287,6 +289,18 @@ Workflow implementations can use this token to map a particular event to a parti
         "type": {
             "type": "string",
             "description": "CloudEvent type"
+        },
+        "subject": {
+          "type": "string",
+          "description": "CloudEvent data subject"
+        },
+        "dataContentType": {
+          "type": "string",
+          "description": "CloudEvent data content type"
+        },
+        "specVersion": {
+          "type": "string",
+          "description": "CloudEvents specification version"
         },
         "correlationToken": {
             "type": "string",
@@ -529,7 +543,7 @@ those events are received.
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [expression](#Expression-Definition) | Boolean expression which consists of one or more Event operands and the Boolean operators. If is true all defined actions are executed | object | yes |
+| [eventRef](#EventRef-Definition) | References an [event definition](#Event Definition). If incoming events match the eventRef criteria associated actions are executed | object | yes |
 | timeout | Time period to wait for incoming events which match the expression (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | actionMode | Specifies how actions are to be performed (in sequence of parallel) | string | no |
 | [actions](#Action-Definition) | Actions to be performed if expression matches | array | yes |
@@ -543,13 +557,13 @@ those events are received.
     "type": "object",
     "description": "Defines what events to act upon and actions to be performed",
     "properties": {
-        "expression": {
-          "description": " Boolean expression which consists of one or more Event operands and the Boolean operators",
-          "$ref": "#/definitions/expression"
+        "eventRef": {
+          "description": "References an event definition. If incoming events match the eventRef criteria associated actions are executed",
+          "$ref": "#/definitions/eventref"
         },
         "timeout": {
             "type": "string",
-            "description": "Time period to wait for incoming events which match the expression (ISO 8601 format)"
+            "description": "Time period to wait for incoming events which match the eventRef (ISO 8601 format)"
         }, 
         "actionMode": {
             "type" : "string",
@@ -559,7 +573,7 @@ those events are received.
         },
         "actions": {
             "type": "array",
-            "description": "Actions to be performed if expression matches",
+            "description": "Actions to be performed if events match the eventRef criteria",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/action"
@@ -585,11 +599,170 @@ a set of defined actions is performed in sequence or in parallel.
 
 Once defined actions finished execution, a transition to the next state can occur.
 
+#### EventRef Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name | Name of the referenced event definition | string | yes |
+| dataExpression | Expression that can be used to restrict events based on their data content | object | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "description": "Event Reference",
+  "properties": {
+    "name": {
+      "type": "string",
+      "desription": "Name of the referenced event"
+    },
+    "dataExpression": {
+      "description": "Expression that can be used to restrict events based on their data content",  
+      "$ref": "#/definitions/expression"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}
+```
+</details>
+
+Defines criteria for matching events that can trigger defined actions.
+The name property must reference a unique name of a a defined [event definition](#EventRef-Definition) in the workflow "events" property.
+Events are matched based on properties defined in the referenced event definition, 
+so if our workflow definition has for example:
+
+
+```json
+{  
+...
+"events": [
+ {
+  "name": "FireAlarmEvent",
+  "type": "fireAlarmType",
+  "source": "fireAlarmSource",
+  "dataContentType": "application/json"
+ }
+],
+...
+"states":[  
+  {  
+     "name":"CallFireDepartment",
+     "type":"EVENT",
+     "eventsActions": [{
+         "eventRef": {
+           "name": "FireAlarmEvent"
+         },
+         ...
+     }],
+     "end": true
+  }
+]
+}
+```
+
+event matching should be performed on the "type", "source", and "dataContentType" properties of the referenced "FireAlarmEvent" event definition.
+An event that would match or eventRef and trigger associated actions could be:
+
+```json
+{
+    "id": "A234-1234-1234",
+    "specversion": "1.0",
+    "type": "fireAlarmType",
+    "source": "fireAlarmSource",
+    "subject": "Fire Alarm performed a check",
+    "time": "2018-04-05T17:31:00Z",
+    "datacontenttype": "application/json",
+    "data": {
+      "temp": 70,
+      "scale": "Fahrenheit"
+    }
+}
+```
+
+You can add additional matching rules based on the data via the dataExpression property.
+This expression is evaluated against the event payload (its data property).
+Going back to our example, we can change the workflow definition to:
+
+```json
+{  
+...
+"events": [
+ {
+  "name": "FireAlarmEvent",
+  "type": "fireAlarmType",
+  "source": "fireAlarmSource",
+  "dataContentType": "application/json"
+ }
+],
+...
+"states":[  
+  {  
+     "name":"CallFireDepartment",
+     "type":"EVENT",
+     "eventsActions": [{
+         "eventRef": {
+           "name": "FireAlarmEvent",
+           "dataExpression": {
+              "language": "spel",
+              "body": "data.temp ge 90"
+           }
+         },
+         ...
+     }],
+     "end": true
+  }
+]
+}
+```
+In this case we only considering "FireAlarmEvent" events which define a temperature over 90 in their event payload.
+So an event with format:
+
+```json
+{
+    "id": "A234-1234-1234",
+    "specversion": "1.0",
+    "type": "fireAlarmType",
+    "source": "fireAlarmSource",
+    "subject": "Fire Alarm performed a check",
+    "time": "2018-04-05T17:31:00Z",
+    "datacontenttype": "application/json",
+    "data": {
+      "temp": 70,
+      "scale": "Fahrenheit"
+    }
+}
+```
+
+would not trigger actions to be performed, however this event would:
+
+```json
+{
+    "id": "A234-1234-1234",
+    "specversion": "1.0",
+    "type": "fireAlarmType",
+    "source": "fireAlarmSource",
+    "subject": "Fire Alarm performed a check",
+    "time": "2018-04-05T17:31:00Z",
+    "datacontenttype": "application/json",
+    "data": {
+      "temp": 102,
+      "scale": "Fahrenheit"
+    }
+}
+```
+
+Being able to match events based on their event payload (data) is important if your event sources
+produce a high number of events and our workflow event states should not trigger actions 
+on every single one.
+
 #### Action Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [functionref](#Functionref-Definition) | References a reusable function definition to be invoked | object | yes |
+| [functionRef](#FunctionRef-Definition) | References a reusable function definition to be invoked | object | yes |
 | timeout |Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | integer | no |
 | [retry](#Retry-Definition) |Defines if function execution needs a retry | array | no |
 | [actionDataFilter](#action-data-filter) | Action data filter definition | object | no |
@@ -601,7 +774,7 @@ Once defined actions finished execution, a transition to the next state can occu
     "type": "object",
     "description": "Action Definition",
     "properties": {
-        "functionref": {
+        "functionRef": {
             "$ref": "#/definitions/functionref",
             "description": "References a reusable function definition to be invoked"
         },
@@ -621,7 +794,7 @@ Once defined actions finished execution, a transition to the next state can occu
           "$ref": "#/definitions/actiondatafilter"
         }
     },
-    "required": ["functionref"]
+    "required": ["functionRef"]
 }
 ```
 
@@ -630,11 +803,11 @@ Once defined actions finished execution, a transition to the next state can occu
 Actions reference a reusable function definition to be invoked when this action is executed.
 They define a timeout wait period as well as a retry policy.
 
-#### Functionref Definition
+#### FunctionRef Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| refname | Name of the referenced function | string | yes |
+| name | Name of the referenced function | string | yes |
 | parameters | Parameters to be passed to the referenced function | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -644,7 +817,7 @@ They define a timeout wait period as well as a retry policy.
   "type": "object",
   "description": "Function Reference",
   "properties": {
-    "refname": {
+    "name": {
       "type": "string",
       "description": "Name of the referenced function"
     },
@@ -654,7 +827,7 @@ They define a timeout wait period as well as a retry policy.
     }
   },
   "required": [
-    "refname"
+    "name"
   ]
 }
 ```
@@ -1911,44 +2084,45 @@ and the state is defined as:
 
 ```json
 {
-  "functions": [ 
-  { 
-    "name": "sendConfirmationFunction",
-    "resource": "functionResourse"
-  }
+  "functions": [
+    {
+      "name": "sendConfirmationFunction",
+      "resource": "functionResourse"
+    }
   ],
   "states": [
-  {   
-   "name":"SendConfirmationForEachCompletedhOrder",
-   "type":"FOREACH",
-   "inputCollection": "$.orders[?(@.completed == true)]",
-   "inputParameter": "$.completedorder",
-   "startsAt": "SendConfirmation",
-   "states": [
-      {  
-      "name":"SendConfirmation",
-      "type":"OPERATION",
-      "actionMode":"SEQUENTIAL",
-      "actions":[  
-      {  
-       "functionref": {
-         "refname": "sendConfirmationFunction",
-         "parameters": {
-           "orderNumber": "$.completedorder.orderNumber",
-           "email": "$.completedorder.email"
-         }
-       }
-    }],
-    "end": {
-      "type": "DEFAULT"
+    {
+      "name": "SendConfirmationForEachCompletedhOrder",
+      "type": "FOREACH",
+      "inputCollection": "$.orders[?(@.completed == true)]",
+      "inputParameter": "$.completedorder",
+      "startsAt": "SendConfirmation",
+      "states": [
+        {
+          "name": "SendConfirmation",
+          "type": "OPERATION",
+          "actionMode": "SEQUENTIAL",
+          "actions": [
+            {
+              "functionRef": {
+                "name": "sendConfirmationFunction",
+                "parameters": {
+                  "orderNumber": "$.completedorder.orderNumber",
+                  "email": "$.completedorder.email"
+                }
+              }
+            }
+          ],
+          "end": {
+            "type": "DEFAULT"
+          }
+        }
+      ],
+      "end": {
+        "type": "DEFAULT"
+      }
     }
-    }
- ],
- "end": {
-    "type": "DEFAULT"
- }
-} 
-]
+  ]
 }
 ```
 </td>
@@ -1969,8 +2143,8 @@ states:
     type: OPERATION
     actionMode: SEQUENTIAL
     actions:
-    - functionref:
-        refname: sendConfirmationFunction
+    - functionRef:
+        name: sendConfirmationFunction
         parameters:
           orderNumber: "$.completedorder.orderNumber"
           email: "$.completedorder.email"
@@ -2251,8 +2425,8 @@ output of the state to transition from includes an user with the title "MANAGER"
    "actionMode":"Sequential",
    "actions":[  
     {  
-     "functionref":{
-        "refname": "doLowRistOperationFunction"
+     "functionRef":{
+        "name": "doLowRistOperationFunction"
      }
     }
     ],
@@ -2273,8 +2447,8 @@ output of the state to transition from includes an user with the title "MANAGER"
    "actionMode":"Sequential",
    "actions":[  
     {  
-     "functionref":{
-       "refname": "doHighRistOperationFunction"
+     "functionRef":{
+       "name": "doHighRistOperationFunction"
      }
     }
    ]
@@ -2297,8 +2471,8 @@ states:
   type: OPERATION
   actionMode: Sequential
   actions:
-  - functionref:
-      refname: doLowRistOperationFunction
+  - functionRef:
+      name: doLowRistOperationFunction
   transition:
     nextState: highRiskState
     expression:
@@ -2310,8 +2484,8 @@ states:
       type: DEFAULT
   actionMode: Sequential
   actions:
-  - functionref:
-      refname: doHighRistOperationFunction
+  - functionRef:
+      name: doHighRistOperationFunction
   ```
 </td>
 </tr>
@@ -2855,8 +3029,8 @@ Let's take a look at a small example:
        "actionMode":"SEQUENTIAL",
        "actions":[  
           {  
-             "functionref": {
-               "refname": "throwRuntimeErrorFunction"
+             "functionRef": {
+               "name": "throwRuntimeErrorFunction"
              }
           }
        ],
@@ -2895,8 +3069,8 @@ states:
   end: false
   actionMode: SEQUENTIAL
   actions:
-  - functionref:
-      refname: throwRuntimeErrorFunction
+  - functionRef:
+      name: throwRuntimeErrorFunction
   onError:
   - expression:
       language: spel
@@ -2962,8 +3136,8 @@ workflow definition. Let's take a look:
        "actionMode":"SEQUENTIAL",
        "actions":[  
           {  
-             "functionref": {
-               "refname": "throwRuntimeErrorFunction"
+             "functionRef": {
+               "name": "throwRuntimeErrorFunction"
              }
           }
        ],
@@ -2977,8 +3151,8 @@ workflow definition. Let's take a look:
        "actionMode":"SEQUENTIAL",
        "actions":[  
           {  
-             "functionref": {
-               "refname": "throwRuntimeErrorFunction"
+             "functionRef": {
+               "name": "throwRuntimeErrorFunction"
              }
           }
        ],
@@ -3011,8 +3185,8 @@ states:
   end: false
   actionMode: SEQUENTIAL
   actions:
-  - functionref:
-      refname: throwRuntimeErrorFunction
+  - functionRef:
+      name: throwRuntimeErrorFunction
   transition:
     nextState: doSomethingElse
 - name: HandleErrors2
@@ -3020,8 +3194,8 @@ states:
   end: false
   actionMode: SEQUENTIAL
   actions:
-  - functionref:
-      refname: throwRuntimeErrorFunction
+  - functionRef:
+      name: throwRuntimeErrorFunction
   transition:
     nextState: doSomethingElse
 ```
