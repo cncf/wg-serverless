@@ -586,7 +586,7 @@ those events are received.
 </details>
 
 As events are received the event state can use the "expression" parameter to match the event with one or 
-more defined in the [events](#Event Definition) section. If the expression evaluates to true, 
+more defined in the [events](#Event-Definition) section. If the expression evaluates to true, 
 a set of defined actions is performed in sequence or in parallel.
 
 Once defined actions finished execution, a transition to the next state can occur.
