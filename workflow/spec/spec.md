@@ -76,11 +76,11 @@ Serverless Workflow allows users to:
 
 1. Define and orchestrate steps/states involved in a serverless application.
 2. Define which functions are executed in each step.
-3. Define which event or combination of events trigger function execution.
+3. Define which orchestration event triggers function execution.
 4. Define function execution behavior (sequential, parallel, etc).
 5. Specify information filtering throughout the execution of the serverless workflow.
 6. Define error conditions with retries.
-7. If a function is triggered by two or more events, define what label/key should be used to correlate those events to the same serverless workflow instance.
+7. Define correlation of events to the serverless workflow instance.
 8. Make decisions based on results of cloud functions, such as initiate retry operations, determine what other cloud functions to execute, or what state to transition to.
 
 Following diagram illustrates functional flow that involves states, events and functions. It shows that
