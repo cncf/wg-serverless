@@ -543,10 +543,10 @@ those events are received.
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [eventRef](#EventRef-Definition) | References an [event definition](#Event Definition). If incoming events match the eventRef criteria associated actions are executed | object | yes |
-| timeout | Time period to wait for incoming events which match the expression (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
+| [eventRef](#EventRef-Definition) | References an [event definition](#Event-Definition). If incoming events match the eventRef criteria associated actions are executed | object | yes |
+| timeout | Time period to wait for incoming event which matches eventRef (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | actionMode | Specifies how actions are to be performed (in sequence of parallel) | string | no |
-| [actions](#Action-Definition) | Actions to be performed if expression matches | array | yes |
+| [actions](#Action-Definition) |Actions to be performed if events match the eventRef criteria | array | yes |
 | [eventDataFilter](#event-data-filter) | Event data filter definition | object | no |
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes |
 
@@ -563,7 +563,7 @@ those events are received.
         },
         "timeout": {
             "type": "string",
-            "description": "Time period to wait for incoming events which match the eventRef (ISO 8601 format)"
+            "description": "Time period to wait for incoming event which matches eventRef (ISO 8601 format)"
         }, 
         "actionMode": {
             "type" : "string",
@@ -573,7 +573,7 @@ those events are received.
         },
         "actions": {
             "type": "array",
-            "description": "Actions to be performed if events match the eventRef criteria",
+            "description": "Actions to be performed if event match the eventRef criteria",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/action"
@@ -594,7 +594,7 @@ those events are received.
 </details>
 
 As events are received the event state can use the "eventRef" parameter to match the event with one or 
-more defined in the [events](#Event Definition) section. If the expression evaluates to true, 
+more defined in the [events](#Event-Definition) section. If the expression evaluates to true, 
 a set of defined actions is performed in sequence or in parallel.
 
 Once defined actions finished execution, a transition to the next state can occur.
@@ -753,20 +753,6 @@ would not trigger actions to be performed, however this event would:
     }
 }
 ```
-
-Being able to match events based on their event payload (data) is important if your event sources
-produce a high number of events and our workflow event states should not trigger actions 
-on every single one.
-
-Note that the specification does not provide means to express complex and temporal event reasoning / expressions.
-In cases where you might have complex event rules it is typical to use a CEP (Complex Event Processing) middleware 
-entity that handles these rules and produces a CloudEvent that can be consumed to trigger actions defined in
-workflow event states.
-
-To explain this further given our previous example, there may be many sensors and services involved that in combination make up 
-the fire alarm event. Complex rules on how to reason over events send from all these different sensors and sources should be processed 
-by such CEP services which then can issue the "FireAlarmEvent" event that as we defined 
-should trigger actions in our workflow event state.
 
 #### Action Definition
 
