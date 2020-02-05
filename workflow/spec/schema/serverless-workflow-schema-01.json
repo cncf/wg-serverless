@@ -139,8 +139,8 @@
           "description": "Expression that matches against the error in the state data input",
           "$ref": "#/definitions/expression"
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "errorDataFilter": {
+          "$ref": "#/definitions/errordatafilter"
         },
         "transition": {
           "description": "Next transition of the workflow when errors expressed in errorExpression are matched",
@@ -179,25 +179,6 @@
         "type"
       ]
     },
-    "filter": {
-      "type": "object",
-      "properties": {
-        "inputPath": {
-          "type": "string",
-          "description": "Select input data of either Event, State or Action as JSONPath"
-        },
-        "resultPath": {
-          "type": "string",
-          "description": "Specify result JSON node of Action Output as JSONPath"
-        },
-        "outputPath": {
-          "type": "string",
-          "description": "Specify output data of State or Action as JSONPath"
-        }
-      },
-      "required": [
-      ]
-    },
     "eventactions": {
       "type": "object",
       "properties": {
@@ -230,8 +211,8 @@
           "description": "Next transition of the workflow after all the actions have been performed",
           "$ref": "#/definitions/transition"
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "eventDataFilter": {
+          "$ref": "#/definitions/eventdatafilter"
         }
       },
       "required": [
@@ -256,8 +237,8 @@
             "$ref": "#/definitions/retry"
           }
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "actionDataFilter": {
+          "$ref": "#/definitions/actiondatafilter"
         }
       },
       "required": [
@@ -416,8 +397,8 @@
           "$ref": "#/definitions/end",
           "description": "State end definition"
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "timeDelay": {
           "type": "string",
@@ -479,8 +460,8 @@
           "$ref": "#/definitions/end",
           "description": "State end definition"
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "eventsActions": {
           "type": "array",
@@ -542,8 +523,8 @@
           "$ref": "#/definitions/end",
           "description": "State end definition"
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "actionMode": {
           "type": "string",
@@ -620,8 +601,8 @@
           "$ref": "#/definitions/end",
           "description": "State end definition"
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "branches": {
           "type": "array",
@@ -687,8 +668,8 @@
           "$ref": "#/definitions/end",
           "description": "State end definition"
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "choices": {
           "type": "array",
@@ -779,8 +760,8 @@
           "type": "string",
           "description": "Sub-workflow unique id."
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "onError": {
           "type": "array",
@@ -842,8 +823,8 @@
           "type": "object",
           "description": "JSON object which can be set as states data input and can be manipulated via filters"
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "transition": {
           "description": "Next transition of the workflow after subflow has completed",
@@ -953,8 +934,8 @@
             ]
           }
         },
-        "filter": {
-          "$ref": "#/definitions/filter"
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "onError": {
           "type": "array",
@@ -1174,6 +1155,54 @@
       "required": [
         "nameRef"
       ]
+    },
+    "statedatafilter": {
+      "type": "object",
+      "properties": {
+        "dataInputPath": {
+          "type": "string",
+          "description": "JSONPath definition that selects parts of the states data input"
+        },
+        "dataOutputPath": {
+          "type": "string",
+          "description": "JSONPath definition that selects parts of the states data output"
+        }
+      },
+      "required": []
+    },
+    "eventdatafilter": {
+      "type": "object",
+      "properties": {
+        "dataOutputPath": {
+          "type": "string",
+          "description": "JSONPath definition that selects parts of the event data, to be merged with the states data"
+        }
+      },
+      "required": []
+    },
+    "actiondatafilter": {
+      "type": "object",
+      "properties": {
+        "dataInputPath": {
+          "type": "string",
+          "description": "JSONPath definition that selects parts of the states data input to be the action data"
+        },
+        "dataResultsPath": {
+          "type": "string",
+          "description": "JSONPath definition that selects parts of the actions data result, to be merged with the states data"
+        }
+      },
+      "required": []
+    },
+    "errordatafilter": {
+      "type": "object",
+      "properties": {
+        "dataOutputPath": {
+          "type": "string",
+          "description": "JSONPath definition that selects parts of the event data, to be merged with the states data"
+        }
+      },
+      "required": []
     }
   }
 }
