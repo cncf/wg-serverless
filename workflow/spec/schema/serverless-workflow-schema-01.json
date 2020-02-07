@@ -35,6 +35,16 @@
       "type": "string",
       "description": "Default expression language to be used throughout the workflow definition"
     },
+    "dataInputSchema": {
+      "type": "string",
+      "format": "uri",
+      "description": "URI to JSON Schema that workflow data input adheres to"
+    },
+    "dataOutputSchema": {
+      "type": "string",
+      "format": "uri",
+      "description": "URI to JSON Schema that workflow data output adheres to"
+    },
     "events": {
       "type": "array",
       "description": "Workflow event definitions. Defines events that can be consumed or produced",
@@ -415,6 +425,16 @@
         "transition": {
           "description": "Next transition of the workflow after the time delay",
           "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
       },
       "oneOf": [
@@ -478,6 +498,16 @@
             "type": "object",
             "$ref": "#/definitions/error"
           }
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
       },
       "oneOf": [
@@ -554,6 +584,16 @@
         "transition": {
           "description": "Next transition of the workflow after all the actions have been performed",
           "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
       },
       "oneOf": [
@@ -623,6 +663,16 @@
         "transition": {
           "description": "Next transition of the workflow after all branches have completed execution",
           "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
       },
       "oneOf": [
@@ -706,6 +756,16 @@
         "default": {
           "description": "Next transition of the workflow if there is no match for any choices",
           "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
       },
       "oneOf": [
@@ -774,6 +834,16 @@
         "transition": {
           "description": "Next transition of the workflow after SubFlow has completed execution",
           "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
       },
       "oneOf": [
@@ -829,6 +899,16 @@
         "transition": {
           "description": "Next transition of the workflow after subflow has completed",
           "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
       },
       "oneOf": [
@@ -948,6 +1028,16 @@
         "transition": {
           "description": "Next transition of the workflow after subflow has completed",
           "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
       },
       "oneOf": [
