@@ -98,7 +98,7 @@ Following sections provide detailed descriptions of the Serverless Workflow Mode
 
 ### Workflow Model
 
-Serverless Workflow can be viewed as a collection of [states](#State-Definition) and [transitions](#Transitions) states.
+Serverless Workflow can be viewed as a collection of [states](#State-Definition) and [transitions](#Transitions) between states.
 Individual states can make control flow decisions based on their data inputs, perform different actions, as well
 as pass their data to other states. 
 States can wait on the arrival events to perform their actions. When states 
