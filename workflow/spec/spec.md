@@ -20,10 +20,10 @@ Some of many benefits using workflows in serverless applications include:
 
 Many different workflow implementations (both proprietary and open-source) exist today, each with it's own set of features
 and capabilities. When picking a current implementations, it is very difficult to later on switch to a different one
-without investing a lot of time and cost
+without investing a lot of time and cost.
 
 The goal of the Serverless Workflow sub-group is to:
-- Standardize Serverless Worfkflow model and definition
+- Standardize Serverless Workflow model and definition
 - Facilitate Serverless Workflow portability
 - Be completely vendor neutral
 - Support both stateless and stateful Serverless Workflow implementations
@@ -98,22 +98,19 @@ Following sections provide detailed descriptions of the Serverless Workflow Mode
 
 ### Workflow Model
 
-Serverless Workflow can be viewed as a collection of [states](#State-Definition) and the [transitions](#Transitions) and branching between these states.
+Serverless Workflow can be viewed as a collection of [states](#State-Definition) and [transitions](#Transitions) between states.
 Individual states can make control flow decisions based on their data inputs, perform different actions, as well
-as pass their data outputs to other states. 
-States can wait on the arrival events from different event sources to perform their actions. When states 
+as pass their data to other states. 
+States can wait on the arrival events to perform their actions. When states 
 complete their tasks, they can transition to other states or stop workflow execution.
 See the [Transitions](#Transitions) section for more details on workflow state progressions.
 
 A Serverless Workflow can be naturally modeled as a state machine. 
-Specification of a workflow is called a workflow template. 
-Instantiation of the workflow template is called a workflow instance.
-
-Serverless Workflow may be invoked from a CLI command or be triggered dynamically upon arrival of events from event sources. 
+Specification of a workflow is called a workflow template. Instantiation of the workflow template is called a workflow instance.
 
 ### Workflow Definition
 
-Here we define details of the Serverless Workflow definitions:
+Defines the main structure of serverless workflows:
 
 | Parameter | Description | Type | Required |
 | --- | --- |  --- | --- |
@@ -123,7 +120,7 @@ Here we define details of the Serverless Workflow definitions:
 | version | Workflow version | string |no |
 | schemaVersion | Workflow schema version | string |no |
 | startsAt | Workflow starting state | string |yes |
-| expressionLanguage | Default expression language to be used throughout the workflow definition | string |no |
+| expressionLanguage | Default expression language | string |no |
 | [events](#Event-Definition) | Workflow event definitions. Defines events that can be consumed or produced | array | no |
 | [functions](#Function-Definition) | Workflow functions | array | no |
 | [states](#State-Definition) | Workflow states | array | yes |
@@ -253,14 +250,14 @@ Here we define details of the Serverless Workflow definitions:
 
 ### Event Definition
 
-Describe events that can be consumed or produced during workflow execution.
-Cunsumed events can trigger actions to be executed. Events can also be produced during workflow
+Describes events that can be consumed or produced during workflow execution.
+Consumed events can trigger actions to be executed. Events can also be produced during workflow
 execution to be consumed by clients.
 
 As serverless workflow definitions are vendor neutral, so should be the events definitions that they consume and produce.
 As such event format within serverless workflows uses the [CloudEvents](https://github.com/cloudevents/spec) specification to describe events.
 
-To support the use case where a serverless workflows need to perform actions across multiple types
+To support use case where a serverless workflows need to perform actions across multiple types
 of events, users can specify a correlation token. This token is used to associate multiple events
 with each other, and is embedded into the event message.
 Workflow implementations can use this token to map a particular event to a particular workflow instance.
@@ -420,7 +417,7 @@ expression language used for all defined expressions.
 
 ### State Definition
 
-States define building blocks of the Serverless Workflow. The specification defines the following states:
+States define building blocks of the Serverless Workflow. The specification defines following states:
 
 - **[Event State](#Event-State)**: Used to wait for events from event sources and
     then to invoke one or more functions to run in sequence or in parallel.
@@ -428,23 +425,20 @@ States define building blocks of the Serverless Workflow. The specification defi
 - **[Operation State](#Operation-State)**: Allows one or more functions to run in sequence
     or in parallel without waiting for any event.
 
-- **[Switch State](#Switch-State)**: Gateways, allow workflow transitions to multiple different states 
+- **[Switch State](#Switch-State)**: Allow workflow transitions to multiple different states 
     based on data inputs.
 
-- **[Delay State](#Delay-State)**: Causes the workflow execution to delay for a
-    specified duration or until a specified time/date.
+- **[Delay State](#Delay-State)**: Causes workflow execution to delay for a
+    specified duration or until a specified time/date is reached.
 
 - **[Parallel State](#Parallel-State)**: Allows a number of states to execute in
     parallel.
     
 - **[SubFlow State](#SubFlow-State)**: Allows execution of a sub-workflow. 
   
-- **[Relay State](#Relay-State)**: Used to relay state's data input to output without executing any actions. State's data input can be filtered. 
+- **[Relay State](#Relay-State)**: Used to relay state's data input to output without executing any actions. 
 
-- **[ForEach State](#ForEach-State)**: Allows a set of defined states to be executed for each element of a data input array.
-
-
-We will start defining each individual state:
+- **[ForEach State](#ForEach-State)**: Allows a set of defined states to be executed in parallel for each element of a data input array.
 
 ### Event State
 
@@ -652,7 +646,7 @@ They define a timeout wait period as well as a retry policy.
   "properties": {
     "refname": {
       "type": "string",
-      "desription": "Name of the referenced function"
+      "description": "Name of the referenced function"
     },
     "parameters": {
       "type": "object",
@@ -1560,7 +1554,7 @@ Relay state can be used to statically set up and relay the state's data input to
 It is very useful for debugging for example as you can test/simulate workflow execution with pre-set data that would typically 
 be dynamic in nature (e.g. function calls, events etc). 
 
-It is also useful for production workflows where you want to just relay workflow data without performaing any actions (function calls).
+It is also useful for production workflows where you want to just relay workflow data without performing any actions (function calls).
 
 The relay state "inject" property allows you to statically define a JSON object which gets added to the states data input.
 You can use the filter property to control the states data output to the transition state.
@@ -1582,7 +1576,7 @@ as data output to the transition state:
    "type":"RELAY",
    "inject": {
       "person": {
-        "fnam": "John",
+        "fname": "John",
         "lname": "Doe",
         "address": "1234 SomeStreet",
         "age": 40
@@ -1617,7 +1611,7 @@ The data output of the "SimpleRelayState" which then is passed as input to the t
 ```json
 {
  "person": {
-      "fnam": "John",
+      "fname": "John",
       "lname": "Doe",
       "address": "1234 SomeStreet",
       "age": 40
@@ -1647,19 +1641,19 @@ what you need as data output of the state. Let's say we have:
      "inject": {
         "people": [
           {
-             "fnam": "John",
+             "fname": "John",
              "lname": "Doe",
              "address": "1234 SomeStreet",
              "age": 40
           },
           {
-             "fnam": "Marry",
+             "fname": "Marry",
              "lname": "Allice",
              "address": "1234 SomeStreet",
              "age": 25
           },
           {
-             "fnam": "Kelly",
+             "fname": "Kelly",
              "lname": "Mill",
              "address": "1234 SomeStreet",
              "age": 30
@@ -1703,7 +1697,7 @@ what you need as data output of the state. Let's say we have:
 </tr>
 </table>
 
-In which case the states data output would include people whos age is less than 40. You can then easily during testing 
+In which case the states data output would include people who's age is less than 40. You can then easily during testing 
 change your output path to for example:
 
 ```
@@ -1998,7 +1992,7 @@ set to true.
 
 For each of the completed order the state will then execute the defined set of states in parallel.
 
-For this example, the data inputs of staring states for the two itererations would be: 
+For this example, the data inputs of staring states for the two iterations would be: 
 
 ```json
 {
@@ -2688,7 +2682,7 @@ and then lets us know how to greet this customer in different languages. We coul
 ```
 
 The example workflow contains an event state which consumes CloudEvents of type "customer-arrival-type", and then 
-calls the "greetingFunction" serverless function passing in the greeting in spanish and the name of the customer to greet.
+calls the "greetingFunction" serverless function passing in the greeting in Spanish and the name of the customer to greet.
 
 The workflow data input when starting workflow execution is assumed to include greetings in different languages:
 
@@ -2804,7 +2798,7 @@ states data under the "finalCustomerGreeting" object. So at this point our event
 ```
 
 Since our event state has performed all actions it is ready to either transition to the next state or end workflow execution if it is an end state.
-Before this happens tho, the stateDataFilter is again invoked to filter this states data, specifically the "dataOutputPath" expression
+Before this happens though, the stateDataFilter is again invoked to filter this states data, specifically the "dataOutputPath" expression
 selects only the "finalCustomerGreeting" object to make it the data output of the state.
 
 Because our event state is also an end state, its data output becomes the final [workflow data output](#Workflow-data-output) namely:
@@ -2919,7 +2913,7 @@ states:
 </table>
 
 Here we have an operation state with one action that executes a function call. For our example the function call
-results in a runtime exception. In the "onError" definition we state we want to catch all errors whose name ends in "Exception".
+results in a runtime exception. In the "onError" definition we state we want to catch all errors with names ending in "Exception".
 If that happens, we want to workflow to continue execution with the "afterErrorState" state. 
 
 Note that errors that don't match the expression may not be caught
