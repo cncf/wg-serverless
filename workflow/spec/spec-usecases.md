@@ -17,6 +17,7 @@ So what can you automate with Serverless Workflows? You can get some ideas from 
 - [Payment Processing](#Payment-Processing)
 - [Data Analysis](#Data-Analysis)
 - [Error Notifications](#Error-Notifications)
+- [Continuous Integration And Deployment](#Continuous-Integration-And-Deployment)
 
 ## Online Vehicle Auction
 You can use Serverless Workflows to coordinate all of the steps of an Online Vehicle Auction. 
@@ -46,5 +47,11 @@ In conjunction with available messaging services you can notify developers on di
  including error information and exactly the point in the execution the failure happened.
  At the same time you can log the workflow execution status to cloud storage services for further analysis.
 
-
 <p align="center"><img src="media/usecase-error-notifications.png"/></p>
+
+## Continuous Integration And Deployment
+Serverless Workflows can help you build solid continuous integration and deployment solutions.
+Code checkins can trigger website builds and automatic redeploys. Pull requests can trigger 
+running automated tests to make sure code is well-tested before human reviews. 
+
+<p align="center"><img src="media/usecase-continuous-integration.png"/></p>
