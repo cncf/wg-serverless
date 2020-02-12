@@ -16,6 +16,7 @@ So what can you automate with Serverless Workflows? You can get some ideas from 
 - [Online Vehicle Auction](#Online-Vehicle-Auction)
 - [Payment Processing](#Payment-Processing)
 - [Data Analysis](#Data-Analysis)
+- [Error Notifications](#Error-Notifications)
 
 ## Online Vehicle Auction
 You can use Serverless Workflows to coordinate all of the steps of an Online Vehicle Auction. 
@@ -38,3 +39,12 @@ You can use Serverless Workflows to coordinate data analysis of Marketing and Sa
 Analysis can be scheduled on a timely basis to trigger workflow coordination of different ETL services.
 
 <p align="center"><img src="media/usecase-data-analysis.png"/></p>
+
+## Error Notifications
+You can design Serverless Workflows that trigger notifications regarding their success or failure. 
+In conjunction with available messaging services you can notify developers on different platforms of such possible failures 
+ including error information and exactly the point in the execution the failure happened.
+ At the same time you can log the workflow execution status to cloud storage services for further analysis.
+
+
+<p align="center"><img src="media/usecase-error-notifications.png"/></p>
