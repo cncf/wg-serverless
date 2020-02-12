@@ -13,7 +13,8 @@ So what can you automate with Serverless Workflows? You can get some ideas from 
 
 ## Table of Contents
 
-- [Online Vehicle Auction](#Online-Vehicle Auction)
+- [Online Vehicle Auction](#Online-Vehicle-Auction)
+- [Process App Payments](#Process-App-Payments)
 
 
 
@@ -25,3 +26,13 @@ These can include:
 * Make decisions to start/end the auction under certain conditions
 
 <p align="center"><img src="media/usecase-vehicle-auction.png"/></p>
+
+
+## Process App Payments
+Servlerless Workflows are ideal for coordinating session-based apps such as e-commerce sites. You can
+use Serverless Workflows to coordinate all steps of the checkout process allowing for example users to take a picture
+of their credit card rather than having to type in the numbers and information.
+ 
+<p align="center"><img src="media/usecase-app-payment.png"/></p> 
+
+
