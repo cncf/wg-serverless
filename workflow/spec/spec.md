@@ -454,13 +454,17 @@ States define building blocks of the Serverless Workflow. The specification defi
 | id | Unique state id | string | no |
 | name | State name | string | yes |
 | type | State type | string | yes |
-| [end](#End-Definition) | Is this state an end state | object | no |
-| [eventsActions](#eventstate-eventactions) | Define what events are to be consumed and one or more actions to be performed | array | yes |
+| exclusive | If true consuming one of the defined events causes its associated actions to be performed. If false all of the defined events must be consumed in order for actions to be performed. Default is "true"  | boolean | no |
+| eventsDataKeys | Elements of events data defining correlation between incoming events. Can be used when exclusive is set to false | array | no |  
+| [eventsActions](#eventstate-eventactions) | Define the events to be consumed and one or more actions to be performed | array | yes |
+| timeout | Time period to wait for incoming events (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | [stateDataFilter](#state-data-filter) | State data filter definition| object | no |
-| [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
- 
+| [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes |
+| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
+| [end](#End-Definition) | Is this state an end state | object | no |
+
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
 
@@ -487,6 +491,15 @@ States define building blocks of the Serverless Workflow. The specification defi
           "$ref": "#/definitions/end",
           "description": "State end definition"
         },
+        "exclusive": {
+            "type": "boolean",
+            "default": true,
+            "description": "If true consuming one of the defined events causes its associated actions to be performed. If false all of the defined events must be consumed in order for actions to be performed"
+        },
+        "eventsDataKeys": {
+          "type": "array",
+          "description": "Elements of events data defining correlation between incoming events. Can be used when exclusive is set to false"
+        },
         "eventsActions": {
             "type": "array",
             "description": "Define what events to be consumed and one or more actions to be performed",
@@ -495,6 +508,10 @@ States define building blocks of the Serverless Workflow. The specification defi
                 "$ref": "#/definitions/eventactions"
             }
         },
+        "timeout": {
+            "type": "string",
+            "description": "Time period to wait for incoming events which match the expression (ISO 8601 format)"
+        }, 
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
         },
@@ -515,6 +532,10 @@ States define building blocks of the Serverless Workflow. The specification defi
           "type": "string",
           "format": "uri",
           "description": "URI to JSON Schema that state data output adheres to"
+          },
+        "transition": {
+          "description": "Next transition of the workflow after all the actions have been performed",
+          "$ref": "#/definitions/transition"
         }
     },
     "oneOf": [
@@ -541,19 +562,39 @@ States define building blocks of the Serverless Workflow. The specification defi
 </p>
 </details>
 
-Event state waits for events from different event sources and defines one or more actions to performed when
-those events are received.
+Event states await one or more events and perform actions when they are received. 
+The "exclusive" property defines if the state should wait for any of the defined events in the eventsActions array, or 
+ if all defined events must be present for their associated actions to be performed.
+Following two figures illustrate the "exclusive" property:
+
+<p align="center">
+<img src="media/event-state-exclusive-true.png" alt="Event state with exclusive set to true"/>
+</p>
+
+<p align="center">
+<img src="media/event-state-exclusive-true.png" alt="Event state with exclusive set to false"/>
+</p>
+ 
+If exclusive is set to false, you can use the "eventsDataKeys" array to define elements in the events payload that needs to match 
+between all the events the state is waiting for. This is particularly useful if the event state is the workflow 
+starting state (rather than an intermediate state) as a correlation token associating the events with the current workflow instance
+is not established yet. 
+
+The following figure illustrates how events are matched if the event state is a starting state, exclusive is set to false
+and the use of the "eventsDataKey" property.
+
+<p align="center">
+<img src="media/event-state-eventsdatakeys.png" alt="Start Event state - eventsdatakeys"/>
+</p>
 
 #### <a name="eventstate-eventactions"></a> Event State: Event Actions
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [expression](#Expression-Definition) | Boolean expression which consists of one or more Event operands and the Boolean operators. If is true all defined actions are executed | object | yes |
-| timeout | Time period to wait for incoming events which match the expression (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
+| eventRef | References an unique name in the defined workflow [events](#Event-Definition) | string | yes |
 | actionMode | Specifies how actions are to be performed (in sequence of parallel) | string | no |
 | [actions](#Action-Definition) | Actions to be performed if expression matches | array | yes |
 | [eventDataFilter](#event-data-filter) | Event data filter definition | object | no |
-| [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -562,14 +603,10 @@ those events are received.
     "type": "object",
     "description": "Defines what events to act upon and actions to be performed",
     "properties": {
-        "expression": {
-          "description": " Boolean expression which consists of one or more Event operands and the Boolean operators",
-          "$ref": "#/definitions/expression"
+        "eventRef": {
+          "type" : "string",
+          "description": "References an unique name in the defined workflow events"
         },
-        "timeout": {
-            "type": "string",
-            "description": "Time period to wait for incoming events which match the expression (ISO 8601 format)"
-        }, 
         "actionMode": {
             "type" : "string",
             "enum": ["SEQUENTIAL", "PARALLEL"],
@@ -586,13 +623,9 @@ those events are received.
         },
         "eventDataFilter": {
           "$ref": "#/definitions/eventdatafilter"
-        },
-        "transition": {
-          "description": "Next transition of the workflow after all the actions have been performed",
-          "$ref": "#/definitions/transition"
         }
     },
-    "required": ["expression", "actions", "transition"]
+    "required": ["eventRef", "actions"]
 }
 ```
 
