@@ -168,7 +168,7 @@ becomes the workflow data output (as it is an end state):
      "actions":[  
         {  
            "functionRef": {
-              "refname": "greetingFunction",
+              "refName": "greetingFunction",
               "parameters": {
                 "name": "$.greet.name"
               }
@@ -204,7 +204,7 @@ states:
   actionMode: SEQUENTIAL
   actions:
   - functionRef:
-      refname: greetingFunction
+      refName: greetingFunction
       parameters:
         name: "$.greet.name"
     actionDataFilter:
@@ -321,7 +321,7 @@ filters what is selected to be the state data output which then becomes the work
          "actions":[  
             {  
                "functionRef": {
-                  "refname": "greetingFunction",
+                  "refName": "greetingFunction",
                   "parameters": {
                     "name": "$.greet.name"
                   }
@@ -360,7 +360,7 @@ states:
       inputPath: "$.data.greet"
     actions:
     - functionRef:
-        refname: greetingFunction
+        refName: greetingFunction
         parameters:
           name: "$.greet.name"
   stateDataFilter:
@@ -435,7 +435,7 @@ result of the workflow execution.
     "actions":[  
        {  
           "functionRef": {
-             "refname": "solveMathExpressionFunction",
+             "refName": "solveMathExpressionFunction",
              "parameters": {
                "expression": "$.singleexpression"
              }
@@ -480,7 +480,7 @@ states:
     actionMode: SEQUENTIAL
     actions:
     - functionRef:
-        refname: solveMathExpressionFunction
+        refName: solveMathExpressionFunction
         parameters:
           expression: "$.singleexpression"
     end:
@@ -693,7 +693,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
         "actions":[  
            {  
               "functionRef": {
-                 "refname": "sendRejectionEmailFunction",
+                 "refName": "sendRejectionEmailFunction",
                  "parameters": {
                    "applicant": "$.applicant"
                  }
@@ -743,7 +743,7 @@ states:
   actionMode: SEQUENTIAL
   actions:
   - functionRef:
-      refname: sendRejectionEmailFunction
+      refName: sendRejectionEmailFunction
       parameters:
         applicant: "$.applicant"
   end:
@@ -811,7 +811,7 @@ The data output of the workflow contains the information of the exception caught
     "actions":[  
        {  
           "functionRef": {
-             "refname": "provisionOrderFunction",
+             "refName": "provisionOrderFunction",
              "parameters": {
                "order": "$.order"
              }
@@ -914,7 +914,7 @@ states:
   actionMode: SEQUENTIAL
   actions:
   - functionRef:
-      refname: provisionOrderFunction
+      refName: provisionOrderFunction
       parameters:
         order: "$.order"
   onError:
@@ -1030,7 +1030,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
     "actions":[  
     {  
        "functionRef": {
-          "refname": "submitJob",
+          "refName": "submitJob",
           "parameters": {
             "name": "$.job.name"
           }
@@ -1084,7 +1084,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
     "actions":[  
     {  
       "functionRef": {
-          "refname": "checkJobStatus",
+          "refName": "checkJobStatus",
           "parameters": {
             "name": "$.jobuid"
           }
@@ -1131,7 +1131,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
    "actions":[  
    {  
       "functionRef": {
-         "refname": "reportJobSuceeded",
+         "refName": "reportJobSuceeded",
          "parameters": {
            "name": "$.jobuid"
          }
@@ -1185,7 +1185,7 @@ states:
   actionMode: SEQUENTIAL
   actions:
   - functionRef:
-      refname: submitJob
+      refName: submitJob
       parameters:
         name: "$.job.name"
     actionDataFilter:
@@ -1217,7 +1217,7 @@ states:
   actionMode: SEQUENTIAL
   actions:
   - functionRef:
-      refname: checkJobStatus
+      refName: checkJobStatus
       parameters:
         name: "$.jobuid"
     actionDataFilter:
@@ -1245,7 +1245,7 @@ states:
   actionMode: SEQUENTIAL
   actions:
   - functionRef:
-      refname: reportJobSuceeded
+      refName: reportJobSuceeded
       parameters:
         name: "$.jobuid"
   end:
@@ -1377,7 +1377,7 @@ CloudEvent upon completion of the workflow could look like:
         "actions": [
         {
             "functionRef": {
-                "refname": "provisionOrderFunction",
+                "refName": "provisionOrderFunction",
                 "parameters": {
                     "order": "$.order"
                 }
@@ -1429,7 +1429,7 @@ states:
     type: OPERATION
     actions:
     - functionRef:
-        refname: provisionOrderFunction
+        refName: provisionOrderFunction
         parameters:
           order: "$.order"
     end:

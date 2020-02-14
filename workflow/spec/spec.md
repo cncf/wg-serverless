@@ -589,7 +589,7 @@ Once defined actions finished execution, a transition to the next state can occu
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [functionRef](#FunctionR  ef-Definition) | References a reusable function definition to be invoked | object | yes |
+| [functionRef](#FunctionRef-Definition) | References a reusable function definition to be invoked | object | yes |
 | timeout |Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | integer | no |
 | [retry](#Retry-Definition) |Defines if function execution needs a retry | array | no |
 | [actionDataFilter](#action-data-filter) | Action data filter definition | object | no |
@@ -630,11 +630,11 @@ Once defined actions finished execution, a transition to the next state can occu
 Actions reference a reusable function definition to be invoked when this action is executed.
 They define a timeout wait period as well as a retry policy.
 
-#### Functionref Definition
+#### FunctionRef Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| refname | Name of the referenced function | string | yes |
+| refName | Name of the referenced function | string | yes |
 | parameters | Parameters to be passed to the referenced function | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -644,7 +644,7 @@ They define a timeout wait period as well as a retry policy.
   "type": "object",
   "description": "Function Reference",
   "properties": {
-    "refname": {
+    "refName": {
       "type": "string",
       "description": "Name of the referenced function"
     },
@@ -654,7 +654,7 @@ They define a timeout wait period as well as a retry policy.
     }
   },
   "required": [
-    "refname"
+    "refName"
   ]
 }
 ```
@@ -1932,7 +1932,7 @@ and the state is defined as:
       "actions":[  
       {  
        "functionRef": {
-         "refname": "sendConfirmationFunction",
+         "refName": "sendConfirmationFunction",
          "parameters": {
            "orderNumber": "$.completedorder.orderNumber",
            "email": "$.completedorder.email"
@@ -1970,7 +1970,7 @@ states:
     actionMode: SEQUENTIAL
     actions:
     - functionRef:
-        refname: sendConfirmationFunction
+        refName: sendConfirmationFunction
         parameters:
           orderNumber: "$.completedorder.orderNumber"
           email: "$.completedorder.email"
@@ -2252,7 +2252,7 @@ output of the state to transition from includes an user with the title "MANAGER"
    "actions":[  
     {  
      "functionRef":{
-        "refname": "doLowRistOperationFunction"
+        "refName": "doLowRistOperationFunction"
      }
     }
     ],
@@ -2274,7 +2274,7 @@ output of the state to transition from includes an user with the title "MANAGER"
    "actions":[  
     {  
      "functionRef":{
-       "refname": "doHighRistOperationFunction"
+       "refName": "doHighRistOperationFunction"
      }
     }
    ]
@@ -2298,7 +2298,7 @@ states:
   actionMode: Sequential
   actions:
   - functionRef:
-      refname: doLowRistOperationFunction
+      refName: doLowRistOperationFunction
   transition:
     nextState: highRiskState
     expression:
@@ -2311,7 +2311,7 @@ states:
   actionMode: Sequential
   actions:
   - functionRef:
-      refname: doHighRistOperationFunction
+      refName: doHighRistOperationFunction
   ```
 </td>
 </tr>
@@ -2658,7 +2658,7 @@ and then lets us know how to greet this customer in different languages. We coul
                 "actions":[
                     {
                         "functionRef": {
-                            "refname": "greetingFunction",
+                            "refName": "greetingFunction",
                             "parameters": {
                                 "greeting": "$.languageGreetings.spanish",
                                 "customerName": "$.customer.name"
@@ -2856,7 +2856,7 @@ Let's take a look at a small example:
        "actions":[  
           {  
              "functionRef": {
-               "refname": "throwRuntimeErrorFunction"
+               "refName": "throwRuntimeErrorFunction"
              }
           }
        ],
@@ -2896,7 +2896,7 @@ states:
   actionMode: SEQUENTIAL
   actions:
   - functionRef:
-      refname: throwRuntimeErrorFunction
+      refName: throwRuntimeErrorFunction
   onError:
   - expression:
       language: spel
@@ -2963,7 +2963,7 @@ workflow definition. Let's take a look:
        "actions":[  
           {  
              "functionRef": {
-               "refname": "throwRuntimeErrorFunction"
+               "refName": "throwRuntimeErrorFunction"
              }
           }
        ],
@@ -2978,7 +2978,7 @@ workflow definition. Let's take a look:
        "actions":[  
           {  
              "functionRef": {
-               "refname": "throwRuntimeErrorFunction"
+               "refName": "throwRuntimeErrorFunction"
              }
           }
        ],
@@ -3012,7 +3012,7 @@ states:
   actionMode: SEQUENTIAL
   actions:
   - functionRef:
-      refname: throwRuntimeErrorFunction
+      refName: throwRuntimeErrorFunction
   transition:
     nextState: doSomethingElse
 - name: HandleErrors2
@@ -3021,7 +3021,7 @@ states:
   actionMode: SEQUENTIAL
   actions:
   - functionRef:
-      refname: throwRuntimeErrorFunction
+      refName: throwRuntimeErrorFunction
   transition:
     nextState: doSomethingElse
 ```

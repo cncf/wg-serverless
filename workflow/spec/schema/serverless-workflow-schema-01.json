@@ -299,7 +299,7 @@
       "type": "object",
       "description": "Function Reference",
       "properties": {
-        "refname": {
+        "refName": {
           "type": "string",
           "desription": "Name of the referenced function"
         },
@@ -309,7 +309,7 @@
         }
       },
       "required": [
-        "refname"
+        "refName"
       ]
     },
     "branch": {
