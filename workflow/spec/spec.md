@@ -575,10 +575,10 @@ Following two figures illustrate the "exclusive" property:
 <img src="media/event-state-exclusive-false.png" with="400px" height="260px" alt="Event state with exclusive set to false"/>
 </p>
  
-If correlation between multiple events cannot be establieshed with the events correlationToken (if the event state is the starting state for example).
-You can use the "payloadCorrelationKeys" property to defined elements of the event payload that need to match
-between all defined events the state is waiting for. This is partifularly useful if the event state is the workflow starting state
-(rather than an intermediate state), as in those cases the event correlation token may not have been established yet.
+In the case where the event state is a workflow starting state and a correlation token has not been established yet.
+you can take advantage of the "payloadCorrelationKeys" property. It is used to defined elements of the event payload that need to match
+between all defined events the state is waiting for. This property does not have much value in the cases where the event state
+is an intermediate workflow state, or if exclusive is set to "true", as then correlation should be established with the event correlation token. 
 
 The following figure illustrates how events are matched if the event state is a starting state, exclusive is set to false
 and the use of the "payloadCorrelationKeys" property.
@@ -591,7 +591,7 @@ If the event state is not a starting state, implementations can chose to use a c
 to associate the events with the current workflow instance.
 
 The timeout property defines the time duration from the invocation of the event state. If the defined events 
-have not been recived during this time, the state should transition to the next state or end workflow execution (if it is an end state).
+have not been received during this time, the state should transition to the next state or end workflow execution (if it is an end state).
 
 #### <a name="eventstate-eventactions"></a> Event State: Event Actions
 
@@ -2804,13 +2804,10 @@ and then lets us know how to greet this customer in different languages. We coul
     }],
     "states":[
         {
-            "name":"WaitForCustomerToArrive",
-            "type":"EVENT",
+            "name": "WaitForCustomerToArrive",
+            "type": "EVENT",
             "eventsActions": [{
-                "expression": {
-                    "language": "spel",
-                    "body": "type eq \"customer-arrival-type\""
-                },
+                "eventRef": "CustomerArrivesEvent",
                 "eventDataFilter": {
                     "dataInputPath": "$.customer"
                 },

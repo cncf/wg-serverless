@@ -300,6 +300,13 @@ filters what is selected to be the state data output which then becomes the work
 "name": "Event Based Greeting Workflow",
 "description": "Event Based Greeting",
 "startsAt": "Greet",
+"events": [
+ {
+  "name": "GreetingEvent",
+  "type": "greetingEventType",
+  "source": "greetingEventSource"
+ }
+],
 "functions": [
   {
      "name": "greetingFunction",
@@ -311,10 +318,7 @@ filters what is selected to be the state data output which then becomes the work
      "name":"Greet",
      "type":"EVENT",
      "eventsActions": [{
-         "expression": {
-           "language": "spel",
-           "body": "type eq \"greetingEventType\""
-         },
+         "eventRef": "GreetingEvent",
          "eventDataFilter": {
             "inputPath": "$.data.greet"
          },
@@ -346,6 +350,10 @@ filters what is selected to be the state data output which then becomes the work
 name: Event Based Greeting Workflow
 description: Event Based Greeting
 startsAt: Greet
+events:
+- name: GreetingEvent
+  type: greetingEventType
+  source: greetingEventSource
 functions:
 - name: greetingFunction
   resource: functionResourse
@@ -353,9 +361,7 @@ states:
 - name: Greet
   type: EVENT
   eventsActions:
-  - expression:
-      language: spel
-      body: type eq "greetingEventType"
+  - eventRef: GreetingEvent
     eventDataFilter:
       inputPath: "$.data.greet"
     actions:

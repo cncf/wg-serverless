@@ -192,13 +192,9 @@
     "eventactions": {
       "type": "object",
       "properties": {
-        "expression": {
-          "description": "Boolean expression which consists of one or more Event operands and the Boolean operators",
-          "$ref": "#/definitions/expression"
-        },
-        "timeout": {
-          "type": "string",
-          "description": "Time period to wait for incoming events which match the expression (ISO 8601 format)"
+        "eventRef": {
+          "type" : "string",
+          "description": "References an unique name in the defined workflow events"
         },
         "actionMode": {
           "type": "string",
@@ -217,19 +213,13 @@
             "$ref": "#/definitions/action"
           }
         },
-        "transition": {
-          "description": "Next transition of the workflow after all the actions have been performed",
-          "$ref": "#/definitions/transition"
-        },
         "eventDataFilter": {
           "$ref": "#/definitions/eventdatafilter"
         }
       },
       "required": [
-        "expression",
-        "actions",
-        "timeout",
-        "transition"
+        "eventRef",
+        "actions"
       ]
     },
     "action": {
@@ -475,12 +465,14 @@
           ],
           "description": "State type"
         },
-        "end": {
-          "$ref": "#/definitions/end",
-          "description": "State end definition"
+        "exclusive": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true consuming one of the defined events causes its associated actions to be performed. If false all of the defined events must be consumed in order for actions to be performed"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "payloadCorrelationKeys": {
+          "type": "array",
+          "description": "Elements of events payload used for defining correlation between incoming events. Can be used with event correlationToken or in case correlationToken is not defined"
         },
         "eventsActions": {
           "type": "array",
@@ -489,6 +481,13 @@
             "type": "object",
             "$ref": "#/definitions/eventactions"
           }
+        },
+        "timeout": {
+          "type": "string",
+          "description": "Time period to wait for incoming events (ISO 8601 format)"
+        },
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
         },
         "onError": {
           "type": "array",
@@ -507,6 +506,14 @@
           "type": "string",
           "format": "uri",
           "description": "URI to JSON Schema that state data output adheres to"
+        },
+        "transition": {
+          "description": "Next transition of the workflow after all the actions have been performed",
+          "$ref": "#/definitions/transition"
+        },
+        "end": {
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         }
       },
       "oneOf": [
