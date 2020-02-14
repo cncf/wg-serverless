@@ -568,11 +568,11 @@ The "exclusive" property defines if the state should wait for any of the defined
 Following two figures illustrate the "exclusive" property:
 
 <p align="center">
-<img src="media/event-state-exclusive-true.png" alt="Event state with exclusive set to true"/>
+<img src="media/event-state-exclusive-true.png" with="400px" height="260px" alt="Event state with exclusive set to true"/>
 </p>
 
 <p align="center">
-<img src="media/event-state-exclusive-true.png" alt="Event state with exclusive set to false"/>
+<img src="media/event-state-exclusive-true.png" with="400px" height="260px" alt="Event state with exclusive set to false"/>
 </p>
  
 If exclusive is set to false, you can use the "eventsDataKeys" array to define elements in the events payload that needs to match 
@@ -584,7 +584,7 @@ The following figure illustrates how events are matched if the event state is a 
 and the use of the "eventsDataKey" property.
 
 <p align="center">
-<img src="media/event-state-eventsdatakeys.png" alt="Start Event state - eventsdatakeys"/>
+<img src="media/event-state-eventsdatakeys.png" with="400px" height="260px" alt="Start Event state - eventsdatakeys"/>
 </p>
 
 #### <a name="eventstate-eventactions"></a> Event State: Event Actions
