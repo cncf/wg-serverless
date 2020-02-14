@@ -455,7 +455,7 @@ States define building blocks of the Serverless Workflow. The specification defi
 | name | State name | string | yes |
 | type | State type | string | yes |
 | exclusive | If true consuming one of the defined events causes its associated actions to be performed. If false all of the defined events must be consumed in order for actions to be performed. Default is "true"  | boolean | no |
-| eventsDataKeys | Elements of events data defining correlation between incoming events. Can be used when exclusive is set to false | array | no |  
+| payloadCorrelationKeys | Elements of events payload used for defining correlation between incoming events. Can be used with event correlationToken or in case correlationToken is not defined | array | no |  
 | [eventsActions](#eventstate-eventactions) | Define the events to be consumed and one or more actions to be performed | array | yes |
 | timeout | Time period to wait for incoming events (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | [stateDataFilter](#state-data-filter) | State data filter definition| object | no |
@@ -496,9 +496,9 @@ States define building blocks of the Serverless Workflow. The specification defi
             "default": true,
             "description": "If true consuming one of the defined events causes its associated actions to be performed. If false all of the defined events must be consumed in order for actions to be performed"
         },
-        "eventsDataKeys": {
+        "payloadCorrelationKeys": {
           "type": "array",
-          "description": "Elements of events data defining correlation between incoming events. Can be used when exclusive is set to false"
+          "description": "Elements of events payload used for defining correlation between incoming events. Can be used with event correlationToken or in case correlationToken is not defined"
         },
         "eventsActions": {
             "type": "array",
@@ -510,7 +510,7 @@ States define building blocks of the Serverless Workflow. The specification defi
         },
         "timeout": {
             "type": "string",
-            "description": "Time period to wait for incoming events which match the expression (ISO 8601 format)"
+            "description": "Time period to wait for incoming events (ISO 8601 format)"
         }, 
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
@@ -572,20 +572,26 @@ Following two figures illustrate the "exclusive" property:
 </p>
 
 <p align="center">
-<img src="media/event-state-exclusive-true.png" with="400px" height="260px" alt="Event state with exclusive set to false"/>
+<img src="media/event-state-exclusive-false.png" with="400px" height="260px" alt="Event state with exclusive set to false"/>
 </p>
  
-If exclusive is set to false, you can use the "eventsDataKeys" array to define elements in the events payload that needs to match 
-between all the events the state is waiting for. This is particularly useful if the event state is the workflow 
-starting state (rather than an intermediate state) as a correlation token associating the events with the current workflow instance
-is not established yet. 
+If correlation between multiple events cannot be establieshed with the events correlationToken (if the event state is the starting state for example).
+You can use the "payloadCorrelationKeys" property to defined elements of the event payload that need to match
+between all defined events the state is waiting for. This is partifularly useful if the event state is the workflow starting state
+(rather than an intermediate state), as in those cases the event correlation token may not have been established yet.
 
 The following figure illustrates how events are matched if the event state is a starting state, exclusive is set to false
-and the use of the "eventsDataKey" property.
+and the use of the "payloadCorrelationKeys" property.
 
 <p align="center">
-<img src="media/event-state-eventsdatakeys.png" with="400px" height="260px" alt="Start Event state - eventsdatakeys"/>
+<img src="media/event-state-payloadcorrelationkeys.png" with="400px" height="260px" alt="Start Event state - payloadCorrelationKeys"/>
 </p>
+
+If the event state is not a starting state, implementations can chose to use a correlation token instead or in conjunction with eventsDataKeys property
+to associate the events with the current workflow instance.
+
+The timeout property defines the time duration from the invocation of the event state. If the defined events 
+have not been recived during this time, the state should transition to the next state or end workflow execution (if it is an end state).
 
 #### <a name="eventstate-eventactions"></a> Event State: Event Actions
 
@@ -631,11 +637,12 @@ and the use of the "eventsDataKey" property.
 
 </details>
 
-As events are received the event state can use the "expression" parameter to match the event with one or 
-more defined in the [events](#Event-Definition) section. If the expression evaluates to true, 
-a set of defined actions is performed in sequence or in parallel.
+Event actions reference a single event in the workflow [events definitions](#Event-Definition).
+Both the source and type of incoming events must match the ones defined in the references event in order for
+the event to be considered. If the event state is not a starting state (is intermediate), the correlation token of the 
+referenced event can be used to associate the event with a particular workflow instance.
 
-Once defined actions finished execution, a transition to the next state can occur.
+The actions array defined a list of actions to be performed.
 
 #### Action Definition
 
