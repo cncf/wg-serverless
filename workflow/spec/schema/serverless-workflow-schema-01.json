@@ -225,7 +225,7 @@
     "action": {
       "type": "object",
       "properties": {
-        "functionref": {
+        "functionRef": {
           "description": "References a reusable function definition to be invoked",
           "$ref": "#/definitions/functionref"
         },
@@ -242,7 +242,7 @@
         }
       },
       "required": [
-        "functionref"
+        "functionRef"
       ]
     },
     "retry": {

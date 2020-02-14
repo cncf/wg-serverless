@@ -589,7 +589,7 @@ Once defined actions finished execution, a transition to the next state can occu
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [functionref](#Functionref-Definition) | References a reusable function definition to be invoked | object | yes |
+| [functionRef](#FunctionR  ef-Definition) | References a reusable function definition to be invoked | object | yes |
 | timeout |Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | integer | no |
 | [retry](#Retry-Definition) |Defines if function execution needs a retry | array | no |
 | [actionDataFilter](#action-data-filter) | Action data filter definition | object | no |
@@ -601,7 +601,7 @@ Once defined actions finished execution, a transition to the next state can occu
     "type": "object",
     "description": "Action Definition",
     "properties": {
-        "functionref": {
+        "functionRef": {
             "$ref": "#/definitions/functionref",
             "description": "References a reusable function definition to be invoked"
         },
@@ -621,7 +621,7 @@ Once defined actions finished execution, a transition to the next state can occu
           "$ref": "#/definitions/actiondatafilter"
         }
     },
-    "required": ["functionref"]
+    "required": ["functionRef"]
 }
 ```
 
@@ -1931,7 +1931,7 @@ and the state is defined as:
       "actionMode":"SEQUENTIAL",
       "actions":[  
       {  
-       "functionref": {
+       "functionRef": {
          "refname": "sendConfirmationFunction",
          "parameters": {
            "orderNumber": "$.completedorder.orderNumber",
@@ -1969,7 +1969,7 @@ states:
     type: OPERATION
     actionMode: SEQUENTIAL
     actions:
-    - functionref:
+    - functionRef:
         refname: sendConfirmationFunction
         parameters:
           orderNumber: "$.completedorder.orderNumber"
@@ -2251,7 +2251,7 @@ output of the state to transition from includes an user with the title "MANAGER"
    "actionMode":"Sequential",
    "actions":[  
     {  
-     "functionref":{
+     "functionRef":{
         "refname": "doLowRistOperationFunction"
      }
     }
@@ -2273,7 +2273,7 @@ output of the state to transition from includes an user with the title "MANAGER"
    "actionMode":"Sequential",
    "actions":[  
     {  
-     "functionref":{
+     "functionRef":{
        "refname": "doHighRistOperationFunction"
      }
     }
@@ -2297,7 +2297,7 @@ states:
   type: OPERATION
   actionMode: Sequential
   actions:
-  - functionref:
+  - functionRef:
       refname: doLowRistOperationFunction
   transition:
     nextState: highRiskState
@@ -2310,7 +2310,7 @@ states:
       type: DEFAULT
   actionMode: Sequential
   actions:
-  - functionref:
+  - functionRef:
       refname: doHighRistOperationFunction
   ```
 </td>
@@ -2657,7 +2657,7 @@ and then lets us know how to greet this customer in different languages. We coul
                 },
                 "actions":[
                     {
-                        "functionref": {
+                        "functionRef": {
                             "refname": "greetingFunction",
                             "parameters": {
                                 "greeting": "$.languageGreetings.spanish",
@@ -2855,7 +2855,7 @@ Let's take a look at a small example:
        "actionMode":"SEQUENTIAL",
        "actions":[  
           {  
-             "functionref": {
+             "functionRef": {
                "refname": "throwRuntimeErrorFunction"
              }
           }
@@ -2895,7 +2895,7 @@ states:
   end: false
   actionMode: SEQUENTIAL
   actions:
-  - functionref:
+  - functionRef:
       refname: throwRuntimeErrorFunction
   onError:
   - expression:
@@ -2962,7 +2962,7 @@ workflow definition. Let's take a look:
        "actionMode":"SEQUENTIAL",
        "actions":[  
           {  
-             "functionref": {
+             "functionRef": {
                "refname": "throwRuntimeErrorFunction"
              }
           }
@@ -2977,7 +2977,7 @@ workflow definition. Let's take a look:
        "actionMode":"SEQUENTIAL",
        "actions":[  
           {  
-             "functionref": {
+             "functionRef": {
                "refname": "throwRuntimeErrorFunction"
              }
           }
@@ -3011,7 +3011,7 @@ states:
   end: false
   actionMode: SEQUENTIAL
   actions:
-  - functionref:
+  - functionRef:
       refname: throwRuntimeErrorFunction
   transition:
     nextState: doSomethingElse
@@ -3020,7 +3020,7 @@ states:
   end: false
   actionMode: SEQUENTIAL
   actions:
-  - functionref:
+  - functionRef:
       refname: throwRuntimeErrorFunction
   transition:
     nextState: doSomethingElse

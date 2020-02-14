@@ -50,7 +50,7 @@ So let's define a simple example workflow model and then add our custom extensio
          "actions":[  
             {  
                "name": "callFirstFunction",
-               "functionref": {
+               "functionRef": {
                   "refname": "firstFunction"
                }
             }
@@ -69,7 +69,7 @@ So let's define a simple example workflow model and then add our custom extensio
          "actions":[  
               {  
                  "name": "callSecondFunction",
-                 "functionref": {
+                 "functionRef": {
                    "refname": "secondFunction"
                 }
               }
