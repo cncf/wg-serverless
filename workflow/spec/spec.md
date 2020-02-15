@@ -597,7 +597,7 @@ have not been received during this time, the state should transition to the next
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| eventRef | References an unique name in the defined workflow [events](#Event-Definition) | string | yes |
+| eventRefs | References one or more unique name in the defined workflow [events](#Event-Definition) | array | yes |
 | actionMode | Specifies how actions are to be performed (in sequence of parallel) | string | no |
 | [actions](#Action-Definition) | Actions to be performed if expression matches | array | yes |
 | [eventDataFilter](#event-data-filter) | Event data filter definition | object | no |
@@ -609,9 +609,9 @@ have not been received during this time, the state should transition to the next
     "type": "object",
     "description": "Defines what events to act upon and actions to be performed",
     "properties": {
-        "eventRef": {
-          "type" : "string",
-          "description": "References an unique name in the defined workflow events"
+        "eventRefs": {
+          "type" : "array",
+          "description": "References one or more unique name in the defined workflow events"
         },
         "actionMode": {
             "type" : "string",
@@ -631,16 +631,16 @@ have not been received during this time, the state should transition to the next
           "$ref": "#/definitions/eventdatafilter"
         }
     },
-    "required": ["eventRef", "actions"]
+    "required": ["eventRefs", "actions"]
 }
 ```
 
 </details>
 
-Event actions reference a single event in the workflow [events definitions](#Event-Definition).
-Both the source and type of incoming events must match the ones defined in the references event in order for
+Event actions reference one or more events in the workflow [events definitions](#Event-Definition).
+Both the source and type of incoming events must match the ones defined in the references events in order for
 the event to be considered. If the event state is not a starting state (is intermediate), the correlation token of the 
-referenced event can be used to associate the event with a particular workflow instance.
+referenced events can be used to associate the events with a particular workflow instance.
 
 The actions array defined a list of actions to be performed.
 
@@ -2807,7 +2807,7 @@ and then lets us know how to greet this customer in different languages. We coul
             "name": "WaitForCustomerToArrive",
             "type": "EVENT",
             "eventsActions": [{
-                "eventRef": "CustomerArrivesEvent",
+                "eventRefs": ["CustomerArrivesEvent"],
                 "eventDataFilter": {
                     "dataInputPath": "$.customer"
                 },

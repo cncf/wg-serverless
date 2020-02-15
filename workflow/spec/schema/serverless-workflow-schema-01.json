@@ -192,9 +192,9 @@
     "eventactions": {
       "type": "object",
       "properties": {
-        "eventRef": {
-          "type" : "string",
-          "description": "References an unique name in the defined workflow events"
+        "eventRefs": {
+          "type" : "array",
+          "description": "References one more more unique event names in the defined workflow events"
         },
         "actionMode": {
           "type": "string",
@@ -218,7 +218,7 @@
         }
       },
       "required": [
-        "eventRef",
+        "eventRefs",
         "actions"
       ]
     },

@@ -11,6 +11,8 @@
 - [Provision Orders (Error Handling)](#Provision-Orders-Example)
 - [Monitor Job for completion (Polling)](#Monitor-Job-Example)
 - [Send CloudEvent on Workflow Completion](#Send-CloudEvent-On-Workfow-Completion-Example)
+- [Monitor Patient Vital Signs](#Monitor-Patient-Vital-Signs-Example)
+- [Finalize College Application](#Finalize-College-Application-Example)
 
 ### Hello World Example
 
@@ -318,7 +320,7 @@ filters what is selected to be the state data output which then becomes the work
      "name":"Greet",
      "type":"EVENT",
      "eventsActions": [{
-         "eventRef": "GreetingEvent",
+         "eventRefs": ["GreetingEvent"],
          "eventDataFilter": {
             "inputPath": "$.data.greet"
          },
@@ -361,7 +363,8 @@ states:
 - name: Greet
   type: EVENT
   eventsActions:
-  - eventRef: GreetingEvent
+  - eventRefs:
+    - GreetingEvent
     eventDataFilter:
       inputPath: "$.data.greet"
     actions:
@@ -1458,3 +1461,319 @@ states:
 <p align="center">
 <img src="media/sendcloudeentonworkflowcompletion.png" with="400px" height="400px" alt="Send CloudEvent on Workflow Completion Example"/>
 </p>
+
+
+### Monitor Patient Vital Signs Example
+
+#### Description
+In this example a hospital patient is monitored by a Vial Sign Monitoring system. This device can produce three different Cloud Events, namely
+"High Body Temperature", "High Blood Pressure", and "High Respiration Rate". 
+Our workflow which needs to take propert actions depending on the event the Vital Sign Monitor produces needs to start
+if any of these events occur. For each of these events a new instance of the workflow is started.
+
+Since the hospital may include many patients that are being monitored it is assumed that all events include a patient Id in the event
+ payload. We can use this patient id to associate the incoming events with the same patient as well as 
+ use the patient id to pass as parameter to the functions called by event activities.
+
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td valign="top">
+
+```json
+{
+"id": "patientVitalsWorkflow",
+"name": "Monitor Patient Vitals",
+"version": "1.0",
+"startsAt": "MonitorVitals",
+"events": [
+{
+    "name": "HighBodyTemperature",
+    "type": "org.monitor.highBodyTemp",
+    "source": "monitoringSource"
+},
+{
+    "name": "HighBloodPressure",
+    "type": "org.monitor.highBloodPressure",
+    "source": "monitoringSource"
+},
+{
+    "name": "HighRespirationRate",
+    "type": "org.monitor.highRespirationRate",
+    "source": "monitoringSource"
+}
+],
+"functions": [
+{
+    "name": "callPulmonologist",
+    "type": "function",
+    "resource": "callPulmonologistResource"
+},
+{
+    "name": "sendTylenolOrder",
+    "type": "function",
+    "resource": "sendTylenolOrderFunction"
+},
+{
+    "name": "callNurse",
+    "type": "function",
+    "resource": "callNurseResource"
+}
+],
+"states": [
+{
+"name": "MonitorVitals",
+"type": "EVENT",
+"exclusive": true,
+"payloadCorrelationKeys": ["data.patientId"],
+"eventsActions": [{
+        "eventRefs": ["HighBodyTemperature"],
+        "actions": [{
+            "functionref": {
+                "refname": "sendTylenolOrder",
+                "parameters": {
+                    "patientid": "$.patientId"
+                }
+            }
+        }]
+    },
+    {
+        "eventRefs": ["HighBloodPressure"],
+        "actions": [{
+            "functionref": {
+                "refname": "callNurse",
+                "parameters": {
+                    "patientid": "$.patientId"
+                }
+            }
+        }]
+    },
+    {
+        "eventRefs": ["HighRespirationRate"],
+        "actions": [{
+            "functionref": {
+                "refname": "callPulmonologist",
+                "parameters": {
+                    "patientid": "$.patientId"
+                }
+            }
+        }]
+    }
+],
+"end": {
+    "type": "TERMINATE"
+}
+}]
+}
+```
+</td>
+<td valign="top">
+
+```yaml
+id: patientVitalsWorkflow
+name: Monitor Patient Vitals
+version: '1.0'
+startsAt: MonitorVitals
+events:
+- name: HighBodyTemperature
+  type: org.monitor.highBodyTemp
+  source: monitoringSource
+- name: HighBloodPressure
+  type: org.monitor.highBloodPressure
+  source: monitoringSource
+- name: HighRespirationRate
+  type: org.monitor.highRespirationRate
+  source: monitoringSource
+functions:
+- name: callPulmonologist
+  type: function
+  resource: callPulmonologistResource
+- name: sendTylenolOrder
+  type: function
+  resource: sendTylenolOrderFunction
+- name: callNurse
+  type: function
+  resource: callNurseResource
+states:
+- name: MonitorVitals
+  type: EVENT
+  exclusive: true
+  payloadCorrelationKeys:
+  - data.patientId
+  eventsActions:
+  - eventRefs:
+    - HighBodyTemperature
+    actions:
+    - functionref:
+        refname: sendTylenolOrder
+        parameters:
+          patientid: "$.patientId"
+  - eventRefs:
+    - HighBloodPressure
+    actions:
+    - functionref:
+        refname: callNurse
+        parameters:
+          patientid: "$.patientId"
+  - eventRefs:
+    - HighRespirationRate
+    actions:
+    - functionref:
+        refname: callPulmonologist
+        parameters:
+          patientid: "$.patientId"
+  end:
+    type: TERMINATE
+```
+</td>
+</tr>
+</table>
+
+#### Worfklow Diagram
+
+<p align="center">
+<img src="media/monitorpatientvitalsigns.png" with="400px" height="400px" alt="Monitor Patient Vital Signs Example"/>
+</p>
+
+### Finalize College Application Example
+
+#### Description
+
+In this example our workflow is instantiated when all requirements of a college application are completed. 
+These requirements include a student submitting an application, the college receiving the students SAT scores, as well 
+as a student recommendation letter from a former teacher. 
+
+We assume three Cloud Events "ApplicationSubmitted", "SATScoresReceived" and "RecommendationLetterReceived".
+Each include the applicant id in their event payload so we can use it to associate these events with an individual applicant.
+
+Our workflow is instantiated and performs the actions to finalize the college application for a student only
+when all three of these events happened (in no particular order).
+
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td valign="top">
+
+```json
+{
+"id": "finalizeCollegeApplication",
+"name": "Finalize College Application",
+"version": "1.0",
+"startsAt": "FinalizeApplication",
+"events": [
+{
+    "name": "ApplicationSubmitted",
+    "type": "org.application.submitted",
+    "source": "applicationsource"
+},
+{
+    "name": "SATScoresReceived",
+    "type": "org.application.satscores",
+    "source": "applicationsource"
+},
+{
+    "name": "RecommendationLetterReceived",
+    "type": "org.application.recommendationLetter",
+    "source": "applicationsource"
+}
+],
+"functions": [
+{
+    "name": "finalizeApplicationFunction",
+    "type": "function",
+    "resource": "finalizeApplicationResource"
+}
+],
+"states": [
+{
+    "name": "FinalizeApplication",
+    "type": "EVENT",
+    "exclusive": false,
+    "payloadCorrelationKeys": ["data.studentId"],
+    "eventsActions": [
+        {
+            "eventRefs": [
+                "ApplicationSubmitted",
+                "SATScoresReceived",
+                "RecommendationLetterReceived"
+            ],
+            "actions": [
+                {
+                    "functionref": {
+                        "refname": "finalizeApplicationFunction",
+                        "parameters": {
+                            "student": "$.studentId"
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "end": {
+        "type": "TERMINATE"
+    }
+}
+]
+}
+```
+</td>
+<td valign="top">
+
+```yaml
+id: finalizeCollegeApplication
+name: Finalize College Application
+version: '1.0'
+startsAt: FinalizeApplication
+events:
+- name: ApplicationSubmitted
+  type: org.application.submitted
+  source: applicationsource
+- name: SATScoresReceived
+  type: org.application.satscores
+  source: applicationsource
+- name: RecommendationLetterReceived
+  type: org.application.recommendationLetter
+  source: applicationsource
+functions:
+- name: finalizeApplicationFunction
+  type: function
+  resource: finalizeApplicationResource
+states:
+- name: FinalizeApplication
+  type: EVENT
+  exclusive: false
+  payloadCorrelationKeys:
+  - data.studentId
+  eventsActions:
+  - eventRefs:
+    - ApplicationSubmitted
+    - SATScoresReceived
+    - RecommendationLetterReceived
+    actions:
+    - functionref:
+        refname: finalizeApplicationFunction
+        parameters:
+          student: "$.studentId"
+  end:
+    type: TERMINATE
+```
+</td>
+</tr>
+</table>
+
+#### Worfklow Diagram
+
+<p align="center">
+<img src="media/finalizecollegeapplication.png" with="400px" height="400px" alt="Finalize College Application Example"/>
+</p>
+
