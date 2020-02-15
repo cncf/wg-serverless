@@ -575,7 +575,7 @@ Following two figures illustrate the "exclusive" property:
 <img src="media/event-state-exclusive-false.png" with="400px" height="260px" alt="Event state with exclusive set to false"/>
 </p>
  
-In the case where the event state is a workflow starting state and a correlation token has not been established yet.
+In the case where the event state is a workflow starting state and a correlation token has not been established yet
 you can take advantage of the "payloadCorrelationKeys" property. It is used to defined elements of the event payload that need to match
 between all defined events the state is waiting for. This property does not have much value in the cases where the event state
 is an intermediate workflow state, or if exclusive is set to "true", as then correlation should be established with the event correlation token. 
