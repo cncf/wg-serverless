@@ -457,7 +457,7 @@ States define building blocks of the Serverless Workflow. The specification defi
 | exclusive | If true consuming one of the defined events causes its associated actions to be performed. If false all of the defined events must be consumed in order for actions to be performed. Default is "true"  | boolean | no |
 | payloadCorrelationKeys | Elements of events payload used for defining correlation between incoming events. Can be used with event correlationToken or in case correlationToken is not defined | array | no |  
 | [eventsActions](#eventstate-eventactions) | Define the events to be consumed and one or more actions to be performed | array | yes |
-| timeout | Time period to wait for incoming events (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
+| [timeout](#eventstate-timeout) | Time period to wait for incoming events (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | [stateDataFilter](#state-data-filter) | State data filter definition| object | no |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
@@ -643,6 +643,57 @@ the event to be considered. If the event state is not a starting state (is inter
 referenced events can be used to associate the events with a particular workflow instance.
 
 The actions array defined a list of actions to be performed.
+
+#### <a name="eventstate-timeout"></a> Event State: Timeout
+
+The event state timeout period is described in the ISO 8601 data and time format. 
+You can specify for example "PT15M" to represent 15 minutes or "P2DT3H4M" to represent 2 days, 3 hours and 4 minutes.
+
+The timeout property needs to be described in detail as it depends on whether or not the event state is a starting workflow 
+state or not. 
+
+If the event state is a starting state, incoming events may trigger workflow instances. If the event waits for
+any of the defined events (exclusive property is set to true), the timeout property should be ignored. 
+
+If exclusive property is set to false (all defined events must occur) the defined timeout represents the time
+between arrival of specified events. To give an example let's say we have:
+
+```json
+{
+"states": [
+{
+    "name": "ExampleEventState",
+    "type": "EVENT",
+    "exclusive": false,
+    "timeout": "PT2M",
+    "eventsActions": [
+        {
+            "eventRefs": [
+                "ExampleEvent1",
+                "ExampleEvent2",
+                "ExampleEvent3"
+            ],
+            "actions": [
+                
+            ]
+        }
+    ],
+    "end": {
+        "type": "TERMINATE"
+    }
+}
+]
+}
+```
+
+The first timeout would starts once any of the referenced events are consumed. If the next event does not occur within
+the defined timeout no workflow instance should be created. Otherwise the timeout 
+resets while we are waiting for the next defined event.
+
+If the event state is not a starting state, the timeout property defines the time period from when the 
+state becomes active. If the defined event conditions (regardless of the value of the exclusive property)
+are not satisfied within the defined timeout period, the event state should transition to the next state or end the workflow
+instance in case it is an end state without performing any actions.
 
 #### Action Definition
 
@@ -1909,7 +1960,7 @@ to test if your workflow behaves properly for the case when there are people who
          },
          "timeDelay": {
              "type": "string",
-             "description": "|Amount of time (ISO 8601 format) to wait between each iteration "
+             "description": "Amount of time (ISO 8601 format) to wait between each iteration "
          },
          "startsAt": {
           "type": "string",
