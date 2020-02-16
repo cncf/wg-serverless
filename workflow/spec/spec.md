@@ -563,17 +563,27 @@ States define building blocks of the Serverless Workflow. The specification defi
 </details>
 
 Event states await one or more events and perform actions when they are received. 
-The "exclusive" property defines if the state should wait for any of the defined events in the eventsActions array, or 
+If defined as the workflow starting state, the event state definition controls when the workflow
+instances should be created. 
+
+The "exclusive" property determines if the state should wait for any of the defined events in the eventsActions array, or 
  if all defined events must be present for their associated actions to be performed.
+ 
+ 
 Following two figures illustrate the "exclusive" property:
 
 <p align="center">
 <img src="media/event-state-exclusive-true.png" with="400px" height="260px" alt="Event state with exclusive set to true"/>
 </p>
 
+If the event state in this case is a starting state, any of the defined events would start a new workflow instance.
+
 <p align="center">
 <img src="media/event-state-exclusive-false.png" with="400px" height="260px" alt="Event state with exclusive set to false"/>
 </p>
+
+If the event state in this case is a starting state, occurence of all defined events would start a new 
+ workflow instance.
  
 In the case where the event state is a workflow starting state and a correlation token has not been established yet
 you can take advantage of the "payloadCorrelationKeys" property. It is used to defined elements of the event payload that need to match
