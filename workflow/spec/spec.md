@@ -114,13 +114,15 @@ Defines the main structure of serverless workflows:
 
 | Parameter | Description | Type | Required |
 | --- | --- |  --- | --- |
-| id | Workflow unique identifier. | string |yes |
-| name | Workflow name | string |yes |
-| description | Workflow description | string |no |
-| version | Workflow version | string |no |
-| schemaVersion | Workflow schema version | string |no |
-| startsAt | Workflow starting state | string |yes |
-| expressionLanguage | Default expression language | string |no |
+| id | Workflow unique identifier | string | yes |
+| name | Workflow name | string | yes |
+| description | Workflow description | string | no |
+| version | Workflow version | string | no |
+| schemaVersion | Workflow schema version | string | no |
+| startsAt | Workflow starting state | string | yes |
+| expressionLanguage | Default expression language to be used throughout the workflow definition | string | no |
+| [dataInputSchema](#Workflow-Data-Input) | URI to JSON Schema that workflow data input adheres to | string | no |
+| [dataOutputSchema](#Workflow-data-output) | URI to JSON Schema that workflow data output adheres to | string | no |
 | [events](#Event-Definition) | Workflow event definitions. Defines events that can be consumed or produced | array | no |
 | [functions](#Function-Definition) | Workflow functions | array | no |
 | [states](#State-Definition) | Workflow states | array | yes |
@@ -167,6 +169,11 @@ Defines the main structure of serverless workflows:
         "expressionLanguage": {
           "type": "string",
           "description": "Default expression language to be used throughout the workflow definition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that workflow data input adheres to"
         },
         "events": {
             "type": "array",
@@ -264,7 +271,7 @@ Workflow implementations can use this token to map a particular event to a parti
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| name | Unique event name | string |yes |
+| name | Unique event name | string | yes |
 | source | CloudEvent source | string | yes |
 | type | CloudEvent type | string | yes |
 | correlationToken | Location Path in the event message used to retrieve a token for event correlation | string | no |
@@ -347,7 +354,7 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [expression](#Expression-Definition) | Boolean expression which consists of one or more Error operands and the Boolean operators | string |yes |
+| [expression](#Expression-Definition) | Boolean expression which consists of one or more Error operands and the Boolean operators | string | yes |
 | [errorDataFilter](#error-data-filter) | Error data filter definition | object | yes |
 | [transition](#Transitions) | Next transition of the workflow when expression matches | string | yes |
 
@@ -451,6 +458,8 @@ States define building blocks of the Serverless Workflow. The specification defi
 | [eventsActions](#eventstate-eventactions) | Define what events are to be consumed and one or more actions to be performed | array | yes |
 | [stateDataFilter](#state-data-filter) | State data filter definition| object | no |
 | [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
+| [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
+| [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
  
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -496,6 +505,16 @@ States define building blocks of the Serverless Workflow. The specification defi
                 "type": "object",
                 "$ref": "#/definitions/error"
             }
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
     },
     "oneOf": [
@@ -667,7 +686,7 @@ function. They can include either static values or reference the states data inp
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [expression](#Expression-Definition) | Boolean expression that matches against the function results. Must be evaluated to true for retry policy to trigger | string |yes |
+| [expression](#Expression-Definition) | Boolean expression that matches against the function results. Must be evaluated to true for retry policy to trigger | string | yes |
 | interval |Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| integer | no |
 | max |Max retry value | integer | no |
 | [transition](#Transitions) |Next transition of the workflow when exceeding max limit | string | yes |
@@ -754,6 +773,9 @@ Defines a transition from point A to point B in the serverless workflow. For mor
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Error-Handling) | States error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes (if end is not defined) |
+| [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
+| [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
+
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -808,6 +830,16 @@ Defines a transition from point A to point B in the serverless workflow. For mor
         "transition": {
           "description": "Next transition of the workflow after all the actions have been performed",
           "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
     },
     "oneOf": [
@@ -850,6 +882,8 @@ Once all actions have been performed, a transition to another state can occur.
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
 | default |Next transition of the workflow if there is no match for any choices | object | yes (if end is not defined) |
+| [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
+| [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -903,6 +937,16 @@ Once all actions have been performed, a transition to another state can occur.
         "default": {
             "description": "Next transition of the workflow if there is no match for any choices",
             "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
     },
     "oneOf": [
@@ -1131,6 +1175,8 @@ There are four types of choices defined:
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
 | [transition](#Transitions) |Next transition of the workflow after the delay | string | yes (if end is not defined) |
+| [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
+| [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary> 
 
@@ -1175,6 +1221,16 @@ There are four types of choices defined:
         "transition": {
           "description": "Next transition of the workflow after the delay",
           "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
     },
     "oneOf": [
@@ -1214,6 +1270,8 @@ Delay state waits for a certain amount of time before transitioning to a next st
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Error-Handling) |States error handling definitions | array | no |
 | [transition](#Transitions) |Next transition of the workflow after all branches have completed execution | string | yes (if end is not defined) |
+| dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
+| dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1262,6 +1320,16 @@ Delay state waits for a certain amount of time before transitioning to a next st
         "transition": {
           "description": "Next transition of the workflow after all branches have completed execution",
           "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
     },
     "oneOf": [
@@ -1387,6 +1455,8 @@ Parallel state must wait for all branches which have this property set to "true"
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#State-Exception-Handling) |States error handling definitions | array | no |
 | [transition](#Transitions) |Next transition of the workflow after subflow has completed | string | yes (if end is not defined) |
+| dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
+| dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1436,6 +1506,16 @@ Parallel state must wait for all branches which have this property set to "true"
         "transition": {
           "description": "Next transition of the workflow after subflow has completed",
           "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
     },
     "oneOf": [
@@ -1491,6 +1571,8 @@ If this property is set to false, data access to parent's workflow should not be
 | inject | JSON object which can be set as state's data input and can be manipulated via filter | object | no |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [transition](#Transitions) | Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
+| dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
+| dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1527,6 +1609,16 @@ If this property is set to false, data access to parent's workflow should not be
         "transition": {
           "description": "Next transition of the workflow after subflow has completed",
           "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
     },
     "oneOf": [
@@ -1719,11 +1811,13 @@ to test if your workflow behaves properly for the case when there are people who
 | inputParameter | JSONPath expression specifying an JSON object field of the states data input. For each parallel iteration, this field will get populated with an unique element of the inputCollection array. | string | yes |
 | max | Specifies how upper bound on how many iterations may run in parallel | integer | no |
 | timeDelay | Amount of time (ISO 8601 format) to wait between each iteration | string | no |
-| startsAt | Unique name of a states in the states array representing the starting state to be executed | string |yes |
+| startsAt | Unique name of a states in the states array representing the starting state to be executed | string | yes |
 | [states](#State-Definition) | States to be executed for each of the elements of inputCollection | array | yes |
 | [stateDataFilter](#state-data-filter) | State data filter definition | object | no |
 | [onError](#Error-Handling) | States error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after state has completed | string | yes (if end is not defined) |
+| dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
+| dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1827,6 +1921,16 @@ to test if your workflow behaves properly for the case when there are people who
         "transition": {
           "description": "Next transition of the workflow after subflow has completed",
           "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
         }
     },
     "oneOf": [
@@ -2332,7 +2436,7 @@ Flow of data during workflow execution can be divided into:
 - [State information filtering](#State-information-filtering)
 - [Workflow data output](#Workflow-data-output)
 
-### Workflow data input
+### Workflow Data Input
 
 The initial data input into a workflow instance must be a valid [JSON object](https://tools.ietf.org/html/rfc7159#section-4). 
 If no input is provided the default data input is the empty object:
@@ -2349,7 +2453,12 @@ Workflow data input is passed to the workflow's "startsAt" state (the starting s
 <img src="media/workflowdatainput.png" with="500px" height="300px" alt="Workflow data input"/>
 </p>
 
-### Event data
+In order to define the structure of expected workflow data input you can use the workflow
+"dataInputSchema" property. This property allows you to link to a [JSON Schema](https://json-schema.org/) definition
+that describes the expected workflow data input. This can be used for documentation purposes or implementations may 
+decide to strictly enforce it.
+
+### Event Data
 
 [Event states](#Event-State) wait for arrival of defined CloudEvents, and when consumed perform a number of defined actions.
 CloudEvents can contain data which is needed to make further orchestration decisions. Data from consumed CloudEvents 
@@ -2360,7 +2469,7 @@ or be passed as data output to transition states.
 <img src="media/eventdatamerged.png" with="500px" height="300px" alt="Event data merged with state data input"/>
 </p>
 
-### Information passing between states
+### Information Passing Between States
 
 States in Serverless workflow can receive data (data input) as well as produce a data result (data output). T
 he states data input is typically the previous states data output. 
@@ -2375,7 +2484,12 @@ There are two of rules to consider here:
 <img src="media/basic-state-data-passing.png" with="500px" height="300px" alt="Basic state data passing"/>
 </p>
 
-### State information filtering
+In order to define the structure of expected state data input and output you can use the workflow
+"dataInputSchema" and "dataOutputSchema" properties. These property allows you to link to [JSON Schema](https://json-schema.org/) definitions
+that describes the expected workflow data input/output. This can be used for documentation purposes or implementations may 
+decide to strictly enforce it.
+
+### State Information Filtering
 
 States can access and manipulate data via data filters. Since all data during workflow execution is described
 in [JSON](https://tools.ietf.org/html/rfc7159) format, data filters use [JSONPath](https://github.com/json-path/JsonPath) queries 
@@ -2817,6 +2931,11 @@ transitions to the next one or ends workflow execution (end state) can be consid
 Once a workflow instance reaches an end state (where the "end" parameter is defined) and the workflow finishes its execution
 the data output of that result state becomes the workflow data output. This output can be logged or indexed depending on the
 implementation details. 
+
+In order to define the structure of expected workflow data output you can use the workflow
+"dataOutputSchema" property. This property allows you to link to a [JSON Schema](https://json-schema.org/) definition
+that describes the expected workflow data output. This can be used for documentation purposes or implementations may 
+decide to strictly enforce it.
 
 ## Workflow Error Handling
 
