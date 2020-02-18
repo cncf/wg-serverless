@@ -46,9 +46,9 @@ This document is a working draft.
 - [Workflow Data](#Workflow-Data)
 - [Workflow Error Handling](#Workflow-Error-Handling)
 - [Extending](#Extending)
+- [Use Cases](#Use-Cases)
 - [Examples](#Examples)
 - [Reference](#Reference)
-- [Use Cases](#Use-Cases)
 
 ## Introduction
 
@@ -2522,6 +2522,10 @@ logging, simulation, debugging, tracing, etc.
 
 You can find more info and examples of element extensions [here](spec-extending.md).
 
+## Use Cases
+
+You can find different Serverless Workflow use cases [here](spec-usecases.md)
+
 ## Examples
 
 You can find different Serverless Workflow examples [here](spec-examples.md)
@@ -2530,7 +2534,4 @@ You can find different Serverless Workflow examples [here](spec-examples.md)
 
 You can find a list of other languages, technologies and specifications related to workflows [here](references.md)
 
-## Use Cases
-
-You can find different Serverless Workflow use cases [here](spec-usecases.md)
 
