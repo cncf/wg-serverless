@@ -658,6 +658,7 @@ The actions array defined a list of actions to be performed.
 
 The event state timeout period is described in the ISO 8601 data and time format. 
 You can specify for example "PT15M" to represent 15 minutes or "P2DT3H4M" to represent 2 days, 3 hours and 4 minutes.
+Timeout values should always be represented as durations and not as time/repeating intervals.
 
 The timeout property needs to be described in detail as it depends on whether or not the event state is a starting workflow 
 state or not. 
@@ -704,6 +705,8 @@ If the event state is not a starting state, the timeout property defines the tim
 state becomes active. If the defined event conditions (regardless of the value of the exclusive property)
 are not satisfied within the defined timeout period, the event state should transition to the next state or end the workflow
 instance in case it is an end state without performing any actions.
+
+
 
 #### Action Definition
 
