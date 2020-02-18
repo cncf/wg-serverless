@@ -609,8 +609,8 @@ Once defined actions finished execution, a transition to the next state can occu
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | [functionRef](#FunctionRef-Definition) | References a reusable function definition to be invoked | object | yes |
-| timeout |Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | integer | no |
-| [retry](#Retry-Definition) |Defines if function execution needs a retry | array | no |
+| timeout | Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | string | no |
+| [retry](#Retry-Definition) | Retry policy definitions | array | no |
 | [actionDataFilter](#action-data-filter) | Action data filter definition | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -687,9 +687,9 @@ function. They can include either static values or reference the states data inp
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | [expression](#Expression-Definition) | Boolean expression that matches against the function results. Must be evaluated to true for retry policy to trigger | string | yes |
-| interval |Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| integer | no |
-| max |Max retry value | integer | no |
-| [transition](#Transitions) |Next transition of the workflow when exceeding max limit | string | yes |
+| interval | Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| string | no |
+| maxAttempts | Maximum number of retry attempts (1 by default). Value of 0 means no retries are performed | integer | no |
+| [transition](#Transitions) | Next transition of the workflow when exceeding maxAttempts limit | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -706,18 +706,18 @@ function. They can include either static values or reference the states data inp
             "type": "string",
             "description": "Specifies retry interval (ISO 8601 format)"
         },
-        "max": {
+        "maxAttempts": {
             "type": "integer",
-            "default":"0",
+            "default":"1",
             "minimum": 0,
-            "description": "Specifies the max retry"
+            "description": "Maximum number of retry attempts (1 by default). Value of 0 means no retries are performed"
         },
         "transition": {
-          "description": "Next transition of the workflow when exceeding max retry limit",
+          "description": "Next transition of the workflow when exceeding maxAttempts limit",
           "$ref": "#/definitions/transition"
         }
     },
-    "required": ["match", "transition"]
+    "required": ["expression"]
 }
 ```
 
@@ -725,6 +725,11 @@ function. They can include either static values or reference the states data inp
 
 Defines a retry policy for an action. The expression parameter defines the boolean expression that matches against 
 the functions results. If it is evaluated to true, the retry policy is triggers.
+the "maxAttempts" property specifies the maximum number of attempts of the retry policy. If maxAttempts is set to
+0 no retries should be performed.
+
+In case the max attempts have been reached, you can specify a transition to another workflow state. This will halt
+any further action executions. If transition is not specified other defined actions may continue their execution.
 
 #### Transition Definition
 

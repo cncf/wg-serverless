@@ -267,20 +267,19 @@
           "type": "string",
           "description": "Specifies retry interval (ISO 8601 format)"
         },
-        "max": {
+        "maxAttempts": {
           "type": "integer",
           "default": "0",
           "minimum": 0,
-          "description": "Specifies the max retry"
+          "description": "Maximum number of retry attempts (1 by default). Value of 0 means no retries are performed"
         },
         "transition": {
-          "description": "Next transition of the workflow when exceeding max limit",
+          "description": "Next transition of the workflow when exceeding maxAttempts limit",
           "$ref": "#/definitions/transition"
         }
       },
       "required": [
-        "match",
-        "transition"
+        "expression"
       ]
     },
     "function": {
