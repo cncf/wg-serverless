@@ -639,7 +639,7 @@ If the event state in this case is a starting state, occurrence of all defined e
  workflow instance.
   
 In order to consider only events that are related to each other, we need to set the "correlationToken" property in the workflow 
- [events definitions](#Event Definition). This token points to a context attribute of the events that defines the 
+ [events definitions](#Event-Definition). This token points to a context attribute of the events that defines the 
  token to be used for event correlation.
 
 The timeout property defines the time duration from the invocation of the event state. If the defined events 
