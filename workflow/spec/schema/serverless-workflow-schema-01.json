@@ -180,7 +180,7 @@
         },
         "correlationToken": {
           "type": "string",
-          "description": "Path used for event correlation."
+          "description": "Context attribute name of the CloudEvent which value is to be used for event correlation"
         }
       },
       "required": [
@@ -469,10 +469,6 @@
           "type": "boolean",
           "default": true,
           "description": "If true consuming one of the defined events causes its associated actions to be performed. If false all of the defined events must be consumed in order for actions to be performed"
-        },
-        "payloadCorrelationKeys": {
-          "type": "array",
-          "description": "Elements of events payload used for defining correlation between incoming events. Can be used with event correlationToken or in case correlationToken is not defined"
         },
         "eventsActions": {
           "type": "array",

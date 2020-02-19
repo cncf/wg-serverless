@@ -257,24 +257,12 @@ Defines the main structure of serverless workflows:
 
 ### Event Definition
 
-Describes events that can be consumed or produced during workflow execution.
-Consumed events can trigger actions to be executed. Events can also be produced during workflow
-execution to be consumed by clients.
-
-As serverless workflow definitions are vendor neutral, so should be the events definitions that they consume and produce.
-As such event format within serverless workflows uses the [CloudEvents](https://github.com/cloudevents/spec) specification to describe events.
-
-To support use case where a serverless workflows need to perform actions across multiple types
-of events, users can specify a correlation token. This token is used to associate multiple events
-with each other, and is embedded into the event message.
-Workflow implementations can use this token to map a particular event to a particular workflow instance.
-
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | name | Unique event name | string | yes |
 | source | CloudEvent source | string | yes |
 | type | CloudEvent type | string | yes |
-| correlationToken | Location Path in the event message used to retrieve a token for event correlation | string | no |
+| correlationToken | Context attribute name of the CloudEvent which value is to be used for event correlation | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -305,6 +293,76 @@ Workflow implementations can use this token to map a particular event to a parti
 ```
 
 </details>
+
+Defines events that can be consumed or produced during workflow execution.
+Consumed events can trigger actions to be executed. Events can also be produced during workflow
+execution to be consumed by clients.
+
+As serverless workflow definitions are vendor neutral, so should be the events definitions that they consume and produce.
+As such event format within serverless workflows uses the [CloudEvents](https://github.com/cloudevents/spec) specification to describe events.
+
+To support use case where serverless workflows need to perform actions across multiple types
+of events, users can specify a correlation token to correlate these events. 
+The "correlationToken" must specify a context attribute in the event which contains a business key to be 
+used for event correlation. An event "context attribute" can be defined as any event attribute except the event payload (the event "data" attribute).
+
+For example let's say we have two CloudEvent which set their correlation via the "patientId" context attribute:
+
+```json
+{
+    "specversion" : "1.0",
+    "type" : "com.hospital.patient.heartRateMonitor",
+    "source" : "hospitalMonitorSystem",
+    "subject" : "HeartRateReading",
+    "id" : "A234-1234-1234",
+    "time" : "2020-01-05T17:31:00Z",
+    "patientId" : "PID-12345",
+    "data" : {
+      "value": "80bpm"
+    }
+}
+```
+
+and
+
+```json
+{
+    "specversion" : "1.0",
+    "type" : "com.hospital.patient.bloodPressureMonitor",
+    "source" : "hospitalMonitorSystem",
+    "subject" : "BloodPressureReading",
+    "id" : "B234-1234-1234",
+    "time" : "2020-02-05T17:31:00Z",
+    "patientId" : "PID-12345",
+    "data" : {
+      "value": "110/70"
+    }
+}
+```
+
+If we then correlate these two events with event definitions:
+
+```json
+{
+"events": [
+ {
+  "name": "HeartRateReadingEvent",
+  "type": "com.hospital.patient.heartRateMonitor",
+  "source": "hospitalMonitorSystem",
+  "correlationToken": "patientId"
+ },
+ {
+   "name": "BloodPressureReadingEvent",
+   "type": "com.hospital.patient.bloodPressureMonitor",
+   "source": "hospitalMonitorSystem",
+   "correlationToken": "patientId"
+  }
+]
+}
+```
+
+Workflow implementations can use this token to map events to particular workflow instances, or use it
+to correlate multiple events that are needed to start a workflow instance.
 
 #### Function Definition
 
@@ -455,7 +513,6 @@ States define building blocks of the Serverless Workflow. The specification defi
 | name | State name | string | yes |
 | type | State type | string | yes |
 | exclusive | If true consuming one of the defined events causes its associated actions to be performed. If false all of the defined events must be consumed in order for actions to be performed. Default is "true"  | boolean | no |
-| payloadCorrelationKeys | Elements of events payload used for defining correlation between incoming events. Can be used with event correlationToken or in case correlationToken is not defined | array | no |  
 | [eventsActions](#eventstate-eventactions) | Define the events to be consumed and one or more actions to be performed | array | yes |
 | [timeout](#eventstate-timeout) | Time period to wait for incoming events (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | [stateDataFilter](#state-data-filter) | State data filter definition| object | no |
@@ -495,10 +552,6 @@ States define building blocks of the Serverless Workflow. The specification defi
             "type": "boolean",
             "default": true,
             "description": "If true consuming one of the defined events causes its associated actions to be performed. If false all of the defined events must be consumed in order for actions to be performed"
-        },
-        "payloadCorrelationKeys": {
-          "type": "array",
-          "description": "Elements of events payload used for defining correlation between incoming events. Can be used with event correlationToken or in case correlationToken is not defined"
         },
         "eventsActions": {
             "type": "array",
@@ -582,23 +635,12 @@ If the event state in this case is a starting state, any of the defined events w
 <img src="media/event-state-exclusive-false.png" with="400px" height="260px" alt="Event state with exclusive set to false"/>
 </p>
 
-If the event state in this case is a starting state, occurence of all defined events would start a new 
+If the event state in this case is a starting state, occurrence of all defined events would start a new 
  workflow instance.
- 
-In the case where the event state is a workflow starting state and a correlation token has not been established yet
-you can take advantage of the "payloadCorrelationKeys" property. It is used to defined elements of the event payload that need to match
-between all defined events the state is waiting for. This property does not have much value in the cases where the event state
-is an intermediate workflow state, or if exclusive is set to "true", as then correlation should be established with the event correlation token. 
-
-The following figure illustrates how events are matched if the event state is a starting state, exclusive is set to false
-and the use of the "payloadCorrelationKeys" property.
-
-<p align="center">
-<img src="media/event-state-payloadcorrelationkeys.png" with="400px" height="260px" alt="Start Event state - payloadCorrelationKeys"/>
-</p>
-
-If the event state is not a starting state, implementations can chose to use a correlation token instead or in conjunction with eventsDataKeys property
-to associate the events with the current workflow instance.
+  
+In order to consider only events that are related to each other, we need to set the "correlationToken" property in the workflow 
+ [events definitions](#Event Definition). This token points to a context attribute of the events that defines the 
+ token to be used for event correlation.
 
 The timeout property defines the time duration from the invocation of the event state. If the defined events 
 have not been received during this time, the state should transition to the next state or end workflow execution (if it is an end state).
@@ -649,8 +691,9 @@ have not been received during this time, the state should transition to the next
 
 Event actions reference one or more events in the workflow [events definitions](#Event-Definition).
 Both the source and type of incoming events must match the ones defined in the references events in order for
-the event to be considered. If the event state is not a starting state (is intermediate), the correlation token of the 
-referenced events can be used to associate the events with a particular workflow instance.
+the event to be considered. In case of mutliple events the event definition "correlationToken" context attribute 
+value must also match between events. If a correlation token is not defined, all events that match the other attributes
+can be considered.
 
 The actions array defined a list of actions to be performed.
 

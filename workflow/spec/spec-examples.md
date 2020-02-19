@@ -1471,9 +1471,27 @@ In this example a hospital patient is monitored by a Vial Sign Monitoring system
 Our workflow which needs to take propert actions depending on the event the Vital Sign Monitor produces needs to start
 if any of these events occur. For each of these events a new instance of the workflow is started.
 
-Since the hospital may include many patients that are being monitored it is assumed that all events include a patient Id in the event
- payload. We can use this patient id to associate the incoming events with the same patient as well as 
- use the patient id to pass as parameter to the functions called by event activities.
+Since the hospital may include many patients that are being monitored it is assumed that all events include a patientId context attribute in the event
+ message. We can use the value of this context attribute to associate the incoming events with the same patient as well as 
+ use the patient id to pass as parameter to the functions called by event activities. Here is an example of such event:
+
+```json
+{
+    "specversion" : "1.0",
+    "type" : "org.monitor.highBodyTemp",
+    "source" : "monitoringSource",
+    "subject" : "BodyTemperatureReading",
+    "id" : "A234-1234-1234",
+    "time" : "2020-01-05T17:31:00Z",
+    "patientId" : "PID-12345",
+    "data" : {
+      "value": "98.6F"
+    }
+}
+``` 
+As you can see the "patientId" context attribute of the event includes our correlation key which is the unique 
+patient id. If we set it to be the correlation key in our events definition, all events that are considered must 
+have the matching patient id.
 
 #### Workflow Definition
 
@@ -1495,17 +1513,20 @@ Since the hospital may include many patients that are being monitored it is assu
 {
     "name": "HighBodyTemperature",
     "type": "org.monitor.highBodyTemp",
-    "source": "monitoringSource"
+    "source": "monitoringSource",
+    "correlationToken": "patientId"
 },
 {
-    "name": "HighBloodPressure",
+    "name": "HighBloodPressure", 
     "type": "org.monitor.highBloodPressure",
-    "source": "monitoringSource"
+    "source": "monitoringSource",
+    "correlationToken": "patientId"
 },
 {
     "name": "HighRespirationRate",
     "type": "org.monitor.highRespirationRate",
-    "source": "monitoringSource"
+    "source": "monitoringSource",
+    "correlationToken": "patientId"
 }
 ],
 "functions": [
@@ -1530,7 +1551,6 @@ Since the hospital may include many patients that are being monitored it is assu
 "name": "MonitorVitals",
 "type": "EVENT",
 "exclusive": true,
-"payloadCorrelationKeys": ["data.patientId"],
 "eventsActions": [{
         "eventRefs": ["HighBodyTemperature"],
         "actions": [{
@@ -1583,12 +1603,15 @@ events:
 - name: HighBodyTemperature
   type: org.monitor.highBodyTemp
   source: monitoringSource
+  correlationToken: patientId
 - name: HighBloodPressure
   type: org.monitor.highBloodPressure
   source: monitoringSource
+  correlationToken: patientId
 - name: HighRespirationRate
   type: org.monitor.highRespirationRate
   source: monitoringSource
+  correlationToken: patientId
 functions:
 - name: callPulmonologist
   type: function
@@ -1603,8 +1626,6 @@ states:
 - name: MonitorVitals
   type: EVENT
   exclusive: true
-  payloadCorrelationKeys:
-  - data.patientId
   eventsActions:
   - eventRefs:
     - HighBodyTemperature
@@ -1629,6 +1650,7 @@ states:
           patientid: "$.patientId"
   end:
     type: TERMINATE
+
 ```
 </td>
 </tr>
@@ -1649,7 +1671,7 @@ These requirements include a student submitting an application, the college rece
 as a student recommendation letter from a former teacher. 
 
 We assume three Cloud Events "ApplicationSubmitted", "SATScoresReceived" and "RecommendationLetterReceived".
-Each include the applicant id in their event payload so we can use it to associate these events with an individual applicant.
+Each include the applicant id in their "applicantId" context attribute, so we can use it to associate these events with an individual applicant.
 
 Our workflow is instantiated and performs the actions to finalize the college application for a student only
 when all three of these events happened (in no particular order).
@@ -1674,17 +1696,20 @@ when all three of these events happened (in no particular order).
 {
     "name": "ApplicationSubmitted",
     "type": "org.application.submitted",
-    "source": "applicationsource"
+    "source": "applicationsource",
+    "correlationToken": "applicantId"
 },
 {
     "name": "SATScoresReceived",
     "type": "org.application.satscores",
-    "source": "applicationsource"
+    "source": "applicationsource",
+    "correlationToken": "applicantId"
 },
 {
     "name": "RecommendationLetterReceived",
     "type": "org.application.recommendationLetter",
-    "source": "applicationsource"
+    "source": "applicationsource",
+    "correlationToken": "applicantId"
 }
 ],
 "functions": [
@@ -1699,7 +1724,6 @@ when all three of these events happened (in no particular order).
     "name": "FinalizeApplication",
     "type": "EVENT",
     "exclusive": false,
-    "payloadCorrelationKeys": ["data.studentId"],
     "eventsActions": [
         {
             "eventRefs": [
@@ -1712,7 +1736,7 @@ when all three of these events happened (in no particular order).
                     "functionref": {
                         "refname": "finalizeApplicationFunction",
                         "parameters": {
-                            "student": "$.studentId"
+                            "student": "$.applicantId"
                         }
                     }
                 }
@@ -1738,12 +1762,15 @@ events:
 - name: ApplicationSubmitted
   type: org.application.submitted
   source: applicationsource
+  correlationToken: applicantId
 - name: SATScoresReceived
   type: org.application.satscores
   source: applicationsource
+  correlationToken: applicantId
 - name: RecommendationLetterReceived
   type: org.application.recommendationLetter
   source: applicationsource
+  correlationToken: applicantId
 functions:
 - name: finalizeApplicationFunction
   type: function
@@ -1752,8 +1779,6 @@ states:
 - name: FinalizeApplication
   type: EVENT
   exclusive: false
-  payloadCorrelationKeys:
-  - data.studentId
   eventsActions:
   - eventRefs:
     - ApplicationSubmitted
@@ -1763,9 +1788,10 @@ states:
     - functionref:
         refname: finalizeApplicationFunction
         parameters:
-          student: "$.studentId"
+          student: "$.applicantId"
   end:
     type: TERMINATE
+
 ```
 </td>
 </tr>
