@@ -8,7 +8,6 @@ State machines/Workflows have a long history in software design and development.
 - [Huawei FunctionGraph workflow definition](#Huawei-FunctionGraph-workflow-definition)
 - [Flogo](#Flogo)
 - [Alibaba FunctionFlow](#Alibaba-FunctionFlow)
-- [Kogito] (#Kogito)
 
 ### Business Process Model and Notation
 
@@ -59,7 +58,7 @@ State machines/Workflows have a long history in software design and development.
 
 ### Mistral Workflow Language
 
-(Mistral Workflow Language)[https://docs.openstack.org/mistral/latest/user/wf_lang_v2.html] is a YAML-based task graph description. Unless a dependency (link/transition) is expressed between two tasks, all unconnected tasks in the workflow description are considered concurrent branches. The workflow concludes when all branches have completed. If a transition links one task to another, its execution depends on the predecessor.
+[Mistral Workflow Language](https://docs.openstack.org/mistral/latest/user/wf_lang_v2.html) is a YAML-based task graph description. Unless a dependency (link/transition/requirement) is expressed between two tasks, all unconnected tasks in the workflow description would be executed. If a transition links one task to another, its execution depends on the predecessor. With transitions, successors of a task can be identified to create workflow graphs (type: *direct*). With dependencies, required tasks can be identified to create a dependency graph (type: *reverse*). Each workflow activation maintains a context and completes one task at a time. However, at the end of each task, the task may define more than one task to continue with (fork concurrent branches) and at the beginning of a task, the task may wait on the completion of other tasks (join). The workflow concludes when all branches/tasks have completed.
 
 <details>
   <summary>Workflow Language details</summary>
@@ -79,12 +78,12 @@ State machines/Workflows have a long history in software design and development.
     - retry
     - concurrency
   
-      __direct-only__
+      *direct-only*
     - on-error (list of tasks which will run if the task has completed with an error)
     - on-success (list of tasks which will run if the task has completed successfully)
     - on-complete (regardless if successful or not)
   
-      __reverse-only__
+      *reverse-only*
     - requires (for reverse workflows that express requires-dependencies instead of on-xxx forward control)
   - tasks (dictionary of all tasks)
 
