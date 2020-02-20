@@ -2,7 +2,15 @@
 
 State machines/Workflows have a long history in software design and development. The goal of this section is to list other tools and languages that had been used to define orchestration between different actors (software and human). The main intention here is to make sure that we cover as many use cases as possible leveraging existing approaches to avoid pitfalls from the past. 
 
-### BPMN 2.0 by OMG
+- [Business Process Model and Notation](#Business-Process-Model-and-Notation)
+- [Mistral Workflow Language](#Mistral-Workflow-Language)
+- [Amazon States Language](#Amazon-States-Language)
+- [Huawei FunctionGraph workflow definition](#Huawei-FunctionGraph-workflow-definition)
+- [Flogo](#Flogo)
+- [Alibaba FunctionFlow](#Alibaba-FunctionFlow)
+- [Kogito] (#Kogito)
+
+### Business Process Model and Notation
 
 [Business Process Modeling and Notation (BPMN)](https://www.omg.org/spec/BPMN/) was designed by Object Management Group (OMG) in collaboration with companies such as: IBM, Red Hat, Oracle, SAP, TIBCO, Software AG, among others. The latest version of the specification provides a rich set of constructs to defines workflows in a technology agnostic way. One of the main advatages of the BPMN spec is that it visually defines how a workflow should look like and most importantely, it defines the execution semantics of such workflows.
 
@@ -49,6 +57,56 @@ State machines/Workflows have a long history in software design and development.
   You can find the BPMN XML which can be executed in a number of Open Source and Propietary engines [here](media/references/travel-booking-workflow.bpmn)
 </details>
 
+### Mistral Workflow Language
+
+(Mistral Workflow Language)[https://docs.openstack.org/mistral/latest/user/wf_lang_v2.html] is a YAML-based task graph description. Unless a dependency (link/transition) is expressed between two tasks, all unconnected tasks in the workflow description are considered concurrent branches. The workflow concludes when all branches have completed. If a transition links one task to another, its execution depends on the predecessor.
+
+<details>
+  <summary>Workflow Language details</summary>
+  A workflow describes a task graph, i.e. it consists of tasks that can be linked with transitions.
+
+  **Workflow:**
+  - type (direct or reverse)
+  - description
+  - input (required input parameters and optional default values)
+  - output (construct an output from the final context content)
+  - output-on-error (same as output but when the workflow goes into error)
+  - task-defaults (defaults for all tasks, unless tasks overwrites)
+    - pause-before
+    - wait-before
+    - wait-after
+    - timeout
+    - retry
+    - concurrency
+  
+      __direct-only__
+    - on-error (list of tasks which will run if the task has completed with an error)
+    - on-success (list of tasks which will run if the task has completed successfully)
+    - on-complete (regardless if successful or not)
+  
+      __reverse-only__
+    - requires (for reverse workflows that express requires-dependencies instead of on-xxx forward control)
+  - tasks (dictionary of all tasks)
+
+  **Task:**
+  - name
+  - description
+  - action or workflow, otherwise it's a noop
+  - input (constructs action/subworkflow input parameters from the context of the task) 
+  - publish (decides which action/subworkflow outputs are put into the context)
+  - publish-on-error
+  - with-items (processes items of a collection, i.e. the action/workflow excutes multiple times)
+  - keep-result (can be used to discard the action/subworkflow output)
+  - target (which worker should execute the task)
+  - pause-before
+  - wait-before
+  - wait-after
+  - fail-on
+  - timeout
+  - retry (with count, delay, break-on, continue-on)
+  - concurrency (max concurrent actions, see with-items)
+</details>
+
 ### Amazon States Language
 
 [Amazon States Language](https://states-language.net/spec.html) is a JSON-based DSL to define AWS Step Functions, a workflow-like execution of AWS Lambda serverless functions. The language has inspired the original draft of the serverless workflows specification. The copyright lies with Amazon.com Inc. or Affiliates and the license excludes modification or merging of the specification. The workflow is orchestrated by the engine that invokes the serverless functions (resources) referenced by the workflow.
@@ -57,11 +115,11 @@ State machines/Workflows have a long history in software design and development.
 
 [Huawei FunctionGraph workflow definition](https://support.huaweicloud.com/en-us/devg-functiongraph/functiongraph_02_0300.html) has served as [initial draft](https://github.com/cncf/wg-serverless/commit/e42aaabb2c5dd78d0bd638b5cc8be0cd771101a4#diff-bc18ddd43c9fef122edf80ec220f04bb) of this specification and is very similar to the Amazon States Language.
 
-### Flogo.io
+### Flogo
 
-TIBCO's Project Flogo&trade; defines applications as triggers, handlers and actions to create workflows. Its [current support for AWS Lambda](https://tibcosoftware.github.io/flogo/labs/flogo-lambda/) wraps the entire workflow as an embedded application into a single Lambda function.
+TIBCO's (Project Flogo&trade;)[http://www.flogo.io] defines applications as triggers, handlers and actions to create workflows. Its [current support for AWS Lambda](https://tibcosoftware.github.io/flogo/labs/flogo-lambda/) wraps the entire workflow as an embedded application into a single Lambda function.
 
-### Alibaba FunctionFlow (FnF)
+### Alibaba FunctionFlow
 
 FunctionFlow defines workflows of steps using yaml arrays and a simple control logic that starts with the first step in the array, allows jumps with goto and ending a flow either by reaching the last ste in the array or by marking a step as the end of the flow.
 
@@ -95,8 +153,6 @@ FunctionFlow defines workflows of steps using yaml arrays and a simple control l
     - inputMappings
     - iterationMapping (to define branching)
   </details>
-
-### Kogito + Quarkus
 
 ### Others
 
