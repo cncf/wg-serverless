@@ -649,7 +649,7 @@ have not been received during this time, the state should transition to the next
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| eventRefs | References one or more unique name in the defined workflow [events](#Event-Definition) | array | yes |
+| eventRefs | References one or more unique event names in the defined workflow [events](#Event-Definition) | array | yes |
 | actionMode | Specifies how actions are to be performed (in sequence of parallel) | string | no |
 | [actions](#Action-Definition) | Actions to be performed if expression matches | array | yes |
 | [eventDataFilter](#event-data-filter) | Event data filter definition | object | no |
@@ -663,7 +663,7 @@ have not been received during this time, the state should transition to the next
     "properties": {
         "eventRefs": {
           "type" : "array",
-          "description": "References one or more unique name in the defined workflow events"
+          "description": "References one or more unique event names in the defined workflow"
         },
         "actionMode": {
             "type" : "string",

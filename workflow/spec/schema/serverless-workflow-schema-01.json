@@ -194,7 +194,7 @@
       "properties": {
         "eventRefs": {
           "type" : "array",
-          "description": "References one more more unique event names in the defined workflow events"
+          "description": "References one or more unique event names in the defined workflow events"
         },
         "actionMode": {
           "type": "string",
