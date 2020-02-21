@@ -831,38 +831,29 @@ The data output of the workflow contains the information of the exception caught
        {
          "expression": {
             "language": "spel",
-            "body": "$.exception.name is 'MissingOrderIdException'"
+            "body": "name eq 'MissingOrderIdException'"
          },
          "transition": {
            "nextState": "MissingId"
-         },
-         "errorDataFilter": {
-          "dataOutputPath": "$.exception"
          }
        },
        {
          "expression": {
            "language": "spel",
-           "body": "$.exception.name is 'MissingOrderItemException'"
+           "body": "name eq 'MissingOrderItemException'"
          },
          "transition": {
            "nextState": "MissingItem"
-         },
-         "errorDataFilter": {
-           "dataOutputPath": "$.exception"
-          }
+         }
        },
        {
         "expression": {
           "language": "spel",
-          "body": "$.exception.name is 'MissingOrderQuantityException'"
+          "body": "name eq 'MissingOrderQuantityException'"
         },
         "transition": {
           "nextState": "MissingQuantity"
-        },
-        "errorDataFilter": {
-          "dataOutputPath": "$.exception"
-         }
+        }
        }
     ],
     "stateDataFilter": {
@@ -929,25 +920,19 @@ states:
   onError:
   - expression:
       language: spel
-      body: "$.exception.name is 'MissingOrderIdException'"
+      body: name eq 'MissingOrderIdException'
     transition:
       nextState: MissingId
-    errorDataFilter:
-      dataOutputPath: "$.exception"
   - expression:
       language: spel
-      body: "$.exception.name is 'MissingOrderItemException'"
+      body: name eq 'MissingOrderItemException'
     transition:
       nextState: MissingItem
-    errorDataFilter:
-      dataOutputPath: "$.exception"
   - expression:
       language: spel
-      body: "$.exception.name is 'MissingOrderQuantityException'"
+      body: name eq 'MissingOrderQuantityException'
     transition:
       nextState: MissingQuantity
-    errorDataFilter:
-      dataOutputPath: "$.exception"
   stateDataFilter:
     dataOutputPath: "$.exception"
   transition:
@@ -972,6 +957,7 @@ states:
   workflowId: applyOrderWorkflowId
   end:
     type: DEFAULT
+
 ```
 </td>
 </tr>
@@ -1053,10 +1039,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
     {
      "expression": {
          "language": "spel",
-         "body": "$.exception != null"
-      },
-      "errorDataFilter": {
-        "dataOutputPath": "$.exception"
+         "body": "name != null"
       },
       "transition": {
         "nextState": "SubmitError"
@@ -1202,9 +1185,7 @@ states:
   onError:
   - expression:
       language: spel
-      body: "$.exception != null"
-    errorDataFilter:
-      dataOutputPath: "$.exception"
+      body: name != null
     transition:
       nextState: SubmitError
   stateDataFilter:
@@ -1269,6 +1250,7 @@ states:
         name: "$.jobuid"
   end:
     type: DEFAULT
+
 ```
 </td>
 </tr>
