@@ -257,24 +257,12 @@ Defines the main structure of serverless workflows:
 
 ### Event Definition
 
-Describes events that can be consumed or produced during workflow execution.
-Consumed events can trigger actions to be executed. Events can also be produced during workflow
-execution to be consumed by clients.
-
-As serverless workflow definitions are vendor neutral, so should be the events definitions that they consume and produce.
-As such event format within serverless workflows uses the [CloudEvents](https://github.com/cloudevents/spec) specification to describe events.
-
-To support use case where a serverless workflows need to perform actions across multiple types
-of events, users can specify a correlation token. This token is used to associate multiple events
-with each other, and is embedded into the event message.
-Workflow implementations can use this token to map a particular event to a particular workflow instance.
-
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | name | Unique event name | string | yes |
 | source | CloudEvent source | string | yes |
 | type | CloudEvent type | string | yes |
-| correlationToken | Location Path in the event message used to retrieve a token for event correlation | string | no |
+| correlationToken | Context attribute name of the CloudEvent which value is to be used for event correlation | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -305,6 +293,76 @@ Workflow implementations can use this token to map a particular event to a parti
 ```
 
 </details>
+
+Defines events that can be consumed or produced during workflow execution.
+Consumed events can trigger actions to be executed. Events can also be produced during workflow
+execution to be consumed by clients.
+
+As serverless workflow definitions are vendor neutral, so should be the events definitions that they consume and produce.
+As such event format within serverless workflows uses the [CloudEvents](https://github.com/cloudevents/spec) specification to describe events.
+
+To support use case where serverless workflows need to perform actions across multiple types
+of events, users can specify a correlation token to correlate these events. 
+The "correlationToken" must specify a context attribute in the event which contains a business key to be 
+used for event correlation. An event "context attribute" can be defined as any event attribute except the event payload (the event "data" attribute).
+
+For example let's say we have two CloudEvent which set their correlation via the "patientId" context attribute:
+
+```json
+{
+    "specversion" : "1.0",
+    "type" : "com.hospital.patient.heartRateMonitor",
+    "source" : "hospitalMonitorSystem",
+    "subject" : "HeartRateReading",
+    "id" : "A234-1234-1234",
+    "time" : "2020-01-05T17:31:00Z",
+    "patientId" : "PID-12345",
+    "data" : {
+      "value": "80bpm"
+    }
+}
+```
+
+and
+
+```json
+{
+    "specversion" : "1.0",
+    "type" : "com.hospital.patient.bloodPressureMonitor",
+    "source" : "hospitalMonitorSystem",
+    "subject" : "BloodPressureReading",
+    "id" : "B234-1234-1234",
+    "time" : "2020-02-05T17:31:00Z",
+    "patientId" : "PID-12345",
+    "data" : {
+      "value": "110/70"
+    }
+}
+```
+
+If we then correlate these two events with event definitions:
+
+```json
+{
+"events": [
+ {
+  "name": "HeartRateReadingEvent",
+  "type": "com.hospital.patient.heartRateMonitor",
+  "source": "hospitalMonitorSystem",
+  "correlationToken": "patientId"
+ },
+ {
+   "name": "BloodPressureReadingEvent",
+   "type": "com.hospital.patient.bloodPressureMonitor",
+   "source": "hospitalMonitorSystem",
+   "correlationToken": "patientId"
+  }
+]
+}
+```
+
+Workflow implementations can use this token to map events to particular workflow instances, or use it
+to correlate multiple events that are needed to start a workflow instance.
 
 #### Function Definition
 
@@ -454,13 +512,16 @@ States define building blocks of the Serverless Workflow. The specification defi
 | id | Unique state id | string | no |
 | name | State name | string | yes |
 | type | State type | string | yes |
-| [end](#End-Definition) | Is this state an end state | object | no |
-| [eventsActions](#eventstate-eventactions) | Define what events are to be consumed and one or more actions to be performed | array | yes |
+| exclusive | If true consuming one of the defined events causes its associated actions to be performed. If false all of the defined events must be consumed in order for actions to be performed. Default is "true"  | boolean | no |
+| [eventsActions](#eventstate-eventactions) | Define the events to be consumed and one or more actions to be performed | array | yes |
+| [timeout](#eventstate-timeout) | Time period to wait for incoming events (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | [stateDataFilter](#state-data-filter) | State data filter definition| object | no |
-| [onError](#Workflow-Error-Handling) |States error handling definitions | array | no |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
- 
+| [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes |
+| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
+| [end](#End-Definition) | Is this state an end state | object | no |
+
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
 
@@ -487,6 +548,11 @@ States define building blocks of the Serverless Workflow. The specification defi
           "$ref": "#/definitions/end",
           "description": "State end definition"
         },
+        "exclusive": {
+            "type": "boolean",
+            "default": true,
+            "description": "If true consuming one of the defined events causes its associated actions to be performed. If false all of the defined events must be consumed in order for actions to be performed"
+        },
         "eventsActions": {
             "type": "array",
             "description": "Define what events to be consumed and one or more actions to be performed",
@@ -495,6 +561,10 @@ States define building blocks of the Serverless Workflow. The specification defi
                 "$ref": "#/definitions/eventactions"
             }
         },
+        "timeout": {
+            "type": "string",
+            "description": "Time period to wait for incoming events (ISO 8601 format)"
+        }, 
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
         },
@@ -515,6 +585,10 @@ States define building blocks of the Serverless Workflow. The specification defi
           "type": "string",
           "format": "uri",
           "description": "URI to JSON Schema that state data output adheres to"
+          },
+        "transition": {
+          "description": "Next transition of the workflow after all the actions have been performed",
+          "$ref": "#/definitions/transition"
         }
     },
     "oneOf": [
@@ -541,19 +615,44 @@ States define building blocks of the Serverless Workflow. The specification defi
 </p>
 </details>
 
-Event state waits for events from different event sources and defines one or more actions to performed when
-those events are received.
+Event states await one or more events and perform actions when they are received. 
+If defined as the workflow starting state, the event state definition controls when the workflow
+instances should be created. 
+
+The "exclusive" property determines if the state should wait for any of the defined events in the eventsActions array, or 
+ if all defined events must be present for their associated actions to be performed.
+ 
+ 
+Following two figures illustrate the "exclusive" property:
+
+<p align="center">
+<img src="media/event-state-exclusive-true.png" with="400px" height="260px" alt="Event state with exclusive set to true"/>
+</p>
+
+If the event state in this case is a starting state, any of the defined events would start a new workflow instance.
+
+<p align="center">
+<img src="media/event-state-exclusive-false.png" with="400px" height="260px" alt="Event state with exclusive set to false"/>
+</p>
+
+If the event state in this case is a starting state, occurrence of all defined events would start a new 
+ workflow instance.
+  
+In order to consider only events that are related to each other, we need to set the "correlationToken" property in the workflow 
+ [events definitions](#Event-Definition). This token points to a context attribute of the events that defines the 
+ token to be used for event correlation.
+
+The timeout property defines the time duration from the invocation of the event state. If the defined events 
+have not been received during this time, the state should transition to the next state or end workflow execution (if it is an end state).
 
 #### <a name="eventstate-eventactions"></a> Event State: Event Actions
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [expression](#Expression-Definition) | Boolean expression which consists of one or more Event operands and the Boolean operators. If is true all defined actions are executed | object | yes |
-| timeout | Time period to wait for incoming events which match the expression (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
+| eventRefs | References one or more unique event names in the defined workflow [events](#Event-Definition) | array | yes |
 | actionMode | Specifies how actions are to be performed (in sequence of parallel) | string | no |
 | [actions](#Action-Definition) | Actions to be performed if expression matches | array | yes |
 | [eventDataFilter](#event-data-filter) | Event data filter definition | object | no |
-| [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -562,14 +661,10 @@ those events are received.
     "type": "object",
     "description": "Defines what events to act upon and actions to be performed",
     "properties": {
-        "expression": {
-          "description": " Boolean expression which consists of one or more Event operands and the Boolean operators",
-          "$ref": "#/definitions/expression"
+        "eventRefs": {
+          "type" : "array",
+          "description": "References one or more unique event names in the defined workflow"
         },
-        "timeout": {
-            "type": "string",
-            "description": "Time period to wait for incoming events which match the expression (ISO 8601 format)"
-        }, 
         "actionMode": {
             "type" : "string",
             "enum": ["SEQUENTIAL", "PARALLEL"],
@@ -586,23 +681,75 @@ those events are received.
         },
         "eventDataFilter": {
           "$ref": "#/definitions/eventdatafilter"
-        },
-        "transition": {
-          "description": "Next transition of the workflow after all the actions have been performed",
-          "$ref": "#/definitions/transition"
         }
     },
-    "required": ["expression", "actions", "transition"]
+    "required": ["eventRefs", "actions"]
 }
 ```
 
 </details>
 
-As events are received the event state can use the "expression" parameter to match the event with one or 
-more defined in the [events](#Event-Definition) section. If the expression evaluates to true, 
-a set of defined actions is performed in sequence or in parallel.
+Event actions reference one or more events in the workflow [events definitions](#Event-Definition).
+Both the source and type of incoming events must match the ones defined in the references events in order for
+the event to be considered. In case of mutliple events the event definition "correlationToken" context attribute 
+value must also match between events. If a correlation token is not defined, all events that match the other attributes
+can be considered.
 
-Once defined actions finished execution, a transition to the next state can occur.
+The actions array defined a list of actions to be performed.
+
+#### <a name="eventstate-timeout"></a> Event State: Timeout
+
+The event state timeout period is described in the ISO 8601 data and time format. 
+You can specify for example "PT15M" to represent 15 minutes or "P2DT3H4M" to represent 2 days, 3 hours and 4 minutes.
+Timeout values should always be represented as durations and not as time/repeating intervals.
+
+The timeout property needs to be described in detail as it depends on whether or not the event state is a starting workflow 
+state or not. 
+
+If the event state is a starting state, incoming events may trigger workflow instances. If the event waits for
+any of the defined events (exclusive property is set to true), the timeout property should be ignored. 
+
+If exclusive property is set to false (all defined events must occur) the defined timeout represents the time
+between arrival of specified events. To give an example let's say we have:
+
+```json
+{
+"states": [
+{
+    "name": "ExampleEventState",
+    "type": "EVENT",
+    "exclusive": false,
+    "timeout": "PT2M",
+    "eventsActions": [
+        {
+            "eventRefs": [
+                "ExampleEvent1",
+                "ExampleEvent2",
+                "ExampleEvent3"
+            ],
+            "actions": [
+                
+            ]
+        }
+    ],
+    "end": {
+        "type": "TERMINATE"
+    }
+}
+]
+}
+```
+
+The first timeout would starts once any of the referenced events are consumed. If the next event does not occur within
+the defined timeout no workflow instance should be created. Otherwise the timeout 
+resets while we are waiting for the next defined event.
+
+If the event state is not a starting state, the timeout property defines the time period from when the 
+state becomes active. If the defined event conditions (regardless of the value of the exclusive property)
+are not satisfied within the defined timeout period, the event state should transition to the next state or end the workflow
+instance in case it is an end state without performing any actions.
+
+
 
 #### Action Definition
 
@@ -1869,7 +2016,7 @@ to test if your workflow behaves properly for the case when there are people who
          },
          "timeDelay": {
              "type": "string",
-             "description": "|Amount of time (ISO 8601 format) to wait between each iteration "
+             "description": "Amount of time (ISO 8601 format) to wait between each iteration "
          },
          "startsAt": {
           "type": "string",
@@ -2764,13 +2911,10 @@ and then lets us know how to greet this customer in different languages. We coul
     }],
     "states":[
         {
-            "name":"WaitForCustomerToArrive",
-            "type":"EVENT",
+            "name": "WaitForCustomerToArrive",
+            "type": "EVENT",
             "eventsActions": [{
-                "expression": {
-                    "language": "spel",
-                    "body": "type eq \"customer-arrival-type\""
-                },
+                "eventRefs": ["CustomerArrivesEvent"],
                 "eventDataFilter": {
                     "dataInputPath": "$.customer"
                 },
