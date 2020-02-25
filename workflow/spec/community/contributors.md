@@ -35,3 +35,6 @@ some way, please add your information via pull request.
 
 * **Camunda**
     * Mauricio Salatino    
+
+* **Nokia**
+    * Manuel Stein 
