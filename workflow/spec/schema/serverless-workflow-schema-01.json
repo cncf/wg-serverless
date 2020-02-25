@@ -1116,12 +1116,14 @@
       "allOf": [
         {
           "$ref": "#/definitions/defaultchoice"
-        },
-        {
-          "$ref": "#/definitions/transition",
-          "description": "Next transition of the workflow if there is a value match"
         }
       ],
+      "properties": {
+        "transition": {
+          "description": "Next transition of the workflow if there is a valid match",
+          "$ref": "#/definitions/transition"
+        }
+      },
       "required": [
         "transition"
       ]
