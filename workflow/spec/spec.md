@@ -506,7 +506,7 @@ States define building blocks of the Serverless Workflow. The specification defi
 | [eventsActions](#eventstate-eventactions) | Define the events to be consumed and one or more actions to be performed | array | yes |
 | [timeout](#eventstate-timeout) | Time period to wait for incoming events (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | [stateDataFilter](#state-data-filter) | State data filter definition| object | no |
-| [retry](#retry-after-error) | States retry definitions | array | no |
+| [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
@@ -823,7 +823,7 @@ function. They can include either static values or reference the states data inp
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [errorExpression](#Expression-Definition) | Expression that matches against error properties | string | yes |
+| [expression](#Expression-Definition) | Expression that matches against states data output | string | yes |
 | interval | Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| string | no |
 | maxAttempts | Maximum number of retry attempts (1 by default). Value of 0 means no retries are performed | integer | no |
 
@@ -834,8 +834,8 @@ function. They can include either static values or reference the states data inp
     "type": "object",
     "description": "Retry Definition",
     "properties": {
-        "errorExpression": {
-          "description": "Expression that matches against error properties",
+        "expression": {
+          "description": "Expression that matches against states data output",
           "$ref": "#/definitions/expression"
         },
         "interval": {
@@ -849,13 +849,13 @@ function. They can include either static values or reference the states data inp
             "description": "Maximum number of retry attempts (1 by default). Value of 0 means no retries are performed"
         }
     },
-    "required": ["errorExpression"]
+    "required": ["expression"]
 }
 ```
 
 </details>
 
-Defines the state retry policy in case of errors. For more information reference the [Workflow Error Handling - Retrying after error](#retry-after-error) section.
+Defines the state retry policy in case of errors. For more information reference the [Workflow Error Handling - Retrying](#workflow-retrying) section.
 
 #### Transition Definition
 
@@ -902,7 +902,7 @@ Defines a transition from point A to point B in the serverless workflow. For mor
 | actionMode | Should actions be performed sequentially or in parallel | string | no |
 | [actions](#Action-Definition) | Actions to be performed | array | yes |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
-| [retry](#retry-after-error) | States retry definitions | array | no |
+| [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes (if end is not defined) |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
@@ -1407,7 +1407,7 @@ Delay state waits for a certain amount of time before transitioning to a next st
 | [end](#End-Definition) | If this state and end state | object | no |
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
-| [retry](#retry-after-error) | States retry definitions | array | no |
+| [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
 | [transition](#Transitions) |Next transition of the workflow after all branches have completed execution | string | yes (if end is not defined) |
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
@@ -1963,7 +1963,7 @@ to test if your workflow behaves properly for the case when there are people who
 | startsAt | Unique name of a states in the states array representing the starting state to be executed | string | yes |
 | [states](#State-Definition) | States to be executed for each of the elements of inputCollection | array | yes |
 | [stateDataFilter](#state-data-filter) | State data filter definition | object | no |
-| [retry](#retry-after-error) | States retry definitions | array | no |
+| [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after state has completed | string | yes (if end is not defined) |
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
@@ -3174,10 +3174,11 @@ Here we define onError with two elements. The first one handles the error which 
 declares to transition to the "afterFunctionErrorState" state in case this error is encountered. 
 The second element handles all errors except "FunctionExecutionError". 
 
-## <a name="retry-after-error"></a> Workflow Error Handling - Retrying after error
+## <a name="workflow-retrying"></a> Workflow Error Handling - Retrying
 
 Operation, Event, Parallel and ForEach states can define a retry policy in case of errors. A retry defines that execution
-of that state should be retried if an error occurs during its execution. 
+of that state should be retried if an error occurs during its execution. The retry definition expression 
+is evaluated against states data output. This assures that both execution errors as well as error results of actions can be evaluated against.
 Let's take a look at a retry definition:
 
 <table>
@@ -3192,17 +3193,17 @@ Let's take a look at a retry definition:
 {
 "retry": [
   {
-    "errorExpression": {
+    "expression": {
       "language": "spel",
-      "body": "name eq 'FunctionExecutionError'"
+      "body": "$.error.name eq 'FunctionExecutionError'"
     },
     "maxAttempts": 3,
     "interval": "PT2M"
   },
   {
-    "errorExpression": {
+    "expression": {
       "language": "spel",
-      "body": "name ne 'FunctionExecutionError'"
+      "body": "$.error.name ne 'FunctionExecutionError'"
     },
     "maxAttempts": 0
   }
@@ -3214,14 +3215,14 @@ Let's take a look at a retry definition:
 
 ```yaml
 retry:
-- errorExpression:
+- expression:
     language: spel
-    body: name eq 'FunctionExecutionError'
+    body: $.error.name eq 'FunctionExecutionError'
   maxAttempts: 3
   interval: PT2M
-- errorExpression:
+- expression:
     language: spel
-    body: name ne 'FunctionExecutionError'
+    body: $.error.name ne 'FunctionExecutionError'
   maxAttempts: 0
 ```
 </td>
@@ -3247,17 +3248,17 @@ You can combine retry and onError definitions to define powerful error handling 
 {
 "retry": [
   {
-    "errorExpression": {
+    "expression": {
       "language": "spel",
-      "body": "name eq 'FunctionExecutionError'"
+      "body": "$.error.name eq 'FunctionExecutionError'"
     },
     "maxAttempts": 3,
     "interval": "PT2M"
   },
   {
-    "errorExpression": {
+    "expression": {
       "language": "spel",
-      "body": "name ne 'FunctionExecutionError'"
+      "body": "$.error.name ne 'FunctionExecutionError'"
     },
     "maxAttempts": 2,
     "interval": "PT1M"
@@ -3290,12 +3291,12 @@ You can combine retry and onError definitions to define powerful error handling 
 
 ```yaml
 retry:
-- errorExpression:
+- expression:
     language: spel
     body: name eq 'FunctionExecutionError'
   maxAttempts: 3
   interval: PT2M
-- errorExpression:
+- expression:
     language: spel
     body: name ne 'FunctionExecutionError'
   maxAttempts: 2

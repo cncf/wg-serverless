@@ -145,7 +145,7 @@
           "$ref": "#/definitions/errordatafilter"
         },
         "transition": {
-          "description": "Next transition of the workflow when errors expressed in errorExpression are matched",
+          "description": "Next transition of the workflow when expression is matched",
           "$ref": "#/definitions/transition"
         }
       },
@@ -233,8 +233,8 @@
       "type": "object",
       "description": "Retry Definition",
       "properties": {
-        "errorExpression": {
-          "description": "Expression that matches against error properties",
+        "expression": {
+          "description": "Expression that matches against state data output",
           "$ref": "#/definitions/expression"
         },
         "interval": {
@@ -249,7 +249,7 @@
         }
       },
       "required": [
-        "errorExpression"
+        "expression"
       ]
     },
     "function": {
