@@ -38,3 +38,6 @@ some way, please add your information via pull request.
 
 * **Nokia**
     * Manuel Stein 
+
+* **IBM**
+    * Doug Davis 
