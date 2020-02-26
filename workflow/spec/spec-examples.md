@@ -627,7 +627,7 @@ states:
         type: DEFAULT
     waitForCompletion: false
   end:
-    type: DEFAULT=
+    type: DEFAULT
 ```
 </td>
 </tr>
