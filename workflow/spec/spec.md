@@ -1,17 +1,17 @@
 <p align="center"><img src="media/logo-small-text.png"/></p>
 
+# Abstract
 
-## Abstract
-
-Serverless applications are becoming increasingly complex and are rarely composed 
-of a single function call triggered by an event. 
-Often they contain complex business logic to coordinate, manage, and define the execution order of a large amount 
+Serverless applications are becoming increasingly complex and are rarely composed
+of a single function call triggered by an event.
+Often they contain complex business logic to coordinate, manage, and define the execution order of a large amount
 of serverless functions and events that can trigger those functions.
- 
+
 Workflows have become a key component of serverless applications as they automate
- orchestration and coordination of serverless applications functional flow. 
+ orchestration and coordination of serverless applications functional flow.
 
 Some of many benefits using workflows in serverless applications include:
+
 - Allow you to develop new application much faster by taking the complex execution logic out of your application.
 - Externalize workflow execution logic and management such as parallel execution, branching, timeouts, compensation, and other flow control
  logic out of many serverless function implementations into a single workflow definition.
@@ -23,6 +23,7 @@ and capabilities. When picking a current implementations, it is very difficult t
 without investing a lot of time and cost.
 
 The goal of the Serverless Workflow sub-group is to:
+
 - Standardize Serverless Workflow model and definition
 - Facilitate Serverless Workflow portability
 - Be completely vendor neutral
@@ -41,8 +42,8 @@ This document is a working draft.
 - [Workflow Format](#Workflow-Format)
 - [Functional Scope](#Functional-Scope)
 - [Specification Details](#Specification-Details)
-    - [Workflow Model](#Workflow-Model)
-    - [Workflow Definition](#Workflow-Definition)
+  - [Workflow Model](#Workflow-Model)
+  - [Workflow Definition](#Workflow-Definition)
 - [Workflow Data](#Workflow-Data)
 - [Workflow Error Handling](#Workflow-Error-Handling)
 - [Extending](#Extending)
@@ -54,12 +55,12 @@ This document is a working draft.
 
 Serverless Workflow can be used to:
 
-* **Orchestrate serverless application logic**: serverless applications are typically event-driven and can be 
-very hard to manage. Serverless Workflow groups the application events and functions into a coherent unit and 
+- **Orchestrate serverless application logic**: serverless applications are typically event-driven and can be
+very hard to manage. Serverless Workflow groups the application events and functions into a coherent unit and
 simplifies orchestration of the app logic.
-* **Define and coordinate application control flow**: allow the users to define the execution/operation
+- **Define and coordinate application control flow**: allow the users to define the execution/operation
 control flow and how/which functions are to be invoked on arrival of events.
-* **Define and manage application data flow**: allows the users to define how data is passed and filtered from incoming events to states, 
+- **Define and manage application data flow**: allows the users to define how data is passed and filtered from incoming events to states,
 from states to functions, from one function to another function, and from one state to another state.
 
 ### Workflow Format
@@ -68,7 +69,7 @@ Serverless workflows are defined with [JSON](https://www.json.org/json-en.html) 
 Structure of serverless workflows is described via [JSON Schema](https://json-schema.org/).
 
 Serverless Workflow definitions are considered specification-compliant if they conform to the [workflow schema](schema/serverless-workflow-schema-01.json).
-Note that this schema reflects the current status of the specification as is updated alongside this document. 
+Note that this schema reflects the current status of the specification as is updated alongside this document.
 
 ### Functional Scope
 
@@ -92,6 +93,7 @@ incoming events can trigger function calls during flow execution.
 ## Specification Details
 
 Following sections provide detailed descriptions of the Serverless Workflow Model. For each part of the model we provide:
+
 - Parameter description in table format
 - [JSON Schema](https://json-schema.org/) definition 
 
@@ -99,7 +101,7 @@ Following sections provide detailed descriptions of the Serverless Workflow Mode
 
 Serverless Workflow can be viewed as a collection of [states](#State-Definition) and [transitions](#Transitions) between states.
 Individual states can make control flow decisions based on their data inputs, perform different actions, as well
-as pass their data to other states. 
+as pass their data to other states.
 States can wait on the arrival events to perform their actions. When states 
 complete their tasks, they can transition to other states or stop workflow execution.
 See the [Transitions](#Transitions) section for more details on workflow state progressions.
@@ -292,8 +294,8 @@ As serverless workflow definitions are vendor neutral, so should be the events d
 As such event format within serverless workflows uses the [CloudEvents](https://github.com/cloudevents/spec) specification to describe events.
 
 To support use case where serverless workflows need to perform actions across multiple types
-of events, users can specify a correlation token to correlate these events. 
-The "correlationToken" must specify a context attribute in the event which contains a business key to be 
+of events, users can specify a correlation token to correlate these events.
+The "correlationToken" must specify a context attribute in the event which contains a business key to be
 used for event correlation. An event "context attribute" can be defined as any event attribute except the event payload (the event "data" attribute).
 
 For example let's say we have two CloudEvent which set their correlation via the "patientId" context attribute:
@@ -397,8 +399,7 @@ Since function definitions are reusable, their parameters are defined within act
 ### Error Definition
 
 Error definitions define runtime errors that can occur during workflow execution and how to handle them. For more information
-see the [Workflow Error Handling section](#Workflow-Error-Handling). 
-
+see the [Workflow Error Handling section](#Workflow-Error-Handling).
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -407,7 +408,6 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 | [transition](#Transitions) | Next transition of the workflow when expression matches | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
-
 
 ```json
 {
@@ -439,7 +439,6 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 | language | Expression language. For example 'spel', 'jexl', 'cel', etc| string | no |
 | body | Expression body, for example "(event1 or event2) and event3" | string | yes |
 
-
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
@@ -466,7 +465,7 @@ Serverless workflow does not limit implementors to use any expression language t
 evaluate expressions with. 
 Expressions define "language" parameter to be used
  for evaluation, and a "body" parameter which defines the actual expression.
- 
+
 Note that top-level workflow "expressionLanguage" property can be set to define the default
 expression language used for all defined expressions.
 
@@ -488,7 +487,7 @@ States define building blocks of the Serverless Workflow. The specification defi
 
 - **[Parallel State](#Parallel-State)**: Allows a number of states to execute in
     parallel.
-    
+
 - **[SubFlow State](#SubFlow-State)**: Allows execution of a sub-workflow. 
   
 - **[Relay State](#Relay-State)**: Used to relay state's data input to output without executing any actions. 
@@ -556,7 +555,7 @@ States define building blocks of the Serverless Workflow. The specification defi
         "timeout": {
             "type": "string",
             "description": "Time period to wait for incoming events (ISO 8601 format)"
-        }, 
+        },
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
         },
@@ -621,8 +620,7 @@ instances should be created.
 
 The "exclusive" property determines if the state should wait for any of the defined events in the eventsActions array, or 
  if all defined events must be present for their associated actions to be performed.
- 
- 
+
 Following two figures illustrate the "exclusive" property:
 
 <p align="center">
@@ -728,7 +726,6 @@ between arrival of specified events. To give an example let's say we have:
                 "ExampleEvent3"
             ],
             "actions": [
-                
             ]
         }
     ],
@@ -748,8 +745,6 @@ If the event state is not a starting state, the timeout property defines the tim
 state becomes active. If the defined event conditions (regardless of the value of the exclusive property)
 are not satisfied within the defined timeout period, the event state should transition to the next state or end the workflow
 instance in case it is an end state without performing any actions.
-
-
 
 #### Action Definition
 
@@ -783,7 +778,7 @@ instance in case it is an end state without performing any actions.
 ```
 
 </details>
- 
+
 Actions reference a reusable function definition to be invoked when this action is executed.
 
 #### FunctionRef Definition
@@ -814,6 +809,7 @@ Actions reference a reusable function definition to be invoked when this action 
   ]
 }
 ```
+
 </details>
 
 Used by actions to reference a defined serverless function by its unique name. Parameters are values passed to the
@@ -949,7 +945,7 @@ Defines a transition from point A to point B in the serverless workflow. For mor
         },
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
-        }, 
+        },
         "retry": {
             "type": "array",
             "description": "States retry definitions",
@@ -1064,7 +1060,7 @@ Once all actions have been performed, a transition to another state can occur.
         },
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
-        }, 
+        },
         "onError": {
             "type": "array",
             "description": "States error handling definitions",
@@ -1118,10 +1114,10 @@ JSONPath matches on the states data input.
 
 There are four types of choices defined:
 
-* [Single Choice](#switch-state-single-choice)
-* [And Choice](#switch-state-and-choice)
-* [Not Choice](#switch-state-not-choice)
-* [Or Choice](#switch-state-or-choice)
+- [Single Choice](#switch-state-single-choice)
+- [And Choice](#switch-state-and-choice)
+- [Not Choice](#switch-state-not-choice)
+- [Or Choice](#switch-state-or-choice)
 
 ##### <a name="switch-state-single-choice"></a>Switch State Choices: Single Choice
 
@@ -1300,6 +1296,7 @@ There are four types of choices defined:
     "required": ["or",  "path", "value", "operator", "transition"]
 }
 ```
+
 </details>
 
 ### Delay State
@@ -1746,7 +1743,7 @@ If this property is set to false, data access to parent's workflow should not be
         "end": {
           "$ref": "#/definitions/end",
           "description": "State end definition"
-        }, 
+        },
         "inject": {
             "type": "object",
             "description": "JSON object which can be set as states data input and can be manipulated via filters"
@@ -1827,10 +1824,11 @@ as data output to the transition state:
    }
   }
   ```
+
 </td>
 <td valign="top">
 
-  ```yaml
+```yaml
   name: SimpleRelayState
   type: RELAY
   inject:
@@ -1841,7 +1839,8 @@ as data output to the transition state:
       age: 40
   transition:
     nextState: GreetPersonState
-  ```
+```
+
 </td>
 </tr>
 </table>
@@ -1874,7 +1873,7 @@ what you need as data output of the state. Let's say we have:
 <tr>
 <td valign="top">
 
-  ```json
+```json
   {  
      "name":"SimpleRelayState",
      "type":"RELAY",
@@ -1907,11 +1906,12 @@ what you need as data output of the state. Let's say we have:
         "nextState": "GreetPersonState"
      }
     }
-  ```
+```
+
 </td>
 <td valign="top">
 
-  ```yaml
+```yaml
   name: SimpleRelayState
   type: RELAY
   inject:
@@ -1932,20 +1932,20 @@ what you need as data output of the state. Let's say we have:
     dataOutputPath: "$.people[?(@.age < 40)]"
   transition:
     nextState: GreetPersonState
-  ```
+```
+
 </td>
 </tr>
 </table>
 
-In which case the states data output would include people who's age is less than 40. You can then easily during testing 
-change your output path to for example:
+In which case the states data output would include people who's age is less than 40.
+You can change your output path easily during testin, for example:
 
-```
+```text
 $.people[?(@.age >= 40)]
 ```
 
-to test if your workflow behaves properly for the case when there are people who's age is greater or equal 40.
-
+This allows you to test if your workflow behaves properly for cases when there are people who's age is greater or equal 40.
 
 ### ForEach State
 
@@ -1993,7 +1993,7 @@ to test if your workflow behaves properly for the case when there are people who
         "end": {
           "$ref": "#/definitions/end",
           "description": "State end definition"
-        }, 
+        },
         "inputCollection": {
            "type": "string",
            "description": "JSONPath expression selecting an JSON array element of the states data input"
@@ -2125,10 +2125,10 @@ While the [Parallel state](#Parallel-State) performs multiple branches of states
 same data input, the ForEach state performs the defined steps for multiple entries of an array in the states data input.
 
 Note that each iteration of the ForEach state should be executed in parallel.
-You can use the "max" property to set the upper bound on how many iterations may run in parallel. The default 
+You can use the "max" property to set the upper bound on how many iterations may run in parallel. The default
 of the "max" property is zero, which places no limit on number of parallel executions.
- 
-States defined in the "states" property of the ForEach state can only transition to each other and 
+
+States defined in the "states" property of the ForEach state can only transition to each other and
 cannot transition to states outside of this state. 
 Similarly other workflow states cannot transition to one of the states defined within the ForEach state.
 
@@ -2162,7 +2162,6 @@ In this example the data input to our ForEach state is an array of orders:
 
 and the state is defined as:
 
-
 <table>
 <tr>
     <th>JSON</th>
@@ -2173,14 +2172,14 @@ and the state is defined as:
 
 ```json
 {
-  "functions": [ 
-  { 
+  "functions": [
+  {
     "name": "sendConfirmationFunction",
     "resource": "functionResourse"
   }
   ],
   "states": [
-  {   
+  {
    "name":"SendConfirmationForEachCompletedhOrder",
    "type":"FOREACH",
    "inputCollection": "$.orders[?(@.completed == true)]",
@@ -2209,14 +2208,15 @@ and the state is defined as:
  "end": {
     "type": "DEFAULT"
  }
-} 
+}
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
-  ```yaml
+```yaml
 functions:
 - name: sendConfirmationFunction
   resource: functionResourse
@@ -2241,7 +2241,8 @@ states:
   end:
     type: DEFAULT
 
-  ```
+```
+
 </td>
 </tr>
 </table>
@@ -2281,7 +2282,7 @@ For this example, the data inputs of staring states for the two iterations would
         "email": "firstBuyer@buyer.com"
     }
 }
-```    
+```
 
 and:
 
@@ -2372,10 +2373,10 @@ Any state can declare to be the end state of the workflow to declare the complet
 The end definitions provides different ways
 to complete workflow execution, which is set by the "type" property:
 
-* **DEFAULT** - Default workflow execution completion, no other special behavior
-* **TERMINATE** - Completes all execution flows in the given workflow instance. All activities/actions being executed
+- **DEFAULT** - Default workflow execution completion, no other special behavior
+- **TERMINATE** - Completes all execution flows in the given workflow instance. All activities/actions being executed
 are completed. If a terminate end is reached inside a ForEach, Parallel, or SubFlow state, the entire workflow instance is terminated.
-* **EVENT** - Workflow executions completes, and a Cloud Event is produced according to the [produceEvent](#ProduceEvent-Definition) definition.
+- **EVENT** - Workflow executions completes, and a Cloud Event is produced according to the [produceEvent](#ProduceEvent-Definition) definition.
 
 ### ProduceEvent Definition
 
@@ -2465,24 +2466,25 @@ Implementers can choose to use the states "name" string property
 for determining the transition, however we realize that in most cases this is not an
 optimal solution that can lead to ambiguity. This is why each state also include an "id"
 property. Implementers can choose their own id generation strategy to populate the id property
-for each of the states and use it as the unique state identifier that is to be used as the "nextState" value. 
+for each of the states and use it as the unique state identifier that is to be used as the "nextState" value.
 
 So the options for next state transitions are:
-* Use the state name property
-* Use the state id property
-* Use a combination of name and id properties
+
+- Use the state name property
+- Use the state id property
+- Use a combination of name and id properties
 
 #### Restricting Transitions based on state output
 
-In addition to specifying the "nextState" property a transition also defines a boolean expression which must 
-evaluate to true for the transition to happen. Having this data-based restriction capabilities can help 
+In addition to specifying the "nextState" property a transition also defines a boolean expression which must
+evaluate to true for the transition to happen. Having this data-based restriction capabilities can help
  stop transitions within workflow execution that can have serious and harmful business impacts.
 
-State Transitions have access to the states data output. Expressions 
+State Transitions have access to the states data output. Expressions
 are evaluated against the states output data to make sure that this transition only happens 
 if the expression evaluates to true.
 
-Here is an example of a restricted transition which only allows transition to the "highRiskState" if the 
+Here is an example of a restricted transition which only allows transition to the "highRiskState" if the
 output of the state to transition from includes an user with the title "MANAGER".
 
 <table>
@@ -2544,10 +2546,11 @@ output of the state to transition from includes an user with the title "MANAGER"
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
-  ```yaml
+```yaml
 startsAt: lowRiskState
 functions:
 - name: doLowRistOperationFunction
@@ -2574,7 +2577,7 @@ states:
   actions:
   - functionRef:
       refName: doHighRistOperationFunction
-  ```
+```
 </td>
 </tr>
 </table>
@@ -2585,7 +2588,7 @@ The default should be that if this happens workflow execution should halt and a 
 
 ## Workflow Data
 
-Serverless Workflow data is represented in [JSON](https://www.json.org/json-en.html) format. 
+Serverless Workflow data is represented in [JSON](https://www.json.org/json-en.html) format.
 Flow of data during workflow execution can be divided into:
 
 - [Workfow data input](#Workflow-data-input)
@@ -2596,7 +2599,7 @@ Flow of data during workflow execution can be divided into:
 
 ### Workflow Data Input
 
-The initial data input into a workflow instance must be a valid [JSON object](https://tools.ietf.org/html/rfc7159#section-4). 
+The initial data input into a workflow instance must be a valid [JSON object](https://tools.ietf.org/html/rfc7159#section-4).
 If no input is provided the default data input is the empty object:
 
 ```json
@@ -2613,13 +2616,13 @@ Workflow data input is passed to the workflow's "startsAt" state (the starting s
 
 In order to define the structure of expected workflow data input you can use the workflow
 "dataInputSchema" property. This property allows you to link to a [JSON Schema](https://json-schema.org/) definition
-that describes the expected workflow data input. This can be used for documentation purposes or implementations may 
+that describes the expected workflow data input. This can be used for documentation purposes or implementations may
 decide to strictly enforce it.
 
 ### Event Data
 
 [Event states](#Event-State) wait for arrival of defined CloudEvents, and when consumed perform a number of defined actions.
-CloudEvents can contain data which is needed to make further orchestration decisions. Data from consumed CloudEvents 
+CloudEvents can contain data which is needed to make further orchestration decisions. Data from consumed CloudEvents
 is merged with the data input of the Event state, so it can be used inside defined actions
 or be passed as data output to transition states.
 
@@ -2629,8 +2632,8 @@ or be passed as data output to transition states.
 
 ### Information Passing Between States
 
-States in Serverless workflow can receive data (data input) as well as produce a data result (data output). T
-he states data input is typically the previous states data output. 
+States in Serverless workflow can receive data (data input) as well as produce a data result (data output). The states data input is 
+typically the previous states data output.
 When a state completes its tasks, its data output is passed to the data input of the state it transitions to.
 
 There are two of rules to consider here:
@@ -2644,13 +2647,13 @@ There are two of rules to consider here:
 
 In order to define the structure of expected state data input and output you can use the workflow
 "dataInputSchema" and "dataOutputSchema" properties. These property allows you to link to [JSON Schema](https://json-schema.org/) definitions
-that describes the expected workflow data input/output. This can be used for documentation purposes or implementations may 
+that describes the expected workflow data input/output. This can be used for documentation purposes or implementations may
 decide to strictly enforce it.
 
 ### State Information Filtering
 
 States can access and manipulate data via data filters. Since all data during workflow execution is described
-in [JSON](https://tools.ietf.org/html/rfc7159) format, data filters use [JSONPath](https://github.com/json-path/JsonPath) queries 
+in [JSON](https://tools.ietf.org/html/rfc7159) format, data filters use [JSONPath](https://github.com/json-path/JsonPath) queries
 to do data manipulation/selection.
 
 There are several types of data filters defined:
@@ -2661,7 +2664,7 @@ There are several types of data filters defined:
 - [Error Data Filter](#error-data-filter)
 
 All states can define state and error data filters. States which can consume events ([Event states](#Event-State)) can define event data filters, and states
-that can perform actions ([Event states](#Event-State), [Operation states](#Operation-State)) can define action data filters for each of the 
+that can perform actions ([Event states](#Event-State), [Operation states](#Operation-State)) can define action data filters for each of the
 actions they perform.
 
 #### <a name="state-data-filter"></a> State information filtering - State Data Filter
@@ -2694,8 +2697,8 @@ actions they perform.
 
 State data filters defines the states data input and data output filtering. 
 
-The state data filters inputPath is applied when the workflow transitions to the current state and it receives its data input. 
-It filters this data input selecting parts of it (only the selected data is considered part of the states data during its execution). 
+The state data filters inputPath is applied when the workflow transitions to the current state and it receives its data input.
+It filters this data input selecting parts of it (only the selected data is considered part of the states data during its execution).
 If inputPath is not defined, or it does not select any parts of the states data input, the states data input is not filtered.
 
 The state data filter outputPath is applied right before the state transitions to the next state defined. It filters the states data
@@ -2720,7 +2723,7 @@ Let's take a look at some examples of state filters. For our example the data in
 }
 ```
 
-For the first example our state only cares about fruits data, and we want to disregard the vegetables. To do this 
+For the first example our state only cares about fruits data, and we want to disregard the vegetables. To do this
 we can define a state filter:
 
 ```json
@@ -2742,9 +2745,9 @@ The state data output then would include only the fruits data.
 <img src="media/state-data-filter-example1.png" with="300px" height="400px" alt="State Data Filter Example"/>
 </p>
 
-For our second example lets say that we are interested in only vegetable that are "veggie like". 
-Here we have two ways of filtering our data, depending on if actions within our state need access to all vegetables, or 
-only the ones that are "veggie like". 
+For our second example lets say that we are interested in only vegetable that are "veggie like".
+Here we have two ways of filtering our data, depending on if actions within our state need access to all vegetables, or
+only the ones that are "veggie like".
 The first way would be to use both dataInputPath, and dataOutputPath:
 
 ```json
@@ -2767,7 +2770,6 @@ or workflow execution completion (if this is an end state), the dataOutputPath o
 <p align="center">
 <img src="media/state-data-filter-example2.png" with="300px" height="400px" alt="State Data Filter Example"/>
 </p>
-
 
 The second way would be to directly filter only the "veggie like" vegetables with just the data input path:
 
@@ -2812,12 +2814,12 @@ The second way would be to directly filter only the "veggie like" vegetables wit
 
 </details>
 
-[Actions](#Action-Definition) have access to the state data. They can filter this data using an action data filter (dataInputPath) before executing any functions. 
+[Actions](#Action-Definition) have access to the state data. They can filter this data using an action data filter (dataInputPath) before executing any functions.
 This is useful if you want to restrict the data to be passed as parameters to serverless functions during action executions.
 
-Actions can define [functions](#Function-Definition). The results data of these functions is considered the output of the action which is then after completion 
+Actions can define [functions](#Function-Definition). The results data of these functions is considered the output of the action which is then after completion
 merged back into the state data. You can filter the results of actions with the dataResultsPath parameter, to only select
-parts of the action results that need to be merged back into the state data. 
+parts of the action results that need to be merged back into the state data.
 
 To give an example, let's say we have an action which returns a list of breads and we want to add this list our fruits and vegetables data:
 
@@ -2850,9 +2852,9 @@ To give an example, let's say we have an action which returns a list of breads a
 </details>
 
 CloudEvents can be consumed by [Event states](#Event-State) and trigger one or more [actions](#Action-Definition) to be performed. CloudEvents
-can include data which needs to be merged with the state data before associated actions are executed. 
+can include data which needs to be merged with the state data before associated actions are executed.
 You can filter the event data with the dataOutputPath parameter, selecting only the portion of the event data
-that you need to be merged with the state data. 
+that you need to be merged with the state data.
 
 Here is an example using an even filter:
 
@@ -2893,13 +2895,12 @@ Here is an example using an error filter:
 <img src="media/error-data-filter-example1.png" with="300px" height="400px" alt="Error Data Filter Example"/>
 </p>
 
-
 #### <a name="error-data-filter"></a> State information filtering - Using multiple filters
 
 As [Event states](#Event-State) can take advantage of all defined data filters, it is probably the best way to 
-show how we can combine them all to filter state data. 
+show how we can combine them all to filter state data.
 
-Let's say we have a workflow which consumes events defining a customer arrival (to your store for example), 
+Let's say we have a workflow which consumes events defining a customer arrival (to your store for example),
 and then lets us know how to greet this customer in different languages. We could model this workflow as follows:
 
 ```json
@@ -2950,7 +2951,7 @@ and then lets us know how to greet this customer in different languages. We coul
 }
 ```
 
-The example workflow contains an event state which consumes CloudEvents of type "customer-arrival-type", and then 
+The example workflow contains an event state which consumes CloudEvents of type "customer-arrival-type", and then
 calls the "greetingFunction" serverless function passing in the greeting in Spanish and the name of the customer to greet.
 
 The workflow data input when starting workflow execution is assumed to include greetings in different languages:
@@ -2971,6 +2972,7 @@ The workflow data input when starting workflow execution is assumed to include g
   }
 }
 ```
+
 We also assume for this example that the CloudEvent that our event state is set to consume (has the "customer-arrival-type" type) include the data:
 
 ```json
@@ -2997,7 +2999,7 @@ Workflow transitions to its starting state, namely the "WaitForCustomerToArrive"
 
 The event state **stateDataFilter** is invoked to filter this data input. Its "dataInputPath" is evaluated and filters
  only the "hello" greetings in different languages. At this point our event state data contains:
- 
+
 ```json
 {
   "hello": {
@@ -3030,23 +3032,23 @@ At this point our event state data contains:
 }
 ```
 
-**(3) Event state performs its actions**: 
-Before the first action is executed, its actionDataFilter is invoked. Its "dataInputPath" expression selects 
+**(3) Event state performs its actions**:
+Before the first action is executed, its actionDataFilter is invoked. Its "dataInputPath" expression selects
 the entire state data as the data available to functions that should be executed. Its "dataResultsPath" expression
-specifies that results of all functions executed in this action should be placed back to the state data as part 
+specifies that results of all functions executed in this action should be placed back to the state data as part
 of a new "finalCustomerGreeting" object.
 
 The action then calls the "greetingFunction" serverless function passing in as parameters the spanish greeting and the name of the customer that arrived.
- 
+
 We assume that for this example "greetingFunction" returns:
 
-```
+```text
 "Hola John Michaels!"
 ```
 
 Which becomes the result of the action.
 
-**(4) Event State Completes Workflow Execution**: The results of action executions as defined in the actionDataFilter are placed into the 
+**(4) Event State Completes Workflow Execution**: The results of action executions as defined in the actionDataFilter are placed into the
 states data under the "finalCustomerGreeting" object. So at this point our event state data contains:
 
 ```json
@@ -3072,7 +3074,7 @@ selects only the "finalCustomerGreeting" object to make it the data output of th
 
 Because our event state is also an end state, its data output becomes the final [workflow data output](#Workflow-data-output) namely:
 
-```
+```text
 "Hola John Michaels!"
 ```
 
@@ -3085,23 +3087,24 @@ transitions to the next one or ends workflow execution (end state) can be consid
 
 Once a workflow instance reaches an end state (where the "end" parameter is defined) and the workflow finishes its execution
 the data output of that result state becomes the workflow data output. This output can be logged or indexed depending on the
-implementation details. 
+implementation details.
 
 In order to define the structure of expected workflow data output you can use the workflow
 "dataOutputSchema" property. This property allows you to link to a [JSON Schema](https://json-schema.org/) definition
-that describes the expected workflow data output. This can be used for documentation purposes or implementations may 
+that describes the expected workflow data output. This can be used for documentation purposes or implementations may
 decide to strictly enforce it.
 
 ## Workflow Error Handling
 
-Any state can encounter runtime errors. Errors can arise from state failures such as exeptions thrown during function 
+Any state can encounter runtime errors. Errors can arise from state failures such as exeptions thrown during function
 execution, network errors, or errors in the workflow definition (incorrect paths for example).
-If a runtime error is not explicitly handled within the state definition, the default course of action should be to 
+If a runtime error is not explicitly handled within the state definition, the default course of action should be to
 halt workflow execution.
 
-In the case of runtime errors, implementations should expose these errors to the workflow state via the "error" JSON object. 
+In the case of runtime errors, implementations should expose these errors to the workflow state via the "error" JSON object.
 This object should include properties "name", "message", and "trace".
 Here is an example of such error object:
+
 ```json
 {
   "error": {
@@ -3112,8 +3115,8 @@ Here is an example of such error object:
 }
 ```
 
-Each state can explicitly "catch" runtime errors via its "onError" property. This property includes one or more 
-definitions matching the error object properties and defining a transition to a workflow state representing the 
+Each state can explicitly "catch" runtime errors via its "onError" property. This property includes one or more
+definitions matching the error object properties and defining a transition to a workflow state representing the
 workflow execution flow in case of that particular error.
 
 Let's take a look an an example "onError" definition inside a state:
@@ -3150,6 +3153,7 @@ Let's take a look an an example "onError" definition inside a state:
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -3166,18 +3170,19 @@ onError:
   transition:
     nextState: afterAnyOtherErrorState
 ```
+
 </td>
 </tr>
 </table>
 
 Here we define onError with two elements. The first one handles the error which name property is "FunctionExecutionError" and 
-declares to transition to the "afterFunctionErrorState" state in case this error is encountered. 
-The second element handles all errors except "FunctionExecutionError". 
+declares to transition to the "afterFunctionErrorState" state in case this error is encountered.
+The second element handles all errors except "FunctionExecutionError".
 
 ## <a name="workflow-retrying"></a> Workflow Error Handling - Retrying
 
 Operation, Event, Parallel and ForEach states can define a retry policy in case of errors. A retry defines that execution
-of that state should be retried if an error occurs during its execution. The retry definition expression 
+of that state should be retried if an error occurs during its execution. The retry definition expression
 is evaluated against states data output. This assures that both execution errors as well as error results of actions can be evaluated against.
 Let's take a look at a retry definition:
 
@@ -3210,6 +3215,7 @@ Let's take a look at a retry definition:
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -3225,12 +3231,13 @@ retry:
     body: $.error.name ne 'FunctionExecutionError'
   maxAttempts: 0
 ```
+
 </td>
 </tr>
 </table>
 
-Here we have two retry definitions. The first one matches an error with name "FunctionExecutionError" and defines 
-the maximum number of attempts to be 3. The interval value defines the amount of time to wait before each 
+Here we have two retry definitions. The first one matches an error with name "FunctionExecutionError" and defines
+the maximum number of attempts to be 3. The interval value defines the amount of time to wait before each
 retry attempt, in this case two minutes. The second retry definition defines that for any errors other than "FunctionExecutionError",
 no retries should be performed (maxAttempts is set to zero).
 
@@ -3286,6 +3293,7 @@ You can combine retry and onError definitions to define powerful error handling 
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -3317,10 +3325,10 @@ onError:
 </tr>
 </table>
 
-In this example in case the "FunctionExecutionError" occurs, first it will be retried 3 times with 2 minute intervals. 
+In this example in case the "FunctionExecutionError" occurs, first it will be retried 3 times with 2 minute intervals.
 If the error occurs after the maxAttempts is reached, the onError definition kicks in transitioning the workflow to
 the "afterFunctionErrorState" state. In case of any other errors, they will be retried 2 times with 1 minute intervals.
-If those errors occur after two max 2 retries, the onError definition states that workflow should transition to the 
+If those errors occur after two max 2 retries, the onError definition states that workflow should transition to the
 "afterAnyOtherErrorState" state.
 
 ## Extending
@@ -3346,5 +3354,3 @@ You can find different Serverless Workflow examples [here](spec-examples.md)
 ## Reference
 
 You can find a list of other languages, technologies and specifications related to workflows [here](references.md)
-
-
