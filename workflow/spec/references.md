@@ -1,6 +1,6 @@
 # References
 
-State machines/Workflows have a long history in software design and development. The goal of this section is to list other tools and languages that had been used to define orchestration between different actors (software and human). The main intention here is to make sure that we cover as many use cases as possible leveraging existing approaches to avoid pitfalls from the past. 
+State machines/Workflows have a long history in software design and development. The goal of this section is to list other tools and languages that had been used to define orchestration between different actors (software and human). The main intention here is to make sure that we cover as many use cases as possible leveraging existing approaches to avoid pitfalls from the past.
 
 - [Business Process Model and Notation](#Business-Process-Model-and-Notation)
 - [Mistral Workflow Language](#Mistral-Workflow-Language)

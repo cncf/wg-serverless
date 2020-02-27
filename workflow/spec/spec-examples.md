@@ -78,6 +78,7 @@ value of the "result" property. Since it is an end state, it's data output becom
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -1017,7 +1018,7 @@ states:
 
 In this example we submit a job via an operation state action (serverless function call). It is assumed that it takes some time for
 the submitted job to complete and that it's completion can be checked via another separate serverless function call.
- 
+
 To check for completion we first wait 5 seconds and then get the results of the "CheckJob" serverless function.
 Depending on the results of this we either return the results or transition back to waiting and checking the job completion.
 This is done until the job submission returns "SUCCEEDED" or "FAILED" and the job submission results are reported before workflow
@@ -1558,7 +1559,7 @@ have the matching patient id.
     "correlationToken": "patientId"
 },
 {
-    "name": "HighBloodPressure", 
+    "name": "HighBloodPressure",
     "type": "org.monitor.highBloodPressure",
     "source": "monitoringSource",
     "correlationToken": "patientId"

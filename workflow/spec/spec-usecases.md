@@ -21,7 +21,7 @@ So what can you automate with Serverless Workflows? You can get some ideas from 
 
 ## Online Vehicle Auction
 
-You can use Serverless Workflows to coordinate all of the steps of an Online Vehicle Auction. 
+You can use Serverless Workflows to coordinate all of the steps of an Online Vehicle Auction.
 These can include:
 
 - Authentication of users making bids.
@@ -35,7 +35,7 @@ These can include:
 Servlerless Workflows are ideal for coordinating session-based apps such as e-commerce sites. You can
 use Serverless Workflows to coordinate all steps of the checkout process allowing for example users to take a picture
 of their credit card rather than having to type in the numbers and information.
- 
+
 <p align="center"><img src="media/usecase-app-payment.png"/></p>
 
 ## Data Analysis
@@ -48,7 +48,7 @@ Analysis can be scheduled on a timely basis to trigger workflow coordination of 
 ## Error Notifications
 
 You can design Serverless Workflows that trigger notifications regarding their success or failure.
-In conjunction with available messaging services you can notify developers on different platforms of such possible failures 
+In conjunction with available messaging services you can notify developers on different platforms of such possible failures
  including error information and exactly the point in the execution the failure happened.
  At the same time you can log the workflow execution status to cloud storage services for further analysis.
 
