@@ -101,14 +101,6 @@
         ]
       }
     },
-    "onError": {
-      "type": "array",
-      "description": "Workflow runtime error handling definitions",
-      "items": {
-        "type": "object",
-        "$ref": "#/definitions/error"
-      }
-    },
     "extensions": {
       "type": "array",
       "description": "Workflow Extensions",
@@ -153,7 +145,7 @@
           "$ref": "#/definitions/errordatafilter"
         },
         "transition": {
-          "description": "Next transition of the workflow when errors expressed in errorExpression are matched",
+          "description": "Next transition of the workflow when expression is matched",
           "$ref": "#/definitions/transition"
         }
       },
@@ -229,14 +221,6 @@
           "description": "References a reusable function definition to be invoked",
           "$ref": "#/definitions/functionref"
         },
-        "retry": {
-          "type": "array",
-          "description": "Retry Definitions",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/retry"
-          }
-        },
         "actionDataFilter": {
           "$ref": "#/definitions/actiondatafilter"
         }
@@ -250,22 +234,18 @@
       "description": "Retry Definition",
       "properties": {
         "expression": {
-          "description": "Boolean expression that matches against the function results. Must be evaluated to true for retry policy to trigger",
+          "description": "Expression that matches against state data output",
           "$ref": "#/definitions/expression"
         },
         "interval": {
           "type": "string",
-          "description": "Specifies retry interval (ISO 8601 format)"
+          "description": "Specifies the amount of time between retries (ISO 8601 format)"
         },
         "maxAttempts": {
           "type": "integer",
-          "default": "0",
+          "default": 1,
           "minimum": 0,
           "description": "Maximum number of retry attempts (1 by default). Value of 0 means no retries are performed"
-        },
-        "transition": {
-          "description": "Next transition of the workflow when exceeding maxAttempts limit",
-          "$ref": "#/definitions/transition"
         }
       },
       "required": [
@@ -485,6 +465,14 @@
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
         },
+        "retry": {
+          "type": "array",
+          "description": "Retry Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/retry"
+          }
+        },
         "onError": {
           "type": "array",
           "description": "States runtime error handling definitions",
@@ -575,6 +563,14 @@
             "$ref": "#/definitions/action"
           }
         },
+        "retry": {
+          "type": "array",
+          "description": "Retry Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/retry"
+          }
+        },
         "onError": {
           "type": "array",
           "description": "OnError Definition",
@@ -652,6 +648,14 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/branch"
+          }
+        },
+        "retry": {
+          "type": "array",
+          "description": "Retry Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/retry"
           }
         },
         "onError": {
@@ -1019,6 +1023,14 @@
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
         },
+        "retry": {
+          "type": "array",
+          "description": "Retry Definition",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/retry"
+          }
+        },
         "onError": {
           "type": "array",
           "description": "States error handling definitions",
@@ -1291,7 +1303,7 @@
       "properties": {
         "dataOutputPath": {
           "type": "string",
-          "description": "JSONPath definition that selects parts of the event data, to be merged with the states data"
+          "description": "JSONPath definition that selects parts of the error data, to be merged with the states data"
         }
       },
       "required": []
