@@ -116,7 +116,7 @@ State machines/Workflows have a long history in software design and development.
 
 ### Flogo
 
-TIBCO's (Project Flogo&trade;)[http://www.flogo.io] defines applications as triggers, handlers and actions to create workflows. Its [current support for AWS Lambda](https://tibcosoftware.github.io/flogo/labs/flogo-lambda/) wraps the entire workflow as an embedded application into a single Lambda function.
+[TIBCO's (Project Flogo&trade;)](http://www.flogo.io) defines applications as triggers, handlers and actions to create workflows. Its [current support for AWS Lambda](https://tibcosoftware.github.io/flogo/labs/flogo-lambda/) wraps the entire workflow as an embedded application into a single Lambda function.
 
 ### Alibaba FunctionFlow
 
