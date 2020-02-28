@@ -46,6 +46,8 @@ value of the "result" property. Since it is an end state, it's data output becom
 
 ```json
 {  
+"id": "helloworld",
+"version": "1.0",
 "name": "Hello World Workflow",
 "description": "Static Hello World",
 "startsAt": "Hello",
@@ -80,6 +82,8 @@ value of the "result" property. Since it is an end state, it's data output becom
 <td valign="top">
 
 ```yaml
+id: helloworld
+version: '1.0'
 name: Hello World Workflow
 description: Static Hello World
 startsAt: Hello
@@ -153,6 +157,8 @@ becomes the workflow data output (as it is an end state):
 
 ```json
 {  
+"id": "greeting",
+"version": "1.0",
 "name": "Greeting Workflow",
 "description": "Greet Someone",
 "startsAt": "Greet",
@@ -194,6 +200,8 @@ becomes the workflow data output (as it is an end state):
 <td valign="top">
 
 ```yaml
+id: greeting
+version: '1.0'
 name: Greeting Workflow
 description: Greet Someone
 startsAt: Greet
@@ -215,6 +223,7 @@ states:
     dataOutputPath: "$.greeting"
   end:
     type: DEFAULT
+
 ```
 </td>
 </tr>
@@ -299,6 +308,8 @@ filters what is selected to be the state data output which then becomes the work
 
 ```json
 {  
+"id": "eventbasedgreeting",
+"version": "1.0",
 "name": "Event Based Greeting Workflow",
 "description": "Event Based Greeting",
 "startsAt": "Greet",
@@ -349,6 +360,8 @@ filters what is selected to be the state data output which then becomes the work
 <td valign="top">
 
 ```yaml
+id: eventbasedgreeting
+version: '1.0'
 name: Event Based Greeting Workflow
 description: Event Based Greeting
 startsAt: Greet
@@ -419,6 +432,8 @@ result of the workflow execution.
 
 ```json
 {  
+"id": "solvemathproblems",
+"version": "1.0",
 "name": "Solve Math Problems Workflow",
 "description": "Solve math problems",
 "startsAt": "Solve",
@@ -429,7 +444,7 @@ result of the workflow execution.
 }
 ],
 "states":[  
-{   
+{
  "name":"Solve",
  "type":"FOREACH",
  "inputCollection": "$.expressions",
@@ -470,6 +485,8 @@ result of the workflow execution.
 <td valign="top">
 
 ```yaml
+id: solvemathproblems
+version: '1.0'
 name: Solve Math Problems Workflow
 description: Solve math problems
 startsAt: Solve
@@ -498,7 +515,6 @@ states:
     dataOutputPath: "$.results"
   end:
     type: DEFAULT
-
 ```
 </td>
 </tr>
@@ -531,6 +547,8 @@ of the branches are done.
 
 ```json
 {  
+"id": "parallelexec",
+"version": "1.0",
 "name": "Parallel Execution Workflow",
 "description": "Executes two branches in parallel",
 "startsAt": "ParallelExec",
@@ -565,7 +583,7 @@ of the branches are done.
                   "end": {
                     "type": "DEFAULT"
                   }
-             }      
+             }
           ],
           "waitForCompletion": false
         }
@@ -581,6 +599,8 @@ of the branches are done.
 <td valign="top">
 
 ```yaml
+id: parallelexec
+version: '1.0'
 name: Parallel Execution Workflow
 description: Executes two branches in parallel
 startsAt: ParallelExec
@@ -652,6 +672,8 @@ If the applicants age is over 18 we start the application (subflow state). Other
 
 ```json
 {  
+   "id": "applicantrequest",
+   "version": "1.0",
    "name": "Applicant Request Decision Workflow",
    "description": "Determine if applicant request is valid",
    "startsAt": "CheckApplication",
@@ -714,12 +736,14 @@ If the applicants age is over 18 we start the application (subflow state). Other
         }
     }
    ]
-} 
+}
 ```
 </td>
 <td valign="top">
 
 ```yaml
+id: applicantrequest
+version: '1.0'
 name: Applicant Request Decision Workflow
 description: Determine if applicant request is valid
 startsAt: CheckApplication
@@ -803,6 +827,8 @@ The data output of the workflow contains the information of the exception caught
 
 ```json
 {  
+"id": "provisionorders",
+"version": "1.0",
 "name": "Provision Orders",
 "description": "Provision Orders and handle errors thrown",
 "startsAt": "ProvisionOrder",
@@ -902,6 +928,8 @@ The data output of the workflow contains the information of the exception caught
 <td valign="top">
 
 ```yaml
+id: provisionorders
+version: '1.0'
 name: Provision Orders
 description: Provision Orders and handle errors thrown
 startsAt: ProvisionOrder
@@ -995,170 +1023,180 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
 <td valign="top">
 
 ```json
-{   
-"name": "Job Monitoring",
-"description": "Monitor finished execution of a submitted job",
-"startsAt": "SubmitJob",
-"functions": [
- {
-   "name": "submitJob",
-   "resource": "submitJobResource"
- },
- {
-    "name": "checkJobStatus",
-    "resource": "checkJobStatusResource"
- },
- {
-    "name": "reportJobSuceeded",
-    "resource": "reportJobSuceededResource"
- },
- {
-    "name": "reportJobFailed",
-    "resource": "reportJobFailedResource"
- }
-],
-"states":[  
-  {  
-    "name":"SubmitJob",
-    "type":"OPERATION",
-    "actionMode":"SEQUENTIAL",
-    "actions":[  
-    {  
-       "functionRef": {
-          "refName": "submitJob",
-          "parameters": {
-            "name": "$.job.name"
-          }
-       },
-       "actionDataFilter": {
-          "dataResultsPath": "$.jobuid" 
-       }
-    }
-    ],
-    "onError": [
+{
+  "id": "jobmonitoring",
+  "version": "1.0",
+  "name": "Job Monitoring",
+  "description": "Monitor finished execution of a submitted job",
+  "startsAt": "SubmitJob",
+  "functions": [
     {
-     "expression": {
-         "language": "spel",
-         "body": "name != null"
+      "name": "submitJob",
+      "resource": "submitJobResource"
+    },
+    {
+      "name": "checkJobStatus",
+      "resource": "checkJobStatusResource"
+    },
+    {
+      "name": "reportJobSuceeded",
+      "resource": "reportJobSuceededResource"
+    },
+    {
+      "name": "reportJobFailed",
+      "resource": "reportJobFailedResource"
+    }
+  ],
+  "states":[  
+    {  
+      "name":"SubmitJob",
+      "type":"OPERATION",
+      "actionMode":"SEQUENTIAL",
+      "actions":[  
+      {  
+          "functionRef": {
+            "refName": "submitJob",
+            "parameters": {
+              "name": "$.job.name"
+            }
+          },
+          "actionDataFilter": {
+            "dataResultsPath": "$.jobuid"
+          }
+      }
+      ],
+      "onError": [
+      {
+        "expression": {
+            "language": "spel",
+            "body": "$.exception != null"
+        },
+        "errorDataFilter": {
+          "dataOutputPath": "$.exception"
+        },
+        "transition": {
+          "nextState": "SubmitError"
+        }
+      }
+      ],
+      "stateDataFilter": {
+          "dataOutputPath": "$.jobuid"
       },
       "transition": {
-        "nextState": "SubmitError"
+          "nextState":"WaitForCompletion"
       }
-    }
+  },
+  {
+      "name": "SubmitError",
+      "type": "SUBFLOW",
+      "workflowId": "handleJobSubmissionErrorWorkflow",
+      "end": {
+        "type": "DEFAULT"
+      }
+  },
+  {
+      "name": "WaitForCompletion",
+      "type": "DELAY",
+      "timeDelay": "PT5S",
+      "transition": {
+        "nextState":"GetJobStatus"
+      }
+  },
+  {  
+      "name":"GetJobStatus",
+      "type":"OPERATION",
+      "actionMode":"SEQUENTIAL",
+      "actions":[  
+      {  
+        "functionRef": {
+            "refName": "checkJobStatus",
+            "parameters": {
+              "name": "$.jobuid"
+            }
+          },
+          "actionDataFilter": {
+          "dataResultsPath": "$.jobstatus"
+          }
+      }
+      ],
+      "stateDataFilter": {
+          "dataOutputPath": "$.jobstatus"
+      },
+      "transition": {
+          "nextState":"DetermineCompletion"
+      }
+  },
+  {  
+    "name":"DetermineCompletion",
+    "type":"SWITCH",
+    "choices": [
+      {
+        "path": "$.jobstatus",
+        "value": "SUCCEEDED",
+        "operator": "Equals",
+        "transition": {
+          "nextState": "JobSucceeded"
+        }
+      },
+      {
+        "path": "$.jobstatus",
+        "value": "FAILED",
+        "operator": "Equals",
+        "transition": {
+          "nextState": "JobFailed"
+        }
+      }
     ],
-    "stateDataFilter": {
-       "dataOutputPath": "$.jobuid"
-    },
-    "transition": {
-       "nextState":"WaitForCompletion"
+    "default": {
+        "nextState": "WaitForCompletion"
     }
-},
-{
-   "name": "SubmitError",
-   "type": "SUBFLOW",
-   "workflowId": "handleJobSubmissionErrorWorkflow",
-   "end": {
-     "type": "DEFAULT"
-   }
-},
-{
-   "name": "WaitForCompletion",
-   "type": "DELAY",
-   "timeDelay": "PT5S",
-   "transition": {
-      "nextState":"GetJobStatus"
-   }
-},
-{  
-    "name":"GetJobStatus",
+  },
+  {  
+      "name":"JobSucceeded",
+      "type":"OPERATION",
+      "actionMode":"SEQUENTIAL",
+      "actions":[  
+      {  
+        "functionRef": {
+            "refName": "reportJobSuceeded",
+            "parameters": {
+              "name": "$.jobuid"
+            }
+        }
+      }
+      ],
+      "end": {
+        "type": "DEFAULT"
+      }
+  },
+  {  
+    "name":"JobFailed",
     "type":"OPERATION",
     "actionMode":"SEQUENTIAL",
     "actions":[  
     {  
-      "functionRef": {
-          "refName": "checkJobStatus",
+        "functionRef": {
+          "refName": "reportJobFailed",
           "parameters": {
             "name": "$.jobuid"
           }
-       },
-       "actionDataFilter": {
-        "dataResultsPath": "$.jobstatus"
-       }
+        }
     }
     ],
-    "stateDataFilter": {
-       "dataOutputPath": "$.jobstatus"
-    },
-    "transition": {
-       "nextState":"DetermineCompletion"
+    "end": {
+      "type": "DEFAULT"
     }
-},
-{  
- "name":"DetermineCompletion",
- "type":"SWITCH",
- "choices": [
-   {
-     "path": "$.jobstatus",
-     "value": "SUCCEEDED",
-     "operator": "Equals",
-     "transition": {
-       "nextState": "JobSucceeded"
-     }
-   },
-   {
-     "path": "$.jobstatus",
-     "value": "FAILED",
-     "operator": "Equals",
-     "transition": {
-       "nextState": "JobFailed"
-     }
-   }
-  ],
-  "default": "WaitForCompletion"
-},
-{  
-   "name":"JobSucceeded",
-   "type":"OPERATION",
-   "actionMode":"SEQUENTIAL",
-   "actions":[  
-   {  
-      "functionRef": {
-         "refName": "reportJobSuceeded",
-         "parameters": {
-           "name": "$.jobuid"
-         }
-      }
-   }
-   ],
-   "end": {
-     "type": "DEFAULT"
-   }
-},
-{  
-  "name":"JobFailed",
-  "type":"OPERATION",
-  "actionMode":"SEQUENTIAL",
-  "actions":[  
-  {  
-     "functionRef": {
-        "name": "reportJobFailed",
-        "parameters": {
-          "name": "$.jobuid"
-        }
-     }
   }
-  ],
-  "end": {
-    "type": "DEFAULT"
-  }
-}
-]
+  ]
 }
 ```
+
 </td>
 <td valign="top">
 
 ```yaml
+id: jobmonitoring
+version: '1.0'
 name: Job Monitoring
 description: Monitor finished execution of a submitted job
 startsAt: SubmitJob
@@ -1229,7 +1267,8 @@ states:
     operator: Equals
     transition:
       nextState: JobFailed
-  default: WaitForCompletion
+  default:
+    nextState: WaitForCompletion
 - name: JobSucceeded
   type: OPERATION
   actionMode: SEQUENTIAL
@@ -1245,13 +1284,14 @@ states:
   actionMode: SEQUENTIAL
   actions:
   - functionRef:
-      name: reportJobFailed
+      refName: reportJobFailed
       parameters:
         name: "$.jobuid"
   end:
     type: DEFAULT
 
 ```
+
 </td>
 </tr>
 </table>
@@ -1338,13 +1378,14 @@ CloudEvent upon completion of the workflow could look like:
 ```json
 {
 "id": "sendcloudeventonprovision",
-"name": "Send CloudEvent on provision completion",
 "version": "1.0",
+"name": "Send CloudEvent on provision completion",
 "startsAt": "ProvisionOrdersState",
 "events": [
 {
     "name": "provisioningCompleteEvent",
-    "type": "provisionCompleteType"
+    "type": "provisionCompleteType",
+    "source": "provisionCompleteSource"
 }
 ],
 "functions": [
@@ -1365,6 +1406,7 @@ CloudEvent upon completion of the workflow could look like:
     {
         "name": "DoProvision",
         "type": "OPERATION",
+        "actionMode": "SEQUENTIAL",
         "actions": [
         {
             "functionRef": {
@@ -1399,12 +1441,13 @@ CloudEvent upon completion of the workflow could look like:
 
 ```yaml
 id: sendcloudeventonprovision
-name: Send CloudEvent on provision completion
 version: '1.0'
+name: Send CloudEvent on provision completion
 startsAt: ProvisionOrdersState
 events:
 - name: provisioningCompleteEvent
   type: provisionCompleteType
+  source: provisionCompleteSource
 functions:
 - name: provisionOrderFunction
   resource: functionResourse
@@ -1418,6 +1461,7 @@ states:
   states:
   - name: DoProvision
     type: OPERATION
+    actionMode: SEQUENTIAL
     actions:
     - functionRef:
         refName: provisionOrderFunction
@@ -1432,7 +1476,6 @@ states:
     produceEvent:
       nameRef: provisioningCompleteEvent
       data: "$.provisionedOrders"
-
 ```
 </td>
 </tr>
@@ -1536,8 +1579,8 @@ have the matching patient id.
 "eventsActions": [{
         "eventRefs": ["HighBodyTemperature"],
         "actions": [{
-            "functionref": {
-                "refname": "sendTylenolOrder",
+            "functionRef": {
+                "refName": "sendTylenolOrder",
                 "parameters": {
                     "patientid": "$.patientId"
                 }
@@ -1547,8 +1590,8 @@ have the matching patient id.
     {
         "eventRefs": ["HighBloodPressure"],
         "actions": [{
-            "functionref": {
-                "refname": "callNurse",
+            "functionRef": {
+                "refName": "callNurse",
                 "parameters": {
                     "patientid": "$.patientId"
                 }
@@ -1558,8 +1601,8 @@ have the matching patient id.
     {
         "eventRefs": ["HighRespirationRate"],
         "actions": [{
-            "functionref": {
-                "refname": "callPulmonologist",
+            "functionRef": {
+                "refName": "callPulmonologist",
                 "parameters": {
                     "patientid": "$.patientId"
                 }
@@ -1612,27 +1655,26 @@ states:
   - eventRefs:
     - HighBodyTemperature
     actions:
-    - functionref:
-        refname: sendTylenolOrder
+    - functionRef:
+        refName: sendTylenolOrder
         parameters:
           patientid: "$.patientId"
   - eventRefs:
     - HighBloodPressure
     actions:
-    - functionref:
-        refname: callNurse
+    - functionRef:
+        refName: callNurse
         parameters:
           patientid: "$.patientId"
   - eventRefs:
     - HighRespirationRate
     actions:
-    - functionref:
-        refname: callPulmonologist
+    - functionRef:
+        refName: callPulmonologist
         parameters:
           patientid: "$.patientId"
   end:
     type: TERMINATE
-
 ```
 </td>
 </tr>
@@ -1715,8 +1757,8 @@ when all three of these events happened (in no particular order).
             ],
             "actions": [
                 {
-                    "functionref": {
-                        "refname": "finalizeApplicationFunction",
+                    "functionRef": {
+                        "refName": "finalizeApplicationFunction",
                         "parameters": {
                             "student": "$.applicantId"
                         }
@@ -1767,13 +1809,12 @@ states:
     - SATScoresReceived
     - RecommendationLetterReceived
     actions:
-    - functionref:
-        refname: finalizeApplicationFunction
+    - functionRef:
+        refName: finalizeApplicationFunction
         parameters:
           student: "$.applicantId"
   end:
     type: TERMINATE
-
 ```
 </td>
 </tr>
@@ -1784,4 +1825,3 @@ states:
 <p align="center">
 <img src="media/finalizecollegeapplication.png" with="400px" height="400px" alt="Finalize College Application Example"/>
 </p>
-
