@@ -1,4 +1,4 @@
-## Serverless Workflow Specification - Examples
+# Serverless Workflow Specification - Examples
 
 ## Table of Contents
 
@@ -27,10 +27,10 @@ This example uses two relay states. The "Hello" state statically injects the fol
 ```
 
 which then becomes the data input of the transition "World" state.
-The "World" state merges its data input with it's injected JSON and uses a filter to set its data output to the 
+The "World" state merges its data input with it's injected JSON and uses a filter to set its data output to the
 value of the "result" property. Since it is an end state, it's data output becomes the workflow data output:
 
-```
+```text
 "Hello World!"
 ```
 
@@ -78,6 +78,7 @@ value of the "result" property. Since it is an end state, it's data output becom
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -117,7 +118,7 @@ states:
 
 #### Description
 
-This example shows a single Operation state with one action that calls the "greeting" function. 
+This example shows a single Operation state with one action that calls the "greeting" function.
 The workflow data input is assumed to be the name of the person to greet:
 
 ```json
@@ -139,10 +140,11 @@ The results of the action is assumed to be the full greeting for the provided pe
 ```
 
 The states action data filter selects the greeting object from the function return to be placed into the state data.
-Then the states state data filter selects only the greeting object to be returned as its data output, which 
+Then the states state data filter selects only the greeting object to be returned as its data output, which
 becomes the workflow data output (as it is an end state):
-```
-   "Welcome to Serverless Workflow, John!" 
+
+```text
+   "Welcome to Serverless Workflow, John!"
 ```
 
 #### Workflow Definition
@@ -196,6 +198,7 @@ becomes the workflow data output (as it is an end state):
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -225,6 +228,7 @@ states:
     type: DEFAULT
 
 ```
+
 </td>
 </tr>
 </table>
@@ -239,7 +243,7 @@ states:
 
 #### Description
 
-This example shows a single Event state with one action that calls the "greeting" function. 
+This example shows a single Event state with one action that calls the "greeting" function.
 The event state consumes cloud events of type "greetingEventType". When an even with this type
 is consumed, the Event state performs a single action that calls the defined "greeting" function.
 
@@ -267,17 +271,18 @@ The results of the action is assumed to be the full greeting for the provided pe
   }
 }
 ```
+
 Note that in the workflow definition you can see two filters defined. The event data filter defined inside the consume element:
 
 ```json
 {
   "eventDataFilter": {
     "dataOutputPath": "$.data.greet"
-  } 
+  }
 }
 ```
 
-which is triggered when the greeting event is consumed. It extracts its "data.greet" of the event and 
+which is triggered when the greeting event is consumed. It extracts its "data.greet" of the event and
 merges it with the states data.
 
 The second, a state data filter, which is defined on the event state itself:
@@ -292,8 +297,8 @@ The second, a state data filter, which is defined on the event state itself:
 
 filters what is selected to be the state data output which then becomes the workflow data output (as it is an end state):
 
-```
-   "Welcome to Serverless Workflow, John!" 
+```text
+   "Welcome to Serverless Workflow, John!"
 ```
 
 #### Workflow Definition
@@ -356,6 +361,7 @@ filters what is selected to be the state data output which then becomes the work
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -390,6 +396,7 @@ states:
   end:
     type: DEFAULT
 ```
+
 </td>
 </tr>
 </table>
@@ -404,8 +411,8 @@ states:
 
 #### Description
 
-In this example we show how to iterate over some data input using the ForEach state. 
-The state will iterate over a collection of simple math expressions which are 
+In this example we show how to iterate over some data input using the ForEach state.
+The state will iterate over a collection of simple math expressions which are
 passed in as the workflow data input:
 
 ```json
@@ -413,6 +420,7 @@ passed in as the workflow data input:
       "expressions": ["2+2", "4-1", "10x3", "20/2"]
     }
 ```
+
 The ForEach state will execute a single defined operation state for each math expression. The operation
 state contains an action which calls a serverless function which actually solves the expression
 and returns its result.
@@ -481,6 +489,7 @@ result of the workflow execution.
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -516,6 +525,7 @@ states:
   end:
     type: DEFAULT
 ```
+
 </td>
 </tr>
 </table>
@@ -530,7 +540,7 @@ states:
 
 #### Description
 
-This example uses a parallel state to execute two branches (simple wait states) at the same time. 
+This example uses a parallel state to execute two branches (simple wait states) at the same time.
 Note that the waitForCompletion flag is set to "false" so as soon as the "ShortDelay" delay state finishes,
 the workflow complete execution. If waitForCompletion was set to true, the workflow would complete after both
 of the branches are done.
@@ -595,6 +605,7 @@ of the branches are done.
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -656,9 +667,9 @@ This example shows off the switch state and the subflow state. The workflow is s
     }
 ```
 
-We use the switch state with two choices to determine if the application should be made based on the applicants age. 
-If the applicants age is over 18 we start the application (subflow state). Otherwise the workflow notifies the 
- applicant of the rejection. 
+We use the switch state with two choices to determine if the application should be made based on the applicants age.
+If the applicants age is over 18 we start the application (subflow state). Otherwise the workflow notifies the
+ applicant of the rejection.
 
 #### Workflow Definition
 
@@ -738,6 +749,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
    ]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -782,6 +794,7 @@ states:
   end:
     type: DEFAULT
 ```
+
 </td>
 </tr>
 </table>
@@ -796,13 +809,14 @@ states:
 
 #### Description
 
-In this example we show off the states error handling capability. The workflow data input that's passed in contains 
+In this example we show off the states error handling capability. The workflow data input that's passed in contains
 missing order information that causes the function in the "ProvisionOrder" state to throw a runtime exception. With the "onError" expression we
-can transition the workflow to different error handling states depending on the error thrown. Each type of error 
-in this example is handled by simple delay states, each including an error data filter which sets the exception info as their 
+can transition the workflow to different error handling states depending on the error thrown. Each type of error
+in this example is handled by simple delay states, each including an error data filter which sets the exception info as their
 data output. If no error is caught the workflow can transition to the "ApplyOrder" state.
 
 Workflow data is assumed to me:
+
 ```json
     {
       "order": {
@@ -924,6 +938,7 @@ The data output of the workflow contains the information of the exception caught
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -985,8 +1000,8 @@ states:
   workflowId: applyOrderWorkflowId
   end:
     type: DEFAULT
-
 ```
+
 </td>
 </tr>
 </table>
@@ -1001,11 +1016,11 @@ states:
 
 #### Description
 
-In this example we submit a job via an operation state action (serverless function call). It is assumed that it takes some time for 
+In this example we submit a job via an operation state action (serverless function call). It is assumed that it takes some time for
 the submitted job to complete and that it's completion can be checked via another separate serverless function call.
- 
-To check for completion we first wait 5 seconds and then get the results of the "CheckJob" serverless function. 
-Depending on the results of this we either return the results or transition back to waiting and checking the job completion. 
+
+To check for completion we first wait 5 seconds and then get the results of the "CheckJob" serverless function.
+Depending on the results of this we either return the results or transition back to waiting and checking the job completion.
 This is done until the job submission returns "SUCCEEDED" or "FAILED" and the job submission results are reported before workflow
 finishes execution.
 
@@ -1289,7 +1304,6 @@ states:
         name: "$.jobuid"
   end:
     type: DEFAULT
-
 ```
 
 </td>
@@ -1323,6 +1337,7 @@ workflow data:
     }]
 }
 ```
+
 Our workflow in this example uses a ForEach state to provision the orders in parallel. The "provisionOrder" function
 used is assumed to have the following results:
 
@@ -1341,7 +1356,7 @@ After orders have been provisioned the ForEach states defines the end property w
 It defines its end definition to be of type "EVENT" in which case a CloudEvent will be produced which can be consumed
 by other orchestration workflows or other interested consumers. 
 Note that we define the event to be produced in the workflows "events" property.
-The data attached to the event contains the information on provisioned orders by this workflow. So the produced 
+The data attached to the event contains the information on provisioned orders by this workflow. So the produced
 CloudEvent upon completion of the workflow could look like:
 
 ```json
@@ -1436,6 +1451,7 @@ CloudEvent upon completion of the workflow could look like:
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -1477,6 +1493,7 @@ states:
       nameRef: provisioningCompleteEvent
       data: "$.provisionedOrders"
 ```
+
 </td>
 </tr>
 </table>
@@ -1487,17 +1504,16 @@ states:
 <img src="media/sendcloudeentonworkflowcompletion.png" with="400px" height="400px" alt="Send CloudEvent on Workflow Completion Example"/>
 </p>
 
-
 ### Monitor Patient Vital Signs Example
 
 #### Description
 In this example a hospital patient is monitored by a Vial Sign Monitoring system. This device can produce three different Cloud Events, namely
-"High Body Temperature", "High Blood Pressure", and "High Respiration Rate". 
+"High Body Temperature", "High Blood Pressure", and "High Respiration Rate".
 Our workflow which needs to take propert actions depending on the event the Vital Sign Monitor produces needs to start
 if any of these events occur. For each of these events a new instance of the workflow is started.
 
 Since the hospital may include many patients that are being monitored it is assumed that all events include a patientId context attribute in the event
- message. We can use the value of this context attribute to associate the incoming events with the same patient as well as 
+ message. We can use the value of this context attribute to associate the incoming events with the same patient as well as
  use the patient id to pass as parameter to the functions called by event activities. Here is an example of such event:
 
 ```json
@@ -1513,9 +1529,10 @@ Since the hospital may include many patients that are being monitored it is assu
       "value": "98.6F"
     }
 }
-``` 
-As you can see the "patientId" context attribute of the event includes our correlation key which is the unique 
-patient id. If we set it to be the correlation key in our events definition, all events that are considered must 
+```
+
+As you can see the "patientId" context attribute of the event includes our correlation key which is the unique
+patient id. If we set it to be the correlation key in our events definition, all events that are considered must
 have the matching patient id.
 
 #### Workflow Definition
@@ -1542,7 +1559,7 @@ have the matching patient id.
     "correlationToken": "patientId"
 },
 {
-    "name": "HighBloodPressure", 
+    "name": "HighBloodPressure",
     "type": "org.monitor.highBloodPressure",
     "source": "monitoringSource",
     "correlationToken": "patientId"
@@ -1616,6 +1633,7 @@ have the matching patient id.
 }]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -1676,6 +1694,7 @@ states:
   end:
     type: TERMINATE
 ```
+
 </td>
 </tr>
 </table>
@@ -1690,9 +1709,9 @@ states:
 
 #### Description
 
-In this example our workflow is instantiated when all requirements of a college application are completed. 
-These requirements include a student submitting an application, the college receiving the students SAT scores, as well 
-as a student recommendation letter from a former teacher. 
+In this example our workflow is instantiated when all requirements of a college application are completed.
+These requirements include a student submitting an application, the college receiving the students SAT scores, as well
+as a student recommendation letter from a former teacher.
 
 We assume three Cloud Events "ApplicationSubmitted", "SATScoresReceived" and "RecommendationLetterReceived".
 Each include the applicant id in their "applicantId" context attribute, so we can use it to associate these events with an individual applicant.
@@ -1774,6 +1793,7 @@ when all three of these events happened (in no particular order).
 ]
 }
 ```
+
 </td>
 <td valign="top">
 
@@ -1816,6 +1836,7 @@ states:
   end:
     type: TERMINATE
 ```
+
 </td>
 </tr>
 </table>
