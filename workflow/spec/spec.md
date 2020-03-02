@@ -693,7 +693,6 @@ instance in case it is an end state without performing any actions.
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | [functionRef](#FunctionRef-Definition) | References a reusable function definition to be invoked | object | yes |
-| timeout | Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | string | no |
 | [actionDataFilter](#action-data-filter) | Action data filter definition | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -706,10 +705,6 @@ instance in case it is an end state without performing any actions.
         "functionRef": {
             "$ref": "#/definitions/functionref",
             "description": "References a reusable function definition to be invoked"
-        },
-        "timeout": {
-            "type": "string",
-            "description": "Specifies the maximum amount of time (ISO 8601 format) to wait for the completion of the function's execution. The function timer is started when the request is sent to the invoked function"
         },
         "actionDataFilter": {
           "$ref": "#/definitions/actiondatafilter"
@@ -2366,7 +2361,7 @@ defined in the orders array of its data input.
 ```json
 {
     "type": "object",
-    "description": "This state is used to wait for events from event sources, then consumes them and invoke one or more actions to run in sequence or parallel.",
+    "description": "This state performs an action, then waits for the callback event that denotes completion of the action.",
     "properties": {
         "id": {
             "type": "string",
@@ -2379,7 +2374,7 @@ defined in the orders array of its data input.
         },
         "type": {
             "type" : "string",
-            "enum": ["EVENT"],
+            "enum": ["CALLBACK"],
             "description": "State type"
         },
         "action": {
