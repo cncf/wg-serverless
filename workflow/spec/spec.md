@@ -2471,7 +2471,7 @@ of the manual decision by the called service.
 Note that the called decision services is responsible for emitting the callback CloudEvent indicating the completion of the
 decision and including the decision results as part of the event payload. This event must be correlated to the
 workflow instance using the callback events context attribute defined in the correlationToken parameter of the
-referenced [event definition](#Event-Definition).
+referenced [Event Definition](#Event-Definition).
 
 Once the completion (callback) event is received, the callback state completes its execution and transitions to the next
 defined workflow state or completes workflow execution in case it is an end state.
