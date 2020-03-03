@@ -89,7 +89,7 @@ Serverless Workflow allows users to:
 2. Define which functions are executed in each step.
 3. Define which event or combination of events trigger function execution.
 4. Define function execution behavior (sequential, parallel, etc).
-5. Enable integration with third-party services via callbacks.
+5. Specify manual decision steps during workflow execution.
 6. Specify information filtering throughout the execution of the serverless workflow.
 7. Define error conditions with retries.
 8. Correlate trigger events with workflow instances.
