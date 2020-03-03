@@ -108,7 +108,7 @@ states:
 </tr>
 </table>
 
-#### Worfklow Diagram
+#### Workflow Diagram
 
 <p align="center">
 <img src="media/helloworldexample.png" with="250px" height="400px" alt="Hello World Example"/>
@@ -233,7 +233,7 @@ states:
 </tr>
 </table>
 
-#### Worfklow Diagram
+#### Workflow Diagram
 
 <p align="center">
 <img src="media/greetingexample.png" with="400px" height="400px" alt="Greeting Example"/>
@@ -401,7 +401,7 @@ states:
 </tr>
 </table>
 
-#### Worfklow Diagram
+#### Workflow Diagram
 
 <p align="center">
 <img src="media/eventbasedgreetingexample.png" with="400px" height="400px" alt="Event Based Greeting Example"/>
@@ -530,7 +530,7 @@ states:
 </tr>
 </table>
 
-#### Worfklow Diagram
+#### Workflow Diagram
 
 <p align="center">
 <img src="media/loopingexample.png" with="400px" height="400px" alt="Looping Example"/>
@@ -644,7 +644,7 @@ states:
 </tr>
 </table>
 
-#### Worfklow Diagram
+#### Workflow Diagram
 
 <p align="center">
 <img src="media/parallelexample.png" with="400px" height="400px" alt="Parallel Example"/>
@@ -799,7 +799,7 @@ states:
 </tr>
 </table>
 
-#### Worfklow Diagram
+#### Workflow Diagram
 
 <p align="center">
 <img src="media/switchstateexample.png" with="400px" height="400px" alt="Switch State Example"/>
@@ -1006,7 +1006,7 @@ states:
 </tr>
 </table>
 
-#### Worfklow Diagram
+#### Workflow Diagram
 
 <p align="center">
 <img src="media/handlerrorsexample.png" with="400px" height="400px" alt="Handle Errors Example"/>
@@ -1310,7 +1310,7 @@ states:
 </tr>
 </table>
 
-#### Worfklow Diagram
+#### Workflow Diagram
 
 <p align="center">
 <img src="media/jobmonitoringexample.png" with="400px" height="400px" alt="Job Monitoring Example"/>
@@ -1498,7 +1498,7 @@ states:
 </tr>
 </table>
 
-#### Worfklow Diagram
+#### Workflow Diagram
 
 <p align="center">
 <img src="media/sendcloudeentonworkflowcompletion.png" with="400px" height="400px" alt="Send CloudEvent on Workflow Completion Example"/>
@@ -1699,7 +1699,7 @@ states:
 </tr>
 </table>
 
-#### Worfklow Diagram
+#### Workflow Diagram
 
 <p align="center">
 <img src="media/monitorpatientvitalsigns.png" with="400px" height="400px" alt="Monitor Patient Vital Signs Example"/>
@@ -1841,7 +1841,7 @@ states:
 </tr>
 </table>
 
-#### Worfklow Diagram
+#### Workflow Diagram
 
 <p align="center">
 <img src="media/finalizecollegeapplication.png" with="400px" height="400px" alt="Finalize College Application Example"/>
