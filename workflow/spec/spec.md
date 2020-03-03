@@ -504,11 +504,10 @@ States define building blocks of the Serverless Workflow. The specification defi
 | [eventsActions](#eventstate-eventactions) | Define the events to be consumed and one or more actions to be performed | array | yes |
 | [timeout](#eventstate-timeout) | Time period to wait for incoming events (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
 | [stateDataFilter](#state-data-filter) | State data filter definition| object | no |
-| [retry](#workflow-retrying) | States retry definitions | array | no |
-| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes |
+| [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
 | [end](#End-Definition) | Is this state an end state | object | no |
 
@@ -533,10 +532,6 @@ States define building blocks of the Serverless Workflow. The specification defi
             "type" : "string",
             "enum": ["EVENT"],
             "description": "State type"
-        },
-        "end": {
-          "$ref": "#/definitions/end",
-          "description": "State end definition"
         },
         "exclusive": {
             "type": "boolean",
@@ -587,6 +582,10 @@ States define building blocks of the Serverless Workflow. The specification defi
         "transition": {
           "description": "Next transition of the workflow after all the actions have been performed",
           "$ref": "#/definitions/transition"
+        },
+        "end": {
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         }
     },
     "oneOf": [
