@@ -9,7 +9,7 @@ _Note: Milestone entries include the most notable updates only. For list of all 
 _Status description:_
 
 | Completed | In Progress | In Planning |
-| --- | --- |  --- | --- |
+| --- | --- |  --- |
 |  <center>✔</center> | <center>✏️</center> | <center>🚩</center> |
 
 ## Setup (ETA: end of March 2020)
