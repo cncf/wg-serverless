@@ -2,6 +2,7 @@
 
 State machines/Workflows have a long history in software design and development. The goal of this section is to list other tools and languages that had been used to define orchestration between different actors (software and human). The main intention here is to make sure that we cover as many use cases as possible leveraging existing approaches to avoid pitfalls from the past.
 
+- [Workflow Patterns](#Workflow-Patterns)
 - [Business Process Model and Notation](#Business-Process-Model-and-Notation)
 - [Mistral Workflow Language](#Mistral-Workflow-Language)
 - [Amazon States Language](#Amazon-States-Language)
@@ -9,9 +10,12 @@ State machines/Workflows have a long history in software design and development.
 - [Flogo](#Flogo)
 - [Alibaba FunctionFlow](#Alibaba-FunctionFlow)
 
+## Workflow Patterns
+The research of the [Workflow Patterns Initiative](http://www.workflowpatterns.com/) provides a thorough examination of the various perspectives (control flow, data, resource, and exception handling) that need to be supported by a workflow language.
+
 ## Business Process Model and Notation
 
-[Business Process Modeling and Notation (BPMN)](https://www.omg.org/spec/BPMN/) was designed by Object Management Group (OMG) in collaboration with companies such as: IBM, Red Hat, Oracle, SAP, TIBCO, Software AG, among others. The latest version of the specification provides a rich set of constructs to defines workflows in a technology agnostic way. One of the main advatages of the BPMN spec is that it visually defines how a workflow should look like and most importantely, it defines the execution semantics of such workflows.
+[Business Process Modeling and Notation (BPMN)](https://www.omg.org/spec/BPMN/) was standardized by Object Management Group (OMG) in collaboration with companies such as: IBM, Red Hat, Oracle, SAP, TIBCO, Software AG, among others. The latest version of the specification has even been [adopted by the ISO](https://www.iso.org/standard/62652.html) and provides a rich set of constructs to define workflows in a technology-agnostic way. One of the main advatages of the BPMN spec is that it visually defines how a workflow should look like and most importantly, it defines the execution semantics of such workflows. [This article](https://www.esentri.com/bpmn-and-serverless-workflows/) describes how BPMN can be used for serverless workflows.
 
 <details>
   <summary>BPMN model</summary>
