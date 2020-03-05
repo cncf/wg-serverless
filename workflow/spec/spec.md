@@ -420,6 +420,8 @@ States define building blocks of the Serverless Workflow. The specification defi
 | **[Relay](#Relay-State)** | Relay state data input to output | no | yes | no | yes | no | no |
 | **[ForEach](#ForEach-State)** | Parallel execution of states for each element of a data array | no | yes | no | yes (includes retries) | yes | no |
 
+Following is a detailed decription of each of the defined states.
+
 ### Event State
 
 | Parameter | Description | Type | Required |
