@@ -4,11 +4,11 @@
 
 Serverless applications are becoming increasingly complex and are rarely composed
 of a single function call triggered by an event.
-Often they contain complex business logic to coordinate, manage, and define the execution order of a large amount
+Often they contain complex business logic to define, coordinate, and manage the execution order of a large amount
 of serverless functions and events that can trigger those functions.
 
-Workflows have become a key component of serverless applications as they automate
- orchestration and coordination of serverless applications functional flow.
+Workflows have become a key component of serverless applications as they provide
+clear separation between business and orchestration logic.
 
 Some of the many benefits using workflows in serverless applications include:
 
@@ -23,15 +23,15 @@ Many different workflow implementations (both proprietary and open-source) exist
 and capabilities. When picking a current implementations, it is very difficult to later on switch to a different one
 without investing a lot of time, and effort.
 
-The goal of the Serverless Workflow sub-group is to:
+Serverless Workflow is a specification that strandardizes the model for workflows
+responsible for orchestrating event-driven serverless applications.
 
-- Standardize Serverless Workflow model and definition.
-- Facilitate Serverless Workflow portability.
-- Be completely vendor neutral.
-- Support both stateless and stateful Serverless Workflow implementations.
-- Supply a light-weight, human-readable, and embeddable format for describing serverless workflows.
+Main goals of the specification include:
 
-The Serverless Workflow specification defined in this document incorporates all of these goals.
+- To facilitate Serverless Workflow portability across different vendor platforms
+- To be completely vendor neutral
+- To support both stateless and stateful Serverless Workflow orchestration
+- To define a light-weight and powerful Serverless Workflow model
 
 ## Status of this document
 
