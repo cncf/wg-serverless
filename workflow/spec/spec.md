@@ -23,7 +23,7 @@ Many different workflow implementations (both proprietary and open-source) exist
 and capabilities. When picking a current implementations, it is very difficult to later on switch to a different one
 without investing a lot of time, and effort.
 
-Serverless Workflow is a specification that strandardizes the model for workflows
+Serverless Workflow is a specification that defines the model for workflows
 responsible for orchestrating event-driven serverless applications.
 
 Main goals of the specification include:

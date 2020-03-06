@@ -9,7 +9,7 @@ order of a large amount of serverless functions and events that can trigger thos
 Workflows have become a key component of serverless applications as they provide
 clear separation between business and orchestration logic.
 
-Serverless Workflow is a specification that strandardizes the model for workflows
+Serverless Workflow is a specification that defines the model for workflows
 responsible for orchestrating event-driven serverless applications.
 
 Main goals of the specification include:
@@ -17,7 +17,7 @@ Main goals of the specification include:
 - To facilitate Serverless Workflow portability across different vendor platforms
 - To be completely vendor neutral
 - To support both stateless and stateful Serverless Workflow orchestration
-- To define a light-weight, human-readable, and embeddable Serverless Workflow model
+- To define a light-weight and powerful Serverless Workflow model
 
 Serverless Workflow is hosted by the [Cloud Native Computing Foundation's](https://cncf.io/) (CNCF) [Serverless Working Group](https://github.com/cncf/wg-serverless). It was proposed as a Cloud Native sandbox level project on [March 3, 2020](https://github.com/cncf/toc/pull/376).
 
