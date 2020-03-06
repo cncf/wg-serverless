@@ -252,7 +252,7 @@ Defines the top-level structure of a serverless workflow model.
 Following figure describes the main workflow definition blocks.
 
 <p align="center">
-<img src="media/workflowdefinitionblocks.png" with="400px" height="260px" alt="Serverless Workflow Definitions Blocks"/>
+<img src="media/spec/workflowdefinitionblocks.png" with="400px" height="260px" alt="Serverless Workflow Definitions Blocks"/>
 </p>
 
 #### Function Definition
