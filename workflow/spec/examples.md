@@ -2097,5 +2097,5 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/customercreditcheckexample.png" with="400px" height="400px" alt="Perform Customer Credit Check Example"/>
+<img src="media/examples/example-customercreditcheck.png" with="400px" height="400px" alt="Perform Customer Credit Check Example"/>
 </p>
