@@ -87,7 +87,7 @@ Following diagram illustrates functional flow that involves states, events and f
 incoming events can trigger function calls during flow execution.
 
 <p align="center">
-<img src="media/sample-serverless-workflow2.png" with="400px" height="260px" alt="Serverless Workflow Diagram"/>
+<img src="media/spec/sample-serverless-workflow2.png" with="400px" height="260px" alt="Serverless Workflow Diagram"/>
 </p>
 
 ## Specification Details
@@ -622,13 +622,13 @@ The "exclusive" property determines if the state should wait for any of the defi
 Following two figures illustrate the "exclusive" property:
 
 <p align="center">
-<img src="media/event-state-exclusive-true.png" with="400px" height="260px" alt="Event state with exclusive set to true"/>
+<img src="media/spec/event-state-exclusive-true.png" with="400px" height="260px" alt="Event state with exclusive set to true"/>
 </p>
 
 If the event state in this case is a starting state, any of the defined events would start a new workflow instance.
 
 <p align="center">
-<img src="media/event-state-exclusive-false.png" with="400px" height="260px" alt="Event state with exclusive set to false"/>
+<img src="media/spec/event-state-exclusive-false.png" with="400px" height="260px" alt="Event state with exclusive set to false"/>
 </p>
 
 If the event state in this case is a starting state, occurrence of all defined events would start a new
@@ -2610,7 +2610,7 @@ If no input is provided the default data input is the empty object:
 Workflow data input is passed to the workflow's "startsAt" state (the starting state) as data input.
 
 <p align="center">
-<img src="media/workflowdatainput.png" with="500px" height="300px" alt="Workflow data input"/>
+<img src="media/spec/workflowdatainput.png" with="500px" height="300px" alt="Workflow data input"/>
 </p>
 
 In order to define the structure of expected workflow data input you can use the workflow
@@ -2626,7 +2626,7 @@ is merged with the data input of the Event state, so it can be used inside defin
 or be passed as data output to transition states.
 
 <p align="center">
-<img src="media/eventdatamerged.png" with="500px" height="300px" alt="Event data merged with state data input"/>
+<img src="media/spec/eventdatamerged.png" with="500px" height="300px" alt="Event data merged with state data input"/>
 </p>
 
 ### Information Passing Between States
@@ -2641,7 +2641,7 @@ There are two of rules to consider here:
 - If the state is an end state ("end" property is defined), its data output is the [workflow data output](#Workflow-data-output).  
 
 <p align="center">
-<img src="media/basic-state-data-passing.png" with="500px" height="300px" alt="Basic state data passing"/>
+<img src="media/spec/basic-state-data-passing.png" with="500px" height="300px" alt="Basic state data passing"/>
 </p>
 
 In order to define the structure of expected state data input and output you can use the workflow
@@ -2741,7 +2741,7 @@ we can define a state filter:
 The state data output then would include only the fruits data.
 
 <p align="center">
-<img src="media/state-data-filter-example1.png" with="300px" height="400px" alt="State Data Filter Example"/>
+<img src="media/spec/state-data-filter-example1.png" with="300px" height="400px" alt="State Data Filter Example"/>
 </p>
 
 For our second example lets say that we are interested in only vegetable that are "veggie like".
@@ -2767,7 +2767,7 @@ The states data input filter selects all the vegetables from the main data input
 or workflow execution completion (if this is an end state), the dataOutputPath of the state filter selects only the vegetables which are "veggie like".
 
 <p align="center">
-<img src="media/state-data-filter-example2.png" with="300px" height="400px" alt="State Data Filter Example"/>
+<img src="media/spec/state-data-filter-example2.png" with="300px" height="400px" alt="State Data Filter Example"/>
 </p>
 
 The second way would be to directly filter only the "veggie like" vegetables with just the data input path:
@@ -2823,7 +2823,7 @@ parts of the action results that need to be merged back into the state data.
 To give an example, let's say we have an action which returns a list of breads and we want to add this list our fruits and vegetables data:
 
 <p align="center">
-<img src="media/action-data-filter-example1.png" with="300px" height="400px" alt="Action Data Filter Example"/>
+<img src="media/spec/action-data-filter-example1.png" with="300px" height="400px" alt="Action Data Filter Example"/>
 </p>
 
 #### <a name="event-data-filter"></a> State information filtering - Event Data Filter
@@ -2857,7 +2857,7 @@ that you need to be merged with the state data.
 Here is an example using an even filter:
 
 <p align="center">
-<img src="media/event-data-filter-example1.png" with="300px" height="400px" alt="Event Data Filter Example"/>
+<img src="media/spec/event-data-filter-example1.png" with="300px" height="400px" alt="Event Data Filter Example"/>
 </p>
 
 #### <a name="error-data-filter"></a> State information filtering - Error Data Filter
@@ -2890,7 +2890,7 @@ with the states data.
 Here is an example using an error filter:
 
 <p align="center">
-<img src="media/error-data-filter-example1.png" with="300px" height="400px" alt="Error Data Filter Example"/>
+<img src="media/spec/error-data-filter-example1.png" with="300px" height="400px" alt="Error Data Filter Example"/>
 </p>
 
 #### <a name="error-data-filter"></a> State information filtering - Using multiple filters
@@ -2989,7 +2989,7 @@ Here is a sample diagram showing our workflow, each numbered step on this diagra
 workflow execution at which data filters are invoked and correspond to the numbered items below.
 
 <p align="center">
-<img src="media/using-multiple-filters-example.png" with="400px" height="400px" alt="Using Multple Filters Example"/>
+<img src="media/spec/using-multiple-filters-example.png" with="400px" height="400px" alt="Using Multple Filters Example"/>
 </p>
 
 **(1) Workflow execution starts**: Workflow data is passed to our "WaitForCustomerToArrive" event state as data input.
