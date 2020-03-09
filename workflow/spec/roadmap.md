@@ -8,9 +8,9 @@ _Note: Milestone entries include the most notable updates only. For list of all 
 
 _Status description:_
 
-| Completed | In Progress | In Planning |
-| --- | --- |  --- |
-|  <center>✔</center> | <center>✏️</center> | <center>🚩</center> |
+| Completed | In Progress | In Planning | On Hold |
+| --- | --- |  --- | --- |
+|  <center>✔</center> | <center>✏️</center> | <center>🚩</center> | <center>❗️</center>
 
 ## Setup (ETA: end of March 2020)
 
@@ -37,7 +37,7 @@ _Status description:_
 |  🚩 | Decide on state/task/stage/step naming convention | [issue link](https://github.com/cncf/wg-serverless/issues/127) |
 |  🚩 | Decide to split spec.md into multiple docs (for easier pr management) | |
 |  ✏️ | Finish specification primer document | |
-|  ✏️ | Prepare github branch and docs for v0.1 | |
+|  🚩 | Prepare github branch and docs for v0.1 | |
 
 ## v0.1 (Planned to start April 2020)
 
