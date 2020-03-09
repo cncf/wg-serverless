@@ -10,25 +10,26 @@ of serverless functions and events that can trigger those functions.
 Workflows have become a key component of serverless applications as they automate
  orchestration and coordination of serverless applications functional flow.
 
-Some of many benefits using workflows in serverless applications include:
+Some of the many benefits using workflows in serverless applications include:
 
-- Allow you to develop new application much faster by taking the complex execution logic out of your application.
-- Externalize workflow execution logic and management such as parallel execution, branching, timeouts, compensation, and other flow control
- logic out of many serverless function implementations into a single workflow definition.
-- Allow you to write less code in your serverless apps/functions
-- Significantly reduce the amount of time and effort to make changes in large serverless apps.
+- Allow developers to fucus on business requirements and not orchestration logic.
+- Externalize cross-cutting concerns such as parallel execution, branching, timeouts, compensation, callbacks, etc.
+thus allowing clear focus on business requirements in functions.
+- Greatly reduce the amount of code developers have to write, maintain, and test.
+- Reduce the amount of time and effort to make changes/updates in large serverless applications.
+- Allow for definition of reusable and clearly defined workflow orchestration patterns.
 
 Many different workflow implementations (both proprietary and open-source) exist today, each with it's own set of features
 and capabilities. When picking a current implementations, it is very difficult to later on switch to a different one
-without investing a lot of time and cost.
+without investing a lot of time, and effort.
 
 The goal of the Serverless Workflow sub-group is to:
 
-- Standardize Serverless Workflow model and definition
-- Facilitate Serverless Workflow portability
-- Be completely vendor neutral
-- Support both stateless and stateful Serverless Workflow implementations
-- Supply a light-weight, human-readable, and embeddable format for describing serverless workflows
+- Standardize Serverless Workflow model and definition.
+- Facilitate Serverless Workflow portability.
+- Be completely vendor neutral.
+- Support both stateless and stateful Serverless Workflow implementations.
+- Supply a light-weight, human-readable, and embeddable format for describing serverless workflows.
 
 The Serverless Workflow specification defined in this document incorporates all of these goals.
 
@@ -102,16 +103,16 @@ Following sections provide detailed descriptions of the Serverless Workflow Mode
 Serverless Workflow can be viewed as a collection of [states](#State-Definition) and [transitions](#Transitions) between states.
 Individual states can make control flow decisions based on their data inputs, perform different actions, as well
 as pass their data to other states.
+
 States can wait on the arrival events to perform their actions. When states
 complete their tasks, they can transition to other states or stop workflow execution.
-See the [Transitions](#Transitions) section for more details on workflow state progressions.
+See the [Transitions](#Transitions) section for more details on workflow progression.
 
-A Serverless Workflow can be naturally modeled as a state machine.
-Specification of a workflow is called a workflow template. Instantiation of the workflow template is called a workflow instance.
+A Serverless Workflow can be naturally implemented as a state machine or a workflow engine.
+This specification does not mandate a specific implementation decision in this regard.
+As mentioned, implementation compliance is based on the workflow definition language only.
 
 ### Workflow Definition
-
-Defines the main structure of serverless workflows:
 
 | Parameter | Description | Type | Required |
 | --- | --- |  --- | --- |
@@ -247,6 +248,55 @@ Defines the main structure of serverless workflows:
 </p>
 </details>
 
+Defines the top-level structure of a serverless workflow model.
+Following figure describes the main workflow definition blocks.
+
+<p align="center">
+<img src="media/spec/workflowdefinitionblocks.png" with="400px" height="260px" alt="Serverless Workflow Definitions Blocks"/>
+</p>
+
+#### Function Definition
+
+Allows you to define a reusable function definition. It can be referenced in [actions](#Action-Definition) defined in [Event](#Event-State) and [Operation](#Operation-State)
+workflow states. Each function definition must have an unique name.
+The resource parameter of a function evaluates to execution of
+an existing serverless function.
+Implementations can use the type parameter to define communication information such as protocols.
+
+Since function definitions are reusable, their data input parameters are defined within [actions](#Action-Definition) that reference them.
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| name | Function name | string | yes |
+| resource | Function resource (URI) | string | yes |
+| type | Function type. Can be defined by implementations. | string | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Function unique name",
+      "minLength": 1
+    },
+    "resource": {
+      "type": "string",
+      "description": "Function resource (URI)"
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of function to implement. Can be defined by implementations"
+    }
+  },
+  "required": ["name", "resource"]
+}
+```
+
+</details>
+
 ### Event Definition
 
 | Parameter | Description | Type | Required |
@@ -355,143 +405,22 @@ If we then correlate these two events with event definitions:
 Workflow implementations can use this token to map events to particular workflow instances, or use it
 to correlate multiple events that are needed to start a workflow instance.
 
-#### Function Definition
-
-Allows you to define a reusable function definition. It can be referenced in [actions](#Action-Definition) defined in [event](#Event-State) and [operation](#Operation-State)
-workflow states. Functions must have an unique name. The resource parameter of a function evaluates to execution of
-an existing serverless function. Implementations can use the type parameter to define communication information such as protocols.
-
-Since function definitions are reusable, their parameters are defined within actions that reference them.
-
-| Parameter | Description | Type | Required |
-| --- | --- | --- | --- |
-| name |Function name | string | yes |
-| resource |Function resource (URI) | string | yes |
-| type |Function type. Can be defined by implementations | string | no |
-
-<details><summary><strong>Click to view JSON Schema</strong></summary>
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "name": {
-      "type": "string",
-      "description": "Function unique name",
-      "minLength": 1
-    },
-    "resource": {
-      "type": "string",
-      "description": "Function resource (URI)"
-    },
-    "type": {
-      "type": "string",
-      "description": "Type of function to implement. Can be defined by implementations"
-    }
-  },
-  "required": ["name", "resource"]
-}
-```
-
-</details>
-
-### Error Definition
-
-Error definitions define runtime errors that can occur during workflow execution and how to handle them. For more information
-see the [Workflow Error Handling section](#Workflow-Error-Handling).
-
-| Parameter | Description | Type | Required |
-| --- | --- | --- | --- |
-| [expression](#Expression-Definition) | Boolean expression which consists of one or more Error operands and the Boolean operators | string | yes |
-| [errorDataFilter](#error-data-filter) | Error data filter definition | object | yes |
-| [transition](#Transitions) | Next transition of the workflow when expression matches | string | yes |
-
-<details><summary><strong>Click to view JSON Schema</strong></summary>
-
-```json
-{
-  "type": "object",
-  "properties": {
-     "expression": {
-       "description": "Boolean expression which consists of one or more Error operands and the Boolean operators",
-       "$ref": "#/definitions/expression"
-     },
-     "errorDataFilter": {
-      "$ref": "#/definitions/errordatafilter",
-      "description": "Error data filter"
-    },
-    "transition": {
-      "description": "Next transition of the workflow when expression matches",
-      "$ref": "#/definitions/transition"
-    }
-  },
-  "required": ["expression", "transition"]
-}
-```
-
-</details>
-
-#### Expression Definition
-
-| Parameter | Description | Type | Required |
-| --- | --- | --- | --- |
-| language | Expression language. For example 'spel', 'jexl', 'cel', etc| string | no |
-| body | Expression body, for example "(event1 or event2) and event3" | string | yes |
-
-<details><summary><strong>Click to view JSON Schema</strong></summary>
-
-```json
-{
-  "type": "object",
-  "description": "Defines the language and body of expression.",
-  "properties": {
-    "language": {
-      "type": "string",
-      "description": "Expression language. For example 'spel', 'jexl', 'cel', etc"
-    },
-    "body": {
-      "type": "string",
-      "description": "The expression body. For example, (event1 or event2) and event3"
-    }
-  },
-  "required": ["body"]
-}
-```
-
-</details>
-
-Serverless workflow does not limit implementors to use any expression language they choose to
-evaluate expressions with.
-Expressions define "language" parameter to be used
- for evaluation, and a "body" parameter which defines the actual expression.
-
-Note that top-level workflow "expressionLanguage" property can be set to define the default
-expression language used for all defined expressions.
-
 ### State Definition
 
 States define building blocks of the Serverless Workflow. The specification defines following states:
 
-- **[Event State](#Event-State)**: Used to wait for events from event sources and
-    then to invoke one or more functions to run in sequence or in parallel.
+| Name | Description | Consumes events? | Produces events? | Executes actions? | Handles errors? | Allows parallel execution? | Makes data-based transitions? |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **[Event](#Event-State)** | Define events that trigger action execution | yes | yes | yes | yes (includes retries) | yes | no |
+| **[Operation](#Operation-State)** | Execute one or more actions | no | yes | yes | yes (includes retries) | yes | no |
+| **[Switch](#Switch-State)** | Define data-based workflow transitions | no | yes | no | yes | no | yes |
+| **[Delay](#Delay-State)** | Delay workflow execution | no | yes | no | yes | no | no |
+| **[Parallel](#Parallel-State)** | Causes parallel execution of branches (set of states) | no | yes | no | yes (includes retries) | yes | no |
+| **[SubFlow](#SubFlow-State)** | Represents the invocation of another workflow from within a workflow | no | yes | no | yes | no | no |
+| **[Relay](#Relay-State)** | Relay state data input to output | no | yes | no | yes | no | no |
+| **[ForEach](#ForEach-State)** | Parallel execution of states for each element of a data array | no | yes | no | yes (includes retries) | yes | no |
 
-- **[Operation State](#Operation-State)**: Allows one or more functions to run in sequence
-    or in parallel without waiting for any event.
-
-- **[Switch State](#Switch-State)**: Allow workflow transitions to multiple different states
-    based on data inputs.
-
-- **[Delay State](#Delay-State)**: Causes workflow execution to delay for a
-    specified duration or until a specified time/date is reached.
-
-- **[Parallel State](#Parallel-State)**: Allows a number of states to execute in
-    parallel.
-
-- **[SubFlow State](#SubFlow-State)**: Allows execution of a sub-workflow.
-  
-- **[Relay State](#Relay-State)**: Used to relay state's data input to output without executing any actions.
-
-- **[ForEach State](#ForEach-State)**: Allows a set of defined states to be executed in parallel for each element of a data input array.
+Following is a detailed decription of each of the defined states.
 
 ### Event State
 
@@ -812,6 +741,79 @@ Actions reference a reusable function definition to be invoked when this action 
 
 Used by actions to reference a defined serverless function by its unique name. Parameters are values passed to the
 function. They can include either static values or reference the states data input.
+
+### Error Definition
+
+Error definitions define runtime errors that can occur during workflow execution and how to handle them. For more information
+see the [Workflow Error Handling section](#Workflow-Error-Handling).
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| [expression](#Expression-Definition) | Boolean expression which consists of one or more Error operands and the Boolean operators | string | yes |
+| [errorDataFilter](#error-data-filter) | Error data filter definition | object | yes |
+| [transition](#Transitions) | Next transition of the workflow when expression matches | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+     "expression": {
+       "description": "Boolean expression which consists of one or more Error operands and the Boolean operators",
+       "$ref": "#/definitions/expression"
+     },
+     "errorDataFilter": {
+      "$ref": "#/definitions/errordatafilter",
+      "description": "Error data filter"
+    },
+    "transition": {
+      "description": "Next transition of the workflow when expression matches",
+      "$ref": "#/definitions/transition"
+    }
+  },
+  "required": ["expression", "transition"]
+}
+```
+
+</details>
+
+#### Expression Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| language | Expression language. For example 'spel', 'jexl', 'cel', etc| string | no |
+| body | Expression body, for example "(event1 or event2) and event3" | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "description": "Defines the language and body of expression.",
+  "properties": {
+    "language": {
+      "type": "string",
+      "description": "Expression language. For example 'spel', 'jexl', 'cel', etc"
+    },
+    "body": {
+      "type": "string",
+      "description": "The expression body. For example, (event1 or event2) and event3"
+    }
+  },
+  "required": ["body"]
+}
+```
+
+</details>
+
+Serverless workflow does not limit implementors to use any expression language they choose to
+evaluate expressions with.
+Expressions define "language" parameter to be used
+ for evaluation, and a "body" parameter which defines the actual expression.
+
+Note that top-level workflow "expressionLanguage" property can be set to define the default
+expression language used for all defined expressions.
 
 #### Retry Definition
 
