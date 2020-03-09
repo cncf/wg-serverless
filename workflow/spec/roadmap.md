@@ -19,8 +19,8 @@ _Status description:_
 |  ✔ | Establish governance, contributing guidelines and initial stakeholder | [governance doc](governance/readme.md)  |
 |  ✔ | Define specification goals | [spec doc](spec.md) |
 |  ✔ | Define specification functional scope | [spec doc](spec.md) |
-|  ✔ | Include set of use-cases for Serverless Workflow | [spec usecases doc](spec-usecases.md) |
-|  ✔ | Include set of examples for Serverless Workflow | [spec examples doc](spec-examples.md) |
+|  ✔ | Include set of use-cases for Serverless Workflow | [usecases doc](usecases.md) |
+|  ✔ | Include set of examples for Serverless Workflow | [examples doc](examples.md) |
 |  ✔ | Define specification JSON Schema | [spec doc](spec.md) |
 |  ✔ | Add SubFlow state | [spec doc](spec.md) |
 |  ✔ | Add Relay state | [spec doc](spec.md) |

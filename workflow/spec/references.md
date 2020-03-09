@@ -46,7 +46,7 @@ The [BPMN specification](https://www.omg.org/spec/BPMN/) provides XML Schemas fo
 <details>
   <summary>BPMN examples</summary>
 
-  Here are BPMN diagrams covering two examples listed in the [Serverless Workflow Specification - Use Cases](spec-usecases.md) section:
+  Here are BPMN diagrams covering two examples listed in the [Serverless Workflow Specification - Use Cases](usecases.md) section:
 
   **Loan Approval Workflow**
 
