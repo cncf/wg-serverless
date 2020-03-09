@@ -1,18 +1,18 @@
-## Serverless Workflow - Contributors
+# Serverless Workflow - Contributors
 
 We welcome you to join us! This list acknowledges those who contribute to
 this specification whether it be via GitHub pull request or in Serverless
-Work Group meeting discussion, especially those who contributed before
-this became a CNCF Serverless WG project. If you are participating in
-some way, please add your information via pull request.
+Work Group meeting discussion.
+
+If you are participating insome way, please add your information via pull request.
 
 * **Huawei**
   * Cathy Hong Zhang
   * Farhad Sunavala
   
 * **Independent**
-   * Louis Fourie
-	
+  * Louis Fourie
+
 * **Fujitsu**
   * Naohiro Tamura
   
@@ -30,14 +30,15 @@ some way, please add your information via pull request.
   * Chathura Ekanayake
   
 * **Red Hat**
-    * Ruben Romero Montes
-    * Tihomir Surdilovic
+  * Ruben Romero Montes
+  * Tihomir Surdilovic
 
 * **Camunda**
-    * Mauricio Salatino    
+  * Mauricio Salatino
+  * Falko Menge
 
 * **Nokia**
-    * Manuel Stein 
+  * Manuel Stein
 
 * **IBM**
-    * Doug Davis 
+  * Doug Davis
