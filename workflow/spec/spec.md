@@ -1,4 +1,4 @@
-# Serverless Workflow
+# Serverless Workflow - Version 0.1
 
 ## Abstract
 
@@ -9,10 +9,6 @@ workflows responsible for orchestrating event-driven serverless applications.
 
 Serverless Workflow specification is free and open-source, operating under the
 [Apache License version 2.0](LICENSE).
-
-## Status of this document
-
-This document is a working draft.
 
 ## Table of Contents
 
@@ -77,7 +73,7 @@ from states to functions, from one function to another function, and from one st
 The Serverless workflow format is defined with [JSON](https://www.json.org/json-en.html) or [YAML](https://yaml.org/).
 Structure of serverless workflows is described via [JSON Schema](https://json-schema.org/).
 
-Serverless Workflow definitions are considered specification-compliant if they conform to the [workflow schema](schema/serverless-workflow-schema.json).
+Serverless Workflow definitions are considered specification-compliant if they conform to the [workflow schema](schema/serverless-workflow-schema-v01.json).
 
 Note that this schema reflects the current status of the specification as is updated alongside this document.
 
