@@ -1,4 +1,4 @@
-# Serverless Workflow Specification - Use Cases
+# Use Cases
 
 Use cases for the Serverless Workflow Specification highly depend on the reference implementations
 and the ecosystem available during workflow execution (available functions/services/events, etc).

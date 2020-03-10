@@ -1,4 +1,4 @@
-# Serverless Workflow Specification - Examples
+# Examples
 
 ## Table of Contents
 

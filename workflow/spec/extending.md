@@ -1,4 +1,4 @@
-# Serverless Workflow Specification - Extending
+# Extending
 
 Serverless workflow model is aimed to be extensible. This allows you to add custom extensions
 and still be compliant with the specification.
