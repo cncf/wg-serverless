@@ -437,7 +437,7 @@ States define building blocks of the Serverless Workflow. The specification defi
 
 Following is a detailed decription of each of the defined states:
 
-### Event State
+#### Event State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
