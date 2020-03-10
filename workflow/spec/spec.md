@@ -105,8 +105,8 @@ incoming events can trigger function calls during flow execution.
 
 Following sections provide detailed descriptions of the Serverless Workflow Model. For each part of the model we provide:
 
-- Parameter description in table format
-- [JSON Schema](https://json-schema.org/) definition
+- Parameter description in table format.
+- [JSON Schema](https://json-schema.org/) definition.
 
 ### Workflow Model
 
