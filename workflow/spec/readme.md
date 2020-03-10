@@ -25,10 +25,12 @@ Serverless Workflow is hosted by the [Cloud Native Computing Foundation's](https
 
 The following documents are available:
 
-|                               |                                 Latest Release                                  |                                    Working Draft                                    |
-| :---------------------------- | :-----------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
-| **Core Specification:**       |
-| Serverless Workflow           |                    |          [master](https://github.com/cncf/wg-serverless/blob/master/workflow/spec/spec.md)  |
+|| Latest Release | Working Draft |
+| :--- | :--- | :--- |
+| **Core Specification:** | | |
+| Serverless Workflow| | [master](https://github.com/cncf/wg-serverless/blob/master/workflow/spec/spec.md)  |
+| **Additional Documentation:** | | |
+| Model JSON Schema | | [master](schema/serverless-workflow-schema.json) |
 
 ## Community
 
