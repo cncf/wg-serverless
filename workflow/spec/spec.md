@@ -1,6 +1,35 @@
-<p align="center"><img src="media/logo-small-text.png"/></p>
+# Serverless Workflow
 
-# Abstract
+## Abstract
+
+Serverless Workflow is a vendor-neutral specification for defining the model of
+workflows responsible for orchestrating event-driven serverless applications.
+
+## License
+
+Serverless Workflow specification is free and open-source, operating under the
+[Apache License version 2.0](LICENSE).
+
+## Status of this document
+
+This document is a working draft.
+
+## Table of Contents
+
+- [Overview](#Overview)
+- [Workflow Format](#Workflow-Format)
+- [Functional Scope](#Functional-Scope)
+- [Specification Details](#Specification-Details)
+  - [Workflow Model](#Workflow-Model)
+  - [Workflow Definition](#Workflow-Definition)
+  - [Workflow Data](#Workflow-Data)
+  - [Workflow Error Handling](#Workflow-Error-Handling)
+- [Extending](#Extending)
+- [Use Cases](#Use-Cases)
+- [Examples](#Examples)
+- [Reference](#Reference)
+
+## Overview
 
 Serverless applications are becoming increasingly complex and are rarely composed
 of a single function call triggered by an event.
@@ -33,28 +62,7 @@ Main goals of the specification include:
 - To support both stateless and stateful Serverless Workflow orchestration
 - To define a light-weight and powerful Serverless Workflow model
 
-## Status of this document
-
-This document is a working draft.
-
-## Table of Contents
-
-- [Introduction](#Introduction)
-- [Workflow Format](#Workflow-Format)
-- [Functional Scope](#Functional-Scope)
-- [Specification Details](#Specification-Details)
-  - [Workflow Model](#Workflow-Model)
-  - [Workflow Definition](#Workflow-Definition)
-- [Workflow Data](#Workflow-Data)
-- [Workflow Error Handling](#Workflow-Error-Handling)
-- [Extending](#Extending)
-- [Use Cases](#Use-Cases)
-- [Examples](#Examples)
-- [Reference](#Reference)
-
-## Introduction
-
-Serverless Workflow can be used to:
+Workflows defined using the serverless workflow specification can be used to:
 
 - **Orchestrate serverless application logic**: serverless applications are typically event-driven and can be
 very hard to manage. Serverless Workflow groups the application events and functions into a coherent unit and
@@ -64,15 +72,16 @@ control flow and how/which functions are to be invoked on arrival of events.
 - **Define and manage application data flow**: allows the users to define how data is passed and filtered from incoming events to states,
 from states to functions, from one function to another function, and from one state to another state.
 
-### Workflow Format
+## Workflow Format
 
-Serverless workflows are defined with [JSON](https://www.json.org/json-en.html) or [YAML](https://yaml.org/) formats.
+The Serverless workflow format is defined with [JSON](https://www.json.org/json-en.html) or [YAML](https://yaml.org/).
 Structure of serverless workflows is described via [JSON Schema](https://json-schema.org/).
 
 Serverless Workflow definitions are considered specification-compliant if they conform to the [workflow schema](schema/serverless-workflow-schema-01.json).
+
 Note that this schema reflects the current status of the specification as is updated alongside this document.
 
-### Functional Scope
+## Functional Scope
 
 Serverless Workflow allows users to:
 
@@ -297,7 +306,7 @@ Since function definitions are reusable, their data input parameters are defined
 
 </details>
 
-### Event Definition
+#### Event Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -405,7 +414,7 @@ If we then correlate these two events with event definitions:
 Workflow implementations can use this token to map events to particular workflow instances, or use it
 to correlate multiple events that are needed to start a workflow instance.
 
-### State Definition
+#### State Definition
 
 States define building blocks of the Serverless Workflow. The specification defines following states:
 
@@ -422,7 +431,7 @@ States define building blocks of the Serverless Workflow. The specification defi
 
 Following is a detailed decription of each of the defined states.
 
-### Event State
+#### Event State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -742,7 +751,7 @@ Actions reference a reusable function definition to be invoked when this action 
 Used by actions to reference a defined serverless function by its unique name. Parameters are values passed to the
 function. They can include either static values or reference the states data input.
 
-### Error Definition
+#### Error Definition
 
 Error definitions define runtime errors that can occur during workflow execution and how to handle them. For more information
 see the [Workflow Error Handling section](#Workflow-Error-Handling).
@@ -887,7 +896,7 @@ Defines the state retry policy in case of errors. For more information reference
 Defines a transition from point A to point B in the serverless workflow. For more information see the
 [Transitions section](#Transitions).
 
-### Operation State
+#### Operation State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -1005,7 +1014,7 @@ Defines a transition from point A to point B in the serverless workflow. For mor
 Operation state defines a set of actions to be performed in sequence or in parallel.
 Once all actions have been performed, a transition to another state can occur.
 
-### Switch State
+#### Switch State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -1119,7 +1128,7 @@ There are four types of choices defined:
 - [Not Choice](#switch-state-not-choice)
 - [Or Choice](#switch-state-or-choice)
 
-##### <a name="switch-state-single-choice"></a>Switch State Choices: Single Choice
+#### <a name="switch-state-single-choice"></a>Switch State Choices: Single Choice
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -1159,7 +1168,7 @@ There are four types of choices defined:
 
 </details>
 
-##### <a name="switch-state-and-choice"></a>Switch State Choices: And Choice
+#### <a name="switch-state-and-choice"></a>Switch State Choices: And Choice
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -1206,7 +1215,7 @@ There are four types of choices defined:
 
 </details>
 
-##### <a name="switch-state-not-choice"></a>Switch State Choices: Not Choice
+#### <a name="switch-state-not-choice"></a>Switch State Choices: Not Choice
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -1252,7 +1261,7 @@ There are four types of choices defined:
 
 </details>
 
-##### <a name="switch-state-or-choice"></a>Switch State Choices: Or Choice
+#### <a name="switch-state-or-choice"></a>Switch State Choices: Or Choice
 
 | Parameter | Description |  Type | Required |
 | --- | --- | --- | --- |
@@ -1299,7 +1308,7 @@ There are four types of choices defined:
 
 </details>
 
-### Delay State
+#### Delay State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -1394,7 +1403,7 @@ There are four types of choices defined:
 
 Delay state waits for a certain amount of time before transitioning to a next state.
 
-### Parallel State
+#### Parallel State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -1587,7 +1596,7 @@ Data output of the Parallel state includes the data output of each executed bran
 The "waitForCompletion" property allows the parallel state to manage branch executions.
 Parallel state must wait for all branches which have this property set to "true" before triggering a transition.
 
-### SubFlow State
+#### SubFlow State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -1705,7 +1714,7 @@ Each sub-workflow receives the same copy of the SubFlow state's data input.
 If waitForCompletion property is set to true, sub-workflows have the ability to edit the parent's workflow data.
 If this property is set to false, data access to parent's workflow should not be allowed.
 
-### Relay State
+#### Relay State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -1947,7 +1956,7 @@ $.people[?(@.age >= 40)]
 
 This allows you to test if your workflow behaves properly for cases when there are people who's age is greater or equal 40.
 
-### ForEach State
+#### ForEach State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -2318,7 +2327,7 @@ Once iterations over the completed orders complete, workflow execution finishes 
 So in this example, our ForEach state will send two confirmation emails, one for each of the completed orders
 defined in the orders array of its data input.
 
-### End Definition
+#### End Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -2378,7 +2387,7 @@ to complete workflow execution, which is set by the "type" property:
 are completed. If a terminate end is reached inside a ForEach, Parallel, or SubFlow state, the entire workflow instance is terminated.
 - **EVENT** - Workflow executions completes, and a Cloud Event is produced according to the [produceEvent](#ProduceEvent-Definition) definition.
 
-### ProduceEvent Definition
+#### ProduceEvent Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -2419,7 +2428,7 @@ Being able to produce an event when workflow execution completes allows for even
 Completion of an orchestration workflow can notify other orchestration workflows to decide if they need to act upon
  the produced event. This can create very dynamic orchestration scenarios.
 
-### Filter Definition
+#### Filter Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -2454,7 +2463,7 @@ Completion of an orchestration workflow can notify other orchestration workflows
 
 Filters are used for data flow through the workflow. This is described in detail in the [Information Passing](#Information-Passing) section.
 
-### Transitions
+#### Transitions
 
 Serverless workflow states can have one or more incoming and outgoing transitions (from/to other states).
 Each state has a "transition" definition that is used to determines which
@@ -2587,7 +2596,7 @@ Implementers should decide how to handle data-base transitions which return fals
 The default should be that if this happens workflow execution should halt and a detailed message
  on why the transition failed should be provided.
 
-## Workflow Data
+#### Workflow Data
 
 Serverless Workflow data is represented in [JSON](https://www.json.org/json-en.html) format.
 Flow of data during workflow execution can be divided into:
@@ -2598,7 +2607,7 @@ Flow of data during workflow execution can be divided into:
 - [State information filtering](#State-information-filtering)
 - [Workflow data output](#Workflow-data-output)
 
-### Workflow Data Input
+#### Workflow Data Input
 
 The initial data input into a workflow instance must be a valid [JSON object](https://tools.ietf.org/html/rfc7159#section-4).
 If no input is provided the default data input is the empty object:
@@ -2620,7 +2629,7 @@ In order to define the structure of expected workflow data input you can use the
 that describes the expected workflow data input. This can be used for documentation purposes or implementations may
 decide to strictly enforce it.
 
-### Event Data
+#### Event Data
 
 [Event states](#Event-State) wait for arrival of defined CloudEvents, and when consumed perform a number of defined actions.
 CloudEvents can contain data which is needed to make further orchestration decisions. Data from consumed CloudEvents
@@ -2631,7 +2640,7 @@ or be passed as data output to transition states.
 <img src="media/spec/eventdatamerged.png" with="500px" height="300px" alt="Event data merged with state data input"/>
 </p>
 
-### Information Passing Between States
+#### Information Passing Between States
 
 States in Serverless workflow can receive data (data input) as well as produce a data result (data output). The states data input is
 typically the previous states data output.
@@ -2651,7 +2660,7 @@ In order to define the structure of expected state data input and output you can
 that describes the expected workflow data input/output. This can be used for documentation purposes or implementations may
 decide to strictly enforce it.
 
-### State Information Filtering
+#### State Information Filtering
 
 States can access and manipulate data via data filters. Since all data during workflow execution is described
 in [JSON](https://tools.ietf.org/html/rfc7159) format, data filters use [JSONPath](https://github.com/json-path/JsonPath) queries
@@ -3083,7 +3092,7 @@ not to overwrite each other after actions complete and their results are added t
 Also note that in case of parallel execution of actions, the results of only those that complete before the state
 transitions to the next one or ends workflow execution (end state) can be considered to be added to the state data.
 
-### Workflow data output
+#### Workflow data output
 
 Once a workflow instance reaches an end state (where the "end" parameter is defined) and the workflow finishes its execution
 the data output of that result state becomes the workflow data output. This output can be logged or indexed depending on the
@@ -3094,7 +3103,7 @@ In order to define the structure of expected workflow data output you can use th
 that describes the expected workflow data output. This can be used for documentation purposes or implementations may
 decide to strictly enforce it.
 
-## Workflow Error Handling
+#### Workflow Error Handling
 
 Any state can encounter runtime errors. Errors can arise from state failures such as exeptions thrown during function
 execution, network errors, or errors in the workflow definition (incorrect paths for example).
@@ -3179,7 +3188,7 @@ Here we define onError with two elements. The first one handles the error which 
 declares to transition to the "afterFunctionErrorState" state in case this error is encountered.
 The second element handles all errors except "FunctionExecutionError".
 
-## <a name="workflow-retrying"></a> Workflow Error Handling - Retrying
+#### <a name="workflow-retrying"></a> Workflow Error Handling - Retrying
 
 Operation, Event, Parallel and ForEach states can define a retry policy in case of errors. A retry defines that execution
 of that state should be retried if an error occurs during its execution. The retry definition expression
