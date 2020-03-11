@@ -1937,7 +1937,7 @@ And for denied credit check, for example:
     "functions": [
         {
             "name": "callCreditCheckMicroservice",
-            "resource": "creditCheckResouce",
+            "resource": "creditCheckResource",
             "type": "microservice"
         },
         {
@@ -2027,7 +2027,7 @@ And for denied credit check, for example:
 ```
 
 </td>
-<td valign="top">
+<td valign="top"> 
 
 ```yaml
 id: customercreditcheck
@@ -2037,7 +2037,7 @@ description: Perform Customer Credit Check
 startsAt: CheckCredit
 functions:
 - name: callCreditCheckMicroservice
-  resource: creditCheckResouce
+  resource: creditCheckResource
   type: microservice
 - name: sendRejectionEmailFunction
   resource: rejectEmailResource
