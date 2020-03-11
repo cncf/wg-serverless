@@ -2027,7 +2027,7 @@ And for denied credit check, for example:
 ```
 
 </td>
-<td valign="top"> 
+<td valign="top">
 
 ```yaml
 id: customercreditcheck
