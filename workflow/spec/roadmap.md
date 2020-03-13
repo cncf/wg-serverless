@@ -11,6 +11,7 @@ _Status description:_
 | Completed | In Progress | In Planning | On Hold |
 | :--: | :--: |  :--: | :--: |
 | ✔ | ✏️ | 🚩 | ❗️|
+
 ## Setup (ETA: end of March 2020)
 
 | Status | Description | Comments |
@@ -32,15 +33,14 @@ _Status description:_
 | ✔ | Add reusable function definitions | [spec doc](spec.md) |
 | ✔ | Add support for YAML definitions | [spec doc](spec.md) |
 | ✔ | Update workflow completion (end definition) | [spec doc](spec.md) |
-| ✏️ | Add Callback state | [pr](https://github.com/cncf/wg-serverless/pull/174) |
+| ✔ | Add Callback state | [spec doc](spec.md) |
 | ✏️ | Add Workflow Metadata | [pr](https://github.com/cncf/wg-serverless/pull/193) |
-| ✏️ | Finish specification primer document | |
+| ✏️ | Finish specification primer document | [google doc](https://docs.google.com/document/d/11rD3Azj63G2Si0VpokSpr-1ib3mFRFHSwN6tJb-0LQM/edit#heading=h.paewfy83tetm) |
 | ✏️ | Prepare github branch and docs for v0.1 | |
 | 🚩 | Decide on state/task/stage/step naming convention | [issue link](https://github.com/cncf/wg-serverless/issues/127) |
-| 🚩 | Decide to split spec.md into multiple docs (for easier pr management) | |
-| 🚩 | Prepare github branch and docs for v0.1 | |
 
 ## v0.1 (Planned to start April 2020)
 
 | Status | Description | Comments |
 | --- | --- |  --- |
+| 🚩 | Start discussions on Serverless Workflow Technology Compatibility Kit (TCK) | |
