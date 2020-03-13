@@ -5,14 +5,15 @@
 - [Hello World](#Hello-World-Example)
 - [Greeting](#Greeting-Example)
 - [Event-based greeting](#Event-Based-Greeting-Example)
-- [Solving Math Problems (ForEach)](#Solving-Math-Problems-Example)
+- [Solving Math Problems (ForEach state)](#Solving-Math-Problems-Example)
 - [Parallel Execution](#Parallel-Execution-Example)
-- [Applicant Request Decision (Switch + SubFlow)](#Applicant-Request-Decision-Example)
+- [Applicant Request Decision (Switch + SubFlow states)](#Applicant-Request-Decision-Example)
 - [Provision Orders (Error Handling)](#Provision-Orders-Example)
 - [Monitor Job for completion (Polling)](#Monitor-Job-Example)
 - [Send CloudEvent on Workflow Completion](#Send-CloudEvent-On-Workfow-Completion-Example)
-- [Monitor Patient Vital Signs](#Monitor-Patient-Vital-Signs-Example)
-- [Finalize College Application](#Finalize-College-Application-Example)
+- [Monitor Patient Vital Signs (Event state)](#Monitor-Patient-Vital-Signs-Example)
+- [Finalize College Application (Event state)](#Finalize-College-Application-Example)
+- [Perform Customer Credit Check (Callback state)](#Perform-Customer-Credit-Check-Example)
 
 ### Hello World Example
 
@@ -1845,4 +1846,256 @@ states:
 
 <p align="center">
 <img src="media/examples/example-finalizecollegeapplication.png" with="400px" height="400px" alt="Finalize College Application Example"/>
+</p>
+
+### Perform Customer Credit Check Example
+
+#### Description
+
+In this example our serverless workflow needs to integrate with an external microservice to perform
+a credit check. We assume that this external microservice notifies a human actor which has to make 
+the approval decision based on customer information. Once this decision is made the service emits a CloudEvent which 
+includes the decision information as part of its payload.
+The workflow waits for this callback event and then triggers workflow transitions based on the 
+credit check decision results.
+
+The workflow data input is assumed to be:
+
+```json
+{
+  "customer": {
+    "id": "customer123",
+    "name": "John Doe",
+    "SSN": 123456,
+    "yearlyIncome": 50000,
+    "address": "123 MyLane, MyCity, MyCountry",
+    "employer": "MyCompany"
+  }
+}
+```
+
+The callback event that our workflow will wait on is assumed to have the following formats.
+For approved credit check, for example:
+
+```json
+{
+  "specversion" : "1.0",
+  "type" : "creditCheckCompleteType",  
+  "datacontenttype" : "application/json",
+  ...
+  "data": {
+    "creditCheck": [
+        {
+          "id": "customer123",
+          "score": 700,
+          "decision": "Approved",
+          "reason": "Good credit score"
+        }
+      ]
+  }
+}
+```
+
+And for denied credit check, for example:
+
+```json
+{
+  "specversion" : "1.0",
+  "type" : "creditCheckCompleteType",  
+  "datacontenttype" : "application/json",
+  ...
+  "data": {
+    "creditCheck": [
+        {
+          "id": "customer123",
+          "score": 580,
+          "decision": "Denied",
+          "reason": "Low credit score. Recent late payments"
+        }
+      ]
+  }
+}
+```
+
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td valign="top">
+
+```json
+{
+    "id": "customercreditcheck",
+    "version": "1.0",
+    "name": "Customer Credit Check Workflow",
+    "description": "Perform Customer Credit Check",
+    "startsAt": "CheckCredit",
+    "functions": [
+        {
+            "name": "callCreditCheckMicroservice",
+            "resource": "creditCheckResource",
+            "type": "microservice"
+        },
+        {
+            "name": "sendRejectionEmailFunction",
+            "resource": "rejectEmailResource"
+        }
+    ],
+    "events": [
+        {
+            "name": "CreditCheckCompletedEvent",
+            "type": "creditCheckCompleteType",
+            "source": "creditCheckSource",
+            "correlationToken": "customerId"
+        }
+    ],
+    "states": [
+        {
+            "name": "CheckCredit",
+            "type": "CALLBACK",
+            "action": {
+                "functionRef": {
+                    "refName": "callCreditCheckMicroservice",
+                    "parameters": {
+                        "customer": "$.customer"
+                    }
+                }
+            },
+            "eventRef": "CreditCheckCompletedEvent",
+            "timeout": "PT15M",
+            "transition": {
+                "nextState": "EvaluateDecision"
+            }
+        },
+        {
+            "name": "EvaluateDecision",
+            "type": "SWITCH",
+            "choices": [
+                {
+                    "path": "$.creditCheck.decision",
+                    "value": "Approved",
+                    "operator": "Equals",
+                    "transition": {
+                        "nextState": "StartApplication"
+                    }
+                },
+                {
+                    "path": "$.creditCheck.decision",
+                    "value": "Denied",
+                    "operator": "Equals",
+                    "transition": {
+                        "nextState": "RejectApplication"
+                    }
+                }
+            ],
+            "default": {
+                "nextState": "RejectApplication"
+            }
+        },
+        {
+            "name": "StartApplication",
+            "type": "SUBFLOW",
+            "workflowId": "startApplicationWorkflowId",
+            "end": {
+                "type": "DEFAULT"
+            }
+        },
+        {
+            "name": "RejectApplication",
+            "type": "OPERATION",
+            "actionMode": "SEQUENTIAL",
+            "actions": [
+                {
+                    "functionRef": {
+                        "refName": "sendRejectionEmailFunction",
+                        "parameters": {
+                            "applicant": "$.customer"
+                        }
+                    }
+                }
+            ],
+            "end": {
+                "type": "DEFAULT"
+            }
+        }
+    ]
+}
+```
+
+</td>
+<td valign="top">
+
+```yaml
+id: customercreditcheck
+version: '1.0'
+name: Customer Credit Check Workflow
+description: Perform Customer Credit Check
+startsAt: CheckCredit
+functions:
+- name: callCreditCheckMicroservice
+  resource: creditCheckResource
+  type: microservice
+- name: sendRejectionEmailFunction
+  resource: rejectEmailResource
+events:
+- name: CreditCheckCompletedEvent
+  type: creditCheckCompleteType
+  source: creditCheckSource
+  correlationToken: customerId
+states:
+- name: CheckCredit
+  type: CALLBACK
+  action:
+    functionRef:
+      refName: callCreditCheckMicroservice
+      parameters:
+        customer: "$.customer"
+  eventRef: CreditCheckCompletedEvent
+  timeout: PT15M
+  transition:
+    nextState: EvaluateDecision
+- name: EvaluateDecision
+  type: SWITCH
+  choices:
+  - path: "$.creditCheck.decision"
+    value: Approved
+    operator: Equals
+    transition:
+      nextState: StartApplication
+  - path: "$.creditCheck.decision"
+    value: Denied
+    operator: Equals
+    transition:
+      nextState: RejectApplication
+  default:
+    nextState: RejectApplication
+- name: StartApplication
+  type: SUBFLOW
+  workflowId: startApplicationWorkflowId
+  end:
+    type: DEFAULT
+- name: RejectApplication
+  type: OPERATION
+  actionMode: SEQUENTIAL
+  actions:
+  - functionRef:
+      refName: sendRejectionEmailFunction
+      parameters:
+        applicant: "$.customer"
+  end:
+    type: DEFAULT
+```
+
+</td>
+</tr>
+</table>
+
+#### Workflow Diagram
+
+<p align="center">
+<img src="media/examples/example-customercreditcheck.png" with="400px" height="400px" alt="Perform Customer Credit Check Example"/>
 </p>

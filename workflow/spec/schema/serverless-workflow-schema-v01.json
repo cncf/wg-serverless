@@ -97,6 +97,10 @@
           {
             "title": "ForEach State",
             "$ref": "#/definitions/foreachstate"
+          },
+          {
+            "title": "Callback State",
+            "$ref": "#/definitions/callbackstate"
           }
         ]
       }
@@ -335,6 +339,10 @@
               {
                 "title": "ForEach State",
                 "$ref": "#/definitions/foreachstate"
+              },
+              {
+                "title": "Callback State",
+                "$ref": "#/definitions/callbackstate"
               }
             ]
           }
@@ -1016,6 +1024,10 @@
               {
                 "title": "ForEach State",
                 "$ref": "#/definitions/foreachstate"
+              },
+              {
+                "title": "Callback State",
+                "$ref": "#/definitions/callbackstate"
               }
             ]
           }
@@ -1074,6 +1086,102 @@
             "inputParameter",
             "startsAt",
             "states",
+            "transition"
+          ]
+        }
+      ]
+    },
+    "callbackstate": {
+      "type": "object",
+      "description": "This state performs an action, then waits for the callback event that denotes completion of the action.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique state id",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "State name"
+        },
+        "type": {
+          "type" : "string",
+          "enum": ["CALLBACK"],
+          "description": "State type"
+        },
+        "action": {
+          "description": "Defines the action to be executed",
+          "$ref": "#/definitions/action"
+        },
+        "eventRef": {
+          "type" : "string",
+          "description": "References an unique callback event name in the defined workflow events"
+        },
+        "timeout": {
+          "type": "string",
+          "description": "Time period to wait for incoming events (ISO 8601 format)"
+        },
+        "eventDataFilter": {
+          "description": "Callback event data filter definition",
+          "$ref": "#/definitions/eventdatafilter"
+        },
+        "stateDataFilter": {
+          "description": "State data filter definition",
+          "$ref": "#/definitions/statedatafilter"
+        },
+        "retry": {
+          "type": "array",
+          "description": "States retry definitions",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/retry"
+          }
+        },
+        "onError": {
+          "type": "array",
+          "description": "States error handling definitions",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
+        },
+        "transition": {
+          "description": "Next transition of the workflow after all the actions have been performed",
+          "$ref": "#/definitions/transition"
+        },
+        "end": {
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "name",
+            "type",
+            "action",
+            "eventRef",
+            "timeout",
+            "end"
+          ]
+        },
+        {
+          "required": [
+            "name",
+            "type",
+            "action",
+            "eventRef",
+            "timeout",
             "transition"
           ]
         }
