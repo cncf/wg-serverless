@@ -2399,6 +2399,7 @@ defined in the orders array of its data input.
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
 | [transition](#Transitions) | Next transition of the workflow after callback event has been received | string | yes |
 | [end](#End-Definition) | Is this state an end state | object | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -2475,6 +2476,9 @@ defined in the orders array of its data input.
         "end": {
           "$ref": "#/definitions/end",
           "description": "State end definition"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "oneOf": [

@@ -1199,6 +1199,9 @@
         "end": {
           "$ref": "#/definitions/end",
           "description": "State end definition"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         }
       },
       "oneOf": [
