@@ -1,7 +1,7 @@
-# Serverless Workflow - Owners
+# Owners
 
-This list shows the owners of the serverless workflow specification documents.
-These people are currently responsible for overseeing, reviewing, and approving changes to specification documents.
+This list shows the owners of the Serverless Workflow specification documents.
+These people are currently responsible for overseeing, reviewing, and approving changes.
 
 * [Cathy Hong Zhang](https://github.com/cathyhongzhang)
 * [Tihomir Surdilovic](https://github.com/tsurdilo)
