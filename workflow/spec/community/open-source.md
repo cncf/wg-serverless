@@ -1,4 +1,4 @@
-## Serverless Workflow - Open Source
+# Open Source
 
 If you have created (or know of) an open source library or product that uses 
 Serverless Workflow, please include it in the list below.
