@@ -1,4 +1,4 @@
-# Serverless Workflow - Contributors
+# Contributors
 
 We welcome you to join us! This list acknowledges those who contribute to
 this specification whether it be via GitHub pull request or in Serverless
