@@ -141,8 +141,12 @@ As mentioned, implementation compliance is based on the workflow definition lang
 | [functions](#Function-Definition) | Workflow functions | array | no |
 | [states](#State-Definition) | Workflow states | array | yes |
 | [extensions](#Extending) | Workflow custom extensions | array | no |
+<<<<<<< HEAD
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
 | <a name="workflow-datamock-property"></a>[dataMock](#Mocking-Workflow-Data) | Workflow data mock file for testing | object | no |
+=======
+| <a name="workflow-datamock-property"></a>[dataMock](#Mocking-Workflow-Data) | Workflow data mock file for testing | string | no |
+>>>>>>> adding dataMock param def in spec document
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -258,8 +262,15 @@ As mentioned, implementation compliance is based on the workflow definition lang
             "type": "object"
           }
         },
+<<<<<<< HEAD
         "metadata": {
           "$ref": "#/definitions/metadata"
+=======
+        "dataMock": {
+          "type": "string",
+          "description": "Workflow data mock file for testing",
+          "minLength": 1
+>>>>>>> adding dataMock param def in spec document
         }
     },
     "required": ["id", "name", "version", "startsAt", "states"]
