@@ -3664,7 +3664,11 @@ just the statically defined results should be returned without performing any fu
 
 Data mocks can be enabled via the [dataMock](#workflow-datamock-property) property of the workflow definition. This property defines the location of the data mock file to be used during workflow execution.
 
-Here is an example using the JSON format. For sake of the example let's say that this data mock is available at location "http://mycomp.org/workflow/mocks/orderprovisioningmock.json":
+Here is an example using the JSON format. For sake of the example let's say that this data mock is available at location
+
+```text
+http://mycomp.org/workflow/mocks/orderprovisioningmock.json
+```
 
 ```json
 {
