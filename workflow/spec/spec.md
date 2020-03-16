@@ -2758,6 +2758,7 @@ Flow of data during workflow execution can be divided into:
 
 - [Workfow data input](#Workflow-data-input)
 - [Event data](#Event-data)
+- [Action data](#Action-data)
 - [Information passing between states](#Information-passing-between-states)
 - [State information filtering](#State-information-filtering)
 - [Workflow data output](#Workflow-data-output)
@@ -2796,6 +2797,15 @@ or be passed as data output to transition states.
 </p>
 
 Similarly for Callback states, the callback event data is merged with the data input of the Callback state.
+
+#### Action Data
+
+[Event](#Event-State), [Callback](#Callback-State), and [Operation](#Operation-State) states can execute [actions](#Action-Definition). Actions can invoke different services (functions). Functions can return results that may be needed to make
+further orchestration decisions. Results data from function invocations is merged with the state data.
+
+<p align="center">
+<img src="media/spec/actionsdatamerged.png" with="500px" height="300px" alt="Actions data merged with state data"/>
+</p>
 
 #### Information Passing Between States
 
