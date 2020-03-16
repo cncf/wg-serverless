@@ -2800,8 +2800,8 @@ Similarly for Callback states, the callback event data is merged with the data i
 
 #### Action Data
 
-[Event](#Event-State), [Callback](#Callback-State), and [Operation](#Operation-State) states can execute [actions](#Action-Definition). Actions can invoke different services (functions). The result of these service invocations which is needed
-to make further orchestration decisions. Results data from function invocations is merged with the state data.
+[Event](#Event-State), [Callback](#Callback-State), and [Operation](#Operation-State) states can execute [actions](#Action-Definition). Actions can invoke different services (functions). Functions can return results that may be needed to make
+further orchestration decisions. Results data from function invocations is merged with the state data.
 
 <p align="center">
 <img src="media/spec/actionsdatamerged.png" with="500px" height="300px" alt="Actions data merged with state data"/>
