@@ -277,7 +277,7 @@ Since function definitions are reusable, their data input parameters are defined
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| name | Function name | string | yes |
+| name | Unique function name | string | yes |
 | resource | Function resource (URI) | string | yes |
 | type | Function type. Can be defined by implementations. | string | no |
 
@@ -688,6 +688,7 @@ instance in case it is an end state without performing any actions.
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
+| name | Unique action name | string | yes |
 | [functionRef](#FunctionRef-Definition) | References a reusable function definition to be invoked | object | yes |
 | [actionDataFilter](#action-data-filter) | Action data filter definition | object | no |
 
@@ -698,6 +699,10 @@ instance in case it is an end state without performing any actions.
     "type": "object",
     "description": "Action Definition",
     "properties": {
+        "name": {
+            "type": "string",
+            "description": "Unique action definition name"
+        },
         "functionRef": {
             "$ref": "#/definitions/functionref",
             "description": "References a reusable function definition to be invoked"
