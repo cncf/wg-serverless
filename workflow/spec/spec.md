@@ -688,7 +688,7 @@ instance in case it is an end state without performing any actions.
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| name | Unique action name | string | yes |
+| name | Unique action name | string | no |
 | [functionRef](#FunctionRef-Definition) | References a reusable function definition to be invoked | object | yes |
 | [actionDataFilter](#action-data-filter) | Action data filter definition | object | no |
 
