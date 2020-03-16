@@ -30,7 +30,7 @@ The following documents are available:
 | **Core Specification:** | | |
 | Serverless Workflow| | [master](https://github.com/cncf/wg-serverless/blob/master/workflow/spec/spec.md)  |
 | **Additional Documentation:** | | |
-| Model JSON Schema | | [master](schema/serverless-workflow-schema.json) |
+| Model JSON Schema | | [master](schema/workflow.json) |
 
 ## Community
 

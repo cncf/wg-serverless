@@ -1,5 +1,5 @@
 {
-  "$id": "https://wg-serverless.org/serverless-workflow-schema.json",
+  "$id": "https://wg-serverless.org/workflow.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "description": "Serverless Workflow is a vendor-neutral specification for defining the model of workflows responsible for orchestrating event-driven serverless applications.",
   "type": "object",
@@ -114,6 +114,11 @@
       "items": {
         "type": "object"
       }
+    },
+    "dataMock": {
+      "type": "string",
+      "description": "Workflow data mock file for testing",
+      "minLength": 1
     }
   },
   "required": [

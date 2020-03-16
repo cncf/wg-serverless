@@ -25,6 +25,7 @@ This document is a working draft.
   - [Workflow Data](#Workflow-Data)
   - [Workflow Error Handling](#Workflow-Error-Handling)
   - [Workflow Metadata](#Workflow-Metadata)
+- [Mocking Workflow Data](#Mocking-Workflow-Data)
 - [Extending](#Extending)
 - [Use Cases](#Use-Cases)
 - [Examples](#Examples)
@@ -78,7 +79,7 @@ from states to functions, from one function to another function, and from one st
 The Serverless workflow format is defined with [JSON](https://www.json.org/json-en.html) or [YAML](https://yaml.org/).
 Structure of serverless workflows is described via [JSON Schema](https://json-schema.org/).
 
-Serverless Workflow definitions are considered specification-compliant if they conform to the [workflow schema](schema/serverless-workflow-schema.json).
+Serverless Workflow definitions are considered specification-compliant if they conform to the [workflow schema](schema/workflow.json).
 
 Note that this schema reflects the current status of the specification as is updated alongside this document.
 
@@ -141,6 +142,7 @@ As mentioned, implementation compliance is based on the workflow definition lang
 | [states](#State-Definition) | Workflow states | array | yes |
 | [extensions](#Extending) | Workflow custom extensions | array | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
+| <a name="workflow-datamock-property"></a>[dataMock](#Mocking-Workflow-Data) | Workflow data mock file for testing | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -3637,6 +3639,79 @@ Some other examples of information that could be recorded in metadata are:
 - Build, release, or image information such as timestamps, release Ids, git branches, PR numbers, etc.
 - Logging, Monitoring, Analytics, or Audit repository information.
 - Labels used for organizing/indexing purposes, such as "release" "stable", "track", "daily", etc.
+
+## Mocking Workflow Data
+
+When testing your serverless workflows, you might not be ready to call some or all services invoked during workflow execution.
+You also might want to use pre-defined event data for some or all events that trigger actions execution or workflow intantiation.
+In certain cases you might even want to pre-define the enire workflow data result itself.
+
+Serverless Workflow provides the [data mock JSON Schema](schema/data-mock.json) which you can use to define reusable workflow data mocks for testing.
+
+Workflow data mocks can be defined with both [JSON](https://www.json.org/json-en.html) or [YAML](https://yaml.org/).
+You can use them to define:
+
+- Static results of actions invoked during workflow execution
+- Static payload (data) of events consumed or produced during workflow execution
+- Static workflow data result
+
+The following rules should be applied when testing workflow execution with mock data:
+
+- If during testing workflow execution needs to perform an action whose data has been mocked, this action should not per performed but rather
+just the statically defined results should be returned without performing any function calls.
+- If during testing an event is consumed or produced which has its data mocked, the statically defined data should be used as the event payload.
+- If during testing the workflow data results are mocked, workflow execution should simply return it, without executing any states.
+
+Data mocks can be enabled via the [dataMock](#workflow-datamock-property) property of the workflow definition. This property defines the location of the data mock file to be used during workflow execution.
+
+Here is an example using the JSON format. For sake of the example let's say that this data mock is available at location "http://mycomp.org/workflow/mocks/orderprovisioningmock.json":
+
+```json
+{
+  "name": "OrderProvisioningDataMock",
+  "description": "Data mock for order provisioning workflows",
+  "eventsData": [
+      {
+        "eventDefName": "orderPlacedEvent",
+        "data": {
+          "order": {
+            "id": "12345",
+            "item": "laptop",
+            "quantity": "10"
+          }
+        }
+      }
+    ],
+    "actionsResult": [
+      {
+        "actionDefName": "provisionOrderAction",
+        "result": {
+          "provisioned": {
+            "orderid": "12345",
+            "outcome": "success"
+          }
+        }
+      }
+    ]
+}
+```
+
+This data mock defines that events described in the "orderPlaceEvent" definition of the workflow definition should have the specified
+static payload during workflow execution.
+It also defines that "provisionOrderAction" action returns the statically defined results.
+
+To use it we would define in our workflow definitions we can specify:
+
+```json
+{
+   "id": "orderProvisioningWorkflow",
+   "name": "Order Provisioning workflow",
+   "version": "1.0",
+   "startsAt": "Provision Incoming Orders",
+   "dataMock": "http://mycomp.org/workflow/mocks/orderprovisioningmock.json"
+   ...
+}
+```
 
 ## Extending
 
