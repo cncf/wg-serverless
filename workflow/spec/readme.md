@@ -41,7 +41,7 @@ To learn about current community efforts and how to contribute
 reference the [Serverless Workflow Community doc](community/readme.md).
 
 As a CNCF member project, we abide by the [CNCF Code of Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md).
-You can find the Serverless Workflow specification Governance information [here](governance/readme.md).
+The Serverless Workflow specification Governance information can be found [here](governance/readme.md).
   
 ## Communication
 

@@ -271,7 +271,7 @@ Following figure describes the main workflow definition blocks.
 
 #### Function Definition
 
-Allows you to define a reusable function definition. It can be referenced in [actions](#Action-Definition) defined in [Event](#Event-State) and [Operation](#Operation-State)
+Used to define a reusable function definition. It can be referenced in [actions](#Action-Definition) defined in [Event](#Event-State) and [Operation](#Operation-State)
 workflow states. Each function definition must have an unique name.
 The resource parameter of a function evaluates to execution of
 an existing serverless function.
@@ -640,7 +640,7 @@ The actions array defined a list of actions to be performed.
 #### <a name="eventstate-timeout"></a> Event State: Timeout
 
 The event state timeout period is described in the ISO 8601 data and time format.
-You can specify for example "PT15M" to represent 15 minutes or "P2DT3H4M" to represent 2 days, 3 hours and 4 minutes.
+Example values that can be specified are "PT15M" which represent 15 minutes or "P2DT3H4M" which represent 2 days, 3 hours and 4 minutes.
 Timeout values should always be represented as durations and not as time/repeating intervals.
 
 The timeout property needs to be described in detail as it depends on whether or not the event state is a starting workflow
@@ -1705,18 +1705,17 @@ Parallel state must wait for all branches which have this property set to "true"
 
 </details>
 
-It is often the case that you want to group your workflows into small, reusable logical units that perform certain needed functionality.
-Even though you can use the Event or Callback states to call externally deployed services (via function), at times
+It is often useful to group workflows into small, reusable logical units that perform certain needed functionality.
+Even though [Event](#Event-State) or [Callback](#Callback-State) states to call externally deployed services (via function), at times
 there is a need to include/inject another serverless workflow (from classpath/local file system etc, depending on the implementation logic).
-In that case you would use the SubFlow State.
-It also allows users to model their workflows with reusability and logical grouping in mind.
+Subflow state is very useful in this scenario as it allows modeling workflows with reusability and logical grouping in mind.
 
-This state allows you to include/inject a uniquely identified sub-workflow and start its execution.
+SubFlow states provides the ability to include/inject a uniquely identified sub-workflow and start its execution.
+
 Another use of this state is within [branches](#parallel-state-branch) of the [Parallel State](#Parallel-State). Instead of having to define all states
-in each branch, you could separate the branch states into individual sub-workflows and call the SubFlow state
-as a single state in each.
+individually in each branch, they can be grouped into sub-workflows, then added to each branch.
 
-Sub-workflows must have a defined start and end states.
+Sub-workflows must include a defined start and at least one end state.
 The waitForCompletion property defines if the SubFlow state should wait until execution of the sub-workflow
 is completed or not.
 
@@ -1807,13 +1806,13 @@ If this property is set to false, data access to parent's workflow should not be
 </details>
 
 Relay state can be used to statically set up and relay the state's data input to data output.
-It is very useful for debugging for example as you can test/simulate workflow execution with pre-set data that would typically
+It is very useful for debugging for example as it allows for testing/simulating workflow execution with a pre-set data that would typically
 be dynamic in nature (e.g. function calls, events etc).
 
-It is also useful for production workflows where you want to just relay workflow data without performing any actions (function calls).
+It is also useful for production workflows where there may be need to relay workflow data without performing any actions (function calls).
 
-The relay state "inject" property allows you to statically define a JSON object which gets added to the states data input.
-You can use the filter property to control the states data output to the transition state.
+The relay state "inject" property allows to statically define a JSON object which gets added to the states data input.
+This data can still be filtered using the state data filter. 
 
 Here is a typical example of how to use the relay state to inject static data into its data input, which then will be passed
 as data output to the transition state:
@@ -1880,9 +1879,8 @@ The data output of the "SimpleRelayState" which then is passed as input to the t
 
 If the relay state already receives a data input from the previous transition state, the inject data will be merged
 with its data input.
-
-You can also use the filter property to further relay the set-up data input and pass only
-what you need as data output of the state. Let's say we have:
+As previously mentioned, the state data filter can be used to only pass what is needed as data output of the state.
+Let's say we have:
 
 <table>
 <tr>
@@ -1958,13 +1956,14 @@ what you need as data output of the state. Let's say we have:
 </table>
 
 In which case the states data output would include people who's age is less than 40.
-You can change your output path easily during testin, for example:
+The output path can be easily changed during testing, for example:
 
 ```text
 $.people[?(@.age >= 40)]
 ```
 
-This allows you to test if your workflow behaves properly for cases when there are people who's age is greater or equal 40.
+This allows for quick tests, in this case to see if the workflow behaves properly
+when there are people who's age is greater or equal 40.
 
 #### ForEach State
 
@@ -2148,8 +2147,8 @@ While the [Parallel state](#Parallel-State) performs multiple branches of states
 same data input, the ForEach state performs the defined steps for multiple entries of an array in the states data input.
 
 Note that each iteration of the ForEach state should be executed in parallel.
-You can use the "max" property to set the upper bound on how many iterations may run in parallel. The default
-of the "max" property is zero, which places no limit on number of parallel executions.
+The "max" property can be used to set the upper bound on how many iterations may run in parallel. This property has a default value of zero,
+ which places no limit on number of parallel executions.
 
 States defined in the "states" property of the ForEach state can only transition to each other and
 cannot transition to states outside of this state.
@@ -2467,7 +2466,7 @@ defined in the orders array of its data input.
 
 Serverless orchestration can at times require manual steps/decisions to be made. While some work performed
 in a serverless workflow can be executed automatically, some decisions must involve manual steps (human decisions for example.
-Callback state allows you to explicitly model manual decision steps during workflow execution.
+Callback state allows to explicitly model manual decision steps during workflow execution.
 
 The action property defines a function call which triggers an external activity/service. Once the action executes,
 the callback state will wait for a CloudEvent (defined via the eventRef property) which indicates the completion
@@ -2629,7 +2628,7 @@ Serverless workflow states can have one or more incoming and outgoing transition
 Each state has a "transition" definition that is used to determines which
 state to transition to next.
 
-To define a transition, set the "nextState" property in your transition definitions.
+To define a transition, the "nextState" property should be set in the transition definitions.
 
 Implementers can choose to use the states "name" string property
 for determining the transition, however we realize that in most cases this is not an
@@ -2785,8 +2784,8 @@ Workflow data input is passed to the workflow's "startsAt" state (the starting s
 <img src="media/spec/workflowdatainput.png" with="500px" height="300px" alt="Workflow data input"/>
 </p>
 
-In order to define the structure of expected workflow data input you can use the workflow
-"dataInputSchema" property. This property allows you to link to a [JSON Schema](https://json-schema.org/) definition
+In order to define the structure of expected workflow data input, the workflow
+"dataInputSchema" property can be used. This property provides the ability to link to a [JSON Schema](https://json-schema.org/) definition
 that describes the expected workflow data input. This can be used for documentation purposes or implementations may
 decide to strictly enforce it.
 
@@ -2827,10 +2826,9 @@ There are two of rules to consider here:
 <img src="media/spec/basic-state-data-passing.png" with="500px" height="300px" alt="Basic state data passing"/>
 </p>
 
-In order to define the structure of expected state data input and output you can use the workflow
-"dataInputSchema" and "dataOutputSchema" properties. These property allows you to link to [JSON Schema](https://json-schema.org/) definitions
-that describes the expected workflow data input/output. This can be used for documentation purposes or implementations may
-decide to strictly enforce it.
+The workflow "dataInputSchema" and "dataOutputSchema" provide the ability to define the structure of expected state data inputs and outputs.
+They point to an already defined [JSON Schema](https://json-schema.org/) definition which describes the structure of expected data inputs/outputs.
+This can be used for documentation purposes or implementations may decide to strictly enforce it via validation.
 
 #### State Information Filtering
 
@@ -2997,10 +2995,10 @@ The second way would be to directly filter only the "veggie like" vegetables wit
 </details>
 
 [Actions](#Action-Definition) have access to the state data. They can filter this data using an action data filter (dataInputPath) before executing any functions.
-This is useful if you want to restrict the data to be passed as parameters to serverless functions during action executions.
+This is useful in order to restrict the data to be passed as parameters to serverless functions during action executions.
 
-Actions can define [functions](#Function-Definition). The results data of these functions is considered the output of the action which is then after completion
-merged back into the state data. You can filter the results of actions with the dataResultsPath parameter, to only select
+Actions can define [functions](#Function-Definition). The results data of these functions is considered the output of the action which is then after completion merged back into the state data.
+Action results can be filtered using the dataResultsPath parameter, to only select
 parts of the action results that need to be merged back into the state data.
 
 To give an example, let's say we have an action which returns a list of breads and we want to add this list our fruits and vegetables data:
@@ -3034,8 +3032,8 @@ To give an example, let's say we have an action which returns a list of breads a
 
 CloudEvents can be consumed by [Event states](#Event-State) and trigger one or more [actions](#Action-Definition) to be performed. CloudEvents
 can include data which needs to be merged with the state data before associated actions are executed.
-You can filter the event data with the dataOutputPath parameter, selecting only the portion of the event data
-that you need to be merged with the state data.
+Event data can be filtered using the dataOutputPath parameter, selecting only the portion of the event data
+that needs to be merged with the state data.
 
 Here is an example using an even filter:
 
@@ -3070,7 +3068,7 @@ an event filter.
 </details>
 
 States can define [error handling](#Workflow-Error-Handling) with the onError property. The runtime error contains data
-which is merged with the states data. You can use the error data filter to select portion of the error data to be merged
+which is merged with the states data. The error data filter can be used to select portion of the error data to be merged
 with the states data.
 
 Here is an example using an error filter:
@@ -3084,7 +3082,7 @@ Here is an example using an error filter:
 As [Event states](#Event-State) can take advantage of all defined data filters, it is probably the best way to
 show how we can combine them all to filter state data.
 
-Let's say we have a workflow which consumes events defining a customer arrival (to your store for example),
+Let's say we have a workflow which consumes events defining a customer arrival (to a store for example),
 and then lets us know how to greet this customer in different languages. We could model this workflow as follows:
 
 ```json
@@ -3262,8 +3260,8 @@ Because our event state is also an end state, its data output becomes the final 
 "Hola John Michaels!"
 ```
 
-Note that in case of multiple actions with each containing an actionDataFilter, you must be careful for their results
-not to overwrite each other after actions complete and their results are added to the state data.
+Note that in the case of multiple actions, each including an actionDataFilter, the action results could overwrite each other.
+
 Also note that in case of parallel execution of actions, the results of only those that complete before the state
 transitions to the next one or ends workflow execution (end state) can be considered to be added to the state data.
 
@@ -3273,8 +3271,8 @@ Once a workflow instance reaches an end state (where the "end" parameter is defi
 the data output of that result state becomes the workflow data output. This output can be logged or indexed depending on the
 implementation details.
 
-In order to define the structure of expected workflow data output you can use the workflow
-"dataOutputSchema" property. This property allows you to link to a [JSON Schema](https://json-schema.org/) definition
+The "dataOutputSchema" property can be used to define the structure of expected workflow data output. 
+This property provides the ability to link to a [JSON Schema](https://json-schema.org/) definition
 that describes the expected workflow data output. This can be used for documentation purposes or implementations may
 decide to strictly enforce it.
 
@@ -3425,7 +3423,7 @@ the maximum number of attempts to be 3. The interval value defines the amount of
 retry attempt, in this case two minutes. The second retry definition defines that for any errors other than "FunctionExecutionError",
 no retries should be performed (maxAttempts is set to zero).
 
-You can combine retry and onError definitions to define powerful error handling inside your state. For example:
+Retry and onError definitions can be combined in order to define powerful error handling inside the state. For example:
 
 <table>
 <tr>
@@ -3526,16 +3524,16 @@ The extension mechanism can be used to define custom workflow elements. It is ta
 solving custom requirements that go beyond the core of the workflow specification, for example
 logging, simulation, debugging, tracing, etc.
 
-You can find more info and examples of element extensions [here](extending.md).
+Find more info and examples of element extensions [here](extending.md).
 
 ## Use Cases
 
-You can find different Serverless Workflow use cases [here](usecases.md)
+Different Serverless Workflow use cases can be found [here](usecases.md)
 
 ## Examples
 
-You can find different Serverless Workflow examples [here](examples.md)
+Different Serverless Workflow examples can be found [here](examples.md)
 
 ## Reference
 
-You can find a list of other languages, technologies and specifications related to workflows [here](references.md)
+List of other languages, technologies and specifications related to workflows can be found [here](references.md)
