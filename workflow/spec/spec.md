@@ -271,14 +271,6 @@ Following figure describes the main workflow definition blocks.
 
 #### Function Definition
 
-Allows you to define a reusable function definition. It can be referenced in [actions](#Action-Definition) defined in [Event](#Event-State) and [Operation](#Operation-State)
-workflow states. Each function definition must have an unique name.
-The resource parameter of a function evaluates to execution of
-an existing serverless function.
-Implementations can use the type parameter to define communication information such as protocols.
-
-Since function definitions are reusable, their data input parameters are defined within [actions](#Action-Definition) that reference them.
-
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | name | Unique function name | string | yes |
@@ -310,6 +302,12 @@ Since function definitions are reusable, their data input parameters are defined
 ```
 
 </details>
+
+Allows you to define a reusable function definition. It can be referenced in [actions](#Action-Definition) defined in [Event](#Event-State), [Operation](#Operation-State), or [Callback](#Callback-State) workflow states. Each function definition must have an unique name.
+The "resource" parameter of a function evaluates to execution of an existing serverless function.
+Implementations can use the "type" parameter to define communication information such as protocols.
+
+Since function definitions are reusable, their data input parameters are defined within [actions](#Action-Definition) that reference them.
 
 #### Event Definition
 
