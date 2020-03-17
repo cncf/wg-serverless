@@ -85,9 +85,10 @@ Serverless Workflow allows users to:
 2. Define which functions are executed in each step.
 3. Define which event or combination of events trigger function execution.
 4. Define function execution behavior (sequential, parallel, etc).
-5. Specify information filtering throughout the execution of the serverless workflow.
-6. Define error conditions with retries.
-7. If a function is triggered by two or more events, define what label/key should be used to correlate those events to the same serverless workflow instance.
+5. Specify manual decision steps during workflow execution.
+6. Specify information filtering throughout the execution of the serverless workflow.
+7. Define error conditions with retries.
+8. Correlate trigger events with workflow instances.
 
 Following diagram illustrates functional flow that involves states, events and functions. It shows that
 incoming events can trigger function calls during flow execution.
@@ -100,8 +101,8 @@ incoming events can trigger function calls during flow execution.
 
 Following sections provide detailed descriptions of the Serverless Workflow Model. For each part of the model we provide:
 
-- Parameter description in table format
-- [JSON Schema](https://json-schema.org/) definition
+- Parameter description in table format.
+- [JSON Schema](https://json-schema.org/) definition.
 
 ### Workflow Model
 
@@ -234,6 +235,10 @@ As mentioned, implementation compliance is based on the workflow definition lang
                     {
                       "title": "ForEach State",
                       "$ref": "#/definitions/foreachstate"
+                    },
+                    {
+                      "title": "Callback State",
+                      "$ref": "#/definitions/callbackstate"
                     }
                 ]
             }
@@ -272,7 +277,7 @@ Since function definitions are reusable, their data input parameters are defined
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| name | Function name | string | yes |
+| name | Unique function name | string | yes |
 | resource | Function resource (URI) | string | yes |
 | type | Function type. Can be defined by implementations. | string | no |
 
@@ -424,8 +429,9 @@ States define building blocks of the Serverless Workflow. The specification defi
 | **[SubFlow](#SubFlow-State)** | Represents the invocation of another workflow from within a workflow | no | yes | no | yes | no | no |
 | **[Relay](#Relay-State)** | Relay state data input to output | no | yes | no | yes | no | no |
 | **[ForEach](#ForEach-State)** | Parallel execution of states for each element of a data array | no | yes | no | yes (includes retries) | yes | no |
+| **[Callback](#Callback-State)** | Manual decision step. Executes a function and waits for callback event that indicates completion of the manual decision.| yes | yes | yes (including retries) | yes | no | no |
 
-Following is a detailed decription of each of the defined states.
+Following is a detailed decription of each of the defined states:
 
 #### Event State
 
@@ -593,7 +599,7 @@ have not been received during this time, the state should transition to the next
     "properties": {
         "eventRefs": {
           "type" : "array",
-          "description": "References one or more unique event names in the defined workflow"
+          "description": "References one or more unique event names in the defined workflow events"
         },
         "actionMode": {
             "type" : "string",
@@ -682,8 +688,8 @@ instance in case it is an end state without performing any actions.
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
+| name | Unique action name | string | no |
 | [functionRef](#FunctionRef-Definition) | References a reusable function definition to be invoked | object | yes |
-| timeout | Max amount of time (ISO 8601 format) to wait for the completion of the function's execution. For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes) | string | no |
 | [actionDataFilter](#action-data-filter) | Action data filter definition | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -693,13 +699,13 @@ instance in case it is an end state without performing any actions.
     "type": "object",
     "description": "Action Definition",
     "properties": {
+        "name": {
+            "type": "string",
+            "description": "Unique action definition name"
+        },
         "functionRef": {
             "$ref": "#/definitions/functionref",
             "description": "References a reusable function definition to be invoked"
-        },
-        "timeout": {
-            "type": "string",
-            "description": "Specifies the maximum amount of time (ISO 8601 format) to wait for the completion of the function's execution. The function timer is started when the request is sent to the invoked function"
         },
         "actionDataFilter": {
           "$ref": "#/definitions/actiondatafilter"
@@ -1566,6 +1572,10 @@ Branches contain one or more states. Each branch must define a starting state vi
                             {
                               "title": "ForEach State",
                               "$ref": "#/definitions/foreachstate"
+                            },
+                            {
+                              "title": "Callback State",
+                              "$ref": "#/definitions/callbackstate"
                             }
                         ]
                     }
@@ -1692,7 +1702,7 @@ Parallel state must wait for all branches which have this property set to "true"
 </details>
 
 It is often the case that you want to group your workflows into small, reusable logical units that perform certain needed functionality.
-Even though you can use the Event state to call an externally deployed services (via function), at times
+Even though you can use the Event or Callback states to call externally deployed services (via function), at times
 there is a need to include/inject another serverless workflow (from classpath/local file system etc, depending on the implementation logic).
 In that case you would use the SubFlow State.
 It also allows users to model their workflows with reusability and logical grouping in mind.
@@ -2058,6 +2068,10 @@ This allows you to test if your workflow behaves properly for cases when there a
                     {
                       "title": "ForEach State",
                       "$ref": "#/definitions/foreachstate"
+                    },
+                    {
+                      "title": "Callback State",
+                      "$ref": "#/definitions/callbackstate"
                     }
                 ]
             }
@@ -2322,6 +2336,152 @@ Once iterations over the completed orders complete, workflow execution finishes 
 
 So in this example, our ForEach state will send two confirmation emails, one for each of the completed orders
 defined in the orders array of its data input.
+
+#### Callback State
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| id | Unique state id | string | no |
+| name | State name | string | yes |
+| type | State type | string | yes |
+| [action](#Action-Definition) | Defines the action to be executed. | object | yes |
+| eventRef | References an unique callback event name in the defined workflow [events](#Event-Definition) | string | yes |
+| [timeout](#eventstate-timeout) | Time period to wait from when action is executed until the callback event is received (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | yes |
+| [eventDataFilter](#event-data-filter) | Callback event data filter definition | object | no |
+| [stateDataFilter](#state-data-filter) | State data filter definition | object | no |
+| [retry](#workflow-retrying) | States retry definitions | array | no |
+| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
+| [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
+| [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
+| [transition](#Transitions) | Next transition of the workflow after callback event has been received | string | yes |
+| [end](#End-Definition) | Is this state an end state | object | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+<p>
+
+```json
+{
+    "type": "object",
+    "description": "This state performs an action, then waits for the callback event that denotes completion of the action.",
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Unique state id",
+            "minLength": 1
+        },
+        "name": {
+            "type": "string",
+            "description": "State name"
+        },
+        "type": {
+            "type" : "string",
+            "enum": ["CALLBACK"],
+            "description": "State type"
+        },
+        "action": {
+            "description": "Defines the action to be executed",
+            "$ref": "#/definitions/callbackaction"
+        },
+        "eventRef": {
+          "type" : "string",
+          "description": "References an unique callback event name in the defined workflow events"
+        },
+        "timeout": {
+            "type": "string",
+            "description": "Time period to wait for incoming events (ISO 8601 format)"
+        },
+        "eventDataFilter": {
+          "description": "Callback event data filter definition",
+          "$ref": "#/definitions/eventdatafilter"
+        },
+        "stateDataFilter": {
+          "description": "State data filter definition",
+          "$ref": "#/definitions/statedatafilter"
+        },
+        "retry": {
+            "type": "array",
+            "description": "States retry definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/retry"
+            }
+        },
+        "onError": {
+            "type": "array",
+            "description": "States error handling definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/error"
+            }
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
+          },
+        "transition": {
+          "description": "Next transition of the workflow after all the actions have been performed",
+          "$ref": "#/definitions/transition"
+        },
+        "end": {
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
+        }
+    },
+    "oneOf": [
+    {
+       "required": [
+         "name",
+         "type",
+         "action",
+         "eventRef",
+         "timeout",
+         "end"
+       ]
+     },
+     {
+       "required": [
+         "name",
+         "type",
+         "action",
+         "eventRef",
+         "timeout",
+         "transition"
+       ]
+     }
+   ]
+}
+```
+
+</p>
+</details>
+
+Serverless orchestration can at times require manual steps/decisions to be made. While some work performed
+in a serverless workflow can be executed automatically, some decisions must involve manual steps (human decisions for example.
+Callback state allows you to explicitly model manual decision steps during workflow execution.
+
+The action property defines a function call which triggers an external activity/service. Once the action executes,
+the callback state will wait for a CloudEvent (defined via the eventRef property) which indicates the completion
+of the manual decision by the called service.
+
+Note that the called decision services is responsible for emitting the callback CloudEvent indicating the completion of the
+decision and including the decision results as part of the event payload. This event must be correlated to the
+workflow instance using the callback events context attribute defined in the correlationToken parameter of the
+referenced [Event Definition](#Event-Definition).
+
+Once the completion (callback) event is received, the callback state completes its execution and transitions to the next
+defined workflow state or completes workflow execution in case it is an end state.
+
+The callback event payload is merged with the callback state data and can be filtered via the eventDataFilter definition.
+
+The callback state timeout parameter defines a time period from the action execution until the callback event should be received.
+
+If the defined callback event has not been received during this time period, the state should transition to the next state or end workflow execution (if it is an end state).
 
 #### End Definition
 
@@ -2599,6 +2759,7 @@ Flow of data during workflow execution can be divided into:
 
 - [Workfow data input](#Workflow-data-input)
 - [Event data](#Event-data)
+- [Action data](#Action-data)
 - [Information passing between states](#Information-passing-between-states)
 - [State information filtering](#State-information-filtering)
 - [Workflow data output](#Workflow-data-output)
@@ -2636,6 +2797,17 @@ or be passed as data output to transition states.
 <img src="media/spec/eventdatamerged.png" with="500px" height="300px" alt="Event data merged with state data input"/>
 </p>
 
+Similarly for Callback states, the callback event data is merged with the data input of the Callback state.
+
+#### Action Data
+
+[Event](#Event-State), [Callback](#Callback-State), and [Operation](#Operation-State) states can execute [actions](#Action-Definition). Actions can invoke different services (functions). Functions can return results that may be needed to make
+further orchestration decisions. Results data from function invocations is merged with the state data.
+
+<p align="center">
+<img src="media/spec/actionsdatamerged.png" with="500px" height="300px" alt="Actions data merged with state data"/>
+</p>
+
 #### Information Passing Between States
 
 States in Serverless workflow can receive data (data input) as well as produce a data result (data output). The states data input is
@@ -2669,7 +2841,7 @@ There are several types of data filters defined:
 - [Event Data Filter](#event-data-filter)
 - [Error Data Filter](#error-data-filter)
 
-All states can define state and error data filters. States which can consume events ([Event states](#Event-State)) can define event data filters, and states
+All states can define state and error data filters. States which can consume events ([Event states](#Event-State), [Callback states](#Callback-State)) can define event data filters, and states
 that can perform actions ([Event states](#Event-State), [Operation states](#Operation-State)) can define action data filters for each of the
 actions they perform.
 
@@ -2866,6 +3038,9 @@ Here is an example using an even filter:
 <p align="center">
 <img src="media/spec/event-data-filter-example1.png" with="300px" height="400px" alt="Event Data Filter Example"/>
 </p>
+
+Similarly the consumed callback CloudEvent in [Callback states](#Callback-State) can be filered using 
+an event filter.
 
 #### <a name="error-data-filter"></a> State information filtering - Error Data Filter
 
