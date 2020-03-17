@@ -15,7 +15,7 @@
         },
         "eventsData": {
             "type": "array",
-            "description": "Defins data mocks for events data",
+            "description": "Defines data mocks for events data",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/eventDataDef"

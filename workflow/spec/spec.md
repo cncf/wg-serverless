@@ -3668,10 +3668,11 @@ You can use them to define:
 
 The following rules should be applied when testing workflow execution with mock data:
 
-- If during testing workflow execution needs to perform an action whose data has been mocked, this action should not per performed but rather
+- If during testing workflow execution needs to perform an action whos data has been mocked, this action should not be performed but rather
 just the statically defined results should be returned without performing any function calls.
 - If during testing an event is consumed or produced which has its data mocked, the statically defined data should be used as the event payload.
 - If during testing the workflow data results are mocked, workflow execution should simply return it, without executing any states.
+- All defined [event](#event-data-filter) or [action](#action-data-filter) data filters should still be applied if their associated actions or event data is mocked.
 
 Data mocks can be enabled via the [dataMock](#workflow-datamock-property) property of the workflow definition. This property defines the location of the data mock file to be used during workflow execution.
 
