@@ -114,11 +114,6 @@
       "items": {
         "type": "object"
       }
-    },
-    "dataMock": {
-      "type": "string",
-      "description": "Workflow data mock file for testing",
-      "minLength": 1
     }
   },
   "required": [

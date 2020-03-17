@@ -141,12 +141,7 @@ As mentioned, implementation compliance is based on the workflow definition lang
 | [functions](#Function-Definition) | Workflow functions | array | no |
 | [states](#State-Definition) | Workflow states | array | yes |
 | [extensions](#Extending) | Workflow custom extensions | array | no |
-<<<<<<< HEAD
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
-| <a name="workflow-datamock-property"></a>[dataMock](#Mocking-Workflow-Data) | Workflow data mock file for testing | object | no |
-=======
-| <a name="workflow-datamock-property"></a>[dataMock](#Mocking-Workflow-Data) | Workflow data mock file for testing | string | no |
->>>>>>> adding dataMock param def in spec document
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -262,15 +257,8 @@ As mentioned, implementation compliance is based on the workflow definition lang
             "type": "object"
           }
         },
-<<<<<<< HEAD
         "metadata": {
           "$ref": "#/definitions/metadata"
-=======
-        "dataMock": {
-          "type": "string",
-          "description": "Workflow data mock file for testing",
-          "minLength": 1
->>>>>>> adding dataMock param def in spec document
         }
     },
     "required": ["id", "name", "version", "startsAt", "states"]
@@ -3674,13 +3662,9 @@ just the statically defined results should be returned without performing any fu
 - If during testing the workflow data results are mocked, workflow execution should simply return it, without executing any states.
 - All defined [event](#event-data-filter) or [action](#action-data-filter) data filters should still be applied if their associated actions or event data is mocked.
 
-Data mocks can be enabled via the [dataMock](#workflow-datamock-property) property of the workflow definition. This property defines the location of the data mock file to be used during workflow execution.
+Implementations can use the data mock definitions during testing.
 
-Here is an example using the JSON format. For sake of the example let's say that this data mock is available at location
-
-```text
-http://mycomp.org/workflow/mocks/orderprovisioningmock.json
-```
+Here is an example of a data mock using JSON format.
 
 ```json
 {
@@ -3712,22 +3696,10 @@ http://mycomp.org/workflow/mocks/orderprovisioningmock.json
 }
 ```
 
-This data mock defines that events described in the "orderPlaceEvent" definition of the workflow definition should have the specified
+This data mock defines that events described in the "orderPlaceEvent" definition of the tested workflow definition should have the specified
 static payload during workflow execution.
+
 It also defines that "provisionOrderAction" action returns the statically defined results.
-
-To use it we would define in our workflow definitions we can specify:
-
-```json
-{
-   "id": "orderProvisioningWorkflow",
-   "name": "Order Provisioning workflow",
-   "version": "1.0",
-   "startsAt": "Provision Incoming Orders",
-   "dataMock": "http://mycomp.org/workflow/mocks/orderprovisioningmock.json"
-   ...
-}
-```
 
 ## Extending
 
