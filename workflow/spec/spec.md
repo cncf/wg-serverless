@@ -882,7 +882,7 @@ To eplain this better, let's say we have:
 ```json
 {
   "expression": "...",
-  "interval": "R3/PT1M",
+  "interval": "R4/PT1M",
   "multiplier": "PT2M",
   "maxAttempts": 4
 }
