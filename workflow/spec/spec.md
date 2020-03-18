@@ -836,7 +836,7 @@ expression language used for all defined expressions.
 | --- | --- | --- | --- |
 | [expression](#Expression-Definition) | Expression that matches against states data output | string | yes |
 | interval | Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| string | no |
-| multiplier | Multiplier value by which interval increases during each attempt (ISO 8601 time format). For example: "PT3S" meaning the second attemp interval is increased by 3 seconds, the third interval by 6 seconds and so on. | string | no |
+| multiplier | Multiplier value by which interval increases during each attempt (ISO 8601 time format). For example: "PT3S" meaning the second attempt interval is increased by 3 seconds, the third interval by 6 seconds and so on. | string | no |
 | maxAttempts | Maximum number of retry attempts (1 by default). Value of 0 means no retries are performed | integer | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
