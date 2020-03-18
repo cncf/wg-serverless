@@ -249,6 +249,10 @@
           "type": "string",
           "description": "Specifies the amount of time between retries (ISO 8601 format)"
         },
+        "multiplier": {
+          "type": "string",
+          "description": "Multiplier value by which interval increases during each attempt (ISO 8601 time format)"
+        },
         "maxAttempts": {
           "type": "integer",
           "default": 1,

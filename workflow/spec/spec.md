@@ -836,6 +836,7 @@ expression language used for all defined expressions.
 | --- | --- | --- | --- |
 | [expression](#Expression-Definition) | Expression that matches against states data output | string | yes |
 | interval | Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| string | no |
+| multiplier | Multiplier value by which interval increases during each attempt (ISO 8601 time format). For example: "PT3S" meaning the second attemp interval is increased by 3 seconds, the third interval by 6 seconds and so on. | string | no |
 | maxAttempts | Maximum number of retry attempts (1 by default). Value of 0 means no retries are performed | integer | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -851,7 +852,11 @@ expression language used for all defined expressions.
         },
         "interval": {
             "type": "string",
-            "description": "Specifies retry interval (ISO 8601 format)"
+            "description": "Specifies retry interval (ISO 8601 repeatable format)"
+        },
+        "multiplier": {
+            "type": "string",
+            "description": "Multiplier value by which interval increases during each attempt (ISO 8601 time format)"
         },
         "maxAttempts": {
             "type": "integer",
@@ -866,7 +871,28 @@ expression language used for all defined expressions.
 
 </details>
 
-Defines the state retry policy in case of errors. For more information reference the [Workflow Error Handling - Retrying](#workflow-retrying) section.
+Defines the state retry policy. The "expression" parameter is en expression definition which can be evaluated against state data.
+This assures that both execution errors as well as actions error results can be used during evaluation.
+
+The interval parameter specifies the retry interval (in ISO 8601 repeatable format). For example: "R5/PT15M" would mean repeat 5 times with 1 minute intervals before each retry.
+
+The multiplier parameter specifies value by which the interval time is increased for each of the retry attempts.
+To eplain this better, let's say we have:
+
+```json
+{
+  "expression": "...",
+  "interval": "R3/PT1M",
+  "multiplier": "PT2M",
+  "maxAttempts": 4
+}
+```
+
+which means that we will retry 4 times after waiting 1, 3 (1 + 2), 5 (1 + 2 + 2), and 7 (1 + 2 + 2 + 2) minutes.  
+
+The maxAttempts property determines the maximum number of retry attempts allowed. If this property is set to 0 no retries are performed.
+
+For more information reference the [Workflow Error Handling - Retrying](#workflow-retrying) section.
 
 #### Transition Definition
 
@@ -3365,9 +3391,11 @@ The second element handles all errors except "FunctionExecutionError".
 
 #### <a name="workflow-retrying"></a> Workflow Error Handling - Retrying
 
-Operation, Event, Parallel and ForEach states can define a retry policy in case of errors. A retry defines that execution
+[Operation](#Operation-State), [Event](#Event-State), [Parallel](#Parallel-State), [ForEach](#ForEach-State), and [Callback](#Callback-State)
+ states can define a retry policy in case of errors. A retry policy defines that execution
 of that state should be retried if an error occurs during its execution. The retry definition expression
 is evaluated against states data output. This assures that both execution errors as well as error results of actions can be evaluated against.
+
 Let's take a look at a retry definition:
 
 <table>
