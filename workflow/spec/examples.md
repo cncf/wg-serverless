@@ -14,6 +14,7 @@
 - [Monitor Patient Vital Signs (Event state)](#Monitor-Patient-Vital-Signs-Example)
 - [Finalize College Application (Event state)](#Finalize-College-Application-Example)
 - [Perform Customer Credit Check (Callback state)](#Perform-Customer-Credit-Check-Example)
+- [Handle Car Auction Bids (Scheduled start Event state)](#Handle-Car-Auction-Bids-Example)
 
 ### Hello World Example
 
@@ -51,11 +52,13 @@ value of the "result" property. Since it is an end state, it's data output becom
 "version": "1.0",
 "name": "Hello World Workflow",
 "description": "Static Hello World",
-"startsAt": "Hello",
 "states":[  
   {  
      "name":"Hello",
      "type":"RELAY",
+     "start": {
+       "kind": "DEFAULT"
+     },
      "inject": {
         "result": "Hello"
      },
@@ -73,7 +76,7 @@ value of the "result" property. Since it is an end state, it's data output becom
        "dataOutputPath": "$.result"
      },
      "end": {
-       "type": "DEFAULT"
+       "kind": "DEFAULT"
      }
   }
 ]
@@ -88,10 +91,11 @@ id: helloworld
 version: '1.0'
 name: Hello World Workflow
 description: Static Hello World
-startsAt: Hello
 states:
 - name: Hello
   type: RELAY
+  start:
+    kind: DEFAULT
   inject:
     result: Hello
   transition:
@@ -103,8 +107,9 @@ states:
   stateDataFilter:
     dataOutputPath: "$.result"
   end:
-    type: DEFAULT
+    kind: DEFAULT
 ```
+
 </td>
 </tr>
 </table>
@@ -164,7 +169,6 @@ becomes the workflow data output (as it is an end state):
 "version": "1.0",
 "name": "Greeting Workflow",
 "description": "Greet Someone",
-"startsAt": "Greet",
 "functions": [
   {
      "name": "greetingFunction",
@@ -175,6 +179,9 @@ becomes the workflow data output (as it is an end state):
   {  
      "name":"Greet",
      "type":"OPERATION",
+     "start": {
+       "kind": "DEFAULT"
+     },
      "actionMode":"SEQUENTIAL",
      "actions":[  
         {  
@@ -193,7 +200,7 @@ becomes the workflow data output (as it is an end state):
         "dataOutputPath": "$.greeting"
      },
      "end": {
-       "type": "DEFAULT"
+       "kind": "DEFAULT"
      }
   }
 ]
@@ -208,13 +215,14 @@ id: greeting
 version: '1.0'
 name: Greeting Workflow
 description: Greet Someone
-startsAt: Greet
 functions:
 - name: greetingFunction
   resource: functionResourse
 states:
 - name: Greet
   type: OPERATION
+  start:
+    kind: DEFAULT
   actionMode: SEQUENTIAL
   actions:
   - functionRef:
@@ -226,8 +234,7 @@ states:
   stateDataFilter:
     dataOutputPath: "$.greeting"
   end:
-    type: DEFAULT
-
+    kind: DEFAULT
 ```
 
 </td>
@@ -318,7 +325,6 @@ filters what is selected to be the state data output which then becomes the work
 "version": "1.0",
 "name": "Event Based Greeting Workflow",
 "description": "Event Based Greeting",
-"startsAt": "Greet",
 "events": [
  {
   "name": "GreetingEvent",
@@ -336,6 +342,9 @@ filters what is selected to be the state data output which then becomes the work
   {  
      "name":"Greet",
      "type":"EVENT",
+     "start": {
+       "kind": "DEFAULT"
+     },
      "eventsActions": [{
          "eventRefs": ["GreetingEvent"],
          "eventDataFilter": {
@@ -356,7 +365,7 @@ filters what is selected to be the state data output which then becomes the work
         "dataOutputPath": "$.payload.greeting"
      },
      "end": {
-       "type": "DEFAULT"
+       "kind": "DEFAULT"
      }
   }
 ]
@@ -371,7 +380,6 @@ id: eventbasedgreeting
 version: '1.0'
 name: Event Based Greeting Workflow
 description: Event Based Greeting
-startsAt: Greet
 events:
 - name: GreetingEvent
   type: greetingEventType
@@ -382,6 +390,8 @@ functions:
 states:
 - name: Greet
   type: EVENT
+  start:
+    kind: DEFAULT
   eventsActions:
   - eventRefs:
     - GreetingEvent
@@ -395,7 +405,7 @@ states:
   stateDataFilter:
     dataOutputPath: "$.payload.greeting"
   end:
-    type: DEFAULT
+    kind: DEFAULT
 ```
 
 </td>
@@ -445,7 +455,6 @@ result of the workflow execution.
 "version": "1.0",
 "name": "Solve Math Problems Workflow",
 "description": "Solve math problems",
-"startsAt": "Solve",
 "functions": [
 {
   "name": "solveMathExpressionFunction",
@@ -455,15 +464,20 @@ result of the workflow execution.
 "states":[  
 {
  "name":"Solve",
+ "start": {
+  "kind": "DEFAULT"
+},
  "type":"FOREACH",
  "inputCollection": "$.expressions",
  "inputParameter": "$.singleexpression",
  "outputCollection": "$.results",
- "startsAt": "GetResults",
  "states": [
 {  
     "name":"GetResults",
     "type":"OPERATION",
+     "start": {
+       "kind": "DEFAULT"
+    },
     "actionMode":"SEQUENTIAL",
     "actions":[  
        {  
@@ -476,7 +490,7 @@ result of the workflow execution.
        }
     ],
     "end": {
-      "type": "DEFAULT"
+      "kind": "DEFAULT"
     }
 }
  ],
@@ -484,7 +498,7 @@ result of the workflow execution.
     "dataOutputPath": "$.results"
  },
  "end": {
-   "type": "DEFAULT"
+   "kind": "DEFAULT"
  }
 }
 ]
@@ -499,20 +513,22 @@ id: solvemathproblems
 version: '1.0'
 name: Solve Math Problems Workflow
 description: Solve math problems
-startsAt: Solve
 functions:
 - name: solveMathExpressionFunction
   resource: functionResourse
 states:
 - name: Solve
+  start:
+    kind: DEFAULT
   type: FOREACH
   inputCollection: "$.expressions"
   inputParameter: "$.singleexpression"
   outputCollection: "$.results"
-  startsAt: GetResults
   states:
   - name: GetResults
     type: OPERATION
+    start:
+      kind: DEFAULT
     actionMode: SEQUENTIAL
     actions:
     - functionRef:
@@ -520,11 +536,11 @@ states:
         parameters:
           expression: "$.singleexpression"
     end:
-      type: DEFAULT
+      kind: DEFAULT
   stateDataFilter:
     dataOutputPath: "$.results"
   end:
-    type: DEFAULT
+    kind: DEFAULT
 ```
 
 </td>
@@ -562,22 +578,26 @@ of the branches are done.
 "version": "1.0",
 "name": "Parallel Execution Workflow",
 "description": "Executes two branches in parallel",
-"startsAt": "ParallelExec",
 "states":[  
   {  
      "name":"ParallelExec",
      "type":"PARALLEL",
+     "start": {
+       "kind": "DEFAULT"
+     },
      "branches": [
         {
           "name": "Branch1",
-          "startsAt": "ShortDelay",
           "states": [
             {
                 "name":"ShortDelay",
                  "type":"DELAY",
+                 "start": {
+                    "kind": "DEFAULT"
+                },
                  "timeDelay": "PT15S",
                  "end": {
-                   "type": "DEFAULT"
+                   "kind": "DEFAULT"
                  }
             }
           ],
@@ -585,14 +605,16 @@ of the branches are done.
         },
         {
           "name": "Branch2",
-          "startsAt": "LongDelay",
           "states": [
              {
                  "name":"LongDelay",
                   "type":"DELAY",
+                  "start": {
+                     "kind": "DEFAULT"
+                  },
                   "timeDelay": "PT2M",
                   "end": {
-                    "type": "DEFAULT"
+                    "kind": "DEFAULT"
                   }
              }
           ],
@@ -600,7 +622,7 @@ of the branches are done.
         }
      ],
      "end": {
-       "type": "DEFAULT"
+       "kind": "DEFAULT"
      }
   }
 ]
@@ -615,32 +637,36 @@ id: parallelexec
 version: '1.0'
 name: Parallel Execution Workflow
 description: Executes two branches in parallel
-startsAt: ParallelExec
 states:
 - name: ParallelExec
   type: PARALLEL
+  start:
+    kind: DEFAULT
   branches:
   - name: Branch1
-    startsAt: ShortDelay
     states:
     - name: ShortDelay
       type: DELAY
+      start:
+        kind: DEFAULT
       timeDelay: PT15S
       end:
-        type: DEFAULT
+        kind: DEFAULT
     waitForCompletion: false
   - name: Branch2
-    startsAt: LongDelay
     states:
     - name: LongDelay
       type: DELAY
+      start:
+        kind: DEFAULT
       timeDelay: PT2M
       end:
-        type: DEFAULT
+        kind: DEFAULT
     waitForCompletion: false
   end:
-    type: DEFAULT
+    kind: DEFAULT
 ```
+
 </td>
 </tr>
 </table>
@@ -688,7 +714,6 @@ If the applicants age is over 18 we start the application (subflow state). Other
    "version": "1.0",
    "name": "Applicant Request Decision Workflow",
    "description": "Determine if applicant request is valid",
-   "startsAt": "CheckApplication",
    "functions": [
      {
         "name": "sendRejectionEmailFunction",
@@ -699,6 +724,9 @@ If the applicants age is over 18 we start the application (subflow state). Other
       {  
          "name":"CheckApplication",
          "type":"SWITCH",
+         "start": {
+            "kind": "DEFAULT"
+         },
          "choices": [
             {
               "path": "$.applicant.age",
@@ -726,7 +754,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
         "type": "SUBFLOW",
         "workflowId": "startApplicationWorkflowId",
         "end": {
-          "type": "DEFAULT"
+          "kind": "DEFAULT"
         }
       },
       {  
@@ -744,7 +772,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
            }
         ],
         "end": {
-          "type": "DEFAULT"
+          "kind": "DEFAULT"
         }
     }
    ]
@@ -759,13 +787,14 @@ id: applicantrequest
 version: '1.0'
 name: Applicant Request Decision Workflow
 description: Determine if applicant request is valid
-startsAt: CheckApplication
 functions:
 - name: sendRejectionEmailFunction
   resource: functionResourse
 states:
 - name: CheckApplication
   type: SWITCH
+  start:
+    kind: DEFAULT
   choices:
   - path: "$.applicant.age"
     value: '18'
@@ -783,7 +812,7 @@ states:
   type: SUBFLOW
   workflowId: startApplicationWorkflowId
   end:
-    type: DEFAULT
+    kind: DEFAULT
 - name: RejectApplication
   type: OPERATION
   actionMode: SEQUENTIAL
@@ -793,7 +822,7 @@ states:
       parameters:
         applicant: "$.applicant"
   end:
-    type: DEFAULT
+    kind: DEFAULT
 ```
 
 </td>
@@ -846,7 +875,6 @@ The data output of the workflow contains the information of the exception caught
 "version": "1.0",
 "name": "Provision Orders",
 "description": "Provision Orders and handle errors thrown",
-"startsAt": "ProvisionOrder",
 "functions": [
   {
      "name": "provisionOrderFunction",
@@ -857,6 +885,9 @@ The data output of the workflow contains the information of the exception caught
   {  
     "name":"ProvisionOrder",
     "type":"OPERATION",
+    "start": {
+      "kind": "DEFAULT"
+    },
     "actionMode":"SEQUENTIAL",
     "actions":[  
        {  
@@ -909,7 +940,7 @@ The data output of the workflow contains the information of the exception caught
    "type": "SUBFLOW",
    "workflowId": "handleMissingIdExceptionWorkflow",
    "end": {
-     "type": "DEFAULT"
+     "kind": "DEFAULT"
    }
 },
 {
@@ -917,7 +948,7 @@ The data output of the workflow contains the information of the exception caught
    "type": "SUBFLOW",
    "workflowId": "handleMissingItemExceptionWorkflow",
    "end": {
-     "type": "DEFAULT"
+     "kind": "DEFAULT"
    }
 },
 {
@@ -925,7 +956,7 @@ The data output of the workflow contains the information of the exception caught
    "type": "SUBFLOW",
    "workflowId": "handleMissingQuantityExceptionWorkflow",
    "end": {
-     "type": "DEFAULT"
+     "kind": "DEFAULT"
    }
 },
 {
@@ -933,7 +964,7 @@ The data output of the workflow contains the information of the exception caught
    "type": "SUBFLOW",
    "workflowId": "applyOrderWorkflowId",
    "end": {
-     "type": "DEFAULT"
+     "kind": "DEFAULT"
    }
 }
 ]
@@ -948,13 +979,14 @@ id: provisionorders
 version: '1.0'
 name: Provision Orders
 description: Provision Orders and handle errors thrown
-startsAt: ProvisionOrder
 functions:
 - name: provisionOrderFunction
   resource: functionResourse
 states:
 - name: ProvisionOrder
   type: OPERATION
+  start:
+    kind: DEFAULT
   actionMode: SEQUENTIAL
   actions:
   - functionRef:
@@ -985,22 +1017,22 @@ states:
   type: SUBFLOW
   workflowId: handleMissingIdExceptionWorkflow
   end:
-    type: DEFAULT
+    kind: DEFAULT
 - name: MissingItem
   type: SUBFLOW
   workflowId: handleMissingItemExceptionWorkflow
   end:
-    type: DEFAULT
+    kind: DEFAULT
 - name: MissingQuantity
   type: SUBFLOW
   workflowId: handleMissingQuantityExceptionWorkflow
   end:
-    type: DEFAULT
+    kind: DEFAULT
 - name: ApplyOrder
   type: SUBFLOW
   workflowId: applyOrderWorkflowId
   end:
-    type: DEFAULT
+    kind: DEFAULT
 ```
 
 </td>
@@ -1044,7 +1076,6 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
   "version": "1.0",
   "name": "Job Monitoring",
   "description": "Monitor finished execution of a submitted job",
-  "startsAt": "SubmitJob",
   "functions": [
     {
       "name": "submitJob",
@@ -1067,6 +1098,9 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
     {  
       "name":"SubmitJob",
       "type":"OPERATION",
+      "start": {
+         "kind": "DEFAULT"
+      },
       "actionMode":"SEQUENTIAL",
       "actions":[  
       {  
@@ -1107,7 +1141,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
       "type": "SUBFLOW",
       "workflowId": "handleJobSubmissionErrorWorkflow",
       "end": {
-        "type": "DEFAULT"
+        "kind": "DEFAULT"
       }
   },
   {
@@ -1182,7 +1216,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
       }
       ],
       "end": {
-        "type": "DEFAULT"
+        "kind": "DEFAULT"
       }
   },
   {  
@@ -1200,7 +1234,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
     }
     ],
     "end": {
-      "type": "DEFAULT"
+      "kind": "DEFAULT"
     }
   }
   ]
@@ -1215,7 +1249,6 @@ id: jobmonitoring
 version: '1.0'
 name: Job Monitoring
 description: Monitor finished execution of a submitted job
-startsAt: SubmitJob
 functions:
 - name: submitJob
   resource: submitJobResource
@@ -1228,6 +1261,8 @@ functions:
 states:
 - name: SubmitJob
   type: OPERATION
+  start:
+    kind: DEFAULT
   actionMode: SEQUENTIAL
   actions:
   - functionRef:
@@ -1239,7 +1274,9 @@ states:
   onError:
   - expression:
       language: spel
-      body: name != null
+      body: "$.exception != null"
+    errorDataFilter:
+      dataOutputPath: "$.exception"
     transition:
       nextState: SubmitError
   stateDataFilter:
@@ -1250,7 +1287,7 @@ states:
   type: SUBFLOW
   workflowId: handleJobSubmissionErrorWorkflow
   end:
-    type: DEFAULT
+    kind: DEFAULT
 - name: WaitForCompletion
   type: DELAY
   timeDelay: PT5S
@@ -1294,7 +1331,7 @@ states:
       parameters:
         name: "$.jobuid"
   end:
-    type: DEFAULT
+    kind: DEFAULT
 - name: JobFailed
   type: OPERATION
   actionMode: SEQUENTIAL
@@ -1304,7 +1341,7 @@ states:
       parameters:
         name: "$.jobuid"
   end:
-    type: DEFAULT
+    kind: DEFAULT
 ```
 
 </td>
@@ -1396,7 +1433,6 @@ CloudEvent upon completion of the workflow could look like:
 "id": "sendcloudeventonprovision",
 "version": "1.0",
 "name": "Send CloudEvent on provision completion",
-"startsAt": "ProvisionOrdersState",
 "events": [
 {
     "name": "provisioningCompleteEvent",
@@ -1414,14 +1450,19 @@ CloudEvent upon completion of the workflow could look like:
 {
     "name": "ProvisionOrdersState",
     "type": "FOREACH",
+    "start": {
+       "kind": "DEFAULT"
+    },
     "inputCollection": "$.orders",
     "inputParameter": "$.singleorder",
     "outputCollection": "$.results",
-    "startsAt": "DoProvision",
     "states": [
     {
         "name": "DoProvision",
         "type": "OPERATION",
+        "start": {
+          "kind": "DEFAULT"
+        },
         "actionMode": "SEQUENTIAL",
         "actions": [
         {
@@ -1434,7 +1475,7 @@ CloudEvent upon completion of the workflow could look like:
         }
         ],
         "end": {
-            "type": "DEFAULT"
+            "kind": "DEFAULT"
         }
     }
     ],
@@ -1442,7 +1483,7 @@ CloudEvent upon completion of the workflow could look like:
         "dataOutputPath": "$.provisionedOrders"
     },
     "end": {
-        "type": "EVENT",
+        "kind": "EVENT",
         "produceEvent": {
             "nameRef": "provisioningCompleteEvent",
             "data": "$.provisionedOrders"
@@ -1460,7 +1501,6 @@ CloudEvent upon completion of the workflow could look like:
 id: sendcloudeventonprovision
 version: '1.0'
 name: Send CloudEvent on provision completion
-startsAt: ProvisionOrdersState
 events:
 - name: provisioningCompleteEvent
   type: provisionCompleteType
@@ -1471,13 +1511,16 @@ functions:
 states:
 - name: ProvisionOrdersState
   type: FOREACH
+  start:
+    kind: DEFAULT
   inputCollection: "$.orders"
   inputParameter: "$.singleorder"
   outputCollection: "$.results"
-  startsAt: DoProvision
   states:
   - name: DoProvision
     type: OPERATION
+    start:
+      kind: DEFAULT
     actionMode: SEQUENTIAL
     actions:
     - functionRef:
@@ -1485,11 +1528,11 @@ states:
         parameters:
           order: "$.order"
     end:
-      type: DEFAULT
+      kind: DEFAULT
   stateDataFilter:
     dataOutputPath: "$.provisionedOrders"
   end:
-    type: EVENT
+    kind: EVENT
     produceEvent:
       nameRef: provisioningCompleteEvent
       data: "$.provisionedOrders"
@@ -1551,7 +1594,6 @@ have the matching patient id.
 "id": "patientVitalsWorkflow",
 "name": "Monitor Patient Vitals",
 "version": "1.0",
-"startsAt": "MonitorVitals",
 "events": [
 {
     "name": "HighBodyTemperature",
@@ -1593,6 +1635,9 @@ have the matching patient id.
 {
 "name": "MonitorVitals",
 "type": "EVENT",
+"start": {
+    "kind": "DEFAULT"
+},
 "exclusive": true,
 "eventsActions": [{
         "eventRefs": ["HighBodyTemperature"],
@@ -1629,7 +1674,7 @@ have the matching patient id.
     }
 ],
 "end": {
-    "type": "TERMINATE"
+    "kind": "TERMINATE"
 }
 }]
 }
@@ -1642,7 +1687,6 @@ have the matching patient id.
 id: patientVitalsWorkflow
 name: Monitor Patient Vitals
 version: '1.0'
-startsAt: MonitorVitals
 events:
 - name: HighBodyTemperature
   type: org.monitor.highBodyTemp
@@ -1669,6 +1713,8 @@ functions:
 states:
 - name: MonitorVitals
   type: EVENT
+  start:
+    kind: DEFAULT
   exclusive: true
   eventsActions:
   - eventRefs:
@@ -1693,7 +1739,7 @@ states:
         parameters:
           patientid: "$.patientId"
   end:
-    type: TERMINATE
+    kind: TERMINATE
 ```
 
 </td>
@@ -1735,7 +1781,6 @@ when all three of these events happened (in no particular order).
 "id": "finalizeCollegeApplication",
 "name": "Finalize College Application",
 "version": "1.0",
-"startsAt": "FinalizeApplication",
 "events": [
 {
     "name": "ApplicationSubmitted",
@@ -1767,6 +1812,9 @@ when all three of these events happened (in no particular order).
 {
     "name": "FinalizeApplication",
     "type": "EVENT",
+    "start": {
+       "kind": "DEFAULT"
+    },
     "exclusive": false,
     "eventsActions": [
         {
@@ -1788,7 +1836,7 @@ when all three of these events happened (in no particular order).
         }
     ],
     "end": {
-        "type": "TERMINATE"
+        "kind": "TERMINATE"
     }
 }
 ]
@@ -1802,7 +1850,6 @@ when all three of these events happened (in no particular order).
 id: finalizeCollegeApplication
 name: Finalize College Application
 version: '1.0'
-startsAt: FinalizeApplication
 events:
 - name: ApplicationSubmitted
   type: org.application.submitted
@@ -1823,6 +1870,8 @@ functions:
 states:
 - name: FinalizeApplication
   type: EVENT
+  start:
+    kind: DEFAULT
   exclusive: false
   eventsActions:
   - eventRefs:
@@ -1835,7 +1884,7 @@ states:
         parameters:
           student: "$.applicantId"
   end:
-    type: TERMINATE
+    kind: TERMINATE
 ```
 
 </td>
@@ -1933,7 +1982,6 @@ And for denied credit check, for example:
     "version": "1.0",
     "name": "Customer Credit Check Workflow",
     "description": "Perform Customer Credit Check",
-    "startsAt": "CheckCredit",
     "functions": [
         {
             "name": "callCreditCheckMicroservice",
@@ -1957,6 +2005,9 @@ And for denied credit check, for example:
         {
             "name": "CheckCredit",
             "type": "CALLBACK",
+            "start": {
+               "kind": "DEFAULT"
+            },
             "action": {
                 "functionRef": {
                     "refName": "callCreditCheckMicroservice",
@@ -2001,7 +2052,7 @@ And for denied credit check, for example:
             "type": "SUBFLOW",
             "workflowId": "startApplicationWorkflowId",
             "end": {
-                "type": "DEFAULT"
+                "kind": "DEFAULT"
             }
         },
         {
@@ -2019,7 +2070,7 @@ And for denied credit check, for example:
                 }
             ],
             "end": {
-                "type": "DEFAULT"
+                "kind": "DEFAULT"
             }
         }
     ]
@@ -2034,7 +2085,6 @@ id: customercreditcheck
 version: '1.0'
 name: Customer Credit Check Workflow
 description: Perform Customer Credit Check
-startsAt: CheckCredit
 functions:
 - name: callCreditCheckMicroservice
   resource: creditCheckResource
@@ -2049,6 +2099,8 @@ events:
 states:
 - name: CheckCredit
   type: CALLBACK
+  start:
+    kind: DEFAULT
   action:
     functionRef:
       refName: callCreditCheckMicroservice
@@ -2077,7 +2129,7 @@ states:
   type: SUBFLOW
   workflowId: startApplicationWorkflowId
   end:
-    type: DEFAULT
+    kind: DEFAULT
 - name: RejectApplication
   type: OPERATION
   actionMode: SEQUENTIAL
@@ -2087,7 +2139,7 @@ states:
       parameters:
         applicant: "$.customer"
   end:
-    type: DEFAULT
+    kind: DEFAULT
 ```
 
 </td>
@@ -2098,4 +2150,144 @@ states:
 
 <p align="center">
 <img src="media/examples/example-customercreditcheck.png" with="400px" height="400px" alt="Perform Customer Credit Check Example"/>
+</p>
+
+### Handle Car Auction Bids Example
+
+#### Description
+
+In this example our serverless workflow needs to handle bits for an online car auction. The car auction has a specific start
+and end time. Bids are only allowed to be made during this time period. All bids before or after this time should not be considered.
+We assume that the car auction starts at 9am UTC on March 20th 2020 and ends at 3pm UTC on March 20th 2020.
+
+Bidding is done via an online application and bids are received as events are assumed to have the following format:
+
+```json
+{
+  "specversion" : "1.0",
+  "type" : "carBidType",  
+  "datacontenttype" : "application/json",
+  ...
+  "data": {
+    "bid": [
+        {
+          "carid": "car123",
+          "amount": 3000,
+          "bidder": {
+            "id": "xyz",
+            "firstName": "John",
+            "lastName": "Wayne",
+          }
+        }
+      ]
+  }
+}
+```
+
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td valign="top">
+
+```json
+{
+    "id": "handleCarAuctionBid",
+    "version": "1.0",
+    "name": "Car Auction Bidding Workflow",
+    "description": "Store a single bid whole the car auction is active",
+    "functions": [
+        {
+            "name": "StoreBidFunction",
+            "resource": "storeBidResource",
+            "type": "function"
+        }
+    ],
+    "events": [
+        {
+            "name": "CarBidEvent",
+            "type": "carBidMadeType",
+            "source": "carBidEventSource"
+        }
+    ],
+    "states": [
+        {
+          "name": "StoreCarAuctionBid",
+          "type": "EVENT",
+          "start": {
+              "kind": "SCHEDULED",
+              "schedule": {
+                "interval": "2020-03-20T09:00:00Z/2020-03-20T15:00:00Z"
+              }
+          },
+          "exclusive": true,
+          "eventsActions": [
+            {
+                "eventRefs": ["CarBidEvent"],
+                "actions": [{
+                    "functionRef": {
+                        "refName": "StoreBidFunction",
+                        "parameters": {
+                            "bid": "$.bid"
+                        }
+                    }
+                }]
+            }
+          ],
+          "end": {
+              "kind": "TERMINATE"
+          }
+        }
+    ]
+}
+```
+
+</td>
+<td valign="top">
+
+```yaml
+id: handleCarAuctionBid
+version: '1.0'
+name: Car Auction Bidding Workflow
+description: Store a single bid whole the car auction is active
+functions:
+- name: StoreBidFunction
+  resource: storeBidResource
+  type: function
+events:
+- name: CarBidEvent
+  type: carBidMadeType
+  source: carBidEventSource
+states:
+- name: StoreCarAuctionBid
+  type: EVENT
+  start:
+    kind: SCHEDULED
+    schedule:
+      interval: 2020-03-20T09:00:00Z/2020-03-20T15:00:00Z
+  exclusive: true
+  eventsActions:
+  - eventRefs:
+    - CarBidEvent
+    actions:
+    - functionRef:
+        refName: StoreBidFunction
+        parameters:
+          bid: "$.bid"
+  end:
+    kind: TERMINATE
+```
+
+</td>
+</tr>
+</table>
+
+#### Workflow Diagram
+
+<p align="center">
+<img src="media/examples/example-carauctionbid.png" with="400px" height="400px" alt="Handle Car Auction Bid Example"/>
 </p>
