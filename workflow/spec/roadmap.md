@@ -34,7 +34,8 @@ _Status description:_
 | ✔ | Add support for YAML definitions | [spec doc](spec.md) |
 | ✔ | Update workflow completion (end definition) | [spec doc](spec.md) |
 | ✔ | Add Callback state | [spec doc](spec.md) |
-| ✏️ | Add Workflow Metadata | [pr](https://github.com/cncf/wg-serverless/pull/193) |
+| ✔ | Add workflow metadata | [spec doc](spec.md) |
+| ✏️ | Update workflow start description | [pr](https://github.com/cncf/wg-serverless/pull/209) |
 | ✏️ | Finish specification primer document | [google doc](https://docs.google.com/document/d/11rD3Azj63G2Si0VpokSpr-1ib3mFRFHSwN6tJb-0LQM/edit#heading=h.paewfy83tetm) |
 | ✏️ | Prepare github branch and docs for v0.1 | |
 | 🚩 | Decide on state/task/stage/step naming convention | [issue link](https://github.com/cncf/wg-serverless/issues/127) |
