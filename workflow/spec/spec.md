@@ -20,6 +20,7 @@ Serverless Workflow specification is free and open-source, operating under the
   - [Workflow Definition](#Workflow-Definition)
   - [Workflow Data](#Workflow-Data)
   - [Workflow Error Handling](#Workflow-Error-Handling)
+  - [Workflow Metadata](#Workflow-Metadata)
 - [Extending](#Extending)
 - [Use Cases](#Use-Cases)
 - [Examples](#Examples)
@@ -135,6 +136,7 @@ As mentioned, implementation compliance is based on the workflow definition lang
 | [functions](#Function-Definition) | Workflow functions | array | no |
 | [states](#State-Definition) | Workflow states | array | yes |
 | [extensions](#Extending) | Workflow custom extensions | array | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -249,6 +251,9 @@ As mentioned, implementation compliance is based on the workflow definition lang
           "items": {
             "type": "object"
           }
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "required": ["id", "name", "version", "startsAt", "states"]
@@ -280,6 +285,7 @@ Since function definitions are reusable, their data input parameters are defined
 | name | Unique function name | string | yes |
 | resource | Function resource (URI) | string | yes |
 | type | Function type. Can be defined by implementations. | string | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -299,6 +305,9 @@ Since function definitions are reusable, their data input parameters are defined
     "type": {
       "type": "string",
       "description": "Type of function to implement. Can be defined by implementations"
+    },
+    "metadata": {
+       "$ref": "#/definitions/metadata"
     }
   },
   "required": ["name", "resource"]
@@ -315,6 +324,7 @@ Since function definitions are reusable, their data input parameters are defined
 | source | CloudEvent source | string | yes |
 | type | CloudEvent type | string | yes |
 | correlationToken | Context attribute name of the CloudEvent which value is to be used for event correlation | string | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -337,6 +347,9 @@ Since function definitions are reusable, their data input parameters are defined
         "correlationToken": {
             "type": "string",
             "description": "Path used for event correlation."
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "required": ["name", "source", "type"]
@@ -450,6 +463,7 @@ Following is a detailed decription of each of the defined states:
 | [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
 | [end](#End-Definition) | Is this state an end state | object | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -526,6 +540,9 @@ Following is a detailed decription of each of the defined states:
         "end": {
           "$ref": "#/definitions/end",
           "description": "State end definition"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "oneOf": [
@@ -914,6 +931,7 @@ Defines a transition from point A to point B in the serverless workflow. For mor
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes (if end is not defined) |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -986,6 +1004,9 @@ Defines a transition from point A to point B in the serverless workflow. For mor
           "type": "string",
           "format": "uri",
           "description": "URI to JSON Schema that state data output adheres to"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "oneOf": [
@@ -1030,6 +1051,7 @@ Once all actions have been performed, a transition to another state can occur.
 | default |Next transition of the workflow if there is no match for any choices | object | yes (if end is not defined) |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1093,6 +1115,9 @@ Once all actions have been performed, a transition to another state can occur.
           "type": "string",
           "format": "uri",
           "description": "URI to JSON Schema that state data output adheres to"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "oneOf": [
@@ -1324,6 +1349,7 @@ There are four types of choices defined:
 | [transition](#Transitions) |Next transition of the workflow after the delay | string | yes (if end is not defined) |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1378,6 +1404,9 @@ There are four types of choices defined:
           "type": "string",
           "format": "uri",
           "description": "URI to JSON Schema that state data output adheres to"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "oneOf": [
@@ -1420,6 +1449,7 @@ Delay state waits for a certain amount of time before transitioning to a next st
 | [transition](#Transitions) |Next transition of the workflow after all branches have completed execution | string | yes (if end is not defined) |
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
 | dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1486,6 +1516,9 @@ Delay state waits for a certain amount of time before transitioning to a next st
           "type": "string",
           "format": "uri",
           "description": "URI to JSON Schema that state data output adheres to"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "oneOf": [
@@ -1617,6 +1650,7 @@ Parallel state must wait for all branches which have this property set to "true"
 | [transition](#Transitions) |Next transition of the workflow after subflow has completed | string | yes (if end is not defined) |
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
 | dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1676,6 +1710,9 @@ Parallel state must wait for all branches which have this property set to "true"
           "type": "string",
           "format": "uri",
           "description": "URI to JSON Schema that state data output adheres to"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "oneOf": [
@@ -1733,6 +1770,7 @@ If this property is set to false, data access to parent's workflow should not be
 | [transition](#Transitions) | Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
 | dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1779,6 +1817,9 @@ If this property is set to false, data access to parent's workflow should not be
           "type": "string",
           "format": "uri",
           "description": "URI to JSON Schema that state data output adheres to"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "oneOf": [
@@ -1983,6 +2024,7 @@ This allows you to test if your workflow behaves properly for cases when there a
 | [transition](#Transitions) | Next transition of the workflow after state has completed | string | yes (if end is not defined) |
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
 | dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -2108,6 +2150,9 @@ This allows you to test if your workflow behaves properly for cases when there a
           "type": "string",
           "format": "uri",
           "description": "URI to JSON Schema that state data output adheres to"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "oneOf": [
@@ -2355,6 +2400,7 @@ defined in the orders array of its data input.
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
 | [transition](#Transitions) | Next transition of the workflow after callback event has been received | string | yes |
 | [end](#End-Definition) | Is this state an end state | object | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 <p>
@@ -2431,6 +2477,9 @@ defined in the orders array of its data input.
         "end": {
           "$ref": "#/definitions/end",
           "description": "State end definition"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
         }
     },
     "oneOf": [
@@ -2752,7 +2801,7 @@ Implementers should decide how to handle data-base transitions which return fals
 The default should be that if this happens workflow execution should halt and a detailed message
  on why the transition failed should be provided.
 
-#### Workflow Data
+### Workflow Data
 
 Serverless Workflow data is represented in [JSON](https://www.json.org/json-en.html) format.
 Flow of data during workflow execution can be divided into:
@@ -3274,7 +3323,7 @@ In order to define the structure of expected workflow data output you can use th
 that describes the expected workflow data output. This can be used for documentation purposes or implementations may
 decide to strictly enforce it.
 
-#### Workflow Error Handling
+### Workflow Error Handling
 
 Any state can encounter runtime errors. Errors can arise from state failures such as exeptions thrown during function
 execution, network errors, or errors in the workflow definition (incorrect paths for example).
@@ -3511,6 +3560,53 @@ If the error occurs after the maxAttempts is reached, the onError definition kic
 the "afterFunctionErrorState" state. In case of any other errors, they will be retried 2 times with 1 minute intervals.
 If those errors occur after two max 2 retries, the onError definition states that workflow should transition to the
 "afterAnyOtherErrorState" state.
+
+### Workflow Metadata
+
+Metdata enables you to enrich the serverless workflow model with information beyond its core definitions.
+It is inteded to be used by clients such as tools and libraries, as well as users that find this information relevant.
+
+Metadata should not affect workflow execution. Implementations may chose to use metadata information or ignore it.
+Note however that using metadata to control workflow execution can lead to vendor-locked implementations which do comply with the main goals of this specification, which is to be completely vendor-neutral.
+
+Metadata includes key/value pairs (string types). Both keys and values are completely arbitrary and non-identifying.
+
+Metadata can be added to:
+
+- [Core Workflow definition](#Workflow-Definition)
+- [Function definitions](#Function-Definition)
+- [Event definitions](#Event-Definition)
+- [State definitions](#State-Definition)
+
+Here is an example of metadata attached to the core workflow definition:
+
+```json
+{
+  "id": "processSalesOrders",
+  "name": "Process Sales Orders",
+  "version": "1.0",
+  "startsAt": "NewOrder",
+  "metadata": {
+    "loglevel": "Info",
+    "environment": "Production",
+    "category": "Sales",
+    "giturl": "github.com/myproject",
+    "author": "Author Name",
+    "team": "Team Name",
+    ...
+  },
+  "states": [
+    ...
+  ]
+}
+```
+
+Some other examples of information that could be recorded in metadata are:
+
+- UI tooling information such as sizing or scaling factors.
+- Build, release, or image information such as timestamps, release Ids, git branches, PR numbers, etc.
+- Logging, Monitoring, Analytics, or Audit repository information.
+- Labels used for organizing/indexing purposes, such as "release" "stable", "track", "daily", etc.
 
 ## Extending
 
