@@ -42,7 +42,7 @@ clear separation between business and orchestration logic.
 
 Some of the many benefits using workflows in serverless applications include:
 
-- Allow developers to fucus on business requirements and not orchestration logic.
+- Allow developers to focus on business requirements and not orchestration logic.
 - Externalize cross-cutting concerns such as parallel execution, branching, timeouts, compensation, callbacks, etc.
 thus allowing clear focus on business requirements in functions.
 - Greatly reduce the amount of code developers have to write, maintain, and test.
@@ -446,7 +446,7 @@ States define building blocks of the Serverless Workflow. The specification defi
 | **[ForEach](#ForEach-State)** | Parallel execution of states for each element of a data array | no | yes | no | yes (includes retries) | yes | no |
 | **[Callback](#Callback-State)** | Manual decision step. Executes a function and waits for callback event that indicates completion of the manual decision.| yes | yes | yes (including retries) | yes | no | no |
 
-Following is a detailed decription of each of the defined states:
+Following is a detailed description of each of the defined states:
 
 #### Event State
 
@@ -646,7 +646,7 @@ have not been received during this time, the state should transition to the next
 
 Event actions reference one or more events in the workflow [events definitions](#Event-Definition).
 Both the source and type of incoming events must match the ones defined in the references events in order for
-the event to be considered. In case of mutliple events the event definition "correlationToken" context attribute
+the event to be considered. In case of multiple events the event definition "correlationToken" context attribute
 value must also match between events. If a correlation token is not defined, all events that match the other attributes
 can be considered.
 
@@ -892,7 +892,7 @@ This assures that both execution errors as well as actions error results can be 
 The interval parameter specifies the retry interval (in ISO 8601 repeatable format). For example: "R5/PT15M" would mean repeat 5 times with 1 minute intervals before each retry.
 
 The multiplier parameter specifies value by which the interval time is increased for each of the retry attempts.
-To eplain this better, let's say we have:
+To explain this better, let's say we have:
 
 ```json
 {
@@ -1917,7 +1917,7 @@ as data output to the transition state:
   type: RELAY
   inject:
     person:
-      fnam: John
+      fname: John
       lname: Doe
       address: 1234 SomeStreet
       age: 40
@@ -2000,15 +2000,15 @@ what you need as data output of the state. Let's say we have:
   type: RELAY
   inject:
     people:
-    - fnam: John
+    - fname: John
       lname: Doe
       address: 1234 SomeStreet
       age: 40
-    - fnam: Marry
+    - fname: Marry
       lname: Allice
       address: 1234 SomeStreet
       age: 25
-    - fnam: Kelly
+    - fname: Kelly
       lname: Mill
       address: 1234 SomeStreet
       age: 30
@@ -2023,7 +2023,7 @@ what you need as data output of the state. Let's say we have:
 </table>
 
 In which case the states data output would include people who's age is less than 40.
-You can change your output path easily during testin, for example:
+You can change your output path easily during testing, for example:
 
 ```text
 $.people[?(@.age >= 40)]
@@ -3116,7 +3116,7 @@ Here is an example using an even filter:
 <img src="media/spec/event-data-filter-example1.png" with="300px" height="400px" alt="Event Data Filter Example"/>
 </p>
 
-Similarly the consumed callback CloudEvent in [Callback states](#Callback-State) can be filered using 
+Similarly the consumed callback CloudEvent in [Callback states](#Callback-State) can be filtered using
 an event filter.
 
 #### <a name="error-data-filter"></a> State information filtering - Error Data Filter
@@ -3353,7 +3353,7 @@ decide to strictly enforce it.
 
 ### Workflow Error Handling
 
-Any state can encounter runtime errors. Errors can arise from state failures such as exeptions thrown during function
+Any state can encounter runtime errors. Errors can arise from state failures such as exceptions thrown during function
 execution, network errors, or errors in the workflow definition (incorrect paths for example).
 If a runtime error is not explicitly handled within the state definition, the default course of action should be to
 halt workflow execution.
@@ -3593,8 +3593,8 @@ If those errors occur after two max 2 retries, the onError definition states tha
 
 ### Workflow Metadata
 
-Metdata enables you to enrich the serverless workflow model with information beyond its core definitions.
-It is inteded to be used by clients such as tools and libraries, as well as users that find this information relevant.
+Metadata enables you to enrich the serverless workflow model with information beyond its core definitions.
+It is intended to be used by clients such as tools and libraries, as well as users that find this information relevant.
 
 Metadata should not affect workflow execution. Implementations may chose to use metadata information or ignore it.
 Note however that using metadata to control workflow execution can lead to vendor-locked implementations which do comply with the main goals of this specification, which is to be completely vendor-neutral.
