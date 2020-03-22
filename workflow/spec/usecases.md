@@ -57,7 +57,7 @@ In conjunction with available messaging services you can notify developers on di
 ## Continuous Integration And Deployment
 
 Serverless Workflows can help you build solid continuous integration and deployment solutions.
-Code checkins can trigger website builds and automatic redeploys. Pull requests can trigger
+Code check-ins can trigger website builds and automatic redeploys. Pull requests can trigger
 running automated tests to make sure code is well-tested before human reviews.
 
 <p align="center"><img src="media/usecases/usecase-continuous-integration.png"/></p>

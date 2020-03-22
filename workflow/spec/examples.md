@@ -426,7 +426,7 @@ The ForEach state will execute a single defined operation state for each math ex
 state contains an action which calls a serverless function which actually solves the expression
 and returns its result.
 
-Results of all mathe expressions are accumulated into the data output of the ForEach state which become the final
+Results of all math expressions are accumulated into the data output of the ForEach state which become the final
 result of the workflow execution.
 
 #### Workflow Definition
@@ -1508,9 +1508,10 @@ states:
 ### Monitor Patient Vital Signs Example
 
 #### Description
+
 In this example a hospital patient is monitored by a Vial Sign Monitoring system. This device can produce three different Cloud Events, namely
 "High Body Temperature", "High Blood Pressure", and "High Respiration Rate".
-Our workflow which needs to take propert actions depending on the event the Vital Sign Monitor produces needs to start
+Our workflow which needs to take proper actions depending on the event the Vital Sign Monitor produces needs to start
 if any of these events occur. For each of these events a new instance of the workflow is started.
 
 Since the hospital may include many patients that are being monitored it is assumed that all events include a patientId context attribute in the event
