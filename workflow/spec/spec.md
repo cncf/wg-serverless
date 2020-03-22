@@ -96,7 +96,7 @@ Serverless Workflow allows users to:
 8. Correlate trigger events with workflow instances.
 
 Following diagram illustrates functional flow that involves states, events and functions. It shows that
-incoming events can trigger function calls during flow execution.
+incoming events can trigger function invocations during workflow execution.
 
 <p align="center">
 <img src="media/spec/sample-serverless-workflow2.png" with="400px" height="260px" alt="Serverless Workflow Diagram"/>
