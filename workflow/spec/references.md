@@ -15,7 +15,7 @@ The research of the [Workflow Patterns Initiative](http://www.workflowpatterns.c
 
 ## Business Process Model and Notation
 
-[Business Process Modeling and Notation (BPMN)](https://www.omg.org/spec/BPMN/) was standardized by Object Management Group (OMG) in collaboration with companies such as: IBM, Red Hat, Oracle, SAP, TIBCO, Software AG, among others. The latest version of the specification has even been [adopted by the ISO](https://www.iso.org/standard/62652.html) and provides a rich set of constructs to define workflows in a technology-agnostic way. One of the main advatages of the BPMN spec is that it visually defines how a workflow should look like and most importantly, it defines the execution semantics of such workflows. [This article](https://www.esentri.com/bpmn-and-serverless-workflows/) describes how BPMN can be used for serverless workflows.
+[Business Process Modeling and Notation (BPMN)](https://www.omg.org/spec/BPMN/) was standardized by Object Management Group (OMG) in collaboration with companies such as: IBM, Red Hat, Oracle, SAP, TIBCO, Software AG, among others. The latest version of the specification has even been [adopted by the ISO](https://www.iso.org/standard/62652.html) and provides a rich set of constructs to define workflows in a technology-agnostic way. One of the main advantages of the BPMN spec is that it visually defines how a workflow should look like and most importantly, it defines the execution semantics of such workflows. [This article](https://www.esentri.com/bpmn-and-serverless-workflows/) describes how BPMN can be used for serverless workflows.
 
 <details>
   <summary>BPMN model</summary>
@@ -32,7 +32,7 @@ The research of the [Workflow Patterns Initiative](http://www.workflowpatterns.c
     - Throw
     - Catch  
   - Timer Events  
-- Gateways: Enable fork/join behaviours based on certain condition
+- Gateways: Enable fork/join behaviors based on certain condition
   - Exclusive
   - Parallel
   - Complex  
@@ -52,13 +52,13 @@ The [BPMN specification](https://www.omg.org/spec/BPMN/) provides XML Schemas fo
 
   ![Loan Approval Example](media/references/loan-approval-workflow.png)
 
-  You can find the BPMN XML which can be executed in a number of Open Source and Propietary engines [here](media/references/loan-approval-workflow.bpmn)
+  You can find the BPMN XML which can be executed in a number of Open Source and Proprietary engines [here](media/references/loan-approval-workflow.bpmn)
 
   **Travel Booking Workflow**
 
   ![Travel Booking Example](media/references/travel-booking-workflow.png)
 
-  You can find the BPMN XML which can be executed in a number of Open Source and Propietary engines [here](media/references/travel-booking-workflow.bpmn)
+  You can find the BPMN XML which can be executed in a number of Open Source and Proprietary engines [here](media/references/travel-booking-workflow.bpmn)
 </details>
 
 ## Mistral Workflow Language
@@ -97,11 +97,11 @@ The [BPMN specification](https://www.omg.org/spec/BPMN/) provides XML Schemas fo
 
 - name
 - description
-- action or workflow, otherwise it's a noop
+- action or workflow, otherwise it's a no-op
 - input (constructs action/subworkflow input parameters from the context of the task) 
 - publish (decides which action/subworkflow outputs are put into the context)
 - publish-on-error
-- with-items (processes items of a collection, i.e. the action/workflow excutes multiple times)
+- with-items (processes items of a collection, i.e. the action/workflow executes multiple times)
 - keep-result (can be used to discard the action/subworkflow output)
 - target (which worker should execute the task)
 - pause-before
@@ -128,7 +128,7 @@ The [BPMN specification](https://www.omg.org/spec/BPMN/) provides XML Schemas fo
 
 ## Alibaba FunctionFlow
 
-FunctionFlow defines workflows of steps using yaml arrays and a simple control logic that starts with the first step in the array, allows jumps with goto and ending a flow either by reaching the last ste in the array or by marking a step as the end of the flow.
+FunctionFlow defines workflows of steps using yaml arrays and a simple control logic that starts with the first step in the array, allows jumps with goto and ending a flow either by reaching the last step in the array or by marking a step as the end of the flow.
 
 <details>
   <summary>FunctionFlow FDL (Flow Definition Language) model</summary>
