@@ -2289,5 +2289,5 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/example-carauctionbid.png" with="400px" height="400px" alt="Handle Car Auction Bid Example"/>
+<img src="media/examples/example-carauctionbid.png" height="500px" alt="Handle Car Auction Bid Example"/>
 </p>
