@@ -112,7 +112,7 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/example-helloworld.png" width="250px" height="400px" alt="Hello World Example"/>
+<img src="media/examples/example-helloworld.png" height="400px" alt="Hello World Example"/>
 </p>
 
 ### Greeting Example
@@ -237,7 +237,7 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/example-greeting.png" width="400px" height="400px" alt="Greeting Example"/>
+<img src="media/examples/example-greeting.png" height="500px" alt="Greeting Example"/>
 </p>
 
 ### Event Based Greeting Example
@@ -405,7 +405,7 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/example-eventbasedgreeting.png" width="400px" height="400px" alt="Event Based Greeting Example"/>
+<img src="media/examples/example-eventbasedgreeting.png" height="500px" alt="Event Based Greeting Example"/>
 </p>
 
 ### Solving Math Problems Example
@@ -534,7 +534,7 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/example-looping.png" width="400px" height="400px" alt="Looping Example"/>
+<img src="media/examples/example-looping.png" height="500px" alt="Looping Example"/>
 </p>
 
 ### Parallel Execution Example
@@ -648,7 +648,7 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/example-parallel.png" width="400px" height="400px" alt="Parallel Example"/>
+<img src="media/examples/example-parallel.png" height="500px" alt="Parallel Example"/>
 </p>
 
 ### Applicant Request Decision Example
@@ -803,7 +803,7 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/example-switchstate.png" width="400px" height="400px" alt="Switch State Example"/>
+<img src="media/examples/example-switchstate.png" height="500px" alt="Switch State Example"/>
 </p>
 
 ### Provision Orders Example
@@ -1010,7 +1010,7 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/example-handlerrors.png" width="400px" height="400px" alt="Handle Errors Example"/>
+<img src="media/examples/example-handlerrors.png" height="500px" alt="Handle Errors Example"/>
 </p>
 
 ### Monitor Job Example
@@ -1314,7 +1314,7 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/examples-jobmonitoring.png" width="400px" height="400px" alt="Job Monitoring Example"/>
+<img src="media/examples/examples-jobmonitoring.png" height="500px" alt="Job Monitoring Example"/>
 </p>
 
 ### Send CloudEvent On Workfow Completion Example
@@ -1502,7 +1502,7 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/example-sendcloudeentonworkflowcompletion.png" width="400px" height="400px" alt="Send CloudEvent on Workflow Completion Example"/>
+<img src="media/examples/example-sendcloudeentonworkflowcompletion.png" height="500px" alt="Send CloudEvent on Workflow Completion Example"/>
 </p>
 
 ### Monitor Patient Vital Signs Example
@@ -1704,7 +1704,7 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/example-monitorpatientvitalsigns.png" width="400px" height="400px" alt="Monitor Patient Vital Signs Example"/>
+<img src="media/examples/example-monitorpatientvitalsigns.png" height="500px" alt="Monitor Patient Vital Signs Example"/>
 </p>
 
 ### Finalize College Application Example
@@ -1846,7 +1846,7 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/example-finalizecollegeapplication.png" width="400px" height="400px" alt="Finalize College Application Example"/>
+<img src="media/examples/example-finalizecollegeapplication.png" height="500px" alt="Finalize College Application Example"/>
 </p>
 
 ### Perform Customer Credit Check Example
@@ -2098,5 +2098,5 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/example-customercreditcheck.png" width="400px" height="400px" alt="Perform Customer Credit Check Example"/>
+<img src="media/examples/example-customercreditcheck.png" height="500px" alt="Perform Customer Credit Check Example"/>
 </p>
