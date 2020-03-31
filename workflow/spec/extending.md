@@ -32,7 +32,6 @@ So let's define a simple example workflow model and then add our custom extensio
 ```json
 {  
    "name": "Simple Workflow",
-   "startsAt": "FirstOperation",
    "functions": [
       {
          "name": "firstFunction",
@@ -47,6 +46,9 @@ So let's define a simple example workflow model and then add our custom extensio
       {  
          "name":"FirstOperation",
          "type":"OPERATION",
+         "start": {
+            "kind": "DEFAULT"
+         },
          "actionMode":"Sequential",
          "actions":[  
             {  
@@ -64,7 +66,7 @@ So let's define a simple example workflow model and then add our custom extensio
          "name":"SecondOperation",
          "type":"OPERATION",
          "end": {
-           "type": "DEFAULT"
+           "kind": "DEFAULT"
          },
          "actionMode":"Sequential",
          "actions":[  
