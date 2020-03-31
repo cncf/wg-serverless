@@ -27,10 +27,6 @@
       "type": "string",
       "description": "Serverless Workflow schema version"
     },
-    "startsAt": {
-      "type": "string",
-      "description": "Starts at state name"
-    },
     "expressionLanguage": {
       "type": "string",
       "description": "Default expression language to be used throughout the workflow definition"
@@ -120,7 +116,6 @@
     "id",
     "name",
     "version",
-    "startsAt",
     "states"
   ],
   "definitions": {
@@ -324,10 +319,6 @@
           "type": "string",
           "description": "Branch name"
         },
-        "startsAt": {
-          "type": "string",
-          "description": "Starts at state name"
-        },
         "states": {
           "type": "array",
           "description": "State Definitions",
@@ -376,7 +367,6 @@
       },
       "required": [
         "name",
-        "startsAt",
         "states",
         "waitForCompletion"
       ]
@@ -400,6 +390,10 @@
             "DELAY"
           ],
           "description": "State type"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
@@ -453,6 +447,24 @@
             "type",
             "timeDelay",
             "transition"
+          ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "timeDelay",
+            "transition"
+          ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "timeDelay",
+            "end"
           ]
         }
       ]
@@ -527,6 +539,10 @@
           "description": "Next transition of the workflow after all the actions have been performed",
           "$ref": "#/definitions/transition"
         },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
+        },
         "end": {
           "$ref": "#/definitions/end",
           "description": "State end definition"
@@ -551,6 +567,24 @@
             "eventsActions",
             "transition"
           ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "eventsActions",
+            "transition"
+          ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "eventsActions",
+            "end"
+          ]
         }
       ]
     },
@@ -573,6 +607,10 @@
             "OPERATION"
           ],
           "description": "State type"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
@@ -650,6 +688,26 @@
             "actions",
             "transition"
           ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "actionMode",
+            "actions",
+            "transition"
+          ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "actionMode",
+            "actions",
+            "end"
+          ]
         }
       ]
     },
@@ -672,6 +730,10 @@
             "PARALLEL"
           ],
           "description": "State type"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
@@ -738,6 +800,25 @@
             "branches",
             "transition"
           ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "branches",
+            "transition"
+          ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "branches",
+            "transition",
+            "end"
+          ]
         }
       ]
     },
@@ -761,9 +842,9 @@
           ],
           "description": "State type"
         },
-        "end": {
-          "$ref": "#/definitions/end",
-          "description": "State end definition"
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
         },
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
@@ -824,11 +905,12 @@
             "name",
             "type",
             "choices",
-            "end"
+            "default"
           ]
         },
         {
           "required": [
+            "start",
             "name",
             "type",
             "choices",
@@ -856,6 +938,10 @@
             "SUBFLOW"
           ],
           "description": "State type"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
@@ -915,6 +1001,24 @@
             "workflowId",
             "transition"
           ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "workflowId",
+            "transition"
+          ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "workflowId",
+            "end"
+          ]
         }
       ]
     },
@@ -937,6 +1041,10 @@
             "RELAY"
           ],
           "description": "State type"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
@@ -981,6 +1089,22 @@
             "type",
             "transition"
           ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "transition"
+          ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "end"
+          ]
         }
       ]
     },
@@ -1003,6 +1127,10 @@
             "FOREACH"
           ],
           "description": "State type"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
@@ -1029,10 +1157,6 @@
         "timeDelay": {
           "type": "string",
           "description": "Amount of time (ISO 8601 format) to wait between each iteration "
-        },
-        "startsAt": {
-          "type": "string",
-          "description": "Unique name of a states in the states array representing the starting state to be executed"
         },
         "states": {
           "type": "array",
@@ -1118,7 +1242,6 @@
             "type",
             "inputCollection",
             "inputParameter",
-            "startsAt",
             "states",
             "end"
           ]
@@ -1129,7 +1252,28 @@
             "type",
             "inputCollection",
             "inputParameter",
-            "startsAt",
+            "states",
+            "transition"
+          ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "inputCollection",
+            "inputParameter",
+            "states",
+            "end"
+          ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "inputCollection",
+            "inputParameter",
             "states",
             "transition"
           ]
@@ -1204,6 +1348,10 @@
           "description": "Next transition of the workflow after all the actions have been performed",
           "$ref": "#/definitions/transition"
         },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
+        },
         "end": {
           "$ref": "#/definitions/end",
           "description": "State end definition"
@@ -1225,6 +1373,28 @@
         },
         {
           "required": [
+            "name",
+            "type",
+            "action",
+            "eventRef",
+            "timeout",
+            "transition"
+          ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "action",
+            "eventRef",
+            "timeout",
+            "end"
+          ]
+        },
+        {
+          "required": [
+            "start",
             "name",
             "type",
             "action",
@@ -1364,40 +1534,89 @@
         "body"
       ]
     },
+    "start": {
+      "type": "object",
+      "description": "State start definition",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "DEFAULT",
+            "SCHEDULED"
+          ],
+          "description": "Kind of start definition"
+        },
+        "schedule": {
+          "description": "If kind is SCHEDULED, define when the starting state is or becomes active",
+          "$ref": "#/definitions/schedule"
+        }
+      },
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "SCHEDULED"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "kind",
+          "schedule"
+        ]
+      },
+      "else": {
+        "required": [
+          "kind"
+        ]
+      }
+    }, 
+    "schedule": {
+      "type": "object",
+      "description": "Start state schedule definition",
+      "properties": {
+        "interval": {
+          "type": "string",
+          "description":  "Time interval describing when the workflow starting state is active"
+        }
+      },
+      "required": [
+        "interval"
+      ]
+    },
     "end": {
       "type": "object",
       "description": "State end definition",
       "properties": {
-        "type": {
+        "kind": {
           "type": "string",
           "enum": [
             "DEFAULT",
             "TERMINATE",
             "EVENT"
           ],
-          "description": "Type of end definition"
+          "description": "Kind of end definition"
         },
         "produceEvent": {
-          "description": "If end type is EVENT, select one of the defined events by name and set its data",
+          "description": "If end kind is EVENT, select one of the defined events by name and set its data",
           "$ref": "#/definitions/produceevent"
         }
       },
       "if": {
         "properties": {
-          "type": {
+          "kind": {
             "const": "EVENT"
           }
         }
       },
       "then": {
         "required": [
-          "type",
+          "kind",
           "produceEvent"
         ]
       },
       "else": {
         "required": [
-          "type"
+          "kind"
         ]
       }
     },

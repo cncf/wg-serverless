@@ -132,7 +132,6 @@ As mentioned, implementation compliance is based on the workflow definition lang
 | description | Workflow description | string | no |
 | version | Workflow version | string | no |
 | schemaVersion | Workflow schema version | string | no |
-| startsAt | Workflow starting state | string | yes |
 | expressionLanguage | Default expression language to be used throughout the workflow definition | string | no |
 | [dataInputSchema](#Workflow-Data-Input) | URI to JSON Schema that workflow data input adheres to | string | no |
 | [dataOutputSchema](#Workflow-data-output) | URI to JSON Schema that workflow data output adheres to | string | no |
@@ -174,10 +173,6 @@ As mentioned, implementation compliance is based on the workflow definition lang
         "schemaVersion": {
           "type": "string",
           "description": "Serverless Workflow schema version"
-        },
-        "startsAt": {
-            "type": "string",
-            "description": "State name which is the starting state"
         },
         "expressionLanguage": {
           "type": "string",
@@ -260,7 +255,7 @@ As mentioned, implementation compliance is based on the workflow definition lang
           "$ref": "#/definitions/metadata"
         }
     },
-    "required": ["id", "name", "version", "startsAt", "states"]
+    "required": ["id", "name", "version", "states"]
 }
 ```
 
@@ -464,6 +459,7 @@ Following is a detailed description of each of the defined states:
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes |
 | [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
+| [start](#Start-Definition) | Is this state a starting state | object | no |
 | [end](#End-Definition) | Is this state an end state | object | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
@@ -539,6 +535,10 @@ Following is a detailed description of each of the defined states:
           "description": "Next transition of the workflow after all the actions have been performed",
           "$ref": "#/definitions/transition"
         },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
+        }
         "end": {
           "$ref": "#/definitions/end",
           "description": "State end definition"
@@ -548,22 +548,40 @@ Following is a detailed description of each of the defined states:
         }
     },
     "oneOf": [
-    {
-       "required": [
-         "name",
-         "type",
-         "eventsActions",
-         "end"
-       ]
-     },
-     {
-       "required": [
-         "name",
-         "type",
-         "eventsActions",
-         "transition"
-       ]
-     }
+      {
+        "required": [
+          "name",
+          "type",
+          "eventsActions",
+          "end"
+        ]
+      },
+      {
+        "required": [
+          "name",
+          "type",
+          "eventsActions",
+          "transition"
+        ]
+      },
+      {
+        "required": [
+          "start",
+          "name",
+          "type",
+          "eventsActions",
+          "transition"
+        ]
+      },
+      {
+        "required": [
+          "start",
+          "name",
+          "type",
+          "eventsActions",
+          "end"
+        ]
+      }
    ]
 }
 ```
@@ -687,7 +705,7 @@ between arrival of specified events. To give an example let's say we have:
         }
     ],
     "end": {
-        "type": "TERMINATE"
+        "kind": "TERMINATE"
     }
 }
 ]
@@ -950,7 +968,6 @@ Defines a transition from point A to point B in the serverless workflow. For mor
 | id |  Unique state id | string | no |
 | name | State name | string | yes |
 | type | State type | string | yes |
-| [end](#End-Definition) | Is this state an end state | object | no |
 | actionMode | Should actions be performed sequentially or in parallel | string | no |
 | [actions](#Action-Definition) | Actions to be performed | array | yes |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
@@ -960,6 +977,8 @@ Defines a transition from point A to point B in the serverless workflow. For mor
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
+| [start](#Start-Definition) | Is this state a starting state | object | no |
+| [end](#End-Definition) | Is this state an end state | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -981,10 +1000,6 @@ Defines a transition from point A to point B in the serverless workflow. For mor
             "type" : "string",
             "enum": ["OPERATION"],
             "description": "State type"
-        },
-        "end": {
-          "$ref": "#/definitions/end",
-          "description": "State end definition"
         },
         "actionMode": {
             "type" : "string",
@@ -1035,6 +1050,14 @@ Defines a transition from point A to point B in the serverless workflow. For mor
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
+        },
+        "end": {
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         }
     },
     "oneOf": [
@@ -1072,14 +1095,14 @@ Once all actions have been performed, a transition to another state can occur.
 | id | Unique state id | string | no |
 | name |State name | string | yes |
 | type |State type | string | yes |
-| [end](#End-Definition) | Is this state an end start | object | no |
 | [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
-| default |Next transition of the workflow if there is no match for any choices | object | yes (if end is not defined) |
+| default | Next transition of the workflow if there is no match for any choices | object | yes (if end is not defined) |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
+| [start](#Start-Definition) | Is this state a starting state | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1101,10 +1124,6 @@ Once all actions have been performed, a transition to another state can occur.
             "type" : "string",
             "enum": ["SWITCH"],
             "description": "State type"
-        },
-        "end": {
-          "$ref": "#/definitions/end",
-          "description": "State end definition"
         },
         "choices": {
             "type": "array",
@@ -1146,15 +1165,20 @@ Once all actions have been performed, a transition to another state can occur.
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
         }
     },
     "oneOf": [
     {
       "required": [
+        "start",
         "name",
         "type",
-        "choices",
-        "end"
+        "choices"
+        "default"
       ]
     },
     {
@@ -1172,7 +1196,8 @@ Once all actions have been performed, a transition to another state can occur.
 </details>
 
 Switch states can be viewed as gateways. They define choices that trigger workflow transitions based on
-JSONPath matches on the states data input.
+JSONPath matches on the states data input. Switch states cannot be workflow ending states as they require
+a transition to another workflow state.
 
 #### <a name="switch-state-choices"></a>Switch State: Choices
 
@@ -1370,14 +1395,14 @@ There are four types of choices defined:
 | id | Unique state id | string | no |
 | name |State name | string | yes |
 | type |State type | string | yes |
-| [end](#End-Definition) |If this state an end state | object | no |
 | timeDelay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
 | [transition](#Transitions) |Next transition of the workflow after the delay | string | yes (if end is not defined) |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
-| [metadata](#Workflow-Metadata) | Metadata information| object | no |
+| [start](#Start-Definition) | Is this state a starting state | object | no |
+| [end](#End-Definition) |If this state an end state | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1399,10 +1424,6 @@ There are four types of choices defined:
             "type" : "string",
             "enum": ["DELAY"],
             "description": "State type"
-        },
-        "end": {
-          "$ref": "#/definitions/end",
-          "description": "State end definition"
         },
         "timeDelay": {
             "type": "string",
@@ -1435,9 +1456,17 @@ There are four types of choices defined:
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
+        },
+        "end": {
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         }
     },
-    "oneOf": [
+   "oneOf": [
     {
       "required": [
         "name",
@@ -1453,8 +1482,26 @@ There are four types of choices defined:
         "timeDelay",
         "transition"
       ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "timeDelay",
+        "transition"
+      ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "timeDelay",
+        "end"
+      ]
     }
-    ]
+  ]
 }
 ```
 
@@ -1469,15 +1516,16 @@ Delay state waits for a certain amount of time before transitioning to a next st
 | id | Unique state id | string | no |
 | name |State name | string | yes |
 | type |State type | string | yes |
-| [end](#End-Definition) | If this state and end state | object | no |
 | [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
-| [transition](#Transitions) |Next transition of the workflow after all branches have completed execution | string | yes (if end is not defined) |
+| [transition](#Transitions) | Next transition of the workflow after all branches have completed execution | string | yes (if end is not defined) |
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
 | dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
+| [start](#Start-Definition) | Is this state a starting state | object | no |
+| [end](#End-Definition) | If this state and end state | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1499,10 +1547,6 @@ Delay state waits for a certain amount of time before transitioning to a next st
             "type" : "string",
             "enum": ["PARALLEL"],
             "description": "State type"
-        },
-        "end": {
-          "$ref": "#/definitions/end",
-          "description": "State end definition"
         },
         "branches": {
             "type": "array",
@@ -1547,6 +1591,14 @@ Delay state waits for a certain amount of time before transitioning to a next st
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
+        },
+         "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
+        },
+         "end": {
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         }
     },
     "oneOf": [
@@ -1565,23 +1617,40 @@ Delay state waits for a certain amount of time before transitioning to a next st
         "branches",
         "transition"
       ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "branches",
+        "transition"
+      ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "branches",
+        "transition",
+        "end"
+      ]
     }
-    ]
+  ]
 }
 ```
 
 </details>
 
 Parallel state defines a collection of branches which are to be executed in parallel.
-Branches contain one or more states. Each branch must define a starting state via its "startsAt" property
- as well as include at least one end state (state with its "end" property defined).
+Branches contain one or more states. Each branch must define one [starting state](#Start-Definition) as well as include at least one [end state](#End-Definition).
 
 #### <a name="parallel-state-branch"></a>Parallel State: Branch
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | name | Branch name | string | yes |
-| startsAt | Branch start state | string | yes |
 | [states](#State-Definition) | States to be executed in this branch | array | yes |
 | waitForCompletion | If workflow execution must wait for this branch to finish before continuing | boolean | yes |
 
@@ -1595,10 +1664,6 @@ Branches contain one or more states. Each branch must define a starting state vi
         "name": {
             "type": "string",
             "description": "Branch name"
-        },
-        "startsAt": {
-            "type": "string",
-            "description": "State name which is the starting state"
         },
         "states": {
             "type": "array",
@@ -1670,7 +1735,6 @@ Parallel state must wait for all branches which have this property set to "true"
 | id | Unique state id | string | no |
 | name |State name | string | yes |
 | type |State type | string | yes |
-| [end](#End-Definition) | If this state and end state | object | no |
 | waitForCompletion |If workflow execution must wait for sub-workflow to finish before continuing | boolean | yes |
 | workflowId |Sub-workflow unique id | boolean | no |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
@@ -1679,6 +1743,8 @@ Parallel state must wait for all branches which have this property set to "true"
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
 | dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
+| [start](#Start-Definition) | Is this state a starting state | object | no |
+| [end](#End-Definition) | If this state and end state | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1700,10 +1766,6 @@ Parallel state must wait for all branches which have this property set to "true"
             "type" : "string",
             "enum": ["SUBFLOW"],
             "description": "State type"
-        },
-        "end": {
-          "$ref": "#/definitions/end",
-          "description": "State end definition"
         },
         "waitForCompletion": {
             "type": "boolean",
@@ -1741,6 +1803,14 @@ Parallel state must wait for all branches which have this property set to "true"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
+        },
+        "end": {
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         }
     },
     "oneOf": [
@@ -1759,8 +1829,26 @@ Parallel state must wait for all branches which have this property set to "true"
         "workflowId",
         "transition"
       ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "workflowId",
+        "transition"
+      ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "workflowId",
+        "end"
+      ]
     }
-    ]
+  ]
 }
 ```
 
@@ -1792,13 +1880,14 @@ If this property is set to false, data access to parent's workflow should not be
 | id | Unique state id | string | no |
 | name | State name | string | yes |
 | type | State type | string | yes |
-| [end](#End-Definition) | If this state and end state | object | no |
 | inject | JSON object which can be set as state's data input and can be manipulated via filter | object | no |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [transition](#Transitions) | Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
 | dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
+| [start](#Start-Definition) | Is this state a starting state | object | no |
+| [end](#End-Definition) | If this state and end state | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1820,10 +1909,6 @@ If this property is set to false, data access to parent's workflow should not be
             "type" : "string",
             "enum": ["RELAY"],
             "description": "State type"
-        },
-        "end": {
-          "$ref": "#/definitions/end",
-          "description": "State end definition"
         },
         "inject": {
             "type": "object",
@@ -1848,6 +1933,14 @@ If this property is set to false, data access to parent's workflow should not be
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
+        },
+        "end": {
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         }
     },
     "oneOf": [
@@ -1864,8 +1957,24 @@ If this property is set to false, data access to parent's workflow should not be
         "type",
         "transition"
       ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "transition"
+      ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "end"
+      ]
     }
-    ]
+  ]
 }
 ```
 
@@ -2038,13 +2147,11 @@ This allows you to test if your workflow behaves properly for cases when there a
 | id | Unique state id | string | no |
 | name | State name | string | yes |
 | type | State type | string | yes |
-| [end](#End-Definition) | Is this state an end state | object | no |
 | inputCollection | JSONPath expression selecting an JSON array element of the states data input | string | yes |
 | outputCollection | JSONPath expression specifying where in the states data output to place the final data output of each iteration of the executed states | string | no |
 | inputParameter | JSONPath expression specifying an JSON object field of the states data input. For each parallel iteration, this field will get populated with an unique element of the inputCollection array. | string | yes |
 | max | Specifies how upper bound on how many iterations may run in parallel | integer | no |
 | timeDelay | Amount of time (ISO 8601 format) to wait between each iteration | string | no |
-| startsAt | Unique name of a states in the states array representing the starting state to be executed | string | yes |
 | [states](#State-Definition) | States to be executed for each of the elements of inputCollection | array | yes |
 | [stateDataFilter](#state-data-filter) | State data filter definition | object | no |
 | [retry](#workflow-retrying) | States retry definitions | array | no |
@@ -2053,6 +2160,8 @@ This allows you to test if your workflow behaves properly for cases when there a
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
 | dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
+| [start](#Start-Definition) | Is this state a starting state | object | no |
+| [end](#End-Definition) | Is this state an end state | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -2074,10 +2183,6 @@ This allows you to test if your workflow behaves properly for cases when there a
             "type" : "string",
             "enum": ["FOREACH"],
             "description": "State type"
-        },
-        "end": {
-          "$ref": "#/definitions/end",
-          "description": "State end definition"
         },
         "inputCollection": {
            "type": "string",
@@ -2101,10 +2206,6 @@ This allows you to test if your workflow behaves properly for cases when there a
              "type": "string",
              "description": "Amount of time (ISO 8601 format) to wait between each iteration "
          },
-         "startsAt": {
-          "type": "string",
-          "description": "Unique name of a states in the states array representing the starting state to be executed"
-        },
         "states": {
             "type": "array",
             "description": "States to be executed for each of the elements of inputCollection",
@@ -2181,6 +2282,14 @@ This allows you to test if your workflow behaves properly for cases when there a
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
+        },
+        "end": {
+          "$ref": "#/definitions/end",
+          "description": "State end definition"
         }
     },
     "oneOf": [
@@ -2190,7 +2299,6 @@ This allows you to test if your workflow behaves properly for cases when there a
         "type",
         "inputCollection",
         "inputParameter",
-        "startsAt",
         "states",
         "end"
       ]
@@ -2201,12 +2309,33 @@ This allows you to test if your workflow behaves properly for cases when there a
         "type",
         "inputCollection",
         "inputParameter",
-        "startsAt",
+        "states",
+        "transition"
+      ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "inputCollection",
+        "inputParameter",
+        "states",
+        "end"
+      ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "inputCollection",
+        "inputParameter",
         "states",
         "transition"
       ]
     }
-    ]
+  ]
 }
 ```
 
@@ -2276,9 +2405,11 @@ and the state is defined as:
    "type":"FOREACH",
    "inputCollection": "$.orders[?(@.completed == true)]",
    "inputParameter": "$.completedorder",
-   "startsAt": "SendConfirmation",
    "states": [
       {  
+      "start": {
+         "kind": "DEFAULT"
+      },
       "name":"SendConfirmation",
       "type":"OPERATION",
       "actionMode":"SEQUENTIAL",
@@ -2293,12 +2424,12 @@ and the state is defined as:
        }
     }],
     "end": {
-      "type": "DEFAULT"
+      "kind": "DEFAULT"
     }
     }
  ],
  "end": {
-    "type": "DEFAULT"
+    "kind": "DEFAULT"
  }
 }
 ]
@@ -2317,9 +2448,10 @@ states:
   type: FOREACH
   inputCollection: "$.orders[?(@.completed == true)]"
   inputParameter: "$.completedorder"
-  startsAt: SendConfirmation
   states:
-  - name: SendConfirmation
+  - start:
+      kind: DEFAULT
+    name: SendConfirmation
     type: OPERATION
     actionMode: SEQUENTIAL
     actions:
@@ -2329,10 +2461,9 @@ states:
           orderNumber: "$.completedorder.orderNumber"
           email: "$.completedorder.email"
     end:
-      type: DEFAULT
+      kind: DEFAULT
   end:
-    type: DEFAULT
-
+    kind: DEFAULT
 ```
 
 </td>
@@ -2427,6 +2558,7 @@ defined in the orders array of its data input.
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
 | [transition](#Transitions) | Next transition of the workflow after callback event has been received | string | yes |
+| [start](#Start-Definition) | Is this state a starting state | object | no |
 | [end](#End-Definition) | Is this state an end state | object | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
@@ -2502,6 +2634,10 @@ defined in the orders array of its data input.
           "description": "Next transition of the workflow after all the actions have been performed",
           "$ref": "#/definitions/transition"
         },
+         "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
+        },
         "end": {
           "$ref": "#/definitions/end",
           "description": "State end definition"
@@ -2512,26 +2648,48 @@ defined in the orders array of its data input.
     },
     "oneOf": [
     {
-       "required": [
-         "name",
-         "type",
-         "action",
-         "eventRef",
-         "timeout",
-         "end"
-       ]
-     },
-     {
-       "required": [
-         "name",
-         "type",
-         "action",
-         "eventRef",
-         "timeout",
-         "transition"
-       ]
-     }
-   ]
+      "required": [
+        "name",
+        "type",
+        "action",
+        "eventRef",
+        "timeout",
+        "end"
+      ]
+    },
+    {
+      "required": [
+        "name",
+        "type",
+        "action",
+        "eventRef",
+        "timeout",
+        "transition"
+      ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "action",
+        "eventRef",
+        "timeout",
+        "end"
+      ]
+    },
+    {
+      "required": [
+        "start",
+        "name",
+        "type",
+        "action",
+        "eventRef",
+        "timeout",
+        "transition"
+      ]
+    }
+  ]
 }
 ```
 
@@ -2560,12 +2718,126 @@ The callback state timeout parameter defines a time period from the action execu
 
 If the defined callback event has not been received during this time period, the state should transition to the next state or end workflow execution (if it is an end state).
 
+#### Start Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| kind | End kind ("DEFAULT", "SCHEDULED") | enum | yes |
+| [schedule](#Schedule-Definition) | If kind is "SCHEDULED", define when the starting state is or becomes active | object | yes only if kind is "SCHEDULED" |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "description": "State start definition",
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "DEFAULT",
+        "SCHEDULED"
+      ],
+      "description": "Kind of start definition"
+    },
+    "schedule": {
+      "description": "If kind is SCHEDULED, define when the starting state is or becomes active",
+      "$ref": "#/definitions/schedule"
+    }
+  },
+  "if": {
+    "properties": {
+      "kind": {
+        "const": "SCHEDULED"
+      }
+    }
+  },
+  "then": {
+    "required": [
+      "kind",
+      "schedule"
+    ]
+  },
+  "else": {
+    "required": [
+      "kind"
+    ]
+  }
+}
+```
+
+</details>
+
+Any state can declare to be the start state of the workflow, meaning that when a workflow intance is created it will be the initial
+state to be executed. A workflow definition can declare one workflow start state.
+
+The start definition provides a "kind" parameter which describes the starting options:
+
+- **DEFAULT** - The start state is always "active" and there are no restrictions imposed on its execution.
+- **SCHEDULED** -  The start state is only "active" as described in the schedule definition. Workflow instance creation can only be performed for this workflow
+as described by the provided schedule.
+
+Defining a schedule for the start definition allows you to model workflows which are only "active" during certain time intervals. For example let's say
+we have a workflow that orchestrates an online auction and should be valid only from when the auction starts until it ends. Before the auction starts or after
+it is completed, new submissions are allowed and thus no new workflow instances should be created.
+
+There are two cases to discuss when dealing with scheduled start states:
+
+1. **Starting States in [Parallel](#Parallel-State) state [branches](#parallel-state-branch)**: if a state in a parallel state branch defines a scheduled start state which is not "active" at the time the branch is executed, the parent workflow should not wait until it becomes active and just complete execution of the branch.
+2. **Starting states in [SubFlow](#SubFlow-State) states**: if a state in a workflow definition (referenced by SubFlow state) defines a scheduled start state that is not "active" at the time the SubFlow state is executed, the parent workflow should not wait until it becomes active and simply complete execution of the SubFlow state.
+
+For more information about the schedule definition see the next section.
+
+#### Schedule Definition
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| interval | Time interval describing when the workflow starting state is active. (ISO 8601 time interval format). | string | yes |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+  "type": "object",
+  "description": "Start state schedule definition",
+  "properties": {
+    "interval": {
+      "type": "string",
+      "description":  "Time interval describing when the workflow starting state is active"
+    }
+  },
+  "required": [
+    "interval"
+  ]
+}
+```
+
+</details>
+
+The interval property uses the ISO 8601 time interval format to describe when the starting state is active.
+There is a number of ways to express the time interval:
+
+1. **Start** + **End**: Defines the start and end time, for example "2020-03-20T13:00:00Z/2021-05-11T15:30:00Z", meaning this start state is active
+from March 20th 2020 at 1PM UTC, to May 11th 2021 at 3:30pm UTC.
+2. **Start** + **Duration**: Defines the start time and the duration, for example: "2020-03-20T13:00:00Z/P1Y2M10DT2H30M", meaning this start state is ative
+from March 20th 2020 at 1pm UTC and is valid for 1 year, 2 months, 10 days 2 hours and 30 minutes.
+3. **Duration** + **End**: Defines the duration and an end, for example: "P1Y2M10DT2H30M/2020-05-11T15:30:00Z", meaning that this start state is active for
+1 year, 2 months, 10 days 2 hours and 30 minutes, or until May 11th 2020 at 3:30PM UTC, whichever comes first.
+4. **Duration**: Defines the duration only, for example: ""P1Y2M10DT2H30M"", meaning this start state is active for 1 year, 2 months, 10 days 2 hours and 30 minutes.
+Implementations have to provide the context in this case on when the duration should start to be counted, as it may be the workflow deployment time or the first time this workflow instance is created, for example.
+
+A case to consider here is when an [Event](#Event-State) state is also a workflow start state and the schedule definition is defined. Let's say we have a starting exclusive [Event](#Event-State) state
+which waits to consume event "X", meaning that the workflow instance should be created when event "X" occurs. If we also in the start schedule definition define
+a specific interval, the "waiting" for event "X" should only be started when the starting state becomes active.
+
+Once a workflow instance is created, the start state schedule can be ignored for that particular workflow instance. States should from then on rely on their timeout properties for example to restrict the waiting time of incoming events, function executions, etc.  
+
 #### End Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| type | End Type ("DEFAULT", "TERMINATE", or "EVENT") | enum | yes |
-| [produceEvent](#ProduceEvent-Definition) | If type is "EVENT", define what type of event to produce | object | yes only if type is "EVENT" |
+| kind | End kind ("DEFAULT", "TERMINATE", or "EVENT") | enum | yes |
+| [produceEvent](#ProduceEvent-Definition) | If kind is "EVENT", define what type of event to produce | object | yes only if kind is "EVENT" |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -2574,36 +2846,36 @@ If the defined callback event has not been received during this time period, the
   "type": "object",
   "description": "State end definition",
   "properties": {
-    "type": {
+    "kind": {
       "type": "string",
       "enum": [
         "DEFAULT",
         "TERMINATE",
         "EVENT"
       ],
-      "description": "Type of end definition"
+      "description": "Kind of end definition"
     },
     "produceEvent": {
-      "description": "If end type is EVENT, select one of the defined events by name and set its data",
+      "description": "If end kind is EVENT, select one of the defined events by name and set its data",
       "$ref": "#/definitions/produceevent"
     }
   },
   "if": {
     "properties": {
-      "type": {
+      "kind": {
         "const": "EVENT"
       }
     }
   },
   "then": {
     "required": [
-      "type",
+      "kind",
       "produceEvent"
     ]
   },
   "else": {
     "required": [
-      "type"
+      "kind"
     ]
   }
 }
@@ -2611,9 +2883,9 @@ If the defined callback event has not been received during this time period, the
 
 </details>
 
-Any state can declare to be the end state of the workflow to declare the completion of workflow execution.
-The end definitions provides different ways
-to complete workflow execution, which is set by the "type" property:
+Any state with the exception of the [Switch](#Switch-State) state can declare to be the end state of the workflow, meaning that after the execution of this state is completed, workflow execution ends. Switch states require a transition to happen after their execution, thus cannot be workflow end states.
+
+The end definitions provides different ways to complete workflow execution, which is set by the "kind" property:
 
 - **DEFAULT** - Default workflow execution completion, no other special behavior
 - **TERMINATE** - Completes all execution flows in the given workflow instance. All activities/actions being executed
@@ -2739,7 +3011,6 @@ output of the state to transition from includes an user with the title "MANAGER"
 
 ```json
 {  
-"startsAt": "lowRiskState",
 "functions": [
   {
    "name": "doLowRistOperationFunction",
@@ -2752,6 +3023,9 @@ output of the state to transition from includes an user with the title "MANAGER"
 ],
 "states":[  
   {  
+   "start": {
+     "kind": "DEFAULT"
+   },
    "name":"lowRiskState",
    "type":"OPERATION",
    "actionMode":"Sequential",
@@ -2774,7 +3048,7 @@ output of the state to transition from includes an user with the title "MANAGER"
    "name":"highRiskState",
    "type":"OPERATION",
    "end": {
-     "type": "DEFAULT"
+     "kind": "DEFAULT"
    },
    "actionMode":"Sequential",
    "actions":[  
@@ -2793,14 +3067,15 @@ output of the state to transition from includes an user with the title "MANAGER"
 <td valign="top">
 
 ```yaml
-startsAt: lowRiskState
 functions:
 - name: doLowRistOperationFunction
   resource: functionResourse
 - name: doHighRistOperationFunction
   resource: functionResourse
 states:
-- name: lowRiskState
+- start:
+    kind: DEFAULT
+  name: lowRiskState
   type: OPERATION
   actionMode: Sequential
   actions:
@@ -2814,7 +3089,7 @@ states:
 - name: highRiskState
   type: OPERATION
   end:
-      type: DEFAULT
+    kind: DEFAULT
   actionMode: Sequential
   actions:
   - functionRef:
@@ -2852,7 +3127,7 @@ If no input is provided the default data input is the empty object:
 }
 ```
 
-Workflow data input is passed to the workflow's "startsAt" state (the starting state) as data input.
+Workflow data input is passed to the workflow's [start state](#Start-Definition) state as data input.
 
 <p align="center">
 <img src="media/spec/workflowdatainput.png" height="350px" alt="Workflow data input"/>
@@ -3163,7 +3438,6 @@ and then lets us know how to greet this customer in different languages. We coul
 ```json
 {
     "name": "Greet Customers when they arrive",
-    "startsAt": "WaitForCustomerToArrive",
     "events": [{
         "name": "CustomerArrivesEvent",
         "type": "customer-arrival-type",
@@ -3175,6 +3449,9 @@ and then lets us know how to greet this customer in different languages. We coul
     }],
     "states":[
         {
+            "start": {
+               "kind": "DEFAULT"
+            },
             "name": "WaitForCustomerToArrive",
             "type": "EVENT",
             "eventsActions": [{
@@ -3202,7 +3479,9 @@ and then lets us know how to greet this customer in different languages. We coul
                 "dataInputPath": "$.hello",
                 "dataOutputPath": "$.finalCustomerGreeting"
             },
-            "end": true
+            "end": {
+              "kind": "DEFAULT"
+            }
         }
     ]
 }
