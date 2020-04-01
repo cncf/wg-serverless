@@ -1,7 +1,7 @@
 {
   "$id": "https://wg-serverless.org/serverless-workflow-schema-v01.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "description": "Serverless Workflow is a vendor-neutral specification for defining the model of workflows responsible for orchestrating event-driven serverless applications.",
+  "description": "Serverless Workflow is a vendor-neutral specification for defining the model of workflows responsible for orchestrating event-driven serverless applications",
   "type": "object",
   "properties": {
     "id": {
@@ -25,11 +25,13 @@
     },
     "schemaVersion": {
       "type": "string",
-      "description": "Serverless Workflow schema version"
+      "description": "Serverless Workflow schema version",
+      "minLength": 1
     },
     "expressionLanguage": {
       "type": "string",
-      "description": "Default expression language to be used throughout the workflow definition"
+      "description": "Default expression language to be used throughout the workflow definition",
+      "minLength": 1
     },
     "dataInputSchema": {
       "type": "string",
@@ -54,7 +56,7 @@
     },
     "functions": {
       "type": "array",
-      "description": "Workflow functions",
+      "description": "Workflow function definitions",
       "items": {
         "type": "object",
         "$ref": "#/definitions/function"
@@ -62,7 +64,7 @@
     },
     "states": {
       "type": "array",
-      "description": "State Definitions",
+      "description": "State definitions",
       "items": {
         "anyOf": [
           {
@@ -106,7 +108,7 @@
     },
     "extensions": {
       "type": "array",
-      "description": "Workflow Extensions",
+      "description": "Workflow extensions",
       "items": {
         "type": "object"
       }
@@ -127,12 +129,12 @@
       "type": "object",
       "properties": {
         "expression": {
-          "description": "Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid.",
+          "description": "Expression evaluated against state's data output. Must evaluate to true for the transition to be valid",
           "$ref": "#/definitions/expression"
         },
         "nextState": {
           "type": "string",
-          "description": "State to transition to next",
+          "description": "Name of state to transition to",
           "minLength": 1
         }
       },
@@ -165,7 +167,7 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "Event unique name",
+          "description": "Unique event name",
           "minLength": 1
         },
         "source": {
@@ -181,7 +183,8 @@
           "description": "Context attribute name of the CloudEvent which value is to be used for event correlation"
         },
         "metadata": {
-          "$ref": "#/definitions/metadata"
+          "$ref": "#/definitions/metadata",
+          "description": "Metadata information"
         }
       },
       "required": [
@@ -231,7 +234,7 @@
           "description": "Unique action definition name"
         },
         "functionRef": {
-          "description": "References a reusable function definition to be invoked",
+          "description": "References a reusable function definition",
           "$ref": "#/definitions/functionref"
         },
         "actionDataFilter": {
@@ -252,7 +255,7 @@
         },
         "interval": {
           "type": "string",
-          "description": "Specifies the amount of time between retries (ISO 8601 format)"
+          "description": "Interval value for retry (ISO 8601 repeatable format)"
         },
         "multiplier": {
           "type": "string",
@@ -274,16 +277,16 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "Function unique name",
+          "description": "Unique function name",
           "minLength": 1
         },
         "resource": {
           "type": "string",
-          "desription": "Function resource (URI)"
+          "description": "Function resource (URI)"
         },
         "type": {
           "type": "string",
-          "description": "Type of function to implement. Can be defined by implementations"
+          "description": "Function type"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
@@ -300,7 +303,7 @@
       "properties": {
         "refName": {
           "type": "string",
-          "desription": "Name of the referenced function"
+          "description": "Name of the referenced function"
         },
         "parameters": {
           "type": "object",
@@ -367,8 +370,7 @@
       },
       "required": [
         "name",
-        "states",
-        "waitForCompletion"
+        "states"
       ]
     },
     "delaystate": {
@@ -519,7 +521,7 @@
         },
         "onError": {
           "type": "array",
-          "description": "States runtime error handling definitions",
+          "description": "States error handling definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/error"
@@ -590,7 +592,7 @@
     },
     "operationstate": {
       "type": "object",
-      "description": "Defines actions be performed. Does not wait for incoming events.",
+      "description": "Defines actions be performed. Does not wait for incoming events",
       "properties": {
         "id": {
           "type": "string",
@@ -646,7 +648,7 @@
         },
         "onError": {
           "type": "array",
-          "description": "OnError Definition",
+          "description": "States error handling definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/error"
@@ -760,7 +762,7 @@
         },
         "onError": {
           "type": "array",
-          "description": "OnError Definition",
+          "description": "States error handling definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/error"
@@ -851,7 +853,7 @@
         },
         "choices": {
           "type": "array",
-          "description": "Defines an ordered set of Match Rules against the input data to this state",
+          "description": "Defines matching rules evaluated against state data",
           "items": {
             "anyOf": [
               {
@@ -875,7 +877,7 @@
         },
         "onError": {
           "type": "array",
-          "description": "OnError Definition",
+          "description": "States error handling definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/error"
@@ -925,7 +927,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique State id",
+          "description": "Unique state id",
           "minLength": 1
         },
         "name": {
@@ -950,18 +952,18 @@
         "waitForCompletion": {
           "type": "boolean",
           "default": false,
-          "description": "Workflow execution must wait for sub-workflow to finish before continuing."
+          "description": "Workflow execution must wait for sub-workflow to finish before continuing"
         },
         "workflowId": {
           "type": "string",
-          "description": "Sub-workflow unique id."
+          "description": "Sub-workflow unique id"
         },
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
         },
         "onError": {
           "type": "array",
-          "description": "OnError Definition",
+          "description": "States error handling definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/error"
@@ -1028,7 +1030,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique State id",
+          "description": "Unique state id",
           "minLength": 1
         },
         "name": {
@@ -1138,7 +1140,7 @@
         },
         "inputCollection": {
           "type": "string",
-          "description": "JSONPath expression selecting an JSON array element of the states data input"
+          "description": "JSONPath expression selecting a JSON array element of the states data input"
         },
         "outputCollection": {
           "type": "string",
@@ -1146,7 +1148,7 @@
         },
         "inputParameter": {
           "type": "string",
-          "description": "JSONPath expression specifying an JSON object field of the states data input. For each parallel iteration, this field will get populated with a unique element of the inputCollection array"
+          "description": "JSONPath expression specifying a JSON object field of the states data input. For each parallel iteration, this field will get populated with a unique element of the inputCollection array"
         },
         "max": {
           "type": "integer",
@@ -1218,7 +1220,7 @@
           }
         },
         "transition": {
-          "description": "Next transition of the workflow after subflow has completed",
+          "description": "Next transition of the workflow after state has completed",
           "$ref": "#/definitions/transition"
         },
         "dataInputSchema": {
@@ -1282,7 +1284,7 @@
     },
     "callbackstate": {
       "type": "object",
-      "description": "This state performs an action, then waits for the callback event that denotes completion of the action.",
+      "description": "This state performs an action, then waits for the callback event that denotes completion of the action",
       "properties": {
         "id": {
           "type": "string",
@@ -1411,7 +1413,7 @@
       "properties": {
         "path": {
           "type": "string",
-          "description": "JSONPath that selects the value of the input data to be matched"
+          "description": "JSONPath that selects an element of state data"
         },
         "value": {
           "type": "string",
@@ -1519,7 +1521,7 @@
     },
     "expression": {
       "type": "object",
-      "description": "Defines the expression language and body of the expression.",
+      "description": "Defines the expression language and body of the expression",
       "properties": {
         "language": {
           "type": "string",
@@ -1527,7 +1529,7 @@
         },
         "body": {
           "type": "string",
-          "description": "The expression body."
+          "description": "The expression body"
         }
       },
       "required": [

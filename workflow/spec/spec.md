@@ -132,7 +132,7 @@ As mentioned, implementation compliance is based on the workflow definition lang
 | [dataInputSchema](#Workflow-Data-Input) | URI to JSON Schema that workflow data input adheres to | string | no |
 | [dataOutputSchema](#Workflow-data-output) | URI to JSON Schema that workflow data output adheres to | string | no |
 | [events](#Event-Definition) | Workflow event definitions. Defines events that can be consumed or produced | array | no |
-| [functions](#Function-Definition) | Workflow functions | array | no |
+| [functions](#Function-Definition) | Workflow function definitions | array | no |
 | [states](#State-Definition) | Workflow states | array | yes |
 | [extensions](#Extending) | Workflow custom extensions | array | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
@@ -144,7 +144,7 @@ As mentioned, implementation compliance is based on the workflow definition lang
 {
     "$id": "https://wg-serverless.org/workflow.schema",
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "description": "Vendor-neutral and portable specification that standardizes the definition of serverless application flows",
+    "description": "Serverless Workflow is a vendor-neutral specification for defining the model of workflows responsible for orchestrating event-driven serverless application",
     "type": "object",
     "properties": {
         "id": {
@@ -168,7 +168,8 @@ As mentioned, implementation compliance is based on the workflow definition lang
         },
         "schemaVersion": {
           "type": "string",
-          "description": "Serverless Workflow schema version"
+          "description": "Serverless Workflow schema version",
+          "minLength": 1
         },
         "expressionLanguage": {
           "type": "string",
@@ -189,7 +190,7 @@ As mentioned, implementation compliance is based on the workflow definition lang
         },
         "functions": {
             "type": "array",
-            "description": "Workflow functions",
+            "description": "Workflow function definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/function"
@@ -271,8 +272,8 @@ Following figure describes the main workflow definition blocks.
 | --- | --- | --- | --- |
 | name | Unique function name | string | yes |
 | resource | Function resource (URI) | string | yes |
-| type | Function type. Can be defined by implementations. | string | no |
-| [metadata](#Workflow-Metadata) | Metadata information| object | no |
+| type | Function type | string | no |
+| [metadata](#Workflow-Metadata) | Metadata information | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -282,7 +283,7 @@ Following figure describes the main workflow definition blocks.
   "properties": {
     "name": {
       "type": "string",
-      "description": "Function unique name",
+      "description": "Unique function name",
       "minLength": 1
     },
     "resource": {
@@ -291,10 +292,11 @@ Following figure describes the main workflow definition blocks.
     },
     "type": {
       "type": "string",
-      "description": "Type of function to implement. Can be defined by implementations"
+      "description": "Function type"
     },
     "metadata": {
-       "$ref": "#/definitions/metadata"
+       "$ref": "#/definitions/metadata",
+       "description": "Metadata information"
     }
   },
   "required": ["name", "resource"]
@@ -317,7 +319,7 @@ Since function definitions are reusable, their data input parameters are defined
 | source | CloudEvent source | string | yes |
 | type | CloudEvent type | string | yes |
 | correlationToken | Context attribute name of the CloudEvent which value is to be used for event correlation | string | no |
-| [metadata](#Workflow-Metadata) | Metadata information| object | no |
+| [metadata](#Workflow-Metadata) | Metadata information | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -339,10 +341,11 @@ Since function definitions are reusable, their data input parameters are defined
         },
         "correlationToken": {
             "type": "string",
-            "description": "Path used for event correlation."
+            "description": "Context attribute name of the CloudEvent which value is to be used for event correlation"
         },
         "metadata": {
-          "$ref": "#/definitions/metadata"
+          "$ref": "#/definitions/metadata",
+          "description": "Metadata information"
         }
     },
     "required": ["name", "source", "type"]
@@ -435,7 +438,7 @@ States define building blocks of the Serverless Workflow. The specification defi
 | **[SubFlow](#SubFlow-State)** | Represents the invocation of another workflow from within a workflow | no | yes | no | yes | no | no |
 | **[Relay](#Relay-State)** | Relay state data input to output | no | yes | no | yes | no | no |
 | **[ForEach](#ForEach-State)** | Parallel execution of states for each element of a data array | no | yes | no | yes (includes retries) | yes | no |
-| **[Callback](#Callback-State)** | Manual decision step. Executes a function and waits for callback event that indicates completion of the manual decision.| yes | yes | yes (including retries) | yes | no | no |
+| **[Callback](#Callback-State)** | Manual decision step. Executes a function and waits for callback event that indicates completion of the manual decision | yes | yes | yes (including retries) | yes | no | no |
 
 Following is a detailed description of each of the defined states:
 
@@ -465,7 +468,7 @@ Following is a detailed description of each of the defined states:
 ```json
 {
     "type": "object",
-    "description": "This state is used to wait for events from event sources, then consumes them and invoke one or more actions to run in sequence or parallel.",
+    "description": "This state is used to wait for events from event sources, then consumes them and invoke one or more actions to run in sequence or parallel",
     "properties": {
         "id": {
             "type": "string",
@@ -722,7 +725,7 @@ instance in case it is an end state without performing any actions.
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | name | Unique action name | string | no |
-| [functionRef](#FunctionRef-Definition) | References a reusable function definition to be invoked | object | yes |
+| [functionRef](#FunctionRef-Definition) | References a reusable function definition | object | yes |
 | [actionDataFilter](#action-data-filter) | Action data filter definition | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -738,7 +741,7 @@ instance in case it is an end state without performing any actions.
         },
         "functionRef": {
             "$ref": "#/definitions/functionref",
-            "description": "References a reusable function definition to be invoked"
+            "description": "References a reusable function definition"
         },
         "actionDataFilter": {
           "$ref": "#/definitions/actiondatafilter"
@@ -834,7 +837,7 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 ```json
 {
   "type": "object",
-  "description": "Defines the language and body of expression.",
+  "description": "Defines the language and body of expression",
   "properties": {
     "language": {
       "type": "string",
@@ -865,7 +868,7 @@ expression language used for all defined expressions.
 | --- | --- | --- | --- |
 | [expression](#Expression-Definition) | Expression that matches against states data output | string | yes |
 | interval | Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| string | no |
-| multiplier | Multiplier value by which interval increases during each attempt (ISO 8601 time format). For example: "PT3S" meaning the second attempt interval is increased by 3 seconds, the third interval by 6 seconds and so on. | string | no |
+| multiplier | Multiplier value by which interval increases during each attempt (ISO 8601 time format). For example: "PT3S" meaning the second attempt interval is increased by 3 seconds, the third interval by 6 seconds and so on | string | no |
 | maxAttempts | Maximum number of retry attempts (1 by default). Value of 0 means no retries are performed | integer | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -881,7 +884,7 @@ expression language used for all defined expressions.
         },
         "interval": {
             "type": "string",
-            "description": "Specifies retry interval (ISO 8601 repeatable format)"
+            "description": "Interval value for retry (ISO 8601 repeatable format)"
         },
         "multiplier": {
             "type": "string",
@@ -927,7 +930,7 @@ For more information reference the [Workflow Error Handling - Retrying](#workflo
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [expression](#Expression-Definition) | Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid. | object | no |
+| [expression](#Expression-Definition) | Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid | object | no |
 | [nextState](#Transitions) | State to transition to next | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -937,7 +940,7 @@ For more information reference the [Workflow Error Handling - Retrying](#workflo
   "type": "object",
   "properties": {
     "expression": {
-      "description": "Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid.",
+      "description": "Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid",
       "$ref": "#/definitions/expression"
     },
     "nextState": {
@@ -1091,7 +1094,7 @@ Once all actions have been performed, a transition to another state can occur.
 | id | Unique state id | string | no |
 | name |State name | string | yes |
 | type |State type | string | yes |
-| [choices](#switch-state-choices) |Ordered set of matching rules to determine which state to trigger next | array | yes |
+| [choices](#switch-state-choices) | Defines matching rules evaluated against state data | array | yes |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
 | default | Next transition of the workflow if there is no match for any choices | object | yes (if end is not defined) |
@@ -1105,7 +1108,7 @@ Once all actions have been performed, a transition to another state can occur.
 ```json
 {
     "type": "object",
-    "description": "Permits transitions to other states based on criteria matching.",
+    "description": "Permits transitions to other states based on criteria matching",
     "properties": {
         "id": {
             "type": "string",
@@ -1123,7 +1126,7 @@ Once all actions have been performed, a transition to another state can occur.
         },
         "choices": {
             "type": "array",
-            "description": "Defines an ordered set of Match Rules against the input data to this state",
+            "description": "Defines matching rules evaluated against state data",
             "items": {
                 "type": "object",
                 "anyOf": [
@@ -1208,7 +1211,7 @@ There are four types of choices defined:
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| path | Path that selects the data input value to be matched | string | yes |
+| path | JSONPath that selects an element of state data | string | yes |
 | value | Matching value | string | yes |
 | operator | Data Input comparator | string | yes |
 | [transition](#Transitions) | Next transition of the workflow if there is valid matches | string | yes |
@@ -1222,7 +1225,7 @@ There are four types of choices defined:
     "properties": {
         "path": {
             "type": "string",
-            "description": "JSONPath that selects the data input value to be matched"
+            "description": "JSONPath that selects an element of state data"
         },
         "value": {
             "type": "string",
@@ -1249,7 +1252,7 @@ There are four types of choices defined:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | and | List of choices | array | yes |
-| path | Path that selects the data input value to be matched | string | yes |
+| path | JSONPath that selects an element of state data | string | yes |
 | value | Matching value | string | yes |
 | operator | Data Input comparator | string | yes |
 | [transition](#Transitions) | Next transition of the workflow if there is valid matches | string | yes |
@@ -1267,7 +1270,7 @@ There are four types of choices defined:
             "items": {
                 "path": {
                     "type": "string",
-                    "description": "JSONPath that selects the data input value to be matched"
+                    "description": "JSONPath that selects an element of state data"
                 },
                 "value": {
                     "type": "string",
@@ -1296,7 +1299,7 @@ There are four types of choices defined:
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | not | State choice | object | yes |
-| path | Path that selects the data input value to be matched | string | yes |
+| path | JSONPath that selects an element of state data | string | yes |
 | value | Matching value | string | yes |
 | operator | Data Input comparator | string | yes |
 | [transition](#Transitions) | Next transition of the workflow if there is valid matches | string | yes |
@@ -1313,7 +1316,7 @@ There are four types of choices defined:
             "properties": {
                 "path": {
                     "type": "string",
-                    "description": "JSONPath that selects the data input value to be matched"
+                    "description": "JSONPath that selects an element of state data"
                 },
                 "value": {
                     "type": "string",
@@ -1342,7 +1345,7 @@ There are four types of choices defined:
 | Parameter | Description |  Type | Required |
 | --- | --- | --- | --- |
 | or | State choices | array | yes |
-| path | Path that selects the data input value to be matched | string | yes |
+| path | JSONPath that selects an element of state data | string | yes |
 | value | Matching value | string | yes |
 | operator | Data Input comparator | string | yes |
 | [transition](#Transitions) |Next transition of the workflow if there is valid matches | string | yes |
@@ -1360,7 +1363,7 @@ There are four types of choices defined:
             "items": {
                 "path": {
                     "type": "string",
-                    "description": "JSONPath that selects the data input value to be matched"
+                    "description": "JSONPath that selects an element of state data"
                 },
                 "value": {
                     "type": "string",
@@ -1648,7 +1651,7 @@ Branches contain one or more states. Each branch must define one [starting state
 | --- | --- | --- | --- |
 | name | Branch name | string | yes |
 | [states](#State-Definition) | States to be executed in this branch | array | yes |
-| waitForCompletion | If workflow execution must wait for this branch to finish before continuing | boolean | yes |
+| waitForCompletion | If workflow execution must wait for this branch to finish before continuing | boolean | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1708,7 +1711,7 @@ Branches contain one or more states. Each branch must define one [starting state
             "description": "Workflow execution must wait for this branch to finish before continuing"
         }
     },
-    "required": ["name", "states", "waitForCompletion"]
+    "required": ["name", "states"]
 }
 ```
 
@@ -1751,7 +1754,7 @@ Parallel state must wait for all branches which have this property set to "true"
     "properties": {
         "id": {
             "type": "string",
-            "description": "Unique State id",
+            "description": "Unique state id",
             "minLength": 1
         },
         "name": {
@@ -1766,11 +1769,11 @@ Parallel state must wait for all branches which have this property set to "true"
         "waitForCompletion": {
             "type": "boolean",
             "default": false,
-            "description": "Workflow execution must wait for sub-workflow to finish before continuing."
+            "description": "Workflow execution must wait for sub-workflow to finish before continuing"
         },
         "workflowId": {
             "type": "string",
-            "description": "Sub-workflow unique id."
+            "description": "Sub-workflow unique id"
         },
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
@@ -1894,7 +1897,7 @@ If this property is set to false, data access to parent's workflow should not be
     "properties": {
         "id": {
             "type": "string",
-            "description": "Unique State id",
+            "description": "Unique state id",
             "minLength": 1
         },
         "name": {
@@ -2145,7 +2148,7 @@ This allows you to test if your workflow behaves properly for cases when there a
 | type | State type | string | yes |
 | inputCollection | JSONPath expression selecting an JSON array element of the states data input | string | yes |
 | outputCollection | JSONPath expression specifying where in the states data output to place the final data output of each iteration of the executed states | string | no |
-| inputParameter | JSONPath expression specifying an JSON object field of the states data input. For each parallel iteration, this field will get populated with an unique element of the inputCollection array. | string | yes |
+| inputParameter | JSONPath expression specifying a JSON object field of the states data input. For each parallel iteration, this field will get populated with an unique element of the inputCollection array | string | yes |
 | max | Specifies how upper bound on how many iterations may run in parallel | integer | no |
 | timeDelay | Amount of time (ISO 8601 format) to wait between each iteration | string | no |
 | [states](#State-Definition) | States to be executed for each of the elements of inputCollection | array | yes |
@@ -2182,7 +2185,7 @@ This allows you to test if your workflow behaves properly for cases when there a
         },
         "inputCollection": {
            "type": "string",
-           "description": "JSONPath expression selecting an JSON array element of the states data input"
+           "description": "JSONPath expression selecting a JSON array element of the states data input"
          },
          "outputCollection": {
            "type": "string",
@@ -2190,7 +2193,7 @@ This allows you to test if your workflow behaves properly for cases when there a
          },
          "inputParameter": {
             "type": "string",
-             "description": "JSONPath expression specifying an JSON object field of the states data input. For each parallel iteration, this field will get populated with a unique element of the inputCollection array"
+             "description": "JSONPath expression specifying a JSON object field of the states data input. For each parallel iteration, this field will get populated with a unique element of the inputCollection array"
          },
          "max": {
            "type": "integer",
@@ -2263,7 +2266,7 @@ This allows you to test if your workflow behaves properly for cases when there a
             }
         },
         "transition": {
-          "description": "Next transition of the workflow after subflow has completed",
+          "description": "Next transition of the workflow after state has completed",
           "$ref": "#/definitions/transition"
         },
         "dataInputSchema": {
@@ -2544,7 +2547,7 @@ defined in the orders array of its data input.
 | id | Unique state id | string | no |
 | name | State name | string | yes |
 | type | State type | string | yes |
-| [action](#Action-Definition) | Defines the action to be executed. | object | yes |
+| [action](#Action-Definition) | Defines the action to be executed | object | yes |
 | eventRef | References an unique callback event name in the defined workflow [events](#Event-Definition) | string | yes |
 | [timeout](#eventstate-timeout) | Time period to wait from when action is executed until the callback event is received (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | yes |
 | [eventDataFilter](#event-data-filter) | Callback event data filter definition | object | no |
@@ -2564,7 +2567,7 @@ defined in the orders array of its data input.
 ```json
 {
     "type": "object",
-    "description": "This state performs an action, then waits for the callback event that denotes completion of the action.",
+    "description": "This state performs an action, then waits for the callback event that denotes completion of the action",
     "properties": {
         "id": {
             "type": "string",
