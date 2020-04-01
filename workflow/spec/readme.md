@@ -28,9 +28,9 @@ The following documents are available:
 || Latest Release | Working Draft |
 | :--- | :--- | :--- |
 | **Core Specification:** | | |
-| Serverless Workflow| | [master](https://github.com/cncf/wg-serverless/blob/master/workflow/spec/spec.md)  |
+| Serverless Workflow| [v0.1](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) | [master](https://github.com/cncf/wg-serverless/blob/master/workflow/spec/spec.md)  |
 | **Additional Documentation:** | | |
-| Model JSON Schema | | [master](schema/serverless-workflow-schema.json) |
+| Model JSON Schema | [v0.1](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/schema/serverless-workflow-schema-v01.json) | [master](https://github.com/cncf/wg-serverless/blob/master/workflow/spec/schema/serverless-workflow-schema.json) |
 
 ## Community
 
