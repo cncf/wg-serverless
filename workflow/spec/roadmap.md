@@ -35,8 +35,8 @@ _Status description:_
 | ✔ | Update workflow end definition | [spec doc](spec.md) |
 | ✔ | Add Callback state | [spec doc](spec.md) |
 | ✔ | Add workflow metadata | [spec doc](spec.md) |
-| ✔️| Update workflow start definition | [spec doc](spec.md) |
-| ✔️| Prepare github branch and docs for v0.1 | |
+| ✔ | Update workflow start definition | [spec doc](spec.md) |
+| ✔ | Prepare github branch and docs for v0.1 | |
 
 ## v0.2 (Release data TBD)
 
