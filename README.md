@@ -55,13 +55,17 @@ The current version of the whitepaper can be found
 
 Please see https://cloudevents.io/.
 
-## Workflow
+## Serverless Workflow
 
 Proposed [specification](https://github.com/cncf/wg-serverless/blob/master/workflow/spec/spec.md)
 
 ## Meeting Time
 
-See the [CNCF public events calendar](https://www.cncf.io/community/calendar/). The Serverless Working Group meets every Thursday at 9AM PT (USA Pacific):
+See the [CNCF public events calendar](https://www.cncf.io/community/calendar/).
+
+The Serverless Working Group meets every Thursday at 9AM PT (USA Pacific).
+
+The Serverless Workflow sub-group meets on the first Monday every month at 10AM PT (USA Pacific).
 
 Join from PC, Mac, Linux, iOS or Android: https://zoom.us/my/cncfserverlesswg
 

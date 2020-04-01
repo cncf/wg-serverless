@@ -42,3 +42,6 @@ If you are participating insome way, please add your information via pull reques
 
 * **IBM**
   * Doug Davis
+
+* **SecureDocs, Inc**
+  * Stephen Crosby

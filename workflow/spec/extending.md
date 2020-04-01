@@ -22,17 +22,16 @@ Hope this gives implementors an idea on how to start adding their own custom ext
 Let's say we are developing an extension which adds additional information
  to a serverless workflow that can be passed and processed by a simulation tool.
 
-Our example extension can add one more more simulation "scenarios". Each scenario
+Our example extension can add "scenarios". Each scenario
 can add "time" parameters for each of the workflow states and define a min and max value
 within which the workflow state should be executed in. It should also add a "probability" parameter
-which defines the probabily that a state is triggered during the execution of the workflow.
+which defines the probability that a state is triggered during the execution of the workflow.
 
 So let's define a simple example workflow model and then add our custom extension into it:
 
 ```json
 {  
    "name": "Simple Workflow",
-   "startsAt": "FirstOperation",
    "functions": [
       {
          "name": "firstFunction",
@@ -47,6 +46,9 @@ So let's define a simple example workflow model and then add our custom extensio
       {  
          "name":"FirstOperation",
          "type":"OPERATION",
+         "start": {
+            "kind": "DEFAULT"
+         },
          "actionMode":"Sequential",
          "actions":[  
             {  
@@ -64,7 +66,7 @@ So let's define a simple example workflow model and then add our custom extensio
          "name":"SecondOperation",
          "type":"OPERATION",
          "end": {
-           "type": "DEFAULT"
+           "kind": "DEFAULT"
          },
          "actionMode":"Sequential",
          "actions":[  

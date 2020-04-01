@@ -41,7 +41,7 @@ Majority (>50%) vote among the existing owners must be used to accept such a pro
 At times people lose interest in different projects or no longer can invest time into them. Also some owners
 may no longer follow the characteristics/traits mentioned in the [above](#Becoming-a-project-owner) section.
 If this happens project owners have the ability (and responsibility) to remove themselves from the owners duties.
-This can be done via a Pull Request which removes their name from the [owners document](#owners.md).
+This can be done via a Pull Request which removes their name from the [owners document](owners.md).
 
 It is also possible for current project owners to cast a vote to remove another owner that they feel no longer exemplifies owners duties/characteristics.
 Majority (>50%) vote among the existing owners must be used to accept such a proposal.
