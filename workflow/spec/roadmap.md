@@ -37,12 +37,3 @@ _Status description:_
 | ✔ | Add workflow metadata | [spec doc](spec.md) |
 | ✔ | Update workflow start definition | [spec doc](spec.md) |
 | ✔ | Prepare github branch and docs for v0.1 | |
-
-## v0.2 (Release data TBD)
-
-| Status | Description | Comments |
-| --- | --- |  --- |
-| 🚩 | Start discussions on Serverless Workflow Technology Compatibility Kit (TCK) | |
-| 🚩 | Decide on state/task/stage/step naming convention | [issue link](https://github.com/cncf/wg-serverless/issues/127) |
-| ✏️ | Finish specification primer document | [google doc](https://docs.google.com/document/d/11rD3Azj63G2Si0VpokSpr-1ib3mFRFHSwN6tJb-0LQM/edit#heading=h.paewfy83tetm) |
-
