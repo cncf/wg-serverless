@@ -537,7 +537,7 @@ Following is a detailed description of each of the defined states:
         "start": {
           "$ref": "#/definitions/start",
           "description": "State start definition"
-        }
+        },
         "end": {
           "$ref": "#/definitions/end",
           "description": "State end definition"
@@ -1176,7 +1176,7 @@ Once all actions have been performed, a transition to another state can occur.
         "start",
         "name",
         "type",
-        "choices"
+        "choices",
         "default"
       ]
     },
@@ -3900,11 +3900,10 @@ Here is an example of metadata attached to the core workflow definition:
     "category": "Sales",
     "giturl": "github.com/myproject",
     "author": "Author Name",
-    "team": "Team Name",
-    ...
+    "team": "Team Name"
   },
   "states": [
-    ...
+
   ]
 }
 ```
