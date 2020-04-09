@@ -361,11 +361,6 @@
               }
             ]
           }
-        },
-        "waitForCompletion": {
-          "type": "boolean",
-          "default": false,
-          "description": "Flow must wait for this branch to finish before continuing"
         }
       },
       "required": [
@@ -751,6 +746,11 @@
             "type": "object",
             "$ref": "#/definitions/branch"
           }
+        },
+        "waitForCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true all branches must finish before state can transition. If false, workflow can transition as soon as all branches were triggered"
         },
         "retry": {
           "type": "array",

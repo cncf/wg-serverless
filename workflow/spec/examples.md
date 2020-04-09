@@ -558,9 +558,8 @@ states:
 #### Description
 
 This example uses a parallel state to execute two branches (simple wait states) at the same time.
-Note that the waitForCompletion flag is set to "false" so as soon as the "ShortDelay" delay state finishes,
-the workflow complete execution. If waitForCompletion was set to true, the workflow would complete after both
-of the branches are done.
+The waitForCompletion flag is set to false, which means the parallel state has to wait for both branches
+to finish execution before it can transition (end workflow execution in this case as it is an end state).
 
 #### Workflow Definition
 
@@ -585,6 +584,7 @@ of the branches are done.
      "start": {
        "kind": "DEFAULT"
      },
+     "waitForCompletion": true,
      "branches": [
         {
           "name": "Branch1",
@@ -600,8 +600,7 @@ of the branches are done.
                    "kind": "DEFAULT"
                  }
             }
-          ],
-          "waitForCompletion": false
+          ]
         },
         {
           "name": "Branch2",
@@ -617,8 +616,7 @@ of the branches are done.
                     "kind": "DEFAULT"
                   }
              }
-          ],
-          "waitForCompletion": false
+          ]
         }
      ],
      "end": {
@@ -643,6 +641,7 @@ states:
   start:
     kind: DEFAULT
   branches:
+  waitForCompletion: true
   - name: Branch1
     states:
     - name: ShortDelay
@@ -652,7 +651,6 @@ states:
       timeDelay: PT15S
       end:
         kind: DEFAULT
-    waitForCompletion: false
   - name: Branch2
     states:
     - name: LongDelay
@@ -662,7 +660,6 @@ states:
       timeDelay: PT2M
       end:
         kind: DEFAULT
-    waitForCompletion: false
   end:
     kind: DEFAULT
 ```
