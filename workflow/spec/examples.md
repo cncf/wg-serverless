@@ -558,7 +558,7 @@ states:
 #### Description
 
 This example uses a parallel state to execute two branches (simple wait states) at the same time.
-The waitForCompletion flag is set to false, which means the parallel state has to wait for both branches
+The completionType type is set to "AND", which means the parallel state has to wait for both branches
 to finish execution before it can transition (end workflow execution in this case as it is an end state).
 
 #### Workflow Definition
@@ -584,7 +584,7 @@ to finish execution before it can transition (end workflow execution in this cas
      "start": {
        "kind": "DEFAULT"
      },
-     "waitForCompletion": true,
+     "completionType": "AND",
      "branches": [
         {
           "name": "Branch1",
@@ -641,7 +641,7 @@ states:
   start:
     kind: DEFAULT
   branches:
-  waitForCompletion: true
+  completionType: AND
   - name: Branch1
     states:
     - name: ShortDelay
