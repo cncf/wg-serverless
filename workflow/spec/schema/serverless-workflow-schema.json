@@ -92,8 +92,8 @@
             "$ref": "#/definitions/subflowstate"
           },
           {
-            "title": "Relay State",
-            "$ref": "#/definitions/relaystate"
+            "title": "Inject State",
+            "$ref": "#/definitions/inject"
           },
           {
             "title": "ForEach State",
@@ -348,8 +348,8 @@
                 "$ref": "#/definitions/subflowstate"
               },
               {
-                "title": "Relay State",
-                "$ref": "#/definitions/relaystate"
+                "title": "Inject State",
+                "$ref": "#/definitions/injectstate"
               },
               {
                 "title": "ForEach State",
@@ -1024,9 +1024,9 @@
         }
       ]
     },
-    "relaystate": {
+    "inject": {
       "type": "object",
-      "description": "Set up and relay the state's data input to data output. Does not perform any actions",
+      "description": "Inject statit data into state data. Does not perform any actions",
       "properties": {
         "id": {
           "type": "string",
@@ -1040,7 +1040,7 @@
         "type": {
           "type": "string",
           "enum": [
-            "RELAY"
+            "INJECT"
           ],
           "description": "State type"
         },
@@ -1052,7 +1052,7 @@
           "$ref": "#/definitions/end",
           "description": "State end definition"
         },
-        "inject": {
+        "data": {
           "type": "object",
           "description": "JSON object which can be set as states data input and can be manipulated via filters"
         },
@@ -1186,8 +1186,8 @@
                 "$ref": "#/definitions/subflowstate"
               },
               {
-                "title": "Relay State",
-                "$ref": "#/definitions/relaystate"
+                "title": "Inject State",
+                "$ref": "#/definitions/injectstate"
               },
               {
                 "title": "ForEach State",

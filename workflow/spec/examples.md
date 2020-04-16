@@ -20,7 +20,7 @@
 
 #### Description
 
-This example uses two relay states. The "Hello" state statically injects the following JSON into its data input:
+This example uses two inject states. The "Hello" state statically injects the following JSON into its data input:
 
 ```json
 {
@@ -55,11 +55,11 @@ value of the "result" property. Since it is an end state, it's data output becom
 "states":[  
   {  
      "name":"Hello",
-     "type":"RELAY",
+     "type":"INJECT",
      "start": {
        "kind": "DEFAULT"
      },
-     "inject": {
+     "data": {
         "result": "Hello"
      },
      "transition": {
@@ -68,8 +68,8 @@ value of the "result" property. Since it is an end state, it's data output becom
   },
   {  
      "name":"World",
-     "type":"RELAY",
-     "inject": {
+     "type":"INJECT",
+     "data": {
         "result": " World!"
      },
      "stateDataFilter": {
@@ -93,16 +93,16 @@ name: Hello World Workflow
 description: Static Hello World
 states:
 - name: Hello
-  type: RELAY
+  type: INJECT
   start:
     kind: DEFAULT
-  inject:
+  data:
     result: Hello
   transition:
     nextState: World
 - name: World
-  type: RELAY
-  inject:
+  type: INJECT
+  data:
     result: " World!"
   stateDataFilter:
     dataOutputPath: "$.result"

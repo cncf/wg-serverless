@@ -231,8 +231,8 @@ As mentioned, implementation compliance is based on the workflow definition lang
                       "$ref": "#/definitions/subflowstate"
                     },
                     {
-                      "title": "Relay State",
-                      "$ref": "#/definitions/relaystate"
+                      "title": "Inject State",
+                      "$ref": "#/definitions/injectstate"
                     },
                     {
                       "title": "ForEach State",
@@ -440,7 +440,7 @@ States define building blocks of the Serverless Workflow. The specification defi
 | **[Delay](#Delay-State)** | Delay workflow execution | no | yes | no | yes | no | no |
 | **[Parallel](#Parallel-State)** | Causes parallel execution of branches (set of states) | no | yes | no | yes (includes retries) | yes | no |
 | **[SubFlow](#SubFlow-State)** | Represents the invocation of another workflow from within a workflow | no | yes | no | yes | no | no |
-| **[Relay](#Relay-State)** | Relay state data input to output | no | yes | no | yes | no | no |
+| **[Inject](#Inject-State)** | Inject static data into state data | no | yes | no | yes | no | no |
 | **[ForEach](#ForEach-State)** | Parallel execution of states for each element of a data array | no | yes | no | yes (includes retries) | yes | no |
 | **[Callback](#Callback-State)** | Manual decision step. Executes a function and waits for callback event that indicates completion of the manual decision | yes | yes | yes (including retries) | yes | no | no |
 
@@ -1695,8 +1695,8 @@ Branches contain one or more states. Each branch must define one [starting state
                               "$ref": "#/definitions/subflowstate"
                             },
                             {
-                              "title": "Relay State",
-                              "$ref": "#/definitions/relaystate"
+                              "title": "Inject State",
+                              "$ref": "#/definitions/injectstate"
                             },
                             {
                               "title": "ForEach State",
@@ -1876,14 +1876,14 @@ Each sub-workflow receives the same copy of the SubFlow state's data input.
 If waitForCompletion property is set to true, sub-workflows have the ability to edit the parent's workflow data.
 If this property is set to false, data access to parent's workflow should not be allowed.
 
-#### Relay State
+#### Inject State
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | id | Unique state id | string | no |
 | name | State name | string | yes |
 | type | State type | string | yes |
-| inject | JSON object which can be set as state's data input and can be manipulated via filter | object | no |
+| data | JSON object which can be set as state's data input and can be manipulated via filter | object | no |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [transition](#Transitions) | Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
@@ -1897,7 +1897,7 @@ If this property is set to false, data access to parent's workflow should not be
 ```json
 {
     "type": "object",
-    "description": "Set up and relay the state's data input to data output. Does not perform any actions",
+    "description": "Inject static data into state data. Does not perform any actions",
     "properties": {
         "id": {
             "type": "string",
@@ -1910,10 +1910,10 @@ If this property is set to false, data access to parent's workflow should not be
         },
         "type": {
             "type" : "string",
-            "enum": ["RELAY"],
+            "enum": ["INJECT"],
             "description": "State type"
         },
-        "inject": {
+        "data": {
             "type": "object",
             "description": "JSON object which can be set as states data input and can be manipulated via filters"
         },
@@ -1983,16 +1983,14 @@ If this property is set to false, data access to parent's workflow should not be
 
 </details>
 
-Relay state can be used to statically set up and relay the state's data input to data output.
+Inject state can be used to inject static data into state data input. Inject state does not perform any actions.
 It is very useful for debugging for example as you can test/simulate workflow execution with pre-set data that would typically
 be dynamic in nature (e.g. function calls, events etc).
 
-It is also useful for production workflows where you want to just relay workflow data without performing any actions (function calls).
-
-The relay state "inject" property allows you to statically define a JSON object which gets added to the states data input.
+The inject state "data" property allows you to statically define a JSON object which gets added to the states data input.
 You can use the filter property to control the states data output to the transition state.
 
-Here is a typical example of how to use the relay state to inject static data into its data input, which then will be passed
+Here is a typical example of how to use the inject state to add static data into its state data input, which then is passed
 as data output to the transition state:
 
 <table>
@@ -2005,9 +2003,9 @@ as data output to the transition state:
 
   ```json
   {  
-   "name":"SimpleRelayState",
-   "type":"RELAY",
-   "inject": {
+   "name":"SimpleInjectState",
+   "type":"INJECT",
+   "data": {
       "person": {
         "fname": "John",
         "lname": "Doe",
@@ -2025,9 +2023,9 @@ as data output to the transition state:
 <td valign="top">
 
 ```yaml
-  name: SimpleRelayState
-  type: RELAY
-  inject:
+  name: SimpleInjectState
+  type: INJECT
+  data:
     person:
       fname: John
       lname: Doe
@@ -2041,7 +2039,7 @@ as data output to the transition state:
 </tr>
 </table>
 
-The data output of the "SimpleRelayState" which then is passed as input to the transition state would be:
+The data output of the "SimpleInjectState" which then is passed as input to the transition state would be:
 
 ```json
 {
@@ -2055,11 +2053,10 @@ The data output of the "SimpleRelayState" which then is passed as input to the t
 
 ```
 
-If the relay state already receives a data input from the previous transition state, the inject data will be merged
+If the inject state already receives a data input from the previous transition state, the inject data should be merged
 with its data input.
 
-You can also use the filter property to further relay the set-up data input and pass only
-what you need as data output of the state. Let's say we have:
+You can also use the filter property to filter the state data after data is injected. Let's say we have:
 
 <table>
 <tr>
@@ -2071,9 +2068,9 @@ what you need as data output of the state. Let's say we have:
 
 ```json
   {  
-     "name":"SimpleRelayState",
-     "type":"RELAY",
-     "inject": {
+     "name":"SimpleInjectState",
+     "type":"INJECT",
+     "data": {
         "people": [
           {
              "fname": "John",
@@ -2108,9 +2105,9 @@ what you need as data output of the state. Let's say we have:
 <td valign="top">
 
 ```yaml
-  name: SimpleRelayState
-  type: RELAY
-  inject:
+  name: SimpleInjectState
+  type: INJECT
+  data:
     people:
     - fname: John
       lname: Doe
@@ -2236,8 +2233,8 @@ This allows you to test if your workflow behaves properly for cases when there a
                       "$ref": "#/definitions/subflowstate"
                     },
                     {
-                      "title": "Relay State",
-                      "$ref": "#/definitions/relaystate"
+                      "title": "Inject State",
+                      "$ref": "#/definitions/injectstate"
                     },
                     {
                       "title": "ForEach State",
@@ -3262,7 +3259,7 @@ we can define a state filter:
 ```json
 {
   "name": "FruitsOnlyState",
-  "type": "RELAY",
+  "type": "INJECT",
   "stateDataFilter": {
     "dataInputPath": "$.fruits"
   },
@@ -3286,7 +3283,7 @@ The first way would be to use both dataInputPath, and dataOutputPath:
 ```json
 {
   "name": "VegetablesOnlyState",
-  "type": "RELAY",
+  "type": "INJECT",
   "stateDataFilter": {
     "dataInputPath": "$.vegetables",
     "dataOutputPath": "$.[?(@.veggieLike)]"
@@ -3309,7 +3306,7 @@ The second way would be to directly filter only the "veggie like" vegetables wit
 ```json
 {
   "name": "VegetablesOnlyState",
-  "type": "RELAY",
+  "type": "INJECT",
   "stateDataFilter": {
     "dataInputPath": "$.vegetables.[?(@.veggieLike)]"
   },
