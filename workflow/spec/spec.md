@@ -1384,9 +1384,11 @@ Delay state waits for a certain amount of time before transitioning to a next st
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | id | Unique state id | string | no |
-| name |State name | string | yes |
-| type |State type | string | yes |
-| [branches](#parallel-state-branch) |List of branches for this parallel state| array | yes |
+| name | State name | string | yes |
+| type | State type | string | yes |
+| [branches](#parallel-state-branch) | List of branches for this parallel state| array | yes |
+| completionType | Option types on how to complete branch execution. | enum | no |
+| n | Used when branchCompletionType is set to 'N_OF_M' to specify the 'N' value. | integer | no |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
@@ -1425,6 +1427,18 @@ Delay state waits for a certain amount of time before transitioning to a next st
                 "type": "object",
                 "$ref": "#/definitions/branch"
             }
+        },
+        "completionType": {
+            "type" : "string",  
+            "enum": ["AND", "XOR", "N_OF_M"],
+            "description": "Option types on how to complete branch execution.",
+            "default": "AND"
+        },
+        "n": {
+           "type": "integer",
+            "default": 0,
+            "minimum": 0,
+            "description": "Used when completionType is set to 'N_OF_M' to specify the 'N' value"
         },
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
@@ -1514,7 +1528,16 @@ Delay state waits for a certain amount of time before transitioning to a next st
 </details>
 
 Parallel state defines a collection of branches which are to be executed in parallel.
-Branches contain one or more states. Each branch must define one [starting state](#Start-Definition) as well as include at least one [end state](#End-Definition).
+Branches contain one or more states. Each branch must define one [starting state](#Start-Definition) as well as 
+include at least one [end state](#End-Definition).
+
+The "completionType" enum specifies the different ways of completing branch execution:
+* AND: All branches must complete execution before state can perform its transition
+* XOR: State can transition when one of the branches completes execution
+* N_OF_M: State can transition once N number of branches have completed execution. In this case you should also
+specify the "n" property to define this number.
+
+
 
 #### <a name="parallel-state-branch"></a>Parallel State: Branch
 
@@ -1522,7 +1545,6 @@ Branches contain one or more states. Each branch must define one [starting state
 | --- | --- | --- | --- |
 | name | Branch name | string | yes |
 | [states](#State-Definition) | States to be executed in this branch | array | yes |
-| waitForCompletion | If workflow execution must wait for this branch to finish before continuing | boolean | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1575,11 +1597,6 @@ Branches contain one or more states. Each branch must define one [starting state
                             }
                         ]
                     }
-        },
-        "waitForCompletion": {
-            "type": "boolean",
-            "default": false,
-            "description": "Workflow execution must wait for this branch to finish before continuing"
         }
     },
     "required": ["name", "states"]
@@ -1592,11 +1609,6 @@ Each branch receives the same copy of the Parallel state's data input.
 States within each branch are only allowed to transition to states defined in the same branch.
 Transitions to other branches or workflow states are not allowed.
 States outside a parallel state cannot transition to a states declared within branches.
-
-Data output of the Parallel state includes the data output of each executed branch.
-
-The "waitForCompletion" property allows the parallel state to manage branch executions.
-Parallel state must wait for all branches which have this property set to "true" before triggering a transition.
 
 #### SubFlow State
 

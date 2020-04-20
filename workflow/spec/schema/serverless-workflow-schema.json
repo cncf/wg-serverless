@@ -361,11 +361,6 @@
               }
             ]
           }
-        },
-        "waitForCompletion": {
-          "type": "boolean",
-          "default": false,
-          "description": "Flow must wait for this branch to finish before continuing"
         }
       },
       "required": [
@@ -751,6 +746,18 @@
             "type": "object",
             "$ref": "#/definitions/branch"
           }
+        },
+        "completionType": {
+          "type" : "string",
+          "enum": ["AND", "XOR", "N_OF_M"],
+          "description": "Option types on how to complete branch execution.",
+          "default": "AND"
+        },
+        "n": {
+          "type": "integer",
+          "default": 0,
+          "minimum": 0,
+          "description": "Used when completionType is set to 'N_OF_M' to specify the 'N' value"
         },
         "retry": {
           "type": "array",
