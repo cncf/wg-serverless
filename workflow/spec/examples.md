@@ -694,7 +694,7 @@ This example shows off the switch state and the subflow state. The workflow is s
     }
 ```
 
-We use the switch state with two choices to determine if the application should be made based on the applicants age.
+We use the switch state with two conditions to determine if the application should be made based on the applicants age.
 If the applicants age is over 18 we start the application (subflow state). Otherwise the workflow notifies the
  applicant of the rejection.
 
@@ -727,11 +727,11 @@ If the applicants age is over 18 we start the application (subflow state). Other
          "start": {
             "kind": "DEFAULT"
          },
-         "choices": [
+         "conditions": [
             {
               "path": "$.applicant.age",
               "value": "18",
-              "operator": "GreaterThanEquals",
+              "operator": "GreaterThanOrEquals",
               "transition": {
                 "nextState": "StartApplication"
               }
@@ -795,10 +795,10 @@ states:
   type: SWITCH
   start:
     kind: DEFAULT
-  choices:
+  conditions:
   - path: "$.applicant.age"
     value: '18'
-    operator: GreaterThanEquals
+    operator: GreaterThanOrEquals
     transition:
       nextState: StartApplication
   - path: "$.applicant.age"
@@ -1179,7 +1179,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
   {  
     "name":"DetermineCompletion",
     "type":"SWITCH",
-    "choices": [
+    "conditions": [
       {
         "path": "$.jobstatus",
         "value": "SUCCEEDED",
@@ -1309,7 +1309,7 @@ states:
     nextState: DetermineCompletion
 - name: DetermineCompletion
   type: SWITCH
-  choices:
+  conditions:
   - path: "$.jobstatus"
     value: SUCCEEDED
     operator: Equals
@@ -2026,7 +2026,7 @@ And for denied credit check, for example:
         {
             "name": "EvaluateDecision",
             "type": "SWITCH",
-            "choices": [
+            "conditions": [
                 {
                     "path": "$.creditCheck.decision",
                     "value": "Approved",
@@ -2113,7 +2113,7 @@ states:
     nextState: EvaluateDecision
 - name: EvaluateDecision
   type: SWITCH
-  choices:
+  conditions:
   - path: "$.creditCheck.decision"
     value: Approved
     operator: Equals

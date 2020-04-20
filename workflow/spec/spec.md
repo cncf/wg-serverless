@@ -1096,12 +1096,12 @@ Once all actions have been performed, a transition to another state can occur.
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | id | Unique state id | string | no |
-| name |State name | string | yes |
-| type |State type | string | yes |
-| [choices](#switch-state-choices) | Defines matching rules evaluated against state data | array | yes |
+| name | State name | string | yes |
+| type | State type | string | yes |
+| [conditions](#switch-state-conditions) | Defines conditions evaluated against state data. Each condition can transition to a different state. | array | yes |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
-| default | Next transition of the workflow if there is no match for any choices | object | yes (if end is not defined) |
+| default | Next transition of the workflow if there is no match for any conditions | object | yes |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
@@ -1112,7 +1112,7 @@ Once all actions have been performed, a transition to another state can occur.
 ```json
 {
     "type": "object",
-    "description": "Permits transitions to other states based on criteria matching",
+    "description": "Permits transitions to other states based on matched condition",
     "properties": {
         "id": {
             "type": "string",
@@ -1128,17 +1128,12 @@ Once all actions have been performed, a transition to another state can occur.
             "enum": ["SWITCH"],
             "description": "State type"
         },
-        "choices": {
+        "conditions": {
             "type": "array",
-            "description": "Defines matching rules evaluated against state data",
+            "description": "Defines conditions evaluated against state data",
             "items": {
                 "type": "object",
-                "anyOf": [
-                    { "$ref": "#/definitions/singlechoice" },
-                    { "$ref": "#/definitions/andchoice" },
-                    { "$ref": "#/definitions/notchoice" },
-                    { "$ref": "#/definitions/orchoice" }
-                ]
+                "$ref": "#/definitions/condition"
             }
         },
         "stateDataFilter": {
@@ -1153,7 +1148,7 @@ Once all actions have been performed, a transition to another state can occur.
             }
         },
         "default": {
-            "description": "Next transition of the workflow if there is no match for any choices",
+            "description": "Next transition of the workflow if there is no match for any conditions",
             "$ref": "#/definitions/transition"
         },
         "dataInputSchema": {
@@ -1180,7 +1175,7 @@ Once all actions have been performed, a transition to another state can occur.
         "start",
         "name",
         "type",
-        "choices"
+        "conditions",
         "default"
       ]
     },
@@ -1188,7 +1183,7 @@ Once all actions have been performed, a transition to another state can occur.
       "required": [
         "name",
         "type",
-        "choices",
+        "conditions",
         "default"
       ]
     }
@@ -1198,38 +1193,34 @@ Once all actions have been performed, a transition to another state can occur.
 
 </details>
 
-Switch states can be viewed as gateways. They define choices that trigger workflow transitions based on
+Switch states can be viewed as exclusive gateways. They define conditions that trigger workflow transitions based on
 JSONPath matches on the states data input. Switch states cannot be workflow ending states as they require
 a transition to another workflow state.
 
-#### <a name="switch-state-choices"></a>Switch State: Choices
+If no defined conditions can be matched, the states "default" transition is taken.
+Multiple matching conditions should be reported as runtime errors. A single transition should only be 
+possible from switch states.
 
-There are four types of choices defined:
-
-- [Single Choice](#switch-state-single-choice)
-- [And Choice](#switch-state-and-choice)
-- [Not Choice](#switch-state-not-choice)
-- [Or Choice](#switch-state-or-choice)
-
-#### <a name="switch-state-single-choice"></a>Switch State Choices: Single Choice
+#### <a name="switch-state-conditions"></a>Switch State: Conditions
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| path | JSONPath that selects an element of state data | string | yes |
+| path | JSONPath expression that selects elements of state data | string | yes |
 | value | Matching value | string | yes |
-| operator | Data Input comparator | string | yes |
-| [transition](#Transitions) | Next transition of the workflow if there is valid matches | string | yes |
+| operator | Condition operator | string | yes |
+| [transition](#Transitions) | Next transition of the workflow if condition is matched | string | yes |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
 {
     "type": "object",
-    "description": "Single Choice",
+    "description": "Switch state condition",
     "properties": {
         "path": {
             "type": "string",
-            "description": "JSONPath that selects an element of state data"
+            "description": "JSONPath expression that selects elements of state data"
         },
         "value": {
             "type": "string",
@@ -1237,13 +1228,19 @@ There are four types of choices defined:
         },
         "operator": {
             "type" : "string",  
-            "enum": ["Exists", "Equals", "LessThan", "LessThanEquals", "GreaterThan", "GreaterThanEquals"],
-            "description": "Specifies how data input is compared with the value"
+            "enum": ["Exists", "NotExists", "Null", "NotNull",
+                     "Equals", "NotEquals", "LessThan", "LessThanOrEquals", 
+                     "GreaterThan", "GreaterThanOrEquals", "Matches", "NotMatches",
+                     "Custom"],
+            "description": "Condition operator"
         },
         "transition": {
           "description": "Next transition of the workflow if there is valid matches",
           "$ref": "#/definitions/transition"
         }
+    },
+    "metadata": {
+       "$ref": "#/definitions/metadata"
     },
     "required": ["path", "value", "operator", "transition"]
 }
@@ -1251,145 +1248,15 @@ There are four types of choices defined:
 
 </details>
 
-#### <a name="switch-state-and-choice"></a>Switch State Choices: And Choice
-
-| Parameter | Description | Type | Required |
-| --- | --- | --- | --- |
-| and | List of choices | array | yes |
-| path | JSONPath that selects an element of state data | string | yes |
-| value | Matching value | string | yes |
-| operator | Data Input comparator | string | yes |
-| [transition](#Transitions) | Next transition of the workflow if there is valid matches | string | yes |
-
-<details><summary><strong>Click to view JSON Schema</strong></summary>
-
-```json
-{
-    "type": "object",
-    "description": "And Choice",
-    "properties": {
-        "and": {
-            "type": "array",
-            "description": "List of choices",
-            "items": {
-                "path": {
-                    "type": "string",
-                    "description": "JSONPath that selects an element of state data"
-                },
-                "value": {
-                    "type": "string",
-                    "description": "Matching value"
-                },
-                "operator": {
-                    "type" : "string",
-                    "enum": ["Exists", "Equals", "LessThan", "LessThanEquals", "GreaterThan", "GreaterThanEquals"],
-                    "description": "Specifies how data input is compared with the value"
-                }
-            }
-        },
-        "transition": {
-          "description": "Next transition of the workflow if there is valid matches",
-          "$ref": "#/definitions/transition"
-        }
-    },
-    "required": ["and", "path", "value", "operator", "transition"]
-}
-```
-
-</details>
-
-#### <a name="switch-state-not-choice"></a>Switch State Choices: Not Choice
-
-| Parameter | Description | Type | Required |
-| --- | --- | --- | --- |
-| not | State choice | object | yes |
-| path | JSONPath that selects an element of state data | string | yes |
-| value | Matching value | string | yes |
-| operator | Data Input comparator | string | yes |
-| [transition](#Transitions) | Next transition of the workflow if there is valid matches | string | yes |
-
-<details><summary><strong>Click to view JSON Schema</strong></summary>
-
-```json
-{
-    "type": "object",
-    "description": "Not Choice",
-    "properties": {
-        "not": {
-            "type": "object",
-            "properties": {
-                "path": {
-                    "type": "string",
-                    "description": "JSONPath that selects an element of state data"
-                },
-                "value": {
-                    "type": "string",
-                    "description": "Matching value"
-                },
-                "operator": {
-                    "type" : "string",
-                    "enum": ["Exists", "Equals", "LessThan", "LessThanEquals", "GreaterThan", "GreaterThanEquals"],
-                    "description": "Specifies how data input is compared with the value"
-                }
-            }
-        },
-        "transition": {
-          "description": "Next transition of the workflow if there is valid matches",
-          "$ref": "#/definitions/transition"
-        }
-    },
-    "required": ["not", "path", "value", "operator", "transition"]
-}
-```
-
-</details>
-
-#### <a name="switch-state-or-choice"></a>Switch State Choices: Or Choice
-
-| Parameter | Description |  Type | Required |
-| --- | --- | --- | --- |
-| or | State choices | array | yes |
-| path | JSONPath that selects an element of state data | string | yes |
-| value | Matching value | string | yes |
-| operator | Data Input comparator | string | yes |
-| [transition](#Transitions) |Next transition of the workflow if there is valid matches | string | yes |
-
-<details><summary><strong>Click to view JSON Schema</strong></summary>
-
-```json
-{
-    "type": "object",
-    "description": "Or Choice",
-    "properties": {
-        "or": {
-            "type": "array",
-            "description": "List of choices",
-            "items": {
-                "path": {
-                    "type": "string",
-                    "description": "JSONPath that selects an element of state data"
-                },
-                "value": {
-                    "type": "string",
-                    "description": "Matching value"
-                },
-                "operator": {
-                    "type" : "string",
-                    "enum": ["Exists", "Equals", "LessThan", "LessThanEquals", "GreaterThan", "GreaterThanEquals"],
-                    "description": "Specifies how data input is compared with the value"
-                }
-            }
-        },
-        "transition": {
-          "description": "Next transition of the workflow if there is valid matches",
-          "$ref": "#/definitions/transition"
-        }
-    },
-    "required": ["or",  "path", "value", "operator", "transition"]
-}
-```
-
-</details>
+Switch state conditions specify a data-based condition statement which if true causes a transition to another 
+workflow state.
+The "path" property of the condition defines a JSONPath expression, for example "$.person.name" which selects
+parts of the state data input.
+The "value" property defines the matching value of this condition, for example "John", or "10", or "\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b" etc. 
+The "operator" property defines how the path should be matched with the defined value. If the operator
+is "Custom", the information about custom operator info must be defined via the condition definition metadata property.
+Note that in this case you may run into vendor specific implementations of the condition which may not be portable, 
+so use of one of the operators other than "Custom" are if possible preferred.
 
 #### Delay State
 
@@ -3886,6 +3753,7 @@ Metadata can be added to:
 - [Function definitions](#Function-Definition)
 - [Event definitions](#Event-Definition)
 - [State definitions](#State-Definition)
+- [Switch state conditions](#switch-state-conditions)
 
 Here is an example of metadata attached to the core workflow definition:
 
