@@ -120,7 +120,7 @@ The [BPMN specification](https://www.omg.org/spec/BPMN/) provides XML Schemas fo
 
 ## Huawei FunctionGraph workflow definition
 
-[Huawei FunctionGraph workflow definition](https://support.huaweicloud.com/en-us/devg-functiongraph/functiongraph_02_0300.html) has served as [initial draft](https://github.com/cncf/wg-serverless/commit/e42aaabb2c5dd78d0bd638b5cc8be0cd771101a4#diff-bc18ddd43c9fef122edf80ec220f04bb) of this specification and is very similar to the Amazon States Language.
+[Huawei FunctionGraph workflow definition](https://support.huaweicloud.com/en-us/productdesc-functiongraph/functiongraph_01_0100.html) has served as [initial draft](https://github.com/cncf/wg-serverless/commit/e42aaabb2c5dd78d0bd638b5cc8be0cd771101a4#diff-bc18ddd43c9fef122edf80ec220f04bb) of this specification and is very similar to the Amazon States Language.
 
 ## Flogo
 
