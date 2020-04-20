@@ -16,27 +16,27 @@ _Status description:_
 
 | Status | Description | Comments |
 | :--: | --- |  --- |
-| ✔ | Establish governance, contributing guidelines and initial stakeholder | [governance doc](governance/readme.md)  |
-| ✔ | Define specification goals | [spec doc](spec.md) |
-| ✔ | Define specification functional scope | [spec doc](spec.md) |
-| ✔ | Include set of use-cases for Serverless Workflow | [usecases doc](usecases.md) |
-| ✔ | Include set of examples for Serverless Workflow | [examples doc](examples.md) |
-| ✔ | Define specification JSON Schema | [spec doc](spec.md) |
-| ✔ | Add SubFlow state | [spec doc](spec.md) |
-| ✔ | Add Relay state | [spec doc](spec.md) |
-| ✔ | Add ForEach state | [spec doc](spec.md) |
-| ✔ | Update Event state| [spec doc](spec.md) |
-| ✔ | Define Workflow data input/output | [spec doc](spec.md) |
-| ✔ | Update state data filtering | [spec doc](spec.md) |
-| ✔ | Clearly define workflow info passing | [spec doc](spec.md) |
-| ✔ | Add Workflow error handling | [spec doc](spec.md) |
-| ✔ | Add reusable function definitions | [spec doc](spec.md) |
-| ✔ | Add support for YAML definitions | [spec doc](spec.md) |
-| ✔ | Update workflow end definition | [spec doc](spec.md) |
-| ✔ | Add Callback state | [spec doc](spec.md) |
-| ✔ | Add workflow metadata | [spec doc](spec.md) |
-| ✔️| Update workflow start definition | [spec doc](spec.md) |
-| ✔️| Prepare github branch and docs for v0.1 | |
+| ✔ | Establish governance, contributing guidelines and initial stakeholder | [governance doc](https://github.com/cncf/wg-serverless/tree/v0.1/workflow/spec/governance)  |
+| ✔ | Define specification goals | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Define specification functional scope | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Include set of use-cases for Serverless Workflow | [usecases doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/usecases.md) |
+| ✔ | Include set of examples for Serverless Workflow | [examples doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/examples.md) |
+| ✔ | Define specification JSON Schema | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Add SubFlow state | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Add Relay state | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Add ForEach state | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Update Event state| [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Define Workflow data input/output | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Update state data filtering | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Clearly define workflow info passing | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Add Workflow error handling | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Add reusable function definitions | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Add support for YAML definitions | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Update workflow end definition | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Add Callback state | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔ | Add workflow metadata | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔️| Update workflow start definition | [spec doc](https://github.com/cncf/wg-serverless/blob/v0.1/workflow/spec/spec.md) |
+| ✔️| Prepare github branch and docs for v0.1 | [branch](https://github.com/cncf/wg-serverless/tree/v0.1/workflow/spec) |
 
 ## v0.2 (Release data TBD)
 
@@ -45,5 +45,6 @@ _Status description:_
 | 🚩 | Start discussions on Serverless Workflow Technology Compatibility Kit (TCK) | |
 | 🚩 | Decide on state/task/stage/step naming convention | [issue link](https://github.com/cncf/wg-serverless/issues/127) |
 | ✏️ | Finish specification primer document | [google doc](https://docs.google.com/document/d/11rD3Azj63G2Si0VpokSpr-1ib3mFRFHSwN6tJb-0LQM/edit#heading=h.paewfy83tetm) |
-| ✔ | Rename Relay to Inject state | spec doc](spec.md) |
-| ✏ | Update Switch State | |
+| ✔ | Rename Relay to Inject state | [spec doc](spec.md) |
+| ✏ | Update Switch State | [spec doc](spec.md) |
+| ✔ | Rename Relay to Inject state | [spec doc](spec.md) |
