@@ -93,7 +93,7 @@
           },
           {
             "title": "Inject State",
-            "$ref": "#/definitions/inject"
+            "$ref": "#/definitions/injectstate"
           },
           {
             "title": "ForEach State",
@@ -1042,9 +1042,9 @@
         }
       ]
     },
-    "inject": {
+    "injectstate": {
       "type": "object",
-      "description": "Inject statit data into state data. Does not perform any actions",
+      "description": "Inject static data into state data. Does not perform any actions",
       "properties": {
         "id": {
           "type": "string",
