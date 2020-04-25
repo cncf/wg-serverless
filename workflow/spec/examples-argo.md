@@ -27,7 +27,7 @@ Serverless Workflow specification part.
 
 - [Hello World with Parameters](#Hello-World-With-Parameters)
 - [Multi Step Workflow](#Multi-Step-Workflow)
-- [Directed Acyclic Graph](#Directed Acyclic Graph)
+- [Directed Acyclic Graph](#Directed-Acyclic-Graph)
 - [Scripts and Results](#Scripts-And-Results)
 - [Loops](#Loops)
 - [Conditionals](#Conditionals)
