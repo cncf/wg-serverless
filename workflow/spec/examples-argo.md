@@ -31,7 +31,9 @@ Serverless Workflow specification part.
 - [Scripts and Results](#Scripts-And-Results)
 - [Loops](#Loops)
 - [Conditionals](#Conditionals)
-
+- [Retrying Failed Steps](#Retrying-Failed-Steps)
+- [Recursion](#Recursion)
+- [Exit Handlers](#Exit-Handlers)
 
 ### Hello World With Parameters
 
@@ -688,6 +690,343 @@ states:
       refName: echo
     actionDataFilter:
       dataResultsPath: it was tails
+  end:
+    kind: DEFAULT
+```
+
+</td>
+</tr>
+</table>
+
+
+### Retrying Failed Steps
+
+[Argo Example](https://github.com/argoproj/argo/tree/master/examples#retrying-failed-or-errored-steps)
+
+<table>
+<tr>
+    <th>Argo</th>
+    <th>Serverless Workflow</th>
+</tr>
+<tr>
+<td valign="top">
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: retry-backoff-
+spec:
+  entrypoint: retry-backoff
+  templates:
+  - name: retry-backoff
+    retryStrategy:
+      limit: 10
+      retryPolicy: "Always"
+      backoff:
+        duration: "1"      
+        factor: 2
+        maxDuration: "1m" 
+    container:
+      image: python:alpine3.6
+      command: ["python", -c]
+      # fail with a 66% probability
+      args: ["import random; import sys; exit_code = random.choice([0, 1, 1]); sys.exit(exit_code)"]
+```
+
+</td>
+<td valign="top">
+
+```yaml
+id: retry-backoff-
+name: Retry Example
+version: '1.0'
+functions:
+- name: fail-function
+  resource: python:alpine3.6
+  type: container
+  metadata:
+    command: python
+states:
+- name: retry-backoff
+  type: OPERATION
+  start:
+    kind: DEFAULT
+  actions:
+  - functionRef:
+      refName: flip-coin-function
+      parameters:
+        args:
+        - import random; import sys; exit_code = random.choice([0, 1, 1]); sys.exit(exit_code)
+  retry:
+  - expression:
+      language: spel
+      body: "$.exit_code == 1"
+    maxAttempts: 10
+    multiplier: PT2M
+    interval: PT1M
+  end:
+    kind: DEFAULT
+```
+
+</td>
+</tr>
+</table>
+
+
+### Recursion
+
+[Argo Example](https://github.com/argoproj/argo/tree/master/examples#recursion)
+
+<table>
+<tr>
+    <th>Argo</th>
+    <th>Serverless Workflow</th>
+</tr>
+<tr>
+<td valign="top">
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: coinflip-recursive-
+spec:
+  entrypoint: coinflip
+  templates:
+  - name: coinflip
+    steps:
+    # flip a coin
+    - - name: flip-coin
+        template: flip-coin
+    # evaluate the result in parallel
+    - - name: heads
+        template: heads                 # call heads template if "heads"
+        when: "{{steps.flip-coin.outputs.result}} == heads"
+      - name: tails                     # keep flipping coins if "tails"
+        template: coinflip
+        when: "{{steps.flip-coin.outputs.result}} == tails"
+
+  - name: flip-coin
+    script:
+      image: python:alpine3.6
+      command: [python]
+      source: |
+        import random
+        result = "heads" if random.randint(0,1) == 0 else "tails"
+        print(result)
+
+  - name: heads
+    container:
+      image: alpine:3.6
+      command: [sh, -c]
+      args: ["echo \"it was heads\""]
+```
+
+</td>
+<td valign="top">
+
+```yaml
+id: coinflip-recursive-
+name: Recursion Example
+version: '1.0'
+functions:
+- name: heads-function
+  resource: alpine:3.6
+  type: container
+  metadata:
+    command: echo "it was heads"
+- name: flip-coin-function
+  resource: python:alpine3.6
+  type: script
+  metadata:
+    command: python
+    source: import random result = "heads" if random.randint(0,1) == 0 else "tail"  print(result)
+states:
+- name: flip-coin-state
+  type: OPERATION
+  start:
+    kind: DEFAULT
+  actions:
+  - functionRef:
+      refName: flip-coin-function
+    actionDataFilter:
+      dataResultsPath: "$.steps.flip-coin.outputs.result"
+  transition:
+    nextState: flip-coin-check
+- name: flip-coin-check
+  type: SWITCH
+  conditions:
+  - path: "$.steps.flip-coin.outputs.result"
+    value: tails
+    operator: Equals
+    transition:
+      nextState: flip-coin-state
+  - path: "$.steps.flip-coin.outputs.result"
+    value: heads
+    operator: Equals
+    transition:
+      nextState: heads-state
+- name: heads-state
+  type: OPERATION
+  actions:
+  - functionRef:
+      refName: heads-function
+      parameters:
+        args: echo "it was heads"
+  end:
+    kind: DEFAULT
+```
+
+</td>
+</tr>
+</table>
+
+
+### Exit Handlers
+
+[Argo Example](https://github.com/argoproj/argo/tree/master/examples#exit-handlers)
+
+*Note*: With Serverless Workflow specification we can handle Argos "onExit" functionality
+in couple of ways. One is the "onError" functionality to catch errors and transition to the 
+"error" part of the workflow. Another is to send an event at the end of workflow execution 
+which includes the workflow status. This event can then trigger execution other workflows
+that can handle each status. For this example we use the "onError" definition.
+
+<table>
+<tr>
+    <th>Argo</th>
+    <th>Serverless Workflow</th>
+</tr>
+<tr>
+<td valign="top">
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: exit-handlers-
+spec:
+  entrypoint: intentional-fail
+  onExit: exit-handler           
+  templates:
+  # primary workflow template
+  - name: intentional-fail
+    container:
+      image: alpine:latest
+      command: [sh, -c]
+      args: ["echo intentional failure; exit 1"]
+
+  # Exit handler templates
+  # After the completion of the entrypoint template, the status of the
+  # workflow is made available in the global variable {{workflow.status}}.
+  # {{workflow.status}} will be one of: Succeeded, Failed, Error
+  - name: exit-handler
+    steps:
+    - - name: notify
+        template: send-email
+      - name: celebrate
+        template: celebrate
+        when: "{{workflow.status}} == Succeeded"
+      - name: cry
+        template: cry
+        when: "{{workflow.status}} != Succeeded"
+  - name: send-email
+    container:
+      image: alpine:latest
+      command: [sh, -c]
+      args: ["echo send e-mail: {{workflow.name}} {{workflow.status}}"]
+  - name: celebrate
+    container:
+      image: alpine:latest
+      command: [sh, -c]
+      args: ["echo hooray!"]
+  - name: cry
+    container:
+      image: alpine:latest
+      command: [sh, -c]
+      args: ["echo boohoo!"]
+```
+
+</td>
+<td valign="top">
+
+```yaml
+id: exit-handlers-
+name: Exit/Error Handling Example
+version: '1.0'
+functions:
+- name: intentional-fail-function
+  resource: alpine:latest
+  type: container
+  metadata:
+    command: "[sh, -c]"
+- name: send-email-function
+  resource: alpine:latest
+  type: script
+  metadata:
+    command: "[sh, -c]"
+- name: celebrate-cry-function
+  resource: alpine:latest
+  type: script
+  metadata:
+    command: "[sh, -c]"
+states:
+- name: intentional-fail-state
+  type: OPERATION
+  start:
+    kind: DEFAULT
+  actions:
+  - functionRef:
+      refName: intentional-fail-function
+      parameters:
+        args: echo intentional failure; exit 1
+  onError:
+  - expression:
+      language: spel
+      body: "$.error != null"
+    errorDataFilter:
+      dataOutputPath: "$.exit-code"
+  transition:
+    nextState: send-email-state
+- name: send-email-state
+  type: OPERATION
+  actions:
+  - functionRef:
+      refName: send-email-function
+      parameters:
+        args: 'echo send e-mail: $.workflow.name $.exit-code'
+  transition:
+    nextState: emo-state
+- name: emo-state
+  type: SWITCH
+  conditions:
+  - path: "$.exit-code"
+    value: '1'
+    operator: Equals
+    transition:
+      nextState: celebrate-state
+  - path: "$.exit-code"
+    value: '1'
+    operator: NotEquals
+    transition:
+      nextState: cry-state
+- name: celebrate-state
+  type: OPERATION
+  actions:
+  - functionRef:
+      refName: celebrate-cry-function
+      parameters:
+        args: echo hooray!
+  end:
+    kind: DEFAULT
+- name: cry-state
+  type: OPERATION
+  actions:
+  - functionRef:
+      refName: celebrate-cry-function
+      parameters:
+        args: echo boohoo!
   end:
     kind: DEFAULT
 ```
