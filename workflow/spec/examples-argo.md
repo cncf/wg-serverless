@@ -6,7 +6,7 @@ The Argo markup is YAML based and workflows are implemented as a Kubernetes CRD 
 Argo is also a [CNCF](https://www.cncf.io/) Incubating project. 
 
 Argo has a number of [examples](https://github.com/argoproj/argo/tree/master/examples) which display 
-different Argo template examples.
+different Argo templates.
 
 The purpose of this document is to show side-by-side the Argo markup and the equivalent markup of the 
 Serverless Workflow Specification. This can hopefully help compare and contrast the two markups and 
