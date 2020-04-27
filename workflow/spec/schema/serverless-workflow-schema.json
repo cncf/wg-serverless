@@ -237,6 +237,10 @@
           "description": "References a reusable function definition",
           "$ref": "#/definitions/functionref"
         },
+        "timeout": {
+          "type": "string",
+          "description": "Time period to wait for function execution to complete"
+        },
         "actionDataFilter": {
           "$ref": "#/definitions/actiondatafilter"
         }
