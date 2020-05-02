@@ -45,7 +45,6 @@ _Status description:_
 | 🚩 | Start discussions on Serverless Workflow Technology Compatibility Kit (TCK) | |
 | 🚩 | Decide on state/task/stage/step naming convention | [issue link](https://github.com/cncf/wg-serverless/issues/127) |
 | ✏️ | Finish specification primer document | [google doc](https://docs.google.com/document/d/11rD3Azj63G2Si0VpokSpr-1ib3mFRFHSwN6tJb-0LQM/edit#heading=h.paewfy83tetm) |
-| ✔ | Rename Relay to Inject state | [spec doc](spec.md) |
 | ✔ | Update Switch State | [spec doc](spec.md) |
 | ✔ | Rename Relay to Inject state | [spec doc](spec.md) |
 | ✔️| Update waitForCompletion property of Parallel State | [spec doc](spec.md) |
