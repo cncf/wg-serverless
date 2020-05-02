@@ -50,4 +50,5 @@ _Status description:_
 | ✔ | Rename Relay to Inject state | [spec doc](spec.md) |
 | ✔️| Update waitForCompletion property of Parallel State | [spec doc](spec.md) |
 | ✔️| Add timeout property to actions | [spec doc](spec.md) |
+| ✔️| Add examples comparing Argo workflow and spec markups | [examples doc](examples-argo.md) |
 
