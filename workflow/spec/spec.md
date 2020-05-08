@@ -436,7 +436,7 @@ States define building blocks of the Serverless Workflow. The specification defi
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | **[Event](#Event-State)** | Define events that trigger action execution | yes | yes | yes | yes (includes retries) | yes | no | yes | yes |
 | **[Operation](#Operation-State)** | Execute one or more actions | no | yes | yes | yes (includes retries) | yes | no | yes | yes |
-| **[Switch](#Switch-State)** | Define data-based workflow transitions | no | yes | no | yes | no | yes | yes | no |
+| **[Switch](#Switch-State)** | Define data-based or event-based workflow transitions | no | yes | no | yes | no | yes | yes | no |
 | **[Delay](#Delay-State)** | Delay workflow execution | no | yes | no | yes | no | no | yes | yes |
 | **[Parallel](#Parallel-State)** | Causes parallel execution of branches (set of states) | no | yes | no | yes (includes retries) | yes | no | yes | yes |
 | **[SubFlow](#SubFlow-State)** | Represents the invocation of another workflow from within a workflow | no | yes | no | yes | no | no | yes | yes |
@@ -459,7 +459,7 @@ Following is a detailed description of each of the defined states:
 | [stateDataFilter](#state-data-filter) | State data filter definition| object | no |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
-| [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes |
+| [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | object | yes |
 | [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
 | [start](#Start-Definition) | Is this state a starting state | object | no |
@@ -814,7 +814,7 @@ see the [Workflow Error Handling section](#Workflow-Error-Handling).
 | --- | --- | --- | --- |
 | [expression](#Expression-Definition) | Boolean expression which consists of one or more Error operands and the Boolean operators | string | yes |
 | [errorDataFilter](#error-data-filter) | Error data filter definition | object | yes |
-| [transition](#Transitions) | Next transition of the workflow when expression matches | string | yes |
+| [transition](#Transitions) | Next transition of the workflow when expression matches | object | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -993,7 +993,7 @@ Defines a transition from point A to point B in the serverless workflow. For mor
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
-| [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | string | yes (if end is not defined) |
+| [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | object | yes (if end is not defined) |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
@@ -1115,10 +1115,11 @@ Once all actions have been performed, a transition to another state can occur.
 | id | Unique state id | string | no |
 | name | State name | string | yes |
 | type | State type | string | yes |
-| [conditions](#switch-state-conditions) | Defines conditions evaluated against state data. Each condition can transition to a different state. | array | yes |
+| [dataConditions](#switch-state-dataconditions) or [eventConditions](#switch-state-eventconditions)| Defined if the Switch state evaluates conditions and transitions based on state data, or arrival of events. | array | yes (one) |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
-| default | Next transition of the workflow if there is no match for any conditions | object | yes |
+| eventTimeout | If eventConditions is used, defines the time period to wait for events (ISO 8601 format). For example: "PT15M" (15 minutes), or "P2DT3H4M" (2 days, 3 hours and 4 minutes)| string | yes only if eventConditions is defined |
+| [default](#Transitions) | Next transition of the workflow if there is no matching data conditions, or event timeout is reached | object | yes |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
@@ -1129,103 +1130,45 @@ Once all actions have been performed, a transition to another state can occur.
 ```json
 {
     "type": "object",
-    "description": "Permits transitions to other states based on matched condition",
-    "properties": {
-        "id": {
-            "type": "string",
-            "description": "Unique state id",
-            "minLength": 1
-        },
-        "name": {
-            "type": "string",
-            "description": "State name"
-        },
-        "type": {
-            "type" : "string",
-            "enum": ["SWITCH"],
-            "description": "State type"
-        },
-        "conditions": {
-            "type": "array",
-            "description": "Defines conditions evaluated against state data",
-            "items": {
-                "type": "object",
-                "$ref": "#/definitions/condition"
-            }
-        },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
-        },
-        "onError": {
-            "type": "array",
-            "description": "States error handling definitions",
-            "items": {
-                "type": "object",
-                "$ref": "#/definitions/error"
-            }
-        },
-        "default": {
-            "description": "Next transition of the workflow if there is no match for any conditions",
-            "$ref": "#/definitions/transition"
-        },
-        "dataInputSchema": {
-          "type": "string",
-          "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
-        },
-        "dataOutputSchema": {
-          "type": "string",
-          "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
-        },
-        "metadata": {
-          "$ref": "#/definitions/metadata"
-        },
-        "start": {
-          "$ref": "#/definitions/start",
-          "description": "State start definition"
-        }
-    },
+    "description": "Permits transitions to other states based on matched data condition or events",
     "oneOf": [
-    {
-      "required": [
-        "start",
-        "name",
-        "type",
-        "conditions",
-        "default"
-      ]
-    },
-    {
-      "required": [
-        "name",
-        "type",
-        "conditions",
-        "default"
-      ]
-    }
+      {
+        "$ref": "#/definitions/databasedswitch"
+      },
+      {
+        "$ref": "#/definitions/eventbasedswitch"
+      } 
     ]
 }
 ```
 
 </details>
 
-Switch states can be viewed as exclusive gateways. They define conditions that trigger workflow transitions based on
-JSONPath matches on the states data input. Switch states cannot be workflow ending states as they require
-a transition to another workflow state.
+Switch states can be viewed as workflow gateways, they can direct transitions of a workflow based on certain conditions.
+There are two types of conditions for switch states:
+* Data-based conditions
+* Event conditions
 
-If no defined conditions can be matched, the states "default" transition is taken.
-Multiple matching conditions should be reported as runtime errors. A single transition should only be 
-possible from switch states.
+These are exclusive, meaning that a switch state can define one or the other condition type, not both.
 
-#### <a name="switch-state-conditions"></a>Switch State: Conditions
+In case of data-based conditions definition, switch state controls workflow transitions based on the states data.
+If no defined conditions can be matched, the state transitions based on the defined "default" transition property.
+
+For the case of event conditions, switch state acts as a workflow wait state, waiting for one of the defined 
+events to arrive, making a transition depending on that event definition.
+If events defined in event based conditions do not arrive before the states "timeout" property expires, 
+the state transitions based on the defined "default" transition property.
+
+Switch states cannot be workflow ending states.
+
+#### <a name="switch-state-dataconditions"></a>Switch State: Data Conditions
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | path | JSONPath expression that selects elements of state data | string | yes |
 | value | Matching value | string | yes |
 | operator | Condition operator | string | yes |
-| [transition](#Transitions) | Next transition of the workflow if condition is matched | string | yes |
+| [transition](#Transitions) | Next transition of the workflow if condition is matched | object | yes |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -1265,7 +1208,7 @@ possible from switch states.
 
 </details>
 
-Switch state conditions specify a data-based condition statement which if true causes a transition to another 
+Switch state data conditions specify a data-based condition statement which if true causes a transition to another 
 workflow state.
 The "path" property of the condition defines a JSONPath expression, for example "$.person.name" which selects
 parts of the state data input.
@@ -1274,6 +1217,50 @@ The "operator" property defines how the path should be matched with the defined 
 is "Custom", the information about custom operator info must be defined via the condition definition metadata property.
 Note that in this case you may run into vendor specific implementations of the condition which may not be portable, 
 so use of one of the operators other than "Custom" are if possible preferred.
+
+#### <a name="switch-state-eventconditions"></a>Switch State: Event Conditions
+
+| Parameter | Description | Type | Required |
+| --- | --- | --- | --- |
+| eventRef | References an unique event name in the defined workflow events | string | yes |
+| [transition](#Transitions) | Next transition of the workflow if condition is matched | object | yes |
+| [eventDataFilter](#event-data-filter) | Event data filter definition | object | no |
+| [metadata](#Workflow-Metadata) | Metadata information| object | no |
+
+<details><summary><strong>Click to view JSON Schema</strong></summary>
+
+```json
+{
+     "type": "object",
+      "description": "Switch state data event condition",
+      "properties": {
+        "eventRef": {
+          "type" : "string",
+          "description": "References an unique event name in the defined workflow events"
+        },
+        "transition": {
+          "description": "Next transition of the workflow if there is valid matches",
+          "$ref": "#/definitions/transition"
+        }
+      },
+      "eventDataFilter": {
+        "description": "Event data filter definition",
+        "$ref": "#/definitions/eventdatafilter"
+      },
+      "metadata": {
+        "$ref": "#/definitions/metadata"
+      },
+      "required": ["eventRef", "transition"]
+}
+```
+
+</details>
+
+Switch state event conditions specify events which the switch states must wait for. Each condition
+can reference one workflow defined event. Upon arrival of this event, the associated transition is taken.
+The "eventRef" property refenreces a name of one of the defined workflow events. 
+The "transition" property defines the workflow transition to be taken when the references event arrives.
+the "eventDataFilter" defines the event data filter to be used to filter event data before the transition is executed.
 
 #### Delay State
 
@@ -1285,7 +1272,7 @@ so use of one of the operators other than "Custom" are if possible preferred.
 | timeDelay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
-| [transition](#Transitions) |Next transition of the workflow after the delay | string | yes (if end is not defined) |
+| [transition](#Transitions) | Next transition of the workflow after the delay | object | yes (if end is not defined) |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
 | [start](#Start-Definition) | Is this state a starting state | object | no |
@@ -1409,7 +1396,7 @@ Delay state waits for a certain amount of time before transitioning to a next st
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
-| [transition](#Transitions) | Next transition of the workflow after all branches have completed execution | string | yes (if end is not defined) |
+| [transition](#Transitions) | Next transition of the workflow after all branches have completed execution | object | yes (if end is not defined) |
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
 | dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
@@ -1638,7 +1625,7 @@ States outside a parallel state cannot transition to a states declared within br
 | workflowId |Sub-workflow unique id | boolean | no |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
-| [transition](#Transitions) |Next transition of the workflow after subflow has completed | string | yes (if end is not defined) |
+| [transition](#Transitions) |Next transition of the workflow after subflow has completed | object | yes (if end is not defined) |
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
 | dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
@@ -1781,7 +1768,7 @@ If this property is set to false, data access to parent's workflow should not be
 | type | State type | string | yes |
 | data | JSON object which can be set as state's data input and can be manipulated via filter | object | no |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
-| [transition](#Transitions) | Next transition of the workflow after subflow has completed | string | yes (if end is set to false) |
+| [transition](#Transitions) | Next transition of the workflow after subflow has completed | object | yes (if end is set to false) |
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
 | dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
@@ -2052,7 +2039,7 @@ This allows you to test if your workflow behaves properly for cases when there a
 | [stateDataFilter](#state-data-filter) | State data filter definition | object | no |
 | [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
-| [transition](#Transitions) | Next transition of the workflow after state has completed | string | yes (if end is not defined) |
+| [transition](#Transitions) | Next transition of the workflow after state has completed | object | yes (if end is not defined) |
 | dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
 | dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
@@ -2453,7 +2440,7 @@ defined in the orders array of its data input.
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
 | [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
 | [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
-| [transition](#Transitions) | Next transition of the workflow after callback event has been received | string | yes |
+| [transition](#Transitions) | Next transition of the workflow after callback event has been received | object | yes |
 | [start](#Start-Definition) | Is this state a starting state | object | no |
 | [end](#End-Definition) | Is this state an end state | object | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |

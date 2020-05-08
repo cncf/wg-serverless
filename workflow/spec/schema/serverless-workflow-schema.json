@@ -841,7 +841,19 @@
     },
     "switchstate": {
       "type": "object",
-      "description": "Permits transitions to other states based on condition matching",
+      "description": "Permits transitions to other states based on data conditions or events",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/databasedswitch"
+        },
+        {
+          "$ref": "#/definitions/eventbasedswitch"
+        }
+      ]
+    },
+    "eventbasedswitch": {
+      "type": "object",
+      "description": "Permits transitions to other states based on events",
       "properties": {
         "id": {
           "type": "string",
@@ -866,12 +878,12 @@
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
         },
-        "conditions": {
+        "eventConditions": {
           "type": "array",
-          "description": "Defines conditions evaluated against state data",
+          "description": "Defines conditions evaluated against events",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/condition"
+            "$ref": "#/definitions/eventcondition"
           }
         },
         "onError": {
@@ -882,8 +894,12 @@
             "$ref": "#/definitions/error"
           }
         },
+        "eventTimeout": {
+          "type": "string",
+          "description": "If eventConditions is used, defines the time period to wait for events (ISO 8601 format)"
+        },
         "default": {
-          "description": "Next transition of the workflow if there is no matching conditions",
+          "description": "Next transition of the workflow if there is no matching data conditions, or event timeout is reached",
           "$ref": "#/definitions/transition"
         },
         "dataInputSchema": {
@@ -905,7 +921,7 @@
           "required": [
             "name",
             "type",
-            "conditions",
+            "eventConditions",
             "default"
           ]
         },
@@ -914,15 +930,118 @@
             "start",
             "name",
             "type",
-            "conditions",
+            "eventConditions",
             "default"
           ]
         }
       ]
     },
-    "condition": {
+    "databasedswitch": {
       "type": "object",
-      "description": "Switch state condition",
+      "description": "Permits transitions to other states based on data conditions",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique State id",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "State name"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "SWITCH"
+          ],
+          "description": "State type"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
+        },
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
+        },
+        "dataConditions": {
+          "type": "array",
+          "description": "Defines conditions evaluated against state data",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/datacondition"
+          }
+        },
+        "onError": {
+          "type": "array",
+          "description": "States error handling definitions",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/error"
+          }
+        },
+        "default": {
+          "description": "Next transition of the workflow if there is no matching data conditions, or event timeout is reached",
+          "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "name",
+            "type",
+            "dataConditions",
+            "default"
+          ]
+        },
+        {
+          "required": [
+            "start",
+            "name",
+            "type",
+            "dataConditions",
+            "default"
+          ]
+        }
+      ]
+    },
+    "eventcondition": {
+      "type": "object",
+      "description": "Switch state data event condition",
+      "properties": {
+        "eventRef": {
+          "type" : "string",
+          "description": "References an unique event name in the defined workflow events"
+        },
+        "transition": {
+          "description": "Next transition of the workflow if there is valid matches",
+          "$ref": "#/definitions/transition"
+        }
+      },
+      "eventDataFilter": {
+        "description": "Event data filter definition",
+        "$ref": "#/definitions/eventdatafilter"
+      },
+      "metadata": {
+        "$ref": "#/definitions/metadata"
+      },
+      "required": ["eventRef", "transition"]
+    },
+    "datacondition": {
+      "type": "object",
+      "description": "Switch state data based condition",
       "properties": {
         "path": {
           "type": "string",

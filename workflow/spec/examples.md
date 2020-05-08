@@ -7,7 +7,8 @@
 - [Event-based greeting](#Event-Based-Greeting-Example)
 - [Solving Math Problems (ForEach state)](#Solving-Math-Problems-Example)
 - [Parallel Execution](#Parallel-Execution-Example)
-- [Applicant Request Decision (Switch + SubFlow states)](#Applicant-Request-Decision-Example)
+- [Event Based Transitions (Event-based Switch)](#Event-Based-Transitions-Example)
+- [Applicant Request Decision (Data-based Switch + SubFlow states)](#Applicant-Request-Decision-Example)
 - [Provision Orders (Error Handling)](#Provision-Orders-Example)
 - [Monitor Job for completion (Polling)](#Monitor-Job-Example)
 - [Send CloudEvent on Workflow Completion](#Send-CloudEvent-On-Workfow-Completion-Example)
@@ -674,6 +675,157 @@ states:
 <img src="media/examples/example-parallel.png" height="500px" alt="Parallel Example"/>
 </p>
 
+
+
+### Event Based Transitions Example
+
+#### Description
+
+In this example we use an Event-based Switch state to wait for arrival
+of the "VisaApproved", or "VisaRejected" Cloud Events. Depending on which type of event happens,
+the workflow performs a different transition. If none of the events arrive in the defined 1 hour timeout
+period, the workflow transitions to the "HandleNoVisaDecision" state. 
+
+#### Workflow Definition
+
+<table>
+<tr>
+    <th>JSON</th>
+    <th>YAML</th>
+</tr>
+<tr>
+<td valign="top">
+
+```json
+{  
+"id": "eventbasedswitch",
+"version": "1.0",
+"name": "Event Based Switch Transitions",
+"description": "Event Based Switch Transitions",
+"events": [
+{
+    "name": "visaApprovedEvent",
+    "type": "VisaApproved",
+    "source": "visaCheckSource"
+},
+{
+    "name": "visaRejectedEvent",
+    "type": "VisaRejected",
+    "source": "visaCheckSource"
+}
+],
+"states":[  
+  {  
+     "name":"CheckVisaStatus",
+     "type":"SWITCH",
+     "start": {
+        "kind": "DEFAULT"
+     },
+     "eventConditions": [
+        {
+          "eventRef": "visaApprovedEvent",
+          "transition": {
+            "nextState": "HandleApprovedVisa"
+          }
+        },
+        {
+          "eventRef": "visaRejectedEvent",
+          "transition": {
+            "nextState": "HandleRejectedVisa"
+          }
+        }
+     ],
+     "eventTimeout": "PT1H",
+     "default": {
+        "nextState": "HandleNoVisaDecision"
+     }
+  },
+  {
+    "name": "HandleApprovedVisa",
+    "type": "SUBFLOW",
+    "workflowId": "handleApprovedVisaWorkflowID",
+    "end": {
+      "kind": "DEFAULT"
+    }
+  },
+  {
+      "name": "HandleRejectedVisa",
+      "type": "SUBFLOW",
+      "workflowId": "handleRejectedVisaWorkflowID",
+      "end": {
+        "kind": "DEFAULT"
+      }
+  },
+  {
+      "name": "HandleNoVisaDecision",
+      "type": "SUBFLOW",
+      "workflowId": "handleNoVisaDecisionWorkfowId",
+      "end": {
+        "kind": "DEFAULT"
+      }
+  }
+]
+}
+```
+
+</td>
+<td valign="top">
+
+```yaml
+id: eventbasedswitch
+version: '1.0'
+name: Event Based Switch Transitions
+description: Event Based Switch Transitions
+events:
+- name: visaApprovedEvent
+  type: VisaApproved
+  source: visaCheckSource
+- name: visaRejectedEvent
+  type: VisaRejected
+  source: visaCheckSource
+states:
+- name: CheckVisaStatus
+  type: SWITCH
+  start:
+    kind: DEFAULT
+  eventConditions:
+  - eventRef: visaApprovedEvent
+    transition:
+      nextState: HandleApprovedVisa
+  - eventRef: visaRejectedEvent
+    transition:
+      nextState: HandleRejectedVisa
+  eventTimeout: PT1H
+  default:
+    nextState: HandleNoVisaDecision
+- name: HandleApprovedVisa
+  type: SUBFLOW
+  workflowId: handleApprovedVisaWorkflowID
+  end:
+    kind: DEFAULT
+- name: HandleRejectedVisa
+  type: SUBFLOW
+  workflowId: handleRejectedVisaWorkflowID
+  end:
+    kind: DEFAULT
+- name: HandleNoVisaDecision
+  type: SUBFLOW
+  workflowId: handleNoVisaDecisionWorkfowId
+  end:
+    kind: DEFAULT
+```
+
+</td>
+</tr>
+</table>
+
+#### Workflow Diagram
+
+<p align="center">
+<img src="media/examples/example-eventbasedswitch.png" height="500px" alt="Event Based Switch Example"/>
+</p>
+
+
 ### Applicant Request Decision Example
 
 #### Description
@@ -724,7 +876,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
          "start": {
             "kind": "DEFAULT"
          },
-         "conditions": [
+         "dataConditions": [
             {
               "path": "$.applicant.age",
               "value": "18",
@@ -792,7 +944,7 @@ states:
   type: SWITCH
   start:
     kind: DEFAULT
-  conditions:
+  dataConditions:
   - path: "$.applicant.age"
     value: '18'
     operator: GreaterThanOrEquals
@@ -1176,7 +1328,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
   {  
     "name":"DetermineCompletion",
     "type":"SWITCH",
-    "conditions": [
+    "dataConditions": [
       {
         "path": "$.jobstatus",
         "value": "SUCCEEDED",
@@ -1306,7 +1458,7 @@ states:
     nextState: DetermineCompletion
 - name: DetermineCompletion
   type: SWITCH
-  conditions:
+  dataConditions:
   - path: "$.jobstatus"
     value: SUCCEEDED
     operator: Equals
@@ -2023,7 +2175,7 @@ And for denied credit check, for example:
         {
             "name": "EvaluateDecision",
             "type": "SWITCH",
-            "conditions": [
+            "dataConditions": [
                 {
                     "path": "$.creditCheck.decision",
                     "value": "Approved",
@@ -2110,7 +2262,7 @@ states:
     nextState: EvaluateDecision
 - name: EvaluateDecision
   type: SWITCH
-  conditions:
+  dataConditions:
   - path: "$.creditCheck.decision"
     value: Approved
     operator: Equals
