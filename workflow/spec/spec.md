@@ -947,6 +947,7 @@ For more information reference the [Workflow Error Handling - Retrying](#workflo
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | [expression](#Expression-Definition) | Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid | object | no |
+| [produceEvent](#ProduceEvent-Definition) | Event to be produced when this transition happens | object | no |
 | [nextState](#Transitions) | State to transition to next | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -958,6 +959,10 @@ For more information reference the [Workflow Error Handling - Retrying](#workflo
     "expression": {
       "description": "Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid",
       "$ref": "#/definitions/expression"
+    },
+    "produceEvent": {
+      "description": "Reference one of the defined events by name and set its data",
+      "$ref": "#/definitions/produceevent"
     },
     "nextState": {
       "type": "string",
@@ -2787,7 +2792,7 @@ are completed. If a terminate end is reached inside a ForEach, Parallel, or SubF
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| nameRef | Reference to a defined unique event name in the [events](#Event-Definition) definition | string | yes |
+| eventRef | Reference to a defined unique event name in the [events](#Event-Definition) definition | string | yes |
 | data | JSONPath expression which selects parts of the states data output to become the data of the produced event | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -2797,7 +2802,7 @@ are completed. If a terminate end is reached inside a ForEach, Parallel, or SubF
   "type": "object",
   "description": "Produce an event and set its data",
   "properties": {
-    "nameRef": {
+    "eventRef": {
       "type": "string",
       "description": "References a name of a defined event"
     },
@@ -2807,21 +2812,23 @@ are completed. If a terminate end is reached inside a ForEach, Parallel, or SubF
     }
   },
   "required": [
-    "nameRef"
+    "eventRef"
   ]
 }
 ```
 
 </details>
 
-Defines the CloudEvent to produce when workflow execution completes. The nameRef property must match
+Defines the CloudEvent to produce when workflow execution completes or during a workflow transition. 
+The "eventRef" property must match the name of
 one of the defined events in the [events](#Event-Definition) definition. From this the event type can be determined.
 The data property defines a JSONPath expression which selects elements of the states data output to be placed into the
 data section of the produced CloudEvent.
 
-Being able to produce an event when workflow execution completes allows for event-based orchestration communication.
+Being able to produce an event when workflow execution completes or during state transition
+allows for event-based orchestration communication.
 
-Completion of an orchestration workflow can notify other orchestration workflows to decide if they need to act upon
+For example, completion of an orchestration workflow can notify other orchestration workflows to decide if they need to act upon
  the produced event. This can create very dynamic orchestration scenarios.
 
 #### Filter Definition
@@ -2878,6 +2885,9 @@ So the options for next state transitions are:
 - Use the state name property
 - Use the state id property
 - Use a combination of name and id properties
+
+Events can be produced during state transitions. The "produceEvent" property allows you
+to reference one of the defined workflow events and select the state data to be sent as the event payload.
 
 #### Restricting Transitions based on state output
 

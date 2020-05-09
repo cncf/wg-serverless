@@ -50,4 +50,5 @@ _Status description:_
 | ✔️| Update waitForCompletion property of Parallel State | [spec doc](spec.md) |
 | ✔️| Add timeout property to actions | [spec doc](spec.md) |
 | ✔️| Add examples comparing Argo workflow and spec markups | [examples doc](examples-argo.md) |
+| ✔️| Add ability to produce events during state transitions | [spec doc](spec.md) |
 

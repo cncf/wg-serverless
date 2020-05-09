@@ -132,6 +132,10 @@
           "description": "Expression evaluated against state's data output. Must evaluate to true for the transition to be valid",
           "$ref": "#/definitions/expression"
         },
+        "produceEvent": {
+          "description": "Reference one of the defined events by name and set its data",
+          "$ref": "#/definitions/produceevent"
+        },
         "nextState": {
           "type": "string",
           "description": "Name of state to transition to",
@@ -1536,7 +1540,7 @@
       "type": "object",
       "description": "Produce an event and set its data",
       "properties": {
-        "nameRef": {
+        "eventRef": {
           "type": "string",
           "description": "References a name of a defined event"
         },
@@ -1546,7 +1550,7 @@
         }
       },
       "required": [
-        "nameRef"
+        "eventRef"
       ]
     },
     "statedatafilter": {
