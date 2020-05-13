@@ -840,8 +840,6 @@
       ]
     },
     "switchstate": {
-      "type": "object",
-      "description": "Permits transitions to other states based on data conditions or events",
       "oneOf": [
         {
           "$ref": "#/definitions/databasedswitch"
