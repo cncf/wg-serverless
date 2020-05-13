@@ -56,9 +56,9 @@ value of the "result" property. Since it is an end state, it's data output becom
 "states":[  
   {  
      "name":"Hello",
-     "type":"INJECT",
+     "type":"inject",
      "start": {
-       "kind": "DEFAULT"
+       "kind": "default"
      },
      "data": {
         "result": "Hello"
@@ -69,7 +69,7 @@ value of the "result" property. Since it is an end state, it's data output becom
   },
   {  
      "name":"World",
-     "type":"INJECT",
+     "type":"inject",
      "data": {
         "result": " World!"
      },
@@ -77,7 +77,7 @@ value of the "result" property. Since it is an end state, it's data output becom
        "dataOutputPath": "$.result"
      },
      "end": {
-       "kind": "DEFAULT"
+       "kind": "default"
      }
   }
 ]
@@ -94,21 +94,21 @@ name: Hello World Workflow
 description: Static Hello World
 states:
 - name: Hello
-  type: INJECT
+  type: inject
   start:
-    kind: DEFAULT
+    kind: default
   data:
     result: Hello
   transition:
     nextState: World
 - name: World
-  type: INJECT
+  type: inject
   data:
     result: " World!"
   stateDataFilter:
     dataOutputPath: "$.result"
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -179,11 +179,11 @@ becomes the workflow data output (as it is an end state):
 "states":[  
   {  
      "name":"Greet",
-     "type":"OPERATION",
+     "type":"operation",
      "start": {
-       "kind": "DEFAULT"
+       "kind": "default"
      },
-     "actionMode":"SEQUENTIAL",
+     "actionMode":"sequential",
      "actions":[  
         {  
            "functionRef": {
@@ -201,7 +201,7 @@ becomes the workflow data output (as it is an end state):
         "dataOutputPath": "$.greeting"
      },
      "end": {
-       "kind": "DEFAULT"
+       "kind": "default"
      }
   }
 ]
@@ -221,10 +221,10 @@ functions:
   resource: functionResourse
 states:
 - name: Greet
-  type: OPERATION
+  type: operation
   start:
-    kind: DEFAULT
-  actionMode: SEQUENTIAL
+    kind: default
+  actionMode: sequential
   actions:
   - functionRef:
       refName: greetingFunction
@@ -235,7 +235,7 @@ states:
   stateDataFilter:
     dataOutputPath: "$.greeting"
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -342,9 +342,9 @@ filters what is selected to be the state data output which then becomes the work
 "states":[  
   {  
      "name":"Greet",
-     "type":"EVENT",
+     "type":"event",
      "start": {
-       "kind": "DEFAULT"
+       "kind": "default"
      },
      "eventsActions": [{
          "eventRefs": ["GreetingEvent"],
@@ -366,7 +366,7 @@ filters what is selected to be the state data output which then becomes the work
         "dataOutputPath": "$.payload.greeting"
      },
      "end": {
-       "kind": "DEFAULT"
+       "kind": "default"
      }
   }
 ]
@@ -390,9 +390,9 @@ functions:
   resource: functionResourse
 states:
 - name: Greet
-  type: EVENT
+  type: event
   start:
-    kind: DEFAULT
+    kind: default
   eventsActions:
   - eventRefs:
     - GreetingEvent
@@ -406,7 +406,7 @@ states:
   stateDataFilter:
     dataOutputPath: "$.payload.greeting"
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -466,20 +466,20 @@ result of the workflow execution.
 {
  "name":"Solve",
  "start": {
-  "kind": "DEFAULT"
+  "kind": "default"
 },
- "type":"FOREACH",
+ "type":"foreach",
  "inputCollection": "$.expressions",
  "inputParameter": "$.singleexpression",
  "outputCollection": "$.results",
  "states": [
 {  
     "name":"GetResults",
-    "type":"OPERATION",
+    "type":"operation",
      "start": {
-       "kind": "DEFAULT"
+       "kind": "default"
     },
-    "actionMode":"SEQUENTIAL",
+    "actionMode":"sequential",
     "actions":[  
        {  
           "functionRef": {
@@ -491,7 +491,7 @@ result of the workflow execution.
        }
     ],
     "end": {
-      "kind": "DEFAULT"
+      "kind": "default"
     }
 }
  ],
@@ -499,7 +499,7 @@ result of the workflow execution.
     "dataOutputPath": "$.results"
  },
  "end": {
-   "kind": "DEFAULT"
+   "kind": "default"
  }
 }
 ]
@@ -520,28 +520,28 @@ functions:
 states:
 - name: Solve
   start:
-    kind: DEFAULT
-  type: FOREACH
+    kind: default
+  type: foreach
   inputCollection: "$.expressions"
   inputParameter: "$.singleexpression"
   outputCollection: "$.results"
   states:
   - name: GetResults
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
     - functionRef:
         refName: solveMathExpressionFunction
         parameters:
           expression: "$.singleexpression"
     end:
-      kind: DEFAULT
+      kind: default
   stateDataFilter:
     dataOutputPath: "$.results"
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -559,7 +559,7 @@ states:
 #### Description
 
 This example uses a parallel state to execute two branches (simple wait states) at the same time.
-The completionType type is set to "AND", which means the parallel state has to wait for both branches
+The completionType type is set to "and", which means the parallel state has to wait for both branches
 to finish execution before it can transition (end workflow execution in this case as it is an end state).
 
 #### Workflow Definition
@@ -581,24 +581,24 @@ to finish execution before it can transition (end workflow execution in this cas
 "states":[  
   {  
      "name":"ParallelExec",
-     "type":"PARALLEL",
+     "type":"parallel",
      "start": {
-       "kind": "DEFAULT"
+       "kind": "default"
      },
-     "completionType": "AND",
+     "completionType": "and",
      "branches": [
         {
           "name": "Branch1",
           "states": [
             {
                 "name":"ShortDelay",
-                 "type":"DELAY",
+                 "type":"delay",
                  "start": {
-                    "kind": "DEFAULT"
+                    "kind": "default"
                 },
                  "timeDelay": "PT15S",
                  "end": {
-                   "kind": "DEFAULT"
+                   "kind": "default"
                  }
             }
           ]
@@ -608,20 +608,20 @@ to finish execution before it can transition (end workflow execution in this cas
           "states": [
              {
                  "name":"LongDelay",
-                  "type":"DELAY",
+                  "type":"delay",
                   "start": {
-                     "kind": "DEFAULT"
+                     "kind": "default"
                   },
                   "timeDelay": "PT2M",
                   "end": {
-                    "kind": "DEFAULT"
+                    "kind": "default"
                   }
              }
           ]
         }
      ],
      "end": {
-       "kind": "DEFAULT"
+       "kind": "default"
      }
   }
 ]
@@ -638,31 +638,31 @@ name: Parallel Execution Workflow
 description: Executes two branches in parallel
 states:
 - name: ParallelExec
-  type: PARALLEL
+  type: parallel
   start:
-    kind: DEFAULT
+    kind: default
   branches:
-  completionType: AND
+  completionType: and
   - name: Branch1
     states:
     - name: ShortDelay
-      type: DELAY
+      type: delay
       start:
-        kind: DEFAULT
+        kind: default
       timeDelay: PT15S
       end:
-        kind: DEFAULT
+        kind: default
   - name: Branch2
     states:
     - name: LongDelay
-      type: DELAY
+      type: delay
       start:
-        kind: DEFAULT
+        kind: default
       timeDelay: PT2M
       end:
-        kind: DEFAULT
+        kind: default
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -717,9 +717,9 @@ period, the workflow transitions to the "HandleNoVisaDecision" state.
 "states":[  
   {  
      "name":"CheckVisaStatus",
-     "type":"SWITCH",
+     "type":"switch",
      "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
      },
      "eventConditions": [
         {
@@ -742,26 +742,26 @@ period, the workflow transitions to the "HandleNoVisaDecision" state.
   },
   {
     "name": "HandleApprovedVisa",
-    "type": "SUBFLOW",
+    "type": "subflow",
     "workflowId": "handleApprovedVisaWorkflowID",
     "end": {
-      "kind": "DEFAULT"
+      "kind": "default"
     }
   },
   {
       "name": "HandleRejectedVisa",
-      "type": "SUBFLOW",
+      "type": "subflow",
       "workflowId": "handleRejectedVisaWorkflowID",
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
   },
   {
       "name": "HandleNoVisaDecision",
-      "type": "SUBFLOW",
+      "type": "subflow",
       "workflowId": "handleNoVisaDecisionWorkfowId",
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
   }
 ]
@@ -872,15 +872,15 @@ If the applicants age is over 18 we start the application (subflow state). Other
    "states":[  
       {  
          "name":"CheckApplication",
-         "type":"SWITCH",
+         "type":"switch",
          "start": {
-            "kind": "DEFAULT"
+            "kind": "default"
          },
          "dataConditions": [
             {
               "path": "$.applicant.age",
               "value": "18",
-              "operator": "GreaterThanOrEquals",
+              "operator": "greaterthanorequals",
               "transition": {
                 "nextState": "StartApplication"
               }
@@ -888,7 +888,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
             {
               "path": "$.applicant.age",
               "value": "18",
-              "operator": "LessThan",
+              "operator": "lessthan",
               "transition": {
                 "nextState": "RejectApplication"
               }
@@ -900,16 +900,16 @@ If the applicants age is over 18 we start the application (subflow state). Other
       },
       {
         "name": "StartApplication",
-        "type": "SUBFLOW",
+        "type": "subflow",
         "workflowId": "startApplicationWorkflowId",
         "end": {
-          "kind": "DEFAULT"
+          "kind": "default"
         }
       },
       {  
         "name":"RejectApplication",
-        "type":"OPERATION",
-        "actionMode":"SEQUENTIAL",
+        "type":"operation",
+        "actionMode":"sequential",
         "actions":[  
            {  
               "functionRef": {
@@ -921,7 +921,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
            }
         ],
         "end": {
-          "kind": "DEFAULT"
+          "kind": "default"
         }
     }
    ]
@@ -941,37 +941,37 @@ functions:
   resource: functionResourse
 states:
 - name: CheckApplication
-  type: SWITCH
+  type: switch
   start:
-    kind: DEFAULT
+    kind: default
   dataConditions:
   - path: "$.applicant.age"
     value: '18'
-    operator: GreaterThanOrEquals
+    operator: greaterthanorequals
     transition:
       nextState: StartApplication
   - path: "$.applicant.age"
     value: '18'
-    operator: LessThan
+    operator: lessthan
     transition:
       nextState: RejectApplication
   default:
     nextState: RejectApplication
 - name: StartApplication
-  type: SUBFLOW
+  type: subflow
   workflowId: startApplicationWorkflowId
   end:
-    kind: DEFAULT
+    kind: default
 - name: RejectApplication
-  type: OPERATION
-  actionMode: SEQUENTIAL
+  type: operation
+  actionMode: sequential
   actions:
   - functionRef:
       refName: sendRejectionEmailFunction
       parameters:
         applicant: "$.applicant"
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -1033,11 +1033,11 @@ The data output of the workflow contains the information of the exception caught
 "states":[  
   {  
     "name":"ProvisionOrder",
-    "type":"OPERATION",
+    "type":"operation",
     "start": {
-      "kind": "DEFAULT"
+      "kind": "default"
     },
-    "actionMode":"SEQUENTIAL",
+    "actionMode":"sequential",
     "actions":[  
        {  
           "functionRef": {
@@ -1086,34 +1086,34 @@ The data output of the workflow contains the information of the exception caught
 },
 {
    "name": "MissingId",
-   "type": "SUBFLOW",
+   "type": "subflow",
    "workflowId": "handleMissingIdExceptionWorkflow",
    "end": {
-     "kind": "DEFAULT"
+     "kind": "default"
    }
 },
 {
    "name": "MissingItem",
-   "type": "SUBFLOW",
+   "type": "subflow",
    "workflowId": "handleMissingItemExceptionWorkflow",
    "end": {
-     "kind": "DEFAULT"
+     "kind": "default"
    }
 },
 {
    "name": "MissingQuantity",
-   "type": "SUBFLOW",
+   "type": "subflow",
    "workflowId": "handleMissingQuantityExceptionWorkflow",
    "end": {
-     "kind": "DEFAULT"
+     "kind": "default"
    }
 },
 {
    "name": "ApplyOrder",
-   "type": "SUBFLOW",
+   "type": "subflow",
    "workflowId": "applyOrderWorkflowId",
    "end": {
-     "kind": "DEFAULT"
+     "kind": "default"
    }
 }
 ]
@@ -1133,10 +1133,10 @@ functions:
   resource: functionResourse
 states:
 - name: ProvisionOrder
-  type: OPERATION
+  type: operation
   start:
-    kind: DEFAULT
-  actionMode: SEQUENTIAL
+    kind: default
+  actionMode: sequential
   actions:
   - functionRef:
       refName: provisionOrderFunction
@@ -1163,25 +1163,25 @@ states:
   transition:
     nextState: ApplyOrder
 - name: MissingId
-  type: SUBFLOW
+  type: subflow
   workflowId: handleMissingIdExceptionWorkflow
   end:
-    kind: DEFAULT
+    kind: default
 - name: MissingItem
-  type: SUBFLOW
+  type: subflow
   workflowId: handleMissingItemExceptionWorkflow
   end:
-    kind: DEFAULT
+    kind: default
 - name: MissingQuantity
-  type: SUBFLOW
+  type: subflow
   workflowId: handleMissingQuantityExceptionWorkflow
   end:
-    kind: DEFAULT
+    kind: default
 - name: ApplyOrder
-  type: SUBFLOW
+  type: subflow
   workflowId: applyOrderWorkflowId
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -1246,11 +1246,11 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
   "states":[  
     {  
       "name":"SubmitJob",
-      "type":"OPERATION",
+      "type":"operation",
       "start": {
-         "kind": "DEFAULT"
+         "kind": "default"
       },
-      "actionMode":"SEQUENTIAL",
+      "actionMode":"sequential",
       "actions":[  
       {  
           "functionRef": {
@@ -1287,15 +1287,15 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
   },
   {
       "name": "SubmitError",
-      "type": "SUBFLOW",
+      "type": "subflow",
       "workflowId": "handleJobSubmissionErrorWorkflow",
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
   },
   {
       "name": "WaitForCompletion",
-      "type": "DELAY",
+      "type": "delay",
       "timeDelay": "PT5S",
       "transition": {
         "nextState":"GetJobStatus"
@@ -1303,8 +1303,8 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
   },
   {  
       "name":"GetJobStatus",
-      "type":"OPERATION",
-      "actionMode":"SEQUENTIAL",
+      "type":"operation",
+      "actionMode":"sequential",
       "actions":[  
       {  
         "functionRef": {
@@ -1327,12 +1327,12 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
   },
   {  
     "name":"DetermineCompletion",
-    "type":"SWITCH",
+    "type":"switch",
     "dataConditions": [
       {
         "path": "$.jobstatus",
         "value": "SUCCEEDED",
-        "operator": "Equals",
+        "operator": "equals",
         "transition": {
           "nextState": "JobSucceeded"
         }
@@ -1340,7 +1340,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
       {
         "path": "$.jobstatus",
         "value": "FAILED",
-        "operator": "Equals",
+        "operator": "equals",
         "transition": {
           "nextState": "JobFailed"
         }
@@ -1352,8 +1352,8 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
   },
   {  
       "name":"JobSucceeded",
-      "type":"OPERATION",
-      "actionMode":"SEQUENTIAL",
+      "type":"operation",
+      "actionMode":"sequential",
       "actions":[  
       {  
         "functionRef": {
@@ -1365,13 +1365,13 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
       }
       ],
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
   },
   {  
     "name":"JobFailed",
-    "type":"OPERATION",
-    "actionMode":"SEQUENTIAL",
+    "type":"operation",
+    "actionMode":"sequential",
     "actions":[  
     {  
         "functionRef": {
@@ -1383,7 +1383,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
     }
     ],
     "end": {
-      "kind": "DEFAULT"
+      "kind": "default"
     }
   }
   ]
@@ -1409,10 +1409,10 @@ functions:
   resource: reportJobFailedResource
 states:
 - name: SubmitJob
-  type: OPERATION
+  type: operation
   start:
-    kind: DEFAULT
-  actionMode: SEQUENTIAL
+    kind: default
+  actionMode: sequential
   actions:
   - functionRef:
       refName: submitJob
@@ -1433,18 +1433,18 @@ states:
   transition:
     nextState: WaitForCompletion
 - name: SubmitError
-  type: SUBFLOW
+  type: subflow
   workflowId: handleJobSubmissionErrorWorkflow
   end:
-    kind: DEFAULT
+    kind: default
 - name: WaitForCompletion
-  type: DELAY
+  type: delay
   timeDelay: PT5S
   transition:
     nextState: GetJobStatus
 - name: GetJobStatus
-  type: OPERATION
-  actionMode: SEQUENTIAL
+  type: operation
+  actionMode: sequential
   actions:
   - functionRef:
       refName: checkJobStatus
@@ -1457,40 +1457,40 @@ states:
   transition:
     nextState: DetermineCompletion
 - name: DetermineCompletion
-  type: SWITCH
+  type: switch
   dataConditions:
   - path: "$.jobstatus"
     value: SUCCEEDED
-    operator: Equals
+    operator: equals
     transition:
       nextState: JobSucceeded
   - path: "$.jobstatus"
     value: FAILED
-    operator: Equals
+    operator: equals
     transition:
       nextState: JobFailed
   default:
     nextState: WaitForCompletion
 - name: JobSucceeded
-  type: OPERATION
-  actionMode: SEQUENTIAL
+  type: operation
+  actionMode: sequential
   actions:
   - functionRef:
       refName: reportJobSuceeded
       parameters:
         name: "$.jobuid"
   end:
-    kind: DEFAULT
+    kind: default
 - name: JobFailed
-  type: OPERATION
-  actionMode: SEQUENTIAL
+  type: operation
+  actionMode: sequential
   actions:
   - functionRef:
       refName: reportJobFailed
       parameters:
         name: "$.jobuid"
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -1540,7 +1540,7 @@ used is assumed to have the following results:
 ```
 
 After orders have been provisioned the ForEach states defines the end property which stops workflow execution.
-It defines its end definition to be of type "EVENT" in which case a CloudEvent will be produced which can be consumed
+It defines its end definition to be of type "event" in which case a CloudEvent will be produced which can be consumed
 by other orchestration workflows or other interested consumers. 
 Note that we define the event to be produced in the workflows "events" property.
 The data attached to the event contains the information on provisioned orders by this workflow. So the produced
@@ -1598,9 +1598,9 @@ CloudEvent upon completion of the workflow could look like:
 "states": [
 {
     "name": "ProvisionOrdersState",
-    "type": "FOREACH",
+    "type": "foreach",
     "start": {
-       "kind": "DEFAULT"
+       "kind": "default"
     },
     "inputCollection": "$.orders",
     "inputParameter": "$.singleorder",
@@ -1608,11 +1608,11 @@ CloudEvent upon completion of the workflow could look like:
     "states": [
     {
         "name": "DoProvision",
-        "type": "OPERATION",
+        "type": "operation",
         "start": {
-          "kind": "DEFAULT"
+          "kind": "default"
         },
-        "actionMode": "SEQUENTIAL",
+        "actionMode": "sequential",
         "actions": [
         {
             "functionRef": {
@@ -1624,7 +1624,7 @@ CloudEvent upon completion of the workflow could look like:
         }
         ],
         "end": {
-            "kind": "DEFAULT"
+            "kind": "default"
         }
     }
     ],
@@ -1632,7 +1632,7 @@ CloudEvent upon completion of the workflow could look like:
         "dataOutputPath": "$.provisionedOrders"
     },
     "end": {
-        "kind": "EVENT",
+        "kind": "event",
         "produceEvent": {
             "eventRef": "provisioningCompleteEvent",
             "data": "$.provisionedOrders"
@@ -1659,29 +1659,29 @@ functions:
   resource: functionResourse
 states:
 - name: ProvisionOrdersState
-  type: FOREACH
+  type: foreach
   start:
-    kind: DEFAULT
+    kind: default
   inputCollection: "$.orders"
   inputParameter: "$.singleorder"
   outputCollection: "$.results"
   states:
   - name: DoProvision
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
     - functionRef:
         refName: provisionOrderFunction
         parameters:
           order: "$.order"
     end:
-      kind: DEFAULT
+      kind: default
   stateDataFilter:
     dataOutputPath: "$.provisionedOrders"
   end:
-    kind: EVENT
+    kind: event
     produceEvent:
       eventRef: provisioningCompleteEvent
       data: "$.provisionedOrders"
@@ -1784,9 +1784,9 @@ have the matching patient id.
 "states": [
 {
 "name": "MonitorVitals",
-"type": "EVENT",
+"type": "event",
 "start": {
-    "kind": "DEFAULT"
+    "kind": "default"
 },
 "exclusive": true,
 "eventsActions": [{
@@ -1824,7 +1824,7 @@ have the matching patient id.
     }
 ],
 "end": {
-    "kind": "TERMINATE"
+    "kind": "terminate"
 }
 }]
 }
@@ -1862,9 +1862,9 @@ functions:
   resource: callNurseResource
 states:
 - name: MonitorVitals
-  type: EVENT
+  type: event
   start:
-    kind: DEFAULT
+    kind: default
   exclusive: true
   eventsActions:
   - eventRefs:
@@ -1889,7 +1889,7 @@ states:
         parameters:
           patientid: "$.patientId"
   end:
-    kind: TERMINATE
+    kind: terminate
 ```
 
 </td>
@@ -1961,9 +1961,9 @@ when all three of these events happened (in no particular order).
 "states": [
 {
     "name": "FinalizeApplication",
-    "type": "EVENT",
+    "type": "event",
     "start": {
-       "kind": "DEFAULT"
+       "kind": "default"
     },
     "exclusive": false,
     "eventsActions": [
@@ -1986,7 +1986,7 @@ when all three of these events happened (in no particular order).
         }
     ],
     "end": {
-        "kind": "TERMINATE"
+        "kind": "terminate"
     }
 }
 ]
@@ -2019,9 +2019,9 @@ functions:
   resource: finalizeApplicationResource
 states:
 - name: FinalizeApplication
-  type: EVENT
+  type: event
   start:
-    kind: DEFAULT
+    kind: default
   exclusive: false
   eventsActions:
   - eventRefs:
@@ -2034,7 +2034,7 @@ states:
         parameters:
           student: "$.applicantId"
   end:
-    kind: TERMINATE
+    kind: terminate
 ```
 
 </td>
@@ -2154,9 +2154,9 @@ And for denied credit check, for example:
     "states": [
         {
             "name": "CheckCredit",
-            "type": "CALLBACK",
+            "type": "callback",
             "start": {
-               "kind": "DEFAULT"
+               "kind": "default"
             },
             "action": {
                 "functionRef": {
@@ -2174,12 +2174,12 @@ And for denied credit check, for example:
         },
         {
             "name": "EvaluateDecision",
-            "type": "SWITCH",
+            "type": "switch",
             "dataConditions": [
                 {
                     "path": "$.creditCheck.decision",
                     "value": "Approved",
-                    "operator": "Equals",
+                    "operator": "equals",
                     "transition": {
                         "nextState": "StartApplication"
                     }
@@ -2187,7 +2187,7 @@ And for denied credit check, for example:
                 {
                     "path": "$.creditCheck.decision",
                     "value": "Denied",
-                    "operator": "Equals",
+                    "operator": "equals",
                     "transition": {
                         "nextState": "RejectApplication"
                     }
@@ -2199,16 +2199,16 @@ And for denied credit check, for example:
         },
         {
             "name": "StartApplication",
-            "type": "SUBFLOW",
+            "type": "subflow",
             "workflowId": "startApplicationWorkflowId",
             "end": {
-                "kind": "DEFAULT"
+                "kind": "default"
             }
         },
         {
             "name": "RejectApplication",
-            "type": "OPERATION",
-            "actionMode": "SEQUENTIAL",
+            "type": "operation",
+            "actionMode": "sequential",
             "actions": [
                 {
                     "functionRef": {
@@ -2220,7 +2220,7 @@ And for denied credit check, for example:
                 }
             ],
             "end": {
-                "kind": "DEFAULT"
+                "kind": "default"
             }
         }
     ]
@@ -2248,9 +2248,9 @@ events:
   correlationToken: customerId
 states:
 - name: CheckCredit
-  type: CALLBACK
+  type: callback
   start:
-    kind: DEFAULT
+    kind: default
   action:
     functionRef:
       refName: callCreditCheckMicroservice
@@ -2261,35 +2261,35 @@ states:
   transition:
     nextState: EvaluateDecision
 - name: EvaluateDecision
-  type: SWITCH
+  type: switch
   dataConditions:
   - path: "$.creditCheck.decision"
     value: Approved
-    operator: Equals
+    operator: equals
     transition:
       nextState: StartApplication
   - path: "$.creditCheck.decision"
     value: Denied
-    operator: Equals
+    operator: equals
     transition:
       nextState: RejectApplication
   default:
     nextState: RejectApplication
 - name: StartApplication
-  type: SUBFLOW
+  type: subflow
   workflowId: startApplicationWorkflowId
   end:
-    kind: DEFAULT
+    kind: default
 - name: RejectApplication
-  type: OPERATION
-  actionMode: SEQUENTIAL
+  type: operation
+  actionMode: sequential
   actions:
   - functionRef:
       refName: sendRejectionEmailFunction
       parameters:
         applicant: "$.customer"
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -2367,9 +2367,9 @@ Bidding is done via an online application and bids are received as events are as
     "states": [
         {
           "name": "StoreCarAuctionBid",
-          "type": "EVENT",
+          "type": "event",
           "start": {
-              "kind": "SCHEDULED",
+              "kind": "scheduled",
               "schedule": {
                 "interval": "2020-03-20T09:00:00Z/2020-03-20T15:00:00Z"
               }
@@ -2389,7 +2389,7 @@ Bidding is done via an online application and bids are received as events are as
             }
           ],
           "end": {
-              "kind": "TERMINATE"
+              "kind": "terminate"
           }
         }
     ]
@@ -2414,9 +2414,9 @@ events:
   source: carBidEventSource
 states:
 - name: StoreCarAuctionBid
-  type: EVENT
+  type: event
   start:
-    kind: SCHEDULED
+    kind: scheduled
     schedule:
       interval: 2020-03-20T09:00:00Z/2020-03-20T15:00:00Z
   exclusive: true
@@ -2429,7 +2429,7 @@ states:
         parameters:
           bid: "$.bid"
   end:
-    kind: TERMINATE
+    kind: terminate
 ```
 
 </td>

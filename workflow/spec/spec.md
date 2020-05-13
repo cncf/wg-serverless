@@ -485,7 +485,7 @@ Following is a detailed description of each of the defined states:
         },
         "type": {
             "type" : "string",
-            "enum": ["EVENT"],
+            "enum": ["event"],
             "description": "State type"
         },
         "exclusive": {
@@ -643,9 +643,9 @@ have not been received during this time, the state should transition to the next
         },
         "actionMode": {
             "type" : "string",
-            "enum": ["SEQUENTIAL", "PARALLEL"],
+            "enum": ["sequential", "parallel"],
             "description": "Specifies how actions are to be performed (in sequence of parallel)",
-            "default": "SEQUENTIAL"
+            "default": "sequential"
         },
         "actions": {
             "type": "array",
@@ -693,7 +693,7 @@ between arrival of specified events. To give an example let's say we have:
 "states": [
 {
     "name": "ExampleEventState",
-    "type": "EVENT",
+    "type": "event",
     "exclusive": false,
     "timeout": "PT2M",
     "eventsActions": [
@@ -708,7 +708,7 @@ between arrival of specified events. To give an example let's say we have:
         }
     ],
     "end": {
-        "kind": "TERMINATE"
+        "kind": "terminate"
     }
 }
 ]
@@ -1018,14 +1018,14 @@ Defines a transition from point A to point B in the serverless workflow. For mor
         },
         "type": {
             "type" : "string",
-            "enum": ["OPERATION"],
+            "enum": ["operation"],
             "description": "State type"
         },
         "actionMode": {
             "type" : "string",
-            "enum": ["SEQUENTIAL", "PARALLEL"],
+            "enum": ["sequential", "parallel"],
             "description": "Specifies whether actions are performed in sequence or in parallel",
-            "default": "SEQUENTIAL"
+            "default": "sequential"
         },
         "actions": {
             "type": "array",
@@ -1131,6 +1131,63 @@ Once all actions have been performed, a transition to another state can occur.
 {
     "type": "object",
     "description": "Permits transitions to other states based on matched data condition or events",
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Unique state id",
+            "minLength": 1
+        },
+        "name": {
+            "type": "string",
+            "description": "State name"
+        },
+        "type": {
+            "type" : "string",
+            "enum": ["switch"],
+            "description": "State type"
+        },
+        "conditions": {
+            "type": "array",
+            "description": "Defines conditions evaluated against state data",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/condition"
+            }
+        },
+        "stateDataFilter": {
+          "$ref": "#/definitions/statedatafilter"
+        },
+        "onError": {
+            "type": "array",
+            "description": "States error handling definitions",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/error"
+            }
+        },
+        "default": {
+            "description": "Next transition of the workflow if there is no match for any conditions",
+            "$ref": "#/definitions/transition"
+        },
+        "dataInputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data input adheres to"
+        },
+        "dataOutputSchema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to JSON Schema that state data output adheres to"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
+        },
+        "start": {
+          "$ref": "#/definitions/start",
+          "description": "State start definition"
+        }
+    },
+>>>>>>> Change all uppercase properties and enum types to lowercase
     "oneOf": [
       {
         "$ref": "#/definitions/databasedswitch"
@@ -1188,10 +1245,10 @@ Switch states cannot be workflow ending states.
         },
         "operator": {
             "type" : "string",  
-            "enum": ["Exists", "NotExists", "Null", "NotNull",
-                     "Equals", "NotEquals", "LessThan", "LessThanOrEquals", 
-                     "GreaterThan", "GreaterThanOrEquals", "Matches", "NotMatches",
-                     "Custom"],
+            "enum": ["exists", "notexists", "null", "notnull",
+                     "equals", "notequals", "lessthan", "lessthanorequals", 
+                     "greaterthan", "greaterthanorequals", "matches", "notmatches",
+                     "custom"],
             "description": "Condition operator"
         },
         "transition": {
@@ -1296,7 +1353,7 @@ the "eventDataFilter" defines the event data filter to be used to filter event d
         },
         "type": {
             "type" : "string",
-            "enum": ["DELAY"],
+            "enum": ["delay"],
             "description": "State type"
         },
         "timeDelay": {
@@ -1392,7 +1449,7 @@ Delay state waits for a certain amount of time before transitioning to a next st
 | type | State type | string | yes |
 | [branches](#parallel-state-branch) | List of branches for this parallel state| array | yes |
 | completionType | Option types on how to complete branch execution. | enum | no |
-| n | Used when branchCompletionType is set to 'N_OF_M' to specify the 'N' value. | integer | no |
+| n | Used when branchCompletionType is set to 'n_of_m' to specify the 'N' value. | integer | no |
 | [stateDataFilter](#state-data-filter) | State data filter | object | no |
 | [retry](#workflow-retrying) | States retry definitions | array | no |
 | [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
@@ -1421,7 +1478,7 @@ Delay state waits for a certain amount of time before transitioning to a next st
         },
         "type": {
             "type" : "string",
-            "enum": ["PARALLEL"],
+            "enum": ["parallel"],
             "description": "State type"
         },
         "branches": {
@@ -1434,15 +1491,15 @@ Delay state waits for a certain amount of time before transitioning to a next st
         },
         "completionType": {
             "type" : "string",  
-            "enum": ["AND", "XOR", "N_OF_M"],
+            "enum": ["and", "xor", "n_of_m"],
             "description": "Option types on how to complete branch execution.",
-            "default": "AND"
+            "default": "and"
         },
         "n": {
            "type": "integer",
             "default": 0,
             "minimum": 0,
-            "description": "Used when completionType is set to 'N_OF_M' to specify the 'N' value"
+            "description": "Used when completionType is set to 'n_of_m' to specify the 'N' value"
         },
         "stateDataFilter": {
           "$ref": "#/definitions/statedatafilter"
@@ -1536,9 +1593,9 @@ Branches contain one or more states. Each branch must define one [starting state
 include at least one [end state](#End-Definition).
 
 The "completionType" enum specifies the different ways of completing branch execution:
-* AND: All branches must complete execution before state can perform its transition
-* XOR: State can transition when one of the branches completes execution
-* N_OF_M: State can transition once N number of branches have completed execution. In this case you should also
+* and: All branches must complete execution before state can perform its transition
+* xor: State can transition when one of the branches completes execution
+* n_of_m: State can transition once N number of branches have completed execution. In this case you should also
 specify the "n" property to define this number.
 
 
@@ -1650,7 +1707,7 @@ States outside a parallel state cannot transition to a states declared within br
         },
         "type": {
             "type" : "string",
-            "enum": ["SUBFLOW"],
+            "enum": ["subflow"],
             "description": "State type"
         },
         "waitForCompletion": {
@@ -1793,7 +1850,7 @@ If this property is set to false, data access to parent's workflow should not be
         },
         "type": {
             "type" : "string",
-            "enum": ["INJECT"],
+            "enum": ["inject"],
             "description": "State type"
         },
         "data": {
@@ -1887,7 +1944,7 @@ as data output to the transition state:
   ```json
   {  
    "name":"SimpleInjectState",
-   "type":"INJECT",
+   "type":"inject",
    "data": {
       "person": {
         "fname": "John",
@@ -1907,7 +1964,7 @@ as data output to the transition state:
 
 ```yaml
   name: SimpleInjectState
-  type: INJECT
+  type: inject
   data:
     person:
       fname: John
@@ -1952,7 +2009,7 @@ You can also use the filter property to filter the state data after data is inje
 ```json
   {  
      "name":"SimpleInjectState",
-     "type":"INJECT",
+     "type":"inject",
      "data": {
         "people": [
           {
@@ -1989,7 +2046,7 @@ You can also use the filter property to filter the state data after data is inje
 
 ```yaml
   name: SimpleInjectState
-  type: INJECT
+  type: inject
   data:
     people:
     - fname: John
@@ -2064,7 +2121,7 @@ This allows you to test if your workflow behaves properly for cases when there a
         },
         "type": {
             "type" : "string",
-            "enum": ["FOREACH"],
+            "enum": ["foreach"],
             "description": "State type"
         },
         "inputCollection": {
@@ -2285,17 +2342,17 @@ and the state is defined as:
   "states": [
   {
    "name":"SendConfirmationForEachCompletedhOrder",
-   "type":"FOREACH",
+   "type":"foreach",
    "inputCollection": "$.orders[?(@.completed == true)]",
    "inputParameter": "$.completedorder",
    "states": [
       {  
       "start": {
-         "kind": "DEFAULT"
+         "kind": "default"
       },
       "name":"SendConfirmation",
-      "type":"OPERATION",
-      "actionMode":"SEQUENTIAL",
+      "type":"operation",
+      "actionMode":"sequential",
       "actions":[  
       {  
        "functionRef": {
@@ -2307,12 +2364,12 @@ and the state is defined as:
        }
     }],
     "end": {
-      "kind": "DEFAULT"
+      "kind": "default"
     }
     }
  ],
  "end": {
-    "kind": "DEFAULT"
+    "kind": "default"
  }
 }
 ]
@@ -2328,15 +2385,15 @@ functions:
   resource: functionResourse
 states:
 - name: SendConfirmationForEachCompletedhOrder
-  type: FOREACH
+  type: foreach
   inputCollection: "$.orders[?(@.completed == true)]"
   inputParameter: "$.completedorder"
   states:
   - start:
-      kind: DEFAULT
+      kind: default
     name: SendConfirmation
-    type: OPERATION
-    actionMode: SEQUENTIAL
+    type: operation
+    actionMode: sequential
     actions:
     - functionRef:
         refName: sendConfirmationFunction
@@ -2344,9 +2401,9 @@ states:
           orderNumber: "$.completedorder.orderNumber"
           email: "$.completedorder.email"
     end:
-      kind: DEFAULT
+      kind: default
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -2464,7 +2521,7 @@ defined in the orders array of its data input.
         },
         "type": {
             "type" : "string",
-            "enum": ["CALLBACK"],
+            "enum": ["callback"],
             "description": "State type"
         },
         "action": {
@@ -2605,8 +2662,8 @@ If the defined callback event has not been received during this time period, the
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| kind | End kind ("DEFAULT", "SCHEDULED") | enum | yes |
-| [schedule](#Schedule-Definition) | If kind is "SCHEDULED", define when the starting state is or becomes active | object | yes only if kind is "SCHEDULED" |
+| kind | End kind ("default", "scheduled") | enum | yes |
+| [schedule](#Schedule-Definition) | If kind is "scheduled", define when the starting state is or becomes active | object | yes only if kind is "scheduled" |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -2618,20 +2675,20 @@ If the defined callback event has not been received during this time period, the
     "kind": {
       "type": "string",
       "enum": [
-        "DEFAULT",
-        "SCHEDULED"
+        "default",
+        "scheduled"
       ],
       "description": "Kind of start definition"
     },
     "schedule": {
-      "description": "If kind is SCHEDULED, define when the starting state is or becomes active",
+      "description": "If kind is scheduled, define when the starting state is or becomes active",
       "$ref": "#/definitions/schedule"
     }
   },
   "if": {
     "properties": {
       "kind": {
-        "const": "SCHEDULED"
+        "const": "scheduled"
       }
     }
   },
@@ -2656,8 +2713,8 @@ state to be executed. A workflow definition can declare one workflow start state
 
 The start definition provides a "kind" parameter which describes the starting options:
 
-- **DEFAULT** - The start state is always "active" and there are no restrictions imposed on its execution.
-- **SCHEDULED** -  The start state is only "active" as described in the schedule definition. Workflow instance creation can only be performed for this workflow
+- **default** - The start state is always "active" and there are no restrictions imposed on its execution.
+- **scheduled** -  The start state is only "active" as described in the schedule definition. Workflow instance creation can only be performed for this workflow
 as described by the provided schedule.
 
 Defining a schedule for the start definition allows you to model workflows which are only "active" during certain time intervals. For example let's say
@@ -2719,8 +2776,8 @@ Once a workflow instance is created, the start state schedule can be ignored for
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| kind | End kind ("DEFAULT", "TERMINATE", or "EVENT") | enum | yes |
-| [produceEvent](#ProduceEvent-Definition) | If kind is "EVENT", define what type of event to produce | object | yes only if kind is "EVENT" |
+| kind | End kind ("default", "terminate", or "event") | enum | yes |
+| [produceEvent](#ProduceEvent-Definition) | If kind is "event", define what type of event to produce | object | yes only if kind is "EVENT" |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -2732,21 +2789,21 @@ Once a workflow instance is created, the start state schedule can be ignored for
     "kind": {
       "type": "string",
       "enum": [
-        "DEFAULT",
-        "TERMINATE",
-        "EVENT"
+        "default",
+        "terminate",
+        "event"
       ],
       "description": "Kind of end definition"
     },
     "produceEvent": {
-      "description": "If end kind is EVENT, select one of the defined events by name and set its data",
+      "description": "If end kind is event, select one of the defined events by name and set its data",
       "$ref": "#/definitions/produceevent"
     }
   },
   "if": {
     "properties": {
       "kind": {
-        "const": "EVENT"
+        "const": "event"
       }
     }
   },
@@ -2770,10 +2827,10 @@ Any state with the exception of the [Switch](#Switch-State) state can declare to
 
 The end definitions provides different ways to complete workflow execution, which is set by the "kind" property:
 
-- **DEFAULT** - Default workflow execution completion, no other special behavior
-- **TERMINATE** - Completes all execution flows in the given workflow instance. All activities/actions being executed
+- **default** - Default workflow execution completion, no other special behavior
+- **terminate** - Completes all execution flows in the given workflow instance. All activities/actions being executed
 are completed. If a terminate end is reached inside a ForEach, Parallel, or SubFlow state, the entire workflow instance is terminated.
-- **EVENT** - Workflow executions completes, and a Cloud Event is produced according to the [produceEvent](#ProduceEvent-Definition) definition.
+- **event** - Workflow executions completes, and a Cloud Event is produced according to the [produceEvent](#ProduceEvent-Definition) definition.
 
 #### ProduceEvent Definition
 
@@ -2912,10 +2969,10 @@ output of the state to transition from includes an user with the title "MANAGER"
 "states":[  
   {  
    "start": {
-     "kind": "DEFAULT"
+     "kind": "default"
    },
    "name":"lowRiskState",
-   "type":"OPERATION",
+   "type":"operation",
    "actionMode":"Sequential",
    "actions":[  
     {  
@@ -2934,9 +2991,9 @@ output of the state to transition from includes an user with the title "MANAGER"
   },
   {  
    "name":"highRiskState",
-   "type":"OPERATION",
+   "type":"operation",
    "end": {
-     "kind": "DEFAULT"
+     "kind": "default"
    },
    "actionMode":"Sequential",
    "actions":[  
@@ -2962,9 +3019,9 @@ functions:
   resource: functionResourse
 states:
 - start:
-    kind: DEFAULT
+    kind: default
   name: lowRiskState
-  type: OPERATION
+  type: operation
   actionMode: Sequential
   actions:
   - functionRef:
@@ -2975,9 +3032,9 @@ states:
       language: spel
       body: "#jsonPath(stateOutputData,'$..user.title') eq 'MANAGER'"
 - name: highRiskState
-  type: OPERATION
+  type: operation
   end:
-    kind: DEFAULT
+    kind: default
   actionMode: Sequential
   actions:
   - functionRef:
@@ -3147,7 +3204,7 @@ we can define a state filter:
 ```json
 {
   "name": "FruitsOnlyState",
-  "type": "INJECT",
+  "type": "inject",
   "stateDataFilter": {
     "dataInputPath": "$.fruits"
   },
@@ -3171,7 +3228,7 @@ The first way would be to use both dataInputPath, and dataOutputPath:
 ```json
 {
   "name": "VegetablesOnlyState",
-  "type": "INJECT",
+  "type": "inject",
   "stateDataFilter": {
     "dataInputPath": "$.vegetables",
     "dataOutputPath": "$.[?(@.veggieLike)]"
@@ -3194,7 +3251,7 @@ The second way would be to directly filter only the "veggie like" vegetables wit
 ```json
 {
   "name": "VegetablesOnlyState",
-  "type": "INJECT",
+  "type": "inject",
   "stateDataFilter": {
     "dataInputPath": "$.vegetables.[?(@.veggieLike)]"
   },
@@ -3338,10 +3395,10 @@ and then lets us know how to greet this customer in different languages. We coul
     "states":[
         {
             "start": {
-               "kind": "DEFAULT"
+               "kind": "default"
             },
             "name": "WaitForCustomerToArrive",
-            "type": "EVENT",
+            "type": "event",
             "eventsActions": [{
                 "eventRefs": ["CustomerArrivesEvent"],
                 "eventDataFilter": {
@@ -3368,7 +3425,7 @@ and then lets us know how to greet this customer in different languages. We coul
                 "dataOutputPath": "$.finalCustomerGreeting"
             },
             "end": {
-              "kind": "DEFAULT"
+              "kind": "default"
             }
         }
     ]

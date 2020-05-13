@@ -207,11 +207,11 @@
         "actionMode": {
           "type": "string",
           "enum": [
-            "SEQUENTIAL",
-            "PARALLEL"
+            "sequential",
+            "parallel"
           ],
           "description": "Specifies how actions are to be performed (in sequence of parallel)",
-          "default": "SEQUENTIAL"
+          "default": "sequential"
         },
         "actions": {
           "type": "array",
@@ -392,7 +392,7 @@
         "type": {
           "type": "string",
           "enum": [
-            "DELAY"
+            "delay"
           ],
           "description": "State type"
         },
@@ -490,7 +490,7 @@
         "type": {
           "type": "string",
           "enum": [
-            "EVENT"
+            "event"
           ],
           "description": "State type"
         },
@@ -609,7 +609,7 @@
         "type": {
           "type": "string",
           "enum": [
-            "OPERATION"
+            "operation"
           ],
           "description": "State type"
         },
@@ -627,11 +627,11 @@
         "actionMode": {
           "type": "string",
           "enum": [
-            "SEQUENTIAL",
-            "PARALLEL"
+            "sequential",
+            "parallel"
           ],
           "description": "Specifies whether actions are performed in sequence or in parallel",
-          "default": "SEQUENTIAL"
+          "default": "sequential"
         },
         "actions": {
           "type": "array",
@@ -732,7 +732,7 @@
         "type": {
           "type": "string",
           "enum": [
-            "PARALLEL"
+            "parallel"
           ],
           "description": "State type"
         },
@@ -757,15 +757,15 @@
         },
         "completionType": {
           "type" : "string",
-          "enum": ["AND", "XOR", "N_OF_M"],
+          "enum": ["and", "xor", "n_of_m"],
           "description": "Option types on how to complete branch execution.",
-          "default": "AND"
+          "default": "and"
         },
         "n": {
           "type": "integer",
           "default": 0,
           "minimum": 0,
-          "description": "Used when completionType is set to 'N_OF_M' to specify the 'N' value"
+          "description": "Used when completionType is set to 'n_of_m' to specify the 'N' value"
         },
         "retry": {
           "type": "array",
@@ -865,7 +865,7 @@
         "type": {
           "type": "string",
           "enum": [
-            "SWITCH"
+            "switch"
           ],
           "description": "State type"
         },
@@ -950,7 +950,7 @@
         "type": {
           "type": "string",
           "enum": [
-            "SWITCH"
+            "switch"
           ],
           "description": "State type"
         },
@@ -1051,7 +1051,7 @@
         },
         "operator": {
           "type" : "string",
-          "enum": ["Exists", "NotExists", "Null", "NotNull", "Equals", "NotEquals", "LessThan", "LessThanOrEquals", "GreaterThan", "GreaterThanOrEquals", "Matches", "NotMatches", "Custom"],
+          "enum": ["exists", "notexists", "null", "notnull", "equals", "notequals", "lessthan", "lessthanorequals", "greaterthan", "greaterthanorequals", "matches", "notmatches", "custom"],
           "description": "Condition operator"
         },
         "transition": {
@@ -1080,7 +1080,7 @@
         "type": {
           "type": "string",
           "enum": [
-            "SUBFLOW"
+            "subflow"
           ],
           "description": "State type"
         },
@@ -1183,7 +1183,7 @@
         "type": {
           "type": "string",
           "enum": [
-            "INJECT"
+            "inject"
           ],
           "description": "State type"
         },
@@ -1269,7 +1269,7 @@
         "type": {
           "type": "string",
           "enum": [
-            "FOREACH"
+            "foreach"
           ],
           "description": "State type"
         },
@@ -1440,7 +1440,7 @@
         },
         "type": {
           "type" : "string",
-          "enum": ["CALLBACK"],
+          "enum": ["callback"],
           "description": "State type"
         },
         "action": {
@@ -1574,20 +1574,20 @@
         "kind": {
           "type": "string",
           "enum": [
-            "DEFAULT",
-            "SCHEDULED"
+            "default",
+            "scheduled"
           ],
           "description": "Kind of start definition"
         },
         "schedule": {
-          "description": "If kind is SCHEDULED, define when the starting state is or becomes active",
+          "description": "If kind is scheduled, define when the starting state is or becomes active",
           "$ref": "#/definitions/schedule"
         }
       },
       "if": {
         "properties": {
           "kind": {
-            "const": "SCHEDULED"
+            "const": "scheduled"
           }
         }
       },
@@ -1623,21 +1623,21 @@
         "kind": {
           "type": "string",
           "enum": [
-            "DEFAULT",
-            "TERMINATE",
-            "EVENT"
+            "default",
+            "terminate",
+            "event"
           ],
           "description": "Kind of end definition"
         },
         "produceEvent": {
-          "description": "If end kind is EVENT, select one of the defined events by name and set its data",
+          "description": "If end kind is event, select one of the defined events by name and set its data",
           "$ref": "#/definitions/produceevent"
         }
       },
       "if": {
         "properties": {
           "kind": {
-            "const": "EVENT"
+            "const": "event"
           }
         }
       },
