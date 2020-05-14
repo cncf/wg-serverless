@@ -52,4 +52,5 @@ _Status description:_
 | ✔️| Add examples comparing Argo workflow and spec markups | [examples doc](examples-argo.md) |
 | ✔️| Add ability to produce events during state transitions | [spec doc](spec.md) |
 | ✔️| Add event-based condition capabilities to Switch State | [spec doc](spec.md) |
+| ✔️| Add examples comparing Brigade workflow and spec markups | [examples doc](examples-brigade.md) |
 
