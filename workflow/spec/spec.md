@@ -2780,7 +2780,7 @@ are completed. If a terminate end is reached inside a ForEach, Parallel, or SubF
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | eventRef | Reference to a defined unique event name in the [events](#Event-Definition) definition | string | yes |
-| data | JSONPath expression which selects parts of the states data output to become the data of the produced event | string | no |
+| data | If String, JSONPath expression which selects parts of the states data output to become the data of the produced event. If object a custom object to become the data of produced event. | string or object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -2794,7 +2794,7 @@ are completed. If a terminate end is reached inside a ForEach, Parallel, or SubF
       "description": "References a name of a defined event"
     },
     "data": {
-      "type": "object",
+      "type": ["string", "object"],
       "description": "JSONPath expression which selects parts of the states data output to become the data of the produced event"
     }
   },
