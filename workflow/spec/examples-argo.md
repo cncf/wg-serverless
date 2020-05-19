@@ -663,7 +663,7 @@ states:
     nextState: show-flip-results
 - name: show-flip-results
   type: SWITCH
-  conditions:
+  dataConditions:
   - path: "$.flip.result"
     value: heads
     operator: Equals
@@ -856,7 +856,7 @@ states:
     nextState: flip-coin-check
 - name: flip-coin-check
   type: SWITCH
-  conditions:
+  dataConditions:
   - path: "$.steps.flip-coin.outputs.result"
     value: tails
     operator: Equals
@@ -1000,7 +1000,7 @@ states:
     nextState: emo-state
 - name: emo-state
   type: SWITCH
-  conditions:
+  dataConditions:
   - path: "$.exit-code"
     value: '1'
     operator: Equals
