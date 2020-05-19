@@ -1662,8 +1662,8 @@
           "description": "References a name of a defined event"
         },
         "data": {
-          "type": "string",
-          "description": "JSONPath expression which selects parts of the states data output to become the data of the produced event"
+          "type": ["string", "object"],
+          "description": "If String, JSONPath expression which selects parts of the states data output to become the data of the produced event. If object a custom object to become the data of produced event."
         }
       },
       "required": [
