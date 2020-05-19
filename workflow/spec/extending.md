@@ -45,9 +45,9 @@ So let's define a simple example workflow model and then add our custom extensio
    "states":[  
       {  
          "name":"FirstOperation",
-         "type":"OPERATION",
+         "type":"operation",
          "start": {
-            "kind": "DEFAULT"
+            "kind": "default"
          },
          "actionMode":"Sequential",
          "actions":[  
@@ -64,9 +64,9 @@ So let's define a simple example workflow model and then add our custom extensio
       },
       {  
          "name":"SecondOperation",
-         "type":"OPERATION",
+         "type":"operation",
          "end": {
-           "kind": "DEFAULT"
+           "kind": "default"
          },
          "actionMode":"Sequential",
          "actions":[  

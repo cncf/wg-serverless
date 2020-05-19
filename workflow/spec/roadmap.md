@@ -54,4 +54,4 @@ _Status description:_
 | ✔️| Add event-based condition capabilities to Switch State | [spec doc](spec.md) |
 | ✔️| Add examples comparing Brigade workflow and spec markups | [examples doc](examples-brigade.md) |
 | ✔️| Update produceEvent data property | [spec doc](spec.md) |
-
+| ✔️| Change uppercase property and enum types to lowercase | [spec doc](spec.md) |

@@ -85,16 +85,16 @@ functions:
     command: cowsay
 states:
 - name: whalesay
-  type: OPERATION
+  type: operation
   start:
-    kind: DEFAULT
+    kind: default
   actions:
   - functionRef:
       refName: whalesayimage
       parameters:
         message: "$.message"
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -172,9 +172,9 @@ functions:
     command: cowsay
 states:
 - name: hello1
-  type: OPERATION
+  type: operation
   start:
-    kind: DEFAULT
+    kind: default
   actions:
   - functionRef:
       refName: whalesayimage
@@ -183,37 +183,37 @@ states:
   transition:
     nextState: parallelhello
 - name: parallelhello
-  type: PARALLEL
-  completionType: AND
+  type: parallel
+  completionType: and
   branches:
   - name: hello2a-branch
     states:
     - name: hello2a
-      type: OPERATION
+      type: operation
       start:
-        kind: DEFAULT
+        kind: default
       actions:
       - functionRef:
           refName: whalesayimage
           parameters:
             message: hello2a
       end:
-        kind: DEFAULT
+        kind: default
   - name: hello2b-branch
     states:
     - name: hello2b
-      type: OPERATION
+      type: operation
       start:
-        kind: DEFAULT
+        kind: default
       actions:
       - functionRef:
           refName: whalesayimage
           parameters:
             message: hello2b
       end:
-        kind: DEFAULT
+        kind: default
   end:
-    kind: DEFAULT
+    kind: default
 
 ```
 
@@ -292,9 +292,9 @@ functions:
     command: '[echo, "{{inputs.parameters.message}}"]'
 states:
 - name: A
-  type: OPERATION
+  type: operation
   start:
-    kind: DEFAULT
+    kind: default
   actions:
   - functionRef:
       refName: echo
@@ -303,48 +303,48 @@ states:
   transition:
     nextState: parallelecho
 - name: parallelecho
-  type: PARALLEL
-  completionType: AND
+  type: parallel
+  completionType: and
   branches:
   - name: B-branch
     states:
     - name: B
-      type: OPERATION
+      type: operation
       start:
-        kind: DEFAULT
+        kind: default
       actions:
       - functionRef:
           refName: echo
           parameters:
             message: B
       end:
-        kind: DEFAULT
+        kind: default
   - name: C-branch
     states:
     - name: C
-      type: OPERATION
+      type: operation
       start:
-        kind: DEFAULT
+        kind: default
       actions:
       - functionRef:
           refName: echo
           parameters:
             message: C
       end:
-        kind: DEFAULT
+        kind: default
   transition:
     nextState: D
 - name: D
-  type: OPERATION
+  type: operation
   start:
-    kind: DEFAULT
+    kind: default
   actions:
   - functionRef:
       refName: echo
       parameters:
         message: D
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -457,9 +457,9 @@ functions:
     source: 'echo result was: {{inputs.parameters.message}}'
 states:
 - name: generate
-  type: OPERATION
+  type: operation
   start:
-    kind: DEFAULT
+    kind: default
   actions:
   - functionRef:
       refName: gen-random-int-bash
@@ -468,14 +468,14 @@ states:
   transition:
     nextState: print-message
 - name: print-message
-  type: OPERATION
+  type: operation
   actions:
   - functionRef:
       refName: printmessagefunc
       parameters:
         message: "$.results"
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -539,9 +539,9 @@ functions:
     command: cowsay
 states:
 - name: injectdata
-  type: INJECT
+  type: inject
   start:
-    kind: DEFAULT
+    kind: default
   data:
     greetings:
     - hello world
@@ -549,14 +549,14 @@ states:
   transition:
     nextState: printgreetings
 - name: printgreetings
-  type: FOREACH
+  type: foreach
   inputCollection: "$.greetings"
   inputParameter: "$.greeting"
   states:
   - name: foreach-print
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
+      kind: default
     actions:
     - name: print-message
       functionRef:
@@ -564,9 +564,9 @@ states:
         parameters:
           message: "$.greeting"
     end:
-      kind: DEFAULT
+      kind: default
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -651,9 +651,9 @@ functions:
     command: sh, -c
 states:
 - name: flip-coin
-  type: OPERATION
+  type: operation
   start:
-    kind: DEFAULT
+    kind: default
   actions:
   - functionRef:
       refName: flip-coin-function
@@ -662,36 +662,36 @@ states:
   transition:
     nextState: show-flip-results
 - name: show-flip-results
-  type: SWITCH
+  type: switch
   dataConditions:
   - path: "$.flip.result"
     value: heads
-    operator: Equals
+    operator: equals
     transition:
       nextState: show-results-heads
   - path: "$.flip.result"
     value: tails
-    operator: Equals
+    operator: equals
     transition:
       nextState: show-results-tails
 - name: show-results-heads
-  type: OPERATION
+  type: operation
   actions:
   - functionRef:
       refName: echo
     actionDataFilter:
       dataResultsPath: it was heads
   end:
-    kind: DEFAULT
+    kind: default
 - name: show-results-tails
-  type: OPERATION
+  type: operation
   actions:
   - functionRef:
       refName: echo
     actionDataFilter:
       dataResultsPath: it was tails
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -749,9 +749,9 @@ functions:
     command: python
 states:
 - name: retry-backoff
-  type: OPERATION
+  type: operation
   start:
-    kind: DEFAULT
+    kind: default
   actions:
   - functionRef:
       refName: flip-coin-function
@@ -766,7 +766,7 @@ states:
     multiplier: PT2M
     interval: PT1M
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -844,9 +844,9 @@ functions:
     source: import random result = "heads" if random.randint(0,1) == 0 else "tail"  print(result)
 states:
 - name: flip-coin-state
-  type: OPERATION
+  type: operation
   start:
-    kind: DEFAULT
+    kind: default
   actions:
   - functionRef:
       refName: flip-coin-function
@@ -855,27 +855,27 @@ states:
   transition:
     nextState: flip-coin-check
 - name: flip-coin-check
-  type: SWITCH
+  type: switch
   dataConditions:
   - path: "$.steps.flip-coin.outputs.result"
     value: tails
-    operator: Equals
+    operator: equals
     transition:
       nextState: flip-coin-state
   - path: "$.steps.flip-coin.outputs.result"
     value: heads
-    operator: Equals
+    operator: equals
     transition:
       nextState: heads-state
 - name: heads-state
-  type: OPERATION
+  type: operation
   actions:
   - functionRef:
       refName: heads-function
       parameters:
         args: echo "it was heads"
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
@@ -973,9 +973,9 @@ functions:
     command: "[sh, -c]"
 states:
 - name: intentional-fail-state
-  type: OPERATION
+  type: operation
   start:
-    kind: DEFAULT
+    kind: default
   actions:
   - functionRef:
       refName: intentional-fail-function
@@ -990,7 +990,7 @@ states:
   transition:
     nextState: send-email-state
 - name: send-email-state
-  type: OPERATION
+  type: operation
   actions:
   - functionRef:
       refName: send-email-function
@@ -999,36 +999,36 @@ states:
   transition:
     nextState: emo-state
 - name: emo-state
-  type: SWITCH
+  type: switch
   dataConditions:
   - path: "$.exit-code"
     value: '1'
-    operator: Equals
+    operator: equals
     transition:
       nextState: celebrate-state
   - path: "$.exit-code"
     value: '1'
-    operator: NotEquals
+    operator: notequals
     transition:
       nextState: cry-state
 - name: celebrate-state
-  type: OPERATION
+  type: operation
   actions:
   - functionRef:
       refName: celebrate-cry-function
       parameters:
         args: echo hooray!
   end:
-    kind: DEFAULT
+    kind: default
 - name: cry-state
-  type: OPERATION
+  type: operation
   actions:
   - functionRef:
       refName: celebrate-cry-function
       parameters:
         args: echo boohoo!
   end:
-    kind: DEFAULT
+    kind: default
 ```
 
 </td>
