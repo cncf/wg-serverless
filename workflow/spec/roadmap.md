@@ -43,15 +43,16 @@ _Status description:_
 | Status | Description | Comments |
 | --- | --- |  --- |
 | 🚩 | Start discussions on Serverless Workflow Technology Compatibility Kit (TCK) | |
-| 🚩 | Decide on state/task/stage/step naming convention | [issue link](https://github.com/cncf/wg-serverless/issues/127) |
 | ✏️ | Finish specification primer document | [google doc](https://docs.google.com/document/d/11rD3Azj63G2Si0VpokSpr-1ib3mFRFHSwN6tJb-0LQM/edit#heading=h.paewfy83tetm) |
-| ✔ | Update Switch State | [spec doc](spec.md) |
-| ✔ | Rename Relay to Inject state | [spec doc](spec.md) |
-| ✔️| Update waitForCompletion property of Parallel State | [spec doc](spec.md) |
+| ✔ | Update Switch Task | [spec doc](spec.md) |
+| ✔ | Rename Relay to Inject Task | [spec doc](spec.md) |
+| ✔️| Update waitForCompletion property of Parallel Task | [spec doc](spec.md) |
 | ✔️| Add timeout property to actions | [spec doc](spec.md) |
 | ✔️| Add examples comparing Argo workflow and spec markups | [examples doc](examples-argo.md) |
-| ✔️| Add ability to produce events during state transitions | [spec doc](spec.md) |
-| ✔️| Add event-based condition capabilities to Switch State | [spec doc](spec.md) |
+| ✔️| Add ability to produce events during task transitions | [spec doc](spec.md) |
+| ✔️| Add event-based condition capabilities to Switch Task | [spec doc](spec.md) |
 | ✔️| Add examples comparing Brigade workflow and spec markups | [examples doc](examples-brigade.md) |
 | ✔️| Update produceEvent data property | [spec doc](spec.md) |
 | ✔️| Change uppercase property and enum types to lowercase | [spec doc](spec.md) |
+| ✔ | Decide on state/task/stage/step naming convention | [spec doc](spec.md) |
+| ✔ | Update "state" to "task" | [spec doc](spec.md) |

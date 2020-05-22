@@ -23,9 +23,9 @@ Let's say we are developing an extension which adds additional information
  to a serverless workflow that can be passed and processed by a simulation tool.
 
 Our example extension can add "scenarios". Each scenario
-can add "time" parameters for each of the workflow states and define a min and max value
-within which the workflow state should be executed in. It should also add a "probability" parameter
-which defines the probability that a state is triggered during the execution of the workflow.
+can add "time" parameters for each of the workflow tasks and define a min and max value
+within which the workflow task should be executed in. It should also add a "probability" parameter
+which defines the probability that a task is triggered during the execution of the workflow.
 
 So let's define a simple example workflow model and then add our custom extension into it:
 
@@ -42,7 +42,7 @@ So let's define a simple example workflow model and then add our custom extensio
          "type": "serverless"
       }
    ],
-   "states":[  
+   "tasks":[  
       {  
          "name":"FirstOperation",
          "type":"operation",
@@ -59,7 +59,7 @@ So let's define a simple example workflow model and then add our custom extensio
             }
          ],
          "transition": {
-            "nextState": "SecondOperation"
+            "nextTask": "SecondOperation"
          }
       },
       {  
@@ -85,7 +85,7 @@ So let's define a simple example workflow model and then add our custom extensio
 }
 ```
 
-This workflow contains two Operation states with each calling a single function. In the "extensions" array we can add our custom extension, let's say like this:
+This workflow contains two Operation tasks with each calling a single function. In the "extensions" array we can add our custom extension, let's say like this:
 
 ```json
 ...
@@ -97,24 +97,24 @@ This workflow contains two Operation states with each calling a single function.
             "parameters": [
                {
                    "type": "exectime",
-                   "forstate": "FirstOperation",
+                   "fortask": "FirstOperation",
                    "min": "1s",
                    "max": "5s"
                },
                {
                   "type": "probability",
-                  "forstate": "FirstOperation",
+                  "fortask": "FirstOperation",
                   "value": "100%"
                },
                {
                   "type": "exectime",
-                  "forstate": "SecondOperation",
+                  "fortask": "SecondOperation",
                   "min": "4s",
                   "max": "15s"
                 },
                 {
                    "type": "probability",
-                   "forstate": "SecondOperation",
+                   "fortask": "SecondOperation",
                    "value": "100%"
                 }
             ]

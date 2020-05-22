@@ -70,8 +70,8 @@ very hard to manage. Serverless Workflow groups the application events and funct
 simplifies orchestration of the app logic.
 - **Define and coordinate application control flow**: allow the users to define the execution/operation
 control flow and how/which functions are to be invoked on arrival of events.
-- **Define and manage application data flow**: allows the users to define how data is passed and filtered from incoming events to states,
-from states to functions, from one function to another function, and from one state to another state.
+- **Define and manage application data flow**: allows the users to define how data is passed and filtered from incoming events to tasks,
+from tasks to functions, from one function to another function, and from one task to another task.
 
 ## Workflow Format
 
@@ -86,7 +86,7 @@ Note that this schema reflects the current status of the specification as is upd
 
 Serverless Workflow allows users to:
 
-1. Define and orchestrate steps/states involved in a serverless application.
+1. Define and orchestrate tasks (steps) involved in a serverless application.
 2. Define which functions are executed in each step.
 3. Define which event or combination of events trigger function execution.
 4. Define function execution behavior (sequential, parallel, etc).
@@ -95,7 +95,7 @@ Serverless Workflow allows users to:
 7. Define error conditions with retries.
 8. Correlate trigger events with workflow instances.
 
-Following diagram illustrates functional flow that involves states, events and functions. It shows that
+Following diagram illustrates functional flow that involves tasks, events and functions. It shows that
 incoming events can trigger function invocations during workflow execution.
 
 <p align="center">
@@ -111,17 +111,17 @@ Following sections provide detailed descriptions of the Serverless Workflow Mode
 
 ### Workflow Model
 
-Serverless Workflow can be viewed as a collection of [states](#State-Definition) and [transitions](#Transitions) between states.
-Individual states can make control flow decisions based on their data inputs, perform different actions, as well
-as pass their data to other states.
+Serverless Workflow can be viewed as a collection of [tasks](#Task-Definition) and [transitions](#Transitions) between tasks.
+Individual tasks can make control flow decisions based on their data inputs, perform different actions, as well
+as pass their data to other tasks.
 
-States can wait on the arrival events to perform their actions. When states
-complete their tasks, they can transition to other states or stop workflow execution.
+Tasks can wait on the arrival events to perform their actions. When tasks
+complete their execution, they can transition to other tasks or complete workflow execution.
 See the [Transitions](#Transitions) section for more details on workflow progression.
 
-A Serverless Workflow can be naturally implemented as a state machine or a workflow engine.
-This specification does not mandate a specific implementation decision in this regard.
-As mentioned, implementation compliance is based on the workflow definition language only.
+A Serverless Workflow can be naturally implemented as a workflow engine.
+Implementation compliance is based on the workflow definition language and conformance to the 
+specification [JSON Schema](schema/serverless-workflow-schema.json).
 
 ### Workflow Definition
 
@@ -137,7 +137,7 @@ As mentioned, implementation compliance is based on the workflow definition lang
 | [dataOutputSchema](#Workflow-data-output) | URI to JSON Schema that workflow data output adheres to | string | no |
 | [events](#Event-Definition) | Workflow event definitions. Defines events that can be consumed or produced | array | no |
 | [functions](#Function-Definition) | Workflow function definitions | array | no |
-| [states](#State-Definition) | Workflow states | array | yes |
+| [tasks](#Task-Definition) | Workflow tasks | array | yes |
 | [extensions](#Extending) | Workflow custom extensions | array | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
@@ -200,47 +200,47 @@ As mentioned, implementation compliance is based on the workflow definition lang
                 "$ref": "#/definitions/function"
             }
         },
-        "states": {
+        "tasks": {
             "type": "array",
-            "description": "State Definitions",
+            "description": "Task Definitions",
             "items": {
                 "type": "object",
                 "anyOf": [
                     {
-                      "title": "Delay State",
-                      "$ref": "#/definitions/delaystate"
+                      "title": "Delay Task",
+                      "$ref": "#/definitions/delaytask"
                     },
                     {
-                      "title": "Event State",
-                      "$ref": "#/definitions/eventstate"
+                      "title": "Event Task",
+                      "$ref": "#/definitions/eventtask"
                     },
                     {
-                      "title": "Operation State",
-                      "$ref": "#/definitions/operationstate"
+                      "title": "Operation Task",
+                      "$ref": "#/definitions/operationtask"
                     },
                     {
-                      "title": "Parallel State",
-                      "$ref": "#/definitions/parallelstate"
+                      "title": "Parallel Task",
+                      "$ref": "#/definitions/paralleltask"
                     },
                     {
-                      "title": "Switch State",
-                      "$ref": "#/definitions/switchstate"
+                      "title": "Switch Task",
+                      "$ref": "#/definitions/switchtask"
                     },
                     {
-                      "title": "SubFlow State",
-                      "$ref": "#/definitions/subflowstate"
+                      "title": "SubFlow Tasks",
+                      "$ref": "#/definitions/subflowtask"
                     },
                     {
-                      "title": "Inject State",
-                      "$ref": "#/definitions/injectstate"
+                      "title": "Inject Task",
+                      "$ref": "#/definitions/injecttask"
                     },
                     {
-                      "title": "ForEach State",
-                      "$ref": "#/definitions/foreachstate"
+                      "title": "ForEach Task",
+                      "$ref": "#/definitions/foreachtask"
                     },
                     {
-                      "title": "Callback State",
-                      "$ref": "#/definitions/callbackstate"
+                      "title": "Callback Task",
+                      "$ref": "#/definitions/callbacktask"
                     }
                 ]
             }
@@ -256,7 +256,7 @@ As mentioned, implementation compliance is based on the workflow definition lang
           "$ref": "#/definitions/metadata"
         }
     },
-    "required": ["id", "name", "version", "states"]
+    "required": ["id", "name", "version", "tasks"]
 }
 ```
 
@@ -309,7 +309,9 @@ Following figure describes the main workflow definition blocks.
 
 </details>
 
-Allows you to define a reusable function definition. It can be referenced in [actions](#Action-Definition) defined in [Event](#Event-State), [Operation](#Operation-State), or [Callback](#Callback-State) workflow states. Each function definition must have an unique name.
+Allows you to define a reusable function definition. 
+It can be referenced in [actions](#Action-Definition) defined in [Event](#Event-Task), [Operation](#Operation-Task), or [Callback](#Callback-Task) workflow tasks. 
+Each function definition must have an unique name.
 The "resource" parameter of a function evaluates to execution of an existing serverless function.
 Implementations can use the "type" parameter to define communication information such as protocols.
 
@@ -428,42 +430,42 @@ If we then correlate these two events with event definitions:
 Workflow implementations can use this token to map events to particular workflow instances, or use it
 to correlate multiple events that are needed to start a workflow instance.
 
-#### State Definition
+#### Task Definition
 
-States define building blocks of the Serverless Workflow. The specification defines following states:
+Tasks define building blocks of the Serverless Workflow. The specification defines following tasks:
 
-| Name | Description | Consumes events? | Produces events? | Executes actions? | Handles errors? | Allows parallel execution? | Makes data-based transitions? | Can be workflow start state? | Can be workflow end state? |
+| Name | Description | Consumes events? | Produces events? | Executes actions? | Handles errors? | Allows parallel execution? | Makes data-based transitions? | Can be workflow start task? | Can be workflow end task? |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **[Event](#Event-State)** | Define events that trigger action execution | yes | yes | yes | yes (includes retries) | yes | no | yes | yes |
-| **[Operation](#Operation-State)** | Execute one or more actions | no | yes | yes | yes (includes retries) | yes | no | yes | yes |
-| **[Switch](#Switch-State)** | Define data-based or event-based workflow transitions | no | yes | no | yes | no | yes | yes | no |
-| **[Delay](#Delay-State)** | Delay workflow execution | no | yes | no | yes | no | no | yes | yes |
-| **[Parallel](#Parallel-State)** | Causes parallel execution of branches (set of states) | no | yes | no | yes (includes retries) | yes | no | yes | yes |
-| **[SubFlow](#SubFlow-State)** | Represents the invocation of another workflow from within a workflow | no | yes | no | yes | no | no | yes | yes |
-| **[Inject](#Inject-State)** | Inject static data into state data | no | yes | no | yes | no | no | yes | yes |
-| **[ForEach](#ForEach-State)** | Parallel execution of states for each element of a data array | no | yes | no | yes (includes retries) | yes | no | yes | yes |
-| **[Callback](#Callback-State)** | Manual decision step. Executes a function and waits for callback event that indicates completion of the manual decision | yes | yes | yes (including retries) | yes | no | no | yes | yes |
+| **[Event](#Event-Task)** | Define events that trigger action execution | yes | yes | yes | yes (includes retries) | yes | no | yes | yes |
+| **[Operation](#Operation-Task)** | Execute one or more actions | no | yes | yes | yes (includes retries) | yes | no | yes | yes |
+| **[Switch](#Switch-Task)** | Define data-based or event-based workflow transitions | no | yes | no | yes | no | yes | yes | no |
+| **[Delay](#Delay-Task)** | Delay workflow execution | no | yes | no | yes | no | no | yes | yes |
+| **[Parallel](#Parallel-Task)** | Causes parallel execution of branches (set of tasks) | no | yes | no | yes (includes retries) | yes | no | yes | yes |
+| **[SubFlow](#SubFlow-Task)** | Represents the invocation of another workflow from within a workflow | no | yes | no | yes | no | no | yes | yes |
+| **[Inject](#Inject-Task)** | Inject static data into task data | no | yes | no | yes | no | no | yes | yes |
+| **[ForEach](#ForEach-Task)** | Parallel execution of tasks for each element of a data array | no | yes | no | yes (includes retries) | yes | no | yes | yes |
+| **[Callback](#Callback-Task)** | Manual decision step. Executes a function and waits for callback event that indicates completion of the manual decision | yes | yes | yes (including retries) | yes | no | no | yes | yes |
 
-Following is a detailed description of each of the defined states:
+Following is a detailed description of each of the defined tasks:
 
-#### Event State
+#### Event tasks
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | Unique state id | string | no |
-| name | State name | string | yes |
-| type | State type | string | yes |
+| id | Unique task id | string | no |
+| name | Task name | string | yes |
+| type | Task type | string | yes |
 | exclusive | If true consuming one of the defined events causes its associated actions to be performed. If false all of the defined events must be consumed in order for actions to be performed. Default is "true"  | boolean | no |
-| [eventsActions](#eventstate-eventactions) | Define the events to be consumed and one or more actions to be performed | array | yes |
-| [timeout](#eventstate-timeout) | Time period to wait for incoming events (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
-| [stateDataFilter](#state-data-filter) | State data filter definition| object | no |
-| [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
-| [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
+| [eventsActions](#eventtask-eventactions) | Define the events to be consumed and one or more actions to be performed | array | yes |
+| [timeout](#eventtask-timeout) | Time period to wait for incoming events (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | no |
+| [taskDataFilter](#task-data-filter) | Task data filter definition| object | no |
+| [dataInputSchema](#Information-Passing-Between-Tasks) | URI to JSON Schema that task data input adheres to | string | no |
+| [dataOutputSchema](#Information-Passing-Between-Tasks) | URI to JSON Schema that task data output adheres to | string | no |
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | object | yes |
-| [retry](#workflow-retrying) | States retry definitions | array | no |
-| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
-| [start](#Start-Definition) | Is this state a starting state | object | no |
-| [end](#End-Definition) | Is this state an end state | object | no |
+| [retry](#workflow-retrying) | Tasks retry definitions | array | no |
+| [onError](#Workflow-Error-Handling) | Tasks error handling definitions | array | no |
+| [start](#Start-Definition) | Is this task a starting task | object | no |
+| [end](#End-Definition) | Is this task an end task | object | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -472,21 +474,21 @@ Following is a detailed description of each of the defined states:
 ```json
 {
     "type": "object",
-    "description": "This state is used to wait for events from event sources, then consumes them and invoke one or more actions to run in sequence or parallel",
+    "description": "This task is used to wait for events from event sources, then consumes them and invoke one or more actions to run in sequence or parallel",
     "properties": {
         "id": {
             "type": "string",
-            "description": "Unique state id",
+            "description": "Unique task id",
             "minLength": 1
         },
         "name": {
             "type": "string",
-            "description": "State name"
+            "description": "Task name"
         },
         "type": {
             "type" : "string",
             "enum": ["event"],
-            "description": "State type"
+            "description": "Task type"
         },
         "exclusive": {
             "type": "boolean",
@@ -505,12 +507,12 @@ Following is a detailed description of each of the defined states:
             "type": "string",
             "description": "Time period to wait for incoming events (ISO 8601 format)"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "retry": {
             "type": "array",
-            "description": "States retry definitions",
+            "description": "Tasks retry definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/retry"
@@ -518,7 +520,7 @@ Following is a detailed description of each of the defined states:
         },
         "onError": {
             "type": "array",
-            "description": "States error handling definitions",
+            "description": "Tasks error handling definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/error"
@@ -527,12 +529,12 @@ Following is a detailed description of each of the defined states:
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
           },
         "transition": {
           "description": "Next transition of the workflow after all the actions have been performed",
@@ -540,11 +542,11 @@ Following is a detailed description of each of the defined states:
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         }
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
@@ -592,36 +594,36 @@ Following is a detailed description of each of the defined states:
 </p>
 </details>
 
-Event states await one or more events and perform actions when they are received.
-If defined as the workflow starting state, the event state definition controls when the workflow
+Event tasks await one or more events and perform actions when they are received.
+If defined as the workflow starting task, the event task definition controls when the workflow
 instances should be created.
 
-The "exclusive" property determines if the state should wait for any of the defined events in the eventsActions array, or
+The "exclusive" property determines if the task should wait for any of the defined events in the eventsActions array, or
  if all defined events must be present for their associated actions to be performed.
 
 Following two figures illustrate the "exclusive" property:
 
 <p align="center">
-<img src="media/spec/event-state-exclusive-true.png" height="300px" alt="Event state with exclusive set to true"/>
+<img src="media/spec/event-task-exclusive-true.png" height="300px" alt="Event task with exclusive set to true"/>
 </p>
 
-If the event state in this case is a starting state, any of the defined events would start a new workflow instance.
+If the Event task in this case is a starting task, any of the defined events would start a new workflow instance.
 
 <p align="center">
-<img src="media/spec/event-state-exclusive-false.png" height="300px" alt="Event state with exclusive set to false"/>
+<img src="media/spec/event-task-exclusive-false.png" height="300px" alt="Event task with exclusive set to false"/>
 </p>
 
-If the event state in this case is a starting state, occurrence of all defined events would start a new
+If the Event task in this case is a starting task, occurrence of all defined events would start a new
  workflow instance.
   
 In order to consider only events that are related to each other, we need to set the "correlationToken" property in the workflow
  [events definitions](#Event-Definition). This token points to a context attribute of the events that defines the
  token to be used for event correlation.
 
-The timeout property defines the time duration from the invocation of the event state. If the defined events
-have not been received during this time, the state should transition to the next state or end workflow execution (if it is an end state).
+The timeout property defines the time duration from the invocation of the event task. If the defined events
+have not been received during this time, the task should transition to the next task or end workflow execution (if it is an end task).
 
-#### <a name="eventstate-eventactions"></a> Event State: Event Actions
+#### <a name="eventtask-eventactions"></a> Event Task: Event Actions
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -673,16 +675,16 @@ can be considered.
 
 The actions array defined a list of actions to be performed.
 
-#### <a name="eventstate-timeout"></a> Event State: Timeout
+#### <a name="eventtask-timeout"></a> Event Task: Timeout
 
-The event state timeout period is described in the ISO 8601 data and time format.
+The event task timeout period is described in the ISO 8601 data and time format.
 You can specify for example "PT15M" to represent 15 minutes or "P2DT3H4M" to represent 2 days, 3 hours and 4 minutes.
 Timeout values should always be represented as durations and not as time/repeating intervals.
 
-The timeout property needs to be described in detail as it depends on whether or not the event state is a starting workflow
-state or not.
+The timeout property needs to be described in detail as it depends on whether or not the event task is a starting workflow
+task or not.
 
-If the event state is a starting state, incoming events may trigger workflow instances. If the event waits for
+If the Event task is a starting task, incoming events may trigger workflow instances. If the event waits for
 any of the defined events (exclusive property is set to true), the timeout property should be ignored.
 
 If exclusive property is set to false (all defined events must occur) the defined timeout represents the time
@@ -690,9 +692,9 @@ between arrival of specified events. To give an example let's say we have:
 
 ```json
 {
-"states": [
+"tasks": [
 {
-    "name": "ExampleEventState",
+    "name": "ExampleEventTask",
     "type": "event",
     "exclusive": false,
     "timeout": "PT2M",
@@ -719,10 +721,10 @@ The first timeout would starts once any of the referenced events are consumed. I
 the defined timeout no workflow instance should be created. Otherwise the timeout
 resets while we are waiting for the next defined event.
 
-If the event state is not a starting state, the timeout property defines the time period from when the
-state becomes active. If the defined event conditions (regardless of the value of the exclusive property)
-are not satisfied within the defined timeout period, the event state should transition to the next state or end the workflow
-instance in case it is an end state without performing any actions.
+If the Event task is not a starting task, the timeout property defines the time period from when the
+task becomes active. If the defined event conditions (regardless of the value of the exclusive property)
+are not satisfied within the defined timeout period, the event task should transition to the next task or end the workflow
+instance in case it is an end task without performing any actions.
 
 #### Action Definition
 
@@ -767,9 +769,9 @@ Actions reference a reusable function definition to be invoked when this action 
 The "timeout" property defines the amount of time to wait for function execution to complete. It
 is described in ISO 8601 format, so for example "PT2M" would mean the maximum time for the function to complete
 its execution is two minutes. 
-If the set timeout period is exceeded, the state should handle this via its [retry and onError definitions](#workflow-retrying).
-In the case they are not defined, the state should proceed with transitioning to the next state, or ending 
-the workflow execution in case it is an end state. 
+If the set timeout period is exceeded, the task should handle this via its [retry and onError definitions](#workflow-retrying).
+In the case they are not defined, the task should proceed with transitioning to the next task, or ending 
+the workflow execution in case it is an end task. 
 
 #### FunctionRef Definition
 
@@ -803,7 +805,7 @@ the workflow execution in case it is an end state.
 </details>
 
 Used by actions to reference a defined serverless function by its unique name. Parameters are values passed to the
-function. They can include either static values or reference the states data input.
+function. They can include either static values or reference the task data input.
 
 #### Error Definition
 
@@ -882,7 +884,7 @@ expression language used for all defined expressions.
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [expression](#Expression-Definition) | Expression that matches against states data output | string | yes |
+| [expression](#Expression-Definition) | Expression that matches against tasks data output | string | yes |
 | interval | Interval value for retry (ISO 8601 repeatable format). For example: "R5/PT15M" (Starting from now repeat 5 times with 15 minute intervals)| string | no |
 | multiplier | Multiplier value by which interval increases during each attempt (ISO 8601 time format). For example: "PT3S" meaning the second attempt interval is increased by 3 seconds, the third interval by 6 seconds and so on | string | no |
 | maxAttempts | Maximum number of retry attempts (1 by default). Value of 0 means no retries are performed | integer | no |
@@ -895,7 +897,7 @@ expression language used for all defined expressions.
     "description": "Retry Definition",
     "properties": {
         "expression": {
-          "description": "Expression that matches against states data output",
+          "description": "Expression that matches against tasks data output",
           "$ref": "#/definitions/expression"
         },
         "interval": {
@@ -919,7 +921,7 @@ expression language used for all defined expressions.
 
 </details>
 
-Defines the state retry policy. The "expression" parameter is en expression definition which can be evaluated against state data.
+Defines the task retry policy. The "expression" parameter is en expression definition which can be evaluated against task data.
 This assures that both execution errors as well as actions error results can be used during evaluation.
 
 The interval parameter specifies the retry interval (in ISO 8601 repeatable format). For example: "R5/PT15M" would mean repeat 5 times with 1 minute intervals before each retry.
@@ -946,9 +948,9 @@ For more information reference the [Workflow Error Handling - Retrying](#workflo
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| [expression](#Expression-Definition) | Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid | object | no |
+| [expression](#Expression-Definition) | Boolean expression evaluated against tasks data output. Must evaluate to true for the transition to be valid | object | no |
 | [produceEvent](#ProduceEvent-Definition) | Event to be produced when this transition happens | object | no |
-| [nextState](#Transitions) | State to transition to next | string | yes |
+| [nextTask](#Transitions) | Task to transition to next | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -957,21 +959,21 @@ For more information reference the [Workflow Error Handling - Retrying](#workflo
   "type": "object",
   "properties": {
     "expression": {
-      "description": "Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid",
+      "description": "Boolean expression evaluated against tasks data output. Must evaluate to true for the transition to be valid",
       "$ref": "#/definitions/expression"
     },
     "produceEvent": {
       "description": "Reference one of the defined events by name and set its data",
       "$ref": "#/definitions/produceevent"
     },
-    "nextState": {
+    "nextTask": {
       "type": "string",
-      "description": "State to transition to next",
+      "description": "Task to transition to next",
       "minLength": 1
     }
   },
   "required": [
-    "nextState"
+    "nextTask"
   ]
 }
 ```
@@ -981,24 +983,24 @@ For more information reference the [Workflow Error Handling - Retrying](#workflo
 Defines a transition from point A to point B in the serverless workflow. For more information see the
 [Transitions section](#Transitions).
 
-#### Operation State
+#### Operation Task
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id |  Unique state id | string | no |
-| name | State name | string | yes |
-| type | State type | string | yes |
+| id |  Unique task id | string | no |
+| name | Task name | string | yes |
+| type | Task type | string | yes |
 | actionMode | Should actions be performed sequentially or in parallel | string | no |
 | [actions](#Action-Definition) | Actions to be performed | array | yes |
-| [stateDataFilter](#state-data-filter) | State data filter | object | no |
-| [retry](#workflow-retrying) | States retry definitions | array | no |
-| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
+| [taskDataFilter](#task-data-filter) | Task data filter | object | no |
+| [retry](#workflow-retrying) | Tasks retry definitions | array | no |
+| [onError](#Workflow-Error-Handling) | Tasks error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after all the actions have been performed | object | yes (if end is not defined) |
-| [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
-| [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
+| [dataInputSchema](#Information-Passing-Between-Tasks) | URI to JSON Schema that task data input adheres to | string | no |
+| [dataOutputSchema](#Information-Passing-Between-Tasks) | URI to JSON Schema that task data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
-| [start](#Start-Definition) | Is this state a starting state | object | no |
-| [end](#End-Definition) | Is this state an end state | object | no |
+| [start](#Start-Definition) | Is this task a starting task | object | no |
+| [end](#End-Definition) | Is this task an end task | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1009,17 +1011,17 @@ Defines a transition from point A to point B in the serverless workflow. For mor
     "properties": {
         "id": {
             "type": "string",
-            "description": "Unique state id",
+            "description": "Unique task id",
             "minLength": 1
         },
         "name": {
             "type": "string",
-            "description": "State name"
+            "description": "Task name"
         },
         "type": {
             "type" : "string",
             "enum": ["operation"],
-            "description": "State type"
+            "description": "Task type"
         },
         "actionMode": {
             "type" : "string",
@@ -1035,12 +1037,12 @@ Defines a transition from point A to point B in the serverless workflow. For mor
                 "$ref": "#/definitions/action"
             }
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "retry": {
             "type": "array",
-            "description": "States retry definitions",
+            "description": "Tasks retry definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/retry"
@@ -1048,7 +1050,7 @@ Defines a transition from point A to point B in the serverless workflow. For mor
         },
         "onError": {
             "type": "array",
-            "description": "States error handling definitions",
+            "description": "Tasks error handling definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/error"
@@ -1061,23 +1063,23 @@ Defines a transition from point A to point B in the serverless workflow. For mor
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         }
     },
     "oneOf": [
@@ -1105,61 +1107,61 @@ Defines a transition from point A to point B in the serverless workflow. For mor
 
 </details>
 
-Operation state defines a set of actions to be performed in sequence or in parallel.
-Once all actions have been performed, a transition to another state can occur.
+Operation task defines a set of actions to be performed in sequence or in parallel.
+Once all actions have been performed, a transition to another task can occur.
 
-#### Switch State
+#### Switch task
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | Unique state id | string | no |
-| name | State name | string | yes |
-| type | State type | string | yes |
-| [dataConditions](#switch-state-dataconditions) or [eventConditions](#switch-state-eventconditions)| Defined if the Switch state evaluates conditions and transitions based on state data, or arrival of events. | array | yes (one) |
-| [stateDataFilter](#state-data-filter) | State data filter | object | no |
-| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
+| id | Unique task id | string | no |
+| name | Task name | string | yes |
+| type | Task type | string | yes |
+| [dataConditions](#switch-task-dataconditions) or [eventConditions](#switch-task-eventconditions)| Defined if the Switch task evaluates conditions and transitions based on task data, or arrival of events. | array | yes (one) |
+| [taskDataFilter](#task-data-filter) | Task data filter | object | no |
+| [onError](#Workflow-Error-Handling) | Tasks error handling definitions | array | no |
 | eventTimeout | If eventConditions is used, defines the time period to wait for events (ISO 8601 format). For example: "PT15M" (15 minutes), or "P2DT3H4M" (2 days, 3 hours and 4 minutes)| string | yes only if eventConditions is defined |
 | [default](#Transitions) | Next transition of the workflow if there is no matching data conditions, or event timeout is reached | object | yes |
-| [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
-| [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
+| [dataInputSchema](#Information-Passing-Between-Tasks) | URI to JSON Schema that task data input adheres to | string | no |
+| [dataOutputSchema](#Information-Passing-Between-Tasks) | URI to JSON Schema that task data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
-| [start](#Start-Definition) | Is this state a starting state | object | no |
+| [start](#Start-Definition) | Is this task a starting task | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
 {
     "type": "object",
-    "description": "Permits transitions to other states based on matched data condition or events",
+    "description": "Permits transitions to other tasks based on matched data condition or events",
     "properties": {
         "id": {
             "type": "string",
-            "description": "Unique state id",
+            "description": "Unique task id",
             "minLength": 1
         },
         "name": {
             "type": "string",
-            "description": "State name"
+            "description": "Task name"
         },
         "type": {
             "type" : "string",
             "enum": ["switch"],
-            "description": "State type"
+            "description": "Task type"
         },
         "conditions": {
             "type": "array",
-            "description": "Defines conditions evaluated against state data",
+            "description": "Defines conditions evaluated against task data",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/condition"
             }
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "onError": {
             "type": "array",
-            "description": "States error handling definitions",
+            "description": "Tasks error handling definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/error"
@@ -1172,22 +1174,21 @@ Once all actions have been performed, a transition to another state can occur.
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         }
     },
->>>>>>> Change all uppercase properties and enum types to lowercase
     "oneOf": [
       {
         "$ref": "#/definitions/databasedswitch"
@@ -1201,28 +1202,28 @@ Once all actions have been performed, a transition to another state can occur.
 
 </details>
 
-Switch states can be viewed as workflow gateways, they can direct transitions of a workflow based on certain conditions.
-There are two types of conditions for switch states:
+Switch tasks can be viewed as workflow gateways, they can direct transitions of a workflow based on certain conditions.
+There are two types of conditions for switch task:
 * Data-based conditions
 * Event conditions
 
-These are exclusive, meaning that a switch state can define one or the other condition type, not both.
+These are exclusive, meaning that a switch task can define one or the other condition type, not both.
 
-In case of data-based conditions definition, switch state controls workflow transitions based on the states data.
-If no defined conditions can be matched, the state transitions based on the defined "default" transition property.
+In case of data-based conditions definition, switch task controls workflow transitions based on the tasks data.
+If no defined conditions can be matched, the task transitions based on the defined "default" transition property.
 
-For the case of event conditions, switch state acts as a workflow wait state, waiting for one of the defined 
+For the case of event conditions, Switch task acts as a workflow wait state, waiting for one of the defined 
 events to arrive, making a transition depending on that event definition.
-If events defined in event based conditions do not arrive before the states "timeout" property expires, 
-the state transitions based on the defined "default" transition property.
+If events defined in event based conditions do not arrive before the tasks "timeout" property expires, 
+the task transitions based on the defined "default" transition property.
 
-Switch states cannot be workflow ending states.
+Switch tasks cannot be workflow ending task.
 
-#### <a name="switch-state-dataconditions"></a>Switch State: Data Conditions
+#### <a name="switch-task-dataconditions"></a>Switch Task: Data Conditions
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| path | JSONPath expression that selects elements of state data | string | yes |
+| path | JSONPath expression that selects elements of task data | string | yes |
 | value | Matching value | string | yes |
 | operator | Condition operator | string | yes |
 | [transition](#Transitions) | Next transition of the workflow if condition is matched | object | yes |
@@ -1233,11 +1234,11 @@ Switch states cannot be workflow ending states.
 ```json
 {
     "type": "object",
-    "description": "Switch state condition",
+    "description": "Switch task condition",
     "properties": {
         "path": {
             "type": "string",
-            "description": "JSONPath expression that selects elements of state data"
+            "description": "JSONPath expression that selects elements of task data"
         },
         "value": {
             "type": "string",
@@ -1265,17 +1266,17 @@ Switch states cannot be workflow ending states.
 
 </details>
 
-Switch state data conditions specify a data-based condition statement which if true causes a transition to another 
-workflow state.
+Switch task data conditions specify a data-based condition statement which if true causes a transition to another 
+workflow task.
 The "path" property of the condition defines a JSONPath expression, for example "$.person.name" which selects
-parts of the state data input.
+parts of the task data input.
 The "value" property defines the matching value of this condition, for example "John", or "10", or "\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b" etc. 
 The "operator" property defines how the path should be matched with the defined value. If the operator
 is "Custom", the information about custom operator info must be defined via the condition definition metadata property.
 Note that in this case you may run into vendor specific implementations of the condition which may not be portable, 
 so use of one of the operators other than "Custom" are if possible preferred.
 
-#### <a name="switch-state-eventconditions"></a>Switch State: Event Conditions
+#### <a name="switch-task-eventconditions"></a>Switch Task: Event Conditions
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -1289,7 +1290,7 @@ so use of one of the operators other than "Custom" are if possible preferred.
 ```json
 {
      "type": "object",
-      "description": "Switch state data event condition",
+      "description": "Switch task data event condition",
       "properties": {
         "eventRef": {
           "type" : "string",
@@ -1313,27 +1314,27 @@ so use of one of the operators other than "Custom" are if possible preferred.
 
 </details>
 
-Switch state event conditions specify events which the switch states must wait for. Each condition
+Switch task event conditions specify events which the switch tasks must wait for. Each condition
 can reference one workflow defined event. Upon arrival of this event, the associated transition is taken.
 The "eventRef" property refenreces a name of one of the defined workflow events. 
 The "transition" property defines the workflow transition to be taken when the references event arrives.
 the "eventDataFilter" defines the event data filter to be used to filter event data before the transition is executed.
 
-#### Delay State
+#### Delay Task
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | Unique state id | string | no |
-| name |State name | string | yes |
-| type |State type | string | yes |
-| timeDelay |Amount of time (ISO 8601 format) to delay when in this state. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
-| [stateDataFilter](#state-data-filter) | State data filter | object | no |
-| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
+| id | Unique task id | string | no |
+| name |Task name | string | yes |
+| type |Task type | string | yes |
+| timeDelay |Amount of time (ISO 8601 format) to delay when in this task. For example: "PT15M" (delay 15 minutes), or "P2DT3H4M" (delay 2 days, 3 hours and 4 minutes) | integer | yes |
+| [taskDataFilter](#task-data-filter) | Task data filter | object | no |
+| [onError](#Workflow-Error-Handling) | Task error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after the delay | object | yes (if end is not defined) |
-| [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
-| [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
-| [start](#Start-Definition) | Is this state a starting state | object | no |
-| [end](#End-Definition) |If this state an end state | object | no |
+| [dataInputSchema](#Information-Passing-Between-Tasks) | URI to JSON Schema that task data input adheres to | string | no |
+| [dataOutputSchema](#Information-Passing-Between-Tasks) | URI to JSON Schema that task data output adheres to | string | no |
+| [start](#Start-Definition) | Is this task a starting task | object | no |
+| [end](#End-Definition) |If this task an end task | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1344,28 +1345,28 @@ the "eventDataFilter" defines the event data filter to be used to filter event d
     "properties": {
         "id": {
             "type": "string",
-            "description": "Unique state id",
+            "description": "Unique task id",
             "minLength": 1
         },
         "name": {
             "type": "string",
-            "description": "State name"
+            "description": "Task name"
         },
         "type": {
             "type" : "string",
             "enum": ["delay"],
-            "description": "State type"
+            "description": "Task type"
         },
         "timeDelay": {
             "type": "string",
             "description": "Amount of time (ISO 8601 format) to delay"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "onError": {
             "type": "array",
-            "description": "States error handling definitions",
+            "description": "Tasks error handling definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/error"
@@ -1378,23 +1379,23 @@ the "eventDataFilter" defines the event data filter to be used to filter event d
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         }
     },
    "oneOf": [
@@ -1438,48 +1439,48 @@ the "eventDataFilter" defines the event data filter to be used to filter event d
 
 </details>
 
-Delay state waits for a certain amount of time before transitioning to a next state.
+Delay task waits for a certain amount of time before transitioning to a next task.
 
-#### Parallel State
+#### Parallel Task
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | Unique state id | string | no |
-| name | State name | string | yes |
-| type | State type | string | yes |
-| [branches](#parallel-state-branch) | List of branches for this parallel state| array | yes |
+| id | Unique task id | string | no |
+| name | Task name | string | yes |
+| type | Task type | string | yes |
+| [branches](#parallel-task-branch) | List of branches for this parallel task| array | yes |
 | completionType | Option types on how to complete branch execution. | enum | no |
 | n | Used when branchCompletionType is set to 'n_of_m' to specify the 'N' value. | integer | no |
-| [stateDataFilter](#state-data-filter) | State data filter | object | no |
-| [retry](#workflow-retrying) | States retry definitions | array | no |
-| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
+| [taskDataFilter](#task-data-filter) | Task data filter | object | no |
+| [retry](#workflow-retrying) | Tasks retry definitions | array | no |
+| [onError](#Workflow-Error-Handling) | Tasks error handling definitions | array | no |
 | [transition](#Transitions) | Next transition of the workflow after all branches have completed execution | object | yes (if end is not defined) |
-| dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
-| dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
+| dataInputSchema | URI to JSON Schema that task data input adheres to | string | no |
+| dataOutputSchema | URI to JSON Schema that task data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
-| [start](#Start-Definition) | Is this state a starting state | object | no |
-| [end](#End-Definition) | If this state and end state | object | no |
+| [start](#Start-Definition) | Is this task a starting task | object | no |
+| [end](#End-Definition) | If this task and end task | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
 {
     "type": "object",
-    "description": "Consists of a number of states that are executed in parallel",
+    "description": "Consists of a number of tasks that are executed in parallel",
     "properties": {
         "id": {
             "type": "string",
-            "description": "Unique State id",
+            "description": "Unique Task id",
             "minLength": 1
         },
         "name": {
             "type": "string",
-            "description": "State name"
+            "description": "Task name"
         },
         "type": {
             "type" : "string",
             "enum": ["parallel"],
-            "description": "State type"
+            "description": "Task type"
         },
         "branches": {
             "type": "array",
@@ -1501,12 +1502,12 @@ Delay state waits for a certain amount of time before transitioning to a next st
             "minimum": 0,
             "description": "Used when completionType is set to 'n_of_m' to specify the 'N' value"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "retry": {
             "type": "array",
-            "description": "States retry definitions",
+            "description": "Tasks retry definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/retry"
@@ -1514,7 +1515,7 @@ Delay state waits for a certain amount of time before transitioning to a next st
         },
         "onError": {
             "type": "array",
-            "description": "States error handling definitions",
+            "description": "Tasks error handling definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/error"
@@ -1527,23 +1528,23 @@ Delay state waits for a certain amount of time before transitioning to a next st
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
         },
          "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
          "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         }
     },
     "oneOf": [
@@ -1588,24 +1589,24 @@ Delay state waits for a certain amount of time before transitioning to a next st
 
 </details>
 
-Parallel state defines a collection of branches which are to be executed in parallel.
-Branches contain one or more states. Each branch must define one [starting state](#Start-Definition) as well as 
-include at least one [end state](#End-Definition).
+Parallel task defines a collection of branches which are to be executed in parallel.
+Branches contain one or more tasks. Each branch must define one [starting task](#Start-Definition) as well as 
+include at least one [end task](#End-Definition).
 
 The "completionType" enum specifies the different ways of completing branch execution:
-* and: All branches must complete execution before state can perform its transition
-* xor: State can transition when one of the branches completes execution
-* n_of_m: State can transition once N number of branches have completed execution. In this case you should also
+* and: All branches must complete execution before task can perform its transition
+* xor: Task can transition when one of the branches completes execution
+* n_of_m: Task can transition once N number of branches have completed execution. In this case you should also
 specify the "n" property to define this number.
 
 
 
-#### <a name="parallel-state-branch"></a>Parallel State: Branch
+#### <a name="parallel-task-branch"></a>Parallel Task: Branch
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | name | Branch name | string | yes |
-| [states](#State-Definition) | States to be executed in this branch | array | yes |
+| [tasks](#Task-Definition) | Tasks to be executed in this branch | array | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1618,76 +1619,76 @@ specify the "n" property to define this number.
             "type": "string",
             "description": "Branch name"
         },
-        "states": {
+        "tasks": {
             "type": "array",
-            "description": "State Definitions",
+            "description": "Task Definitions",
             "items": {
                         "type": "object",
                         "anyOf": [
                             {
-                              "title": "Delay State",
-                              "$ref": "#/definitions/delaystate"
+                              "title": "Delay Task",
+                              "$ref": "#/definitions/delaytask"
                             },
                             {
-                              "title": "Event State",
-                              "$ref": "#/definitions/eventstate"
+                              "title": "Event Task",
+                              "$ref": "#/definitions/eventtask"
                             },
                             {
-                              "title": "Operation State",
-                              "$ref": "#/definitions/operationstate"
+                              "title": "Operation Task",
+                              "$ref": "#/definitions/operationtask"
                             },
                             {
-                              "title": "Switch State",
-                              "$ref": "#/definitions/switchstate"
+                              "title": "Switch Task",
+                              "$ref": "#/definitions/switchtask"
                             },
                             {
-                              "title": "SubFlow State",
-                              "$ref": "#/definitions/subflowstate"
+                              "title": "SubFlow Task",
+                              "$ref": "#/definitions/subflowtask"
                             },
                             {
-                              "title": "Inject State",
-                              "$ref": "#/definitions/injectstate"
+                              "title": "Inject Task",
+                              "$ref": "#/definitions/injecttask"
                             },
                             {
-                              "title": "ForEach State",
-                              "$ref": "#/definitions/foreachstate"
+                              "title": "ForEach Task",
+                              "$ref": "#/definitions/foreachtask"
                             },
                             {
-                              "title": "Callback State",
-                              "$ref": "#/definitions/callbackstate"
+                              "title": "Callback Task",
+                              "$ref": "#/definitions/callbacktask"
                             }
                         ]
                     }
         }
     },
-    "required": ["name", "states"]
+    "required": ["name", "tasks"]
 }
 ```
 
 </details>
 
-Each branch receives the same copy of the Parallel state's data input.
-States within each branch are only allowed to transition to states defined in the same branch.
-Transitions to other branches or workflow states are not allowed.
-States outside a parallel state cannot transition to a states declared within branches.
+Each branch receives the same copy of the Parallel tasks data input.
+Tasks within each branch are only allowed to transition to tasks defined in the same branch.
+Transitions to other branches or workflow tasks are not allowed.
+Tasks outside a parallel task cannot transition to a task declared within branches.
 
-#### SubFlow State
+#### SubFlow Task
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | Unique state id | string | no |
-| name |State name | string | yes |
-| type |State type | string | yes |
+| id | Unique task id | string | no |
+| name |Task name | string | yes |
+| type |Task type | string | yes |
 | waitForCompletion |If workflow execution must wait for sub-workflow to finish before continuing | boolean | yes |
 | workflowId |Sub-workflow unique id | boolean | no |
-| [stateDataFilter](#state-data-filter) | State data filter | object | no |
-| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
+| [taskDataFilter](#task-data-filter) | Task data filter | object | no |
+| [onError](#Workflow-Error-Handling) | Task error handling definitions | array | no |
 | [transition](#Transitions) |Next transition of the workflow after subflow has completed | object | yes (if end is not defined) |
-| dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
-| dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
+| dataInputSchema | URI to JSON Schema that task data input adheres to | string | no |
+| dataOutputSchema | URI to JSON Schema that task data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
-| [start](#Start-Definition) | Is this state a starting state | object | no |
-| [end](#End-Definition) | If this state and end state | object | no |
+| [start](#Start-Definition) | Is this task a starting task | object | no |
+| [end](#End-Definition) | If this task and end task | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -1698,17 +1699,17 @@ States outside a parallel state cannot transition to a states declared within br
     "properties": {
         "id": {
             "type": "string",
-            "description": "Unique state id",
+            "description": "Unique task id",
             "minLength": 1
         },
         "name": {
             "type": "string",
-            "description": "State name"
+            "description": "Task name"
         },
         "type": {
             "type" : "string",
             "enum": ["subflow"],
-            "description": "State type"
+            "description": "Task type"
         },
         "waitForCompletion": {
             "type": "boolean",
@@ -1719,12 +1720,12 @@ States outside a parallel state cannot transition to a states declared within br
             "type": "string",
             "description": "Sub-workflow unique id"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "onError": {
             "type": "array",
-            "description": "States error handling definitions",
+            "description": "Tasks error handling definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/error"
@@ -1737,23 +1738,23 @@ States outside a parallel state cannot transition to a states declared within br
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         }
     },
     "oneOf": [
@@ -1798,67 +1799,67 @@ States outside a parallel state cannot transition to a states declared within br
 </details>
 
 It is often the case that you want to group your workflows into small, reusable logical units that perform certain needed functionality.
-Even though you can use the Event or Callback states to call externally deployed services (via function), at times
+Even though you can use the Event or Callback tasks to call externally deployed services (via function), at times
 there is a need to include/inject another serverless workflow (from classpath/local file system etc, depending on the implementation logic).
-In that case you would use the SubFlow State.
+In that case you would use the SubFlow task.
 It also allows users to model their workflows with reusability and logical grouping in mind.
 
-This state allows you to include/inject a uniquely identified sub-workflow and start its execution.
-Another use of this state is within [branches](#parallel-state-branch) of the [Parallel State](#Parallel-State). Instead of having to define all states
-in each branch, you could separate the branch states into individual sub-workflows and call the SubFlow state
-as a single state in each.
+This task allows you to include/inject a uniquely identified sub-workflow and start its execution.
+Another use of this task is within [branches](#parallel-task-branch) of the [Parallel Task](#Parallel-Task). Instead of having to define all tasks
+in each branch, you could separate the branch tasks into individual sub-workflows and call the SubFlow task
+as a single task in each.
 
-Sub-workflows must have a defined start and end states.
-The waitForCompletion property defines if the SubFlow state should wait until execution of the sub-workflow
+Sub-workflows must have a defined start and end tasks.
+The waitForCompletion property defines if the SubFlow task should wait until execution of the sub-workflow
 is completed or not.
 
-Each sub-workflow receives the same copy of the SubFlow state's data input.
+Each sub-workflow receives the same copy of the SubFlow tasks data input.
 If waitForCompletion property is set to true, sub-workflows have the ability to edit the parent's workflow data.
 If this property is set to false, data access to parent's workflow should not be allowed.
 
-#### Inject State
+#### Inject Task
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | Unique state id | string | no |
-| name | State name | string | yes |
-| type | State type | string | yes |
-| data | JSON object which can be set as state's data input and can be manipulated via filter | object | no |
-| [stateDataFilter](#state-data-filter) | State data filter | object | no |
+| id | Unique task id | string | no |
+| name | Task name | string | yes |
+| type | Task type | string | yes |
+| data | JSON object which can be set as tasks data input and can be manipulated via filter | object | no |
+| [taskDataFilter](#task-data-filter) | Task data filter | object | no |
 | [transition](#Transitions) | Next transition of the workflow after subflow has completed | object | yes (if end is set to false) |
-| dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
-| dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
+| dataInputSchema | URI to JSON Schema that task data input adheres to | string | no |
+| dataOutputSchema | URI to JSON Schema that task data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
-| [start](#Start-Definition) | Is this state a starting state | object | no |
-| [end](#End-Definition) | If this state and end state | object | no |
+| [start](#Start-Definition) | Is this task a starting task | object | no |
+| [end](#End-Definition) | If this task and end task | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
 {
     "type": "object",
-    "description": "Inject static data into state data. Does not perform any actions",
+    "description": "Inject static data into task data. Does not perform any actions",
     "properties": {
         "id": {
             "type": "string",
-            "description": "Unique state id",
+            "description": "Unique task id",
             "minLength": 1
         },
         "name": {
             "type": "string",
-            "description": "State name"
+            "description": "Task name"
         },
         "type": {
             "type" : "string",
             "enum": ["inject"],
-            "description": "State type"
+            "description": "Task type"
         },
         "data": {
             "type": "object",
-            "description": "JSON object which can be set as states data input and can be manipulated via filters"
+            "description": "JSON object which can be set as tasks data input and can be manipulated via filters"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "transition": {
           "description": "Next transition of the workflow after subflow has completed",
@@ -1867,23 +1868,23 @@ If this property is set to false, data access to parent's workflow should not be
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         }
     },
     "oneOf": [
@@ -1923,15 +1924,15 @@ If this property is set to false, data access to parent's workflow should not be
 
 </details>
 
-Inject state can be used to inject static data into state data input. Inject state does not perform any actions.
+Inject task can be used to inject static data into task data input. Inject sttaskate does not perform any actions.
 It is very useful for debugging for example as you can test/simulate workflow execution with pre-set data that would typically
 be dynamic in nature (e.g. function calls, events etc).
 
-The inject state "data" property allows you to statically define a JSON object which gets added to the states data input.
-You can use the filter property to control the states data output to the transition state.
+The inject task "data" property allows you to statically define a JSON object which gets added to the tasks data input.
+You can use the filter property to control the tasks data output to the transition task.
 
-Here is a typical example of how to use the inject state to add static data into its state data input, which then is passed
-as data output to the transition state:
+Here is a typical example of how to use the inject task to add static data into its task data input, which then is passed
+as data output to the transition task:
 
 <table>
 <tr>
@@ -1943,7 +1944,7 @@ as data output to the transition state:
 
   ```json
   {  
-   "name":"SimpleInjectState",
+   "name":"SimpleInjectTask",
    "type":"inject",
    "data": {
       "person": {
@@ -1954,7 +1955,7 @@ as data output to the transition state:
       }
    },
    "transition": {
-      "nextState": "GreetPersonState"
+      "nextTask": "GreetPersonTask"
    }
   }
   ```
@@ -1963,7 +1964,7 @@ as data output to the transition state:
 <td valign="top">
 
 ```yaml
-  name: SimpleInjectState
+  name: SimpleInjectTask
   type: inject
   data:
     person:
@@ -1972,14 +1973,14 @@ as data output to the transition state:
       address: 1234 SomeStreet
       age: 40
   transition:
-    nextState: GreetPersonState
+    nextTask: GreetPersonTask
 ```
 
 </td>
 </tr>
 </table>
 
-The data output of the "SimpleInjectState" which then is passed as input to the transition state would be:
+The data output of the "SimpleInjectTask" which then is passed as input to the transition task would be:
 
 ```json
 {
@@ -1993,10 +1994,10 @@ The data output of the "SimpleInjectState" which then is passed as input to the 
 
 ```
 
-If the inject state already receives a data input from the previous transition state, the inject data should be merged
+If the inject task already receives a data input from the previous transition task, the inject data should be merged
 with its data input.
 
-You can also use the filter property to filter the state data after data is injected. Let's say we have:
+You can also use the filter property to filter the task data after data is injected. Let's say we have:
 
 <table>
 <tr>
@@ -2008,7 +2009,7 @@ You can also use the filter property to filter the state data after data is inje
 
 ```json
   {  
-     "name":"SimpleInjectState",
+     "name":"SimpleInjectTask",
      "type":"inject",
      "data": {
         "people": [
@@ -2032,11 +2033,11 @@ You can also use the filter property to filter the state data after data is inje
           }
         ]
      },
-     "stateDataFilter": {
+     "taskDataFilter": {
         "dataOutputPath": "$.people[?(@.age < 40)]"
      },
      "transition": {
-        "nextState": "GreetPersonState"
+        "nextTask": "GreetPersonTask"
      }
     }
 ```
@@ -2045,7 +2046,7 @@ You can also use the filter property to filter the state data after data is inje
 <td valign="top">
 
 ```yaml
-  name: SimpleInjectState
+  name: SimpleInjectTask
   type: inject
   data:
     people:
@@ -2061,17 +2062,17 @@ You can also use the filter property to filter the state data after data is inje
       lname: Mill
       address: 1234 SomeStreet
       age: 30
-  stateDataFilter:
+  taskDataFilter:
     dataOutputPath: "$.people[?(@.age < 40)]"
   transition:
-    nextState: GreetPersonState
+    nextTask: GreetPersonTask
 ```
 
 </td>
 </tr>
 </table>
 
-In which case the states data output would include people who's age is less than 40.
+In which case the tasks data output would include people who's age is less than 40.
 You can change your output path easily during testing, for example:
 
 ```text
@@ -2080,61 +2081,61 @@ $.people[?(@.age >= 40)]
 
 This allows you to test if your workflow behaves properly for cases when there are people who's age is greater or equal 40.
 
-#### ForEach State
+#### ForEach Task
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | Unique state id | string | no |
-| name | State name | string | yes |
-| type | State type | string | yes |
-| inputCollection | JSONPath expression selecting an JSON array element of the states data input | string | yes |
-| outputCollection | JSONPath expression specifying where in the states data output to place the final data output of each iteration of the executed states | string | no |
-| inputParameter | JSONPath expression specifying a JSON object field of the states data input. For each parallel iteration, this field will get populated with an unique element of the inputCollection array | string | yes |
+| id | Unique task id | string | no |
+| name | Task name | string | yes |
+| type | Task type | string | yes |
+| inputCollection | JSONPath expression selecting an JSON array element of the tasks data input | string | yes |
+| outputCollection | JSONPath expression specifying where in the tasks data output to place the final data output of each iteration of the executed tasks | string | no |
+| inputParameter | JSONPath expression specifying a JSON object field of the tasks data input. For each parallel iteration, this field will get populated with an unique element of the inputCollection array | string | yes |
 | max | Specifies how upper bound on how many iterations may run in parallel | integer | no |
 | timeDelay | Amount of time (ISO 8601 format) to wait between each iteration | string | no |
-| [states](#State-Definition) | States to be executed for each of the elements of inputCollection | array | yes |
-| [stateDataFilter](#state-data-filter) | State data filter definition | object | no |
-| [retry](#workflow-retrying) | States retry definitions | array | no |
-| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
-| [transition](#Transitions) | Next transition of the workflow after state has completed | object | yes (if end is not defined) |
-| dataInputSchema | URI to JSON Schema that state data input adheres to | string | no |
-| dataOutputSchema | URI to JSON Schema that state data output adheres to | string | no |
+| [tasks](#Task-Definition) | Tasks to be executed for each of the elements of inputCollection | array | yes |
+| [taskDataFilter](#task-data-filter) | Task data filter definition | object | no |
+| [retry](#workflow-retrying) | Tasks retry definitions | array | no |
+| [onError](#Workflow-Error-Handling) | Tasks error handling definitions | array | no |
+| [transition](#Transitions) | Next transition of the workflow after task has completed | object | yes (if end is not defined) |
+| dataInputSchema | URI to JSON Schema that task data input adheres to | string | no |
+| dataOutputSchema | URI to JSON Schema that task data output adheres to | string | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
-| [start](#Start-Definition) | Is this state a starting state | object | no |
-| [end](#End-Definition) | Is this state an end state | object | no |
+| [start](#Start-Definition) | Is this task a starting task | object | no |
+| [end](#End-Definition) | Is this task an end task | object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
 {
     "type": "object",
-    "description": "Execute a set of defined states for each element of the data input array",
+    "description": "Execute a set of defined tasks for each element of the data input array",
     "properties": {
         "id": {
             "type": "string",
-            "description": "Unique State id",
+            "description": "Unique Task id",
             "minLength": 1
         },
         "name": {
             "type": "string",
-            "description": "State name"
+            "description": "Task name"
         },
         "type": {
             "type" : "string",
             "enum": ["foreach"],
-            "description": "State type"
+            "description": "Task type"
         },
         "inputCollection": {
            "type": "string",
-           "description": "JSONPath expression selecting a JSON array element of the states data input"
+           "description": "JSONPath expression selecting a JSON array element of the tasks data input"
          },
          "outputCollection": {
            "type": "string",
-           "description": "JSONPath expression specifying where in the states data output to place the final data output of each iteration of the executed states"
+           "description": "JSONPath expression specifying where in the task data output to place the final data output of each iteration of the executed tasks"
          },
          "inputParameter": {
             "type": "string",
-             "description": "JSONPath expression specifying a JSON object field of the states data input. For each parallel iteration, this field will get populated with a unique element of the inputCollection array"
+             "description": "JSONPath expression specifying a JSON object field of the task data input. For each parallel iteration, this field will get populated with a unique element of the inputCollection array"
          },
          "max": {
            "type": "integer",
@@ -2146,53 +2147,53 @@ This allows you to test if your workflow behaves properly for cases when there a
              "type": "string",
              "description": "Amount of time (ISO 8601 format) to wait between each iteration "
          },
-        "states": {
+        "tasks": {
             "type": "array",
-            "description": "States to be executed for each of the elements of inputCollection",
+            "description": "Tasks to be executed for each of the elements of inputCollection",
             "items": {
                 "type": "object",
                 "anyOf": [
                     {
-                      "title": "Delay State",
-                      "$ref": "#/definitions/delaystate"
+                      "title": "Delay Task",
+                      "$ref": "#/definitions/delaytask"
                     },
                     {
-                      "title": "Event State",
-                      "$ref": "#/definitions/eventstate"
+                      "title": "Event Task",
+                      "$ref": "#/definitions/eventtask"
                     },
                     {
-                      "title": "Operation State",
-                      "$ref": "#/definitions/operationstate"
+                      "title": "Operation Task",
+                      "$ref": "#/definitions/operationtasks"
                     },
                     {
-                      "title": "Switch State",
-                      "$ref": "#/definitions/switchstate"
+                      "title": "Switch task",
+                      "$ref": "#/definitions/switchtask"
                     },
                     {
-                      "title": "SubFlow State",
-                      "$ref": "#/definitions/subflowstate"
+                      "title": "SubFlow Task",
+                      "$ref": "#/definitions/subflowtask"
                     },
                     {
-                      "title": "Inject State",
-                      "$ref": "#/definitions/injectstate"
+                      "title": "Inject Task",
+                      "$ref": "#/definitions/injecttask"
                     },
                     {
-                      "title": "ForEach State",
-                      "$ref": "#/definitions/foreachstate"
+                      "title": "ForEach Task",
+                      "$ref": "#/definitions/foreachstask"
                     },
                     {
-                      "title": "Callback State",
-                      "$ref": "#/definitions/callbackstate"
+                      "title": "Callback Task",
+                      "$ref": "#/definitions/callbacktask"
                     }
                 ]
             }
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "retry": {
             "type": "array",
-            "description": "States retry definitions",
+            "description": "Tasks retry definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/retry"
@@ -2200,36 +2201,36 @@ This allows you to test if your workflow behaves properly for cases when there a
         },
         "onError": {
             "type": "array",
-            "description": "States error handling definitions",
+            "description": "Tasks error handling definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/error"
             }
         },
         "transition": {
-          "description": "Next transition of the workflow after state has completed",
+          "description": "Next transition of the workflow after task has completed",
           "$ref": "#/definitions/transition"
         },
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         }
     },
     "oneOf": [
@@ -2239,7 +2240,7 @@ This allows you to test if your workflow behaves properly for cases when there a
         "type",
         "inputCollection",
         "inputParameter",
-        "states",
+        "tasks",
         "end"
       ]
     },
@@ -2249,7 +2250,7 @@ This allows you to test if your workflow behaves properly for cases when there a
         "type",
         "inputCollection",
         "inputParameter",
-        "states",
+        "tasks",
         "transition"
       ]
     },
@@ -2260,7 +2261,7 @@ This allows you to test if your workflow behaves properly for cases when there a
         "type",
         "inputCollection",
         "inputParameter",
-        "states",
+        "tasks",
         "end"
       ]
     },
@@ -2271,7 +2272,7 @@ This allows you to test if your workflow behaves properly for cases when there a
         "type",
         "inputCollection",
         "inputParameter",
-        "states",
+        "tasks",
         "transition"
       ]
     }
@@ -2281,23 +2282,23 @@ This allows you to test if your workflow behaves properly for cases when there a
 
 </details>
 
-The ForEach state can be used to execute a defined set of states for each element of an array (defined in the states data input).
-While the [Parallel state](#Parallel-State) performs multiple branches of states using the
-same data input, the ForEach state performs the defined steps for multiple entries of an array in the states data input.
+The ForEach task can be used to execute a defined set of tasks for each element of an array (defined in the tasks data input).
+While the [Parallel Task](#Parallel-Task) performs multiple branches of tasks using the
+same data input, the ForEach task performs the defined steps for multiple entries of an array in the tasks data input.
 
-Note that each iteration of the ForEach state should be executed in parallel.
+Note that each iteration of the ForEach task should be executed in parallel.
 You can use the "max" property to set the upper bound on how many iterations may run in parallel. The default
 of the "max" property is zero, which places no limit on number of parallel executions.
 
-States defined in the "states" property of the ForEach state can only transition to each other and
-cannot transition to states outside of this state.
-Similarly other workflow states cannot transition to one of the states defined within the ForEach state.
+Tasks defined in the "tasks" property of the ForEach task can only transition to each other and
+cannot transition to tasks outside of this task.
+Similarly other workflow tasks cannot transition to one of the tasks defined within the ForEach task.
 
-States defined in the "states" property must contain at least one state which is an end state (has the end property defined).
+Tasks defined in the "tasks" property must contain at least one task which is an end task (has the end property defined).
 
-Let's take a look at a simple ForEach state example through which we can explain this state:
+Let's take a look at a simple ForEach task example through which we can explain this task:
 
-In this example the data input to our ForEach state is an array of orders:
+In this example the data input to our ForEach task is an array of orders:
 
 ```json
 {
@@ -2321,7 +2322,7 @@ In this example the data input to our ForEach state is an array of orders:
 }
 ```
 
-and the state is defined as:
+and the task is defined as:
 
 <table>
 <tr>
@@ -2339,13 +2340,13 @@ and the state is defined as:
     "resource": "functionResourse"
   }
   ],
-  "states": [
+  "tasks": [
   {
    "name":"SendConfirmationForEachCompletedhOrder",
    "type":"foreach",
    "inputCollection": "$.orders[?(@.completed == true)]",
    "inputParameter": "$.completedorder",
-   "states": [
+   "tasks": [
       {  
       "start": {
          "kind": "default"
@@ -2383,12 +2384,12 @@ and the state is defined as:
 functions:
 - name: sendConfirmationFunction
   resource: functionResourse
-states:
+tasks:
 - name: SendConfirmationForEachCompletedhOrder
   type: foreach
   inputCollection: "$.orders[?(@.completed == true)]"
   inputParameter: "$.completedorder"
-  states:
+  tasks:
   - start:
       kind: default
     name: SendConfirmation
@@ -2410,15 +2411,15 @@ states:
 </tr>
 </table>
 
-This ForEach state will first look at its inputCollection path to determine which array in the states data input
+This ForEach task will first look at its inputCollection path to determine which array in the tasks data input
 to iterate over.
-In this case it will be "orders" array which contains orders information. The states inputCollection property
+In this case it will be "orders" array which contains orders information. The tasks inputCollection property
 then further filters this array, only selecting elements of the orders array which have the completed property
 set to true.
 
-For each of the completed order the state will then execute the defined set of states in parallel.
+For each of the completed order the task will then execute the defined set of tasks in parallel.
 
-For this example, the data inputs of staring states for the two iterations would be: 
+For this example, the data inputs of staring task for the two iterations would be: 
 
 ```json
 {
@@ -2476,30 +2477,30 @@ and:
 }
 ```
 
-Once iterations over the completed orders complete, workflow execution finishes as our ForEach state is an end state (has the end property defined).
+Once iterations over the completed orders complete, workflow execution finishes as our ForEach task is an end task (has the end property defined).
 
-So in this example, our ForEach state will send two confirmation emails, one for each of the completed orders
+So in this example, our ForEach task will send two confirmation emails, one for each of the completed orders
 defined in the orders array of its data input.
 
-#### Callback State
+#### Callback Task
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| id | Unique state id | string | no |
-| name | State name | string | yes |
-| type | State type | string | yes |
+| id | Unique task id | string | no |
+| name | Task name | string | yes |
+| type | Task type | string | yes |
 | [action](#Action-Definition) | Defines the action to be executed | object | yes |
 | eventRef | References an unique callback event name in the defined workflow [events](#Event-Definition) | string | yes |
-| [timeout](#eventstate-timeout) | Time period to wait from when action is executed until the callback event is received (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | yes |
+| [timeout](#eventtask-timeout) | Time period to wait from when action is executed until the callback event is received (ISO 8601 format). For example: "PT15M" (wait 15 minutes), or "P2DT3H4M" (wait 2 days, 3 hours and 4 minutes)| string | yes |
 | [eventDataFilter](#event-data-filter) | Callback event data filter definition | object | no |
-| [stateDataFilter](#state-data-filter) | State data filter definition | object | no |
-| [retry](#workflow-retrying) | States retry definitions | array | no |
-| [onError](#Workflow-Error-Handling) | States error handling definitions | array | no |
-| [dataInputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data input adheres to | string | no |
-| [dataOutputSchema](#Information-Passing-Between-States) | URI to JSON Schema that state data output adheres to | string | no |
+| [taskDataFilter](#task-data-filter) | Task data filter definition | object | no |
+| [retry](#workflow-retrying) | Tasks retry definitions | array | no |
+| [onError](#Workflow-Error-Handling) | Tasks error handling definitions | array | no |
+| [dataInputSchema](#Information-Passing-Between-Tasks) | URI to JSON Schema that task data input adheres to | string | no |
+| [dataOutputSchema](#Information-Passing-Between-Tasks) | URI to JSON Schema that task data output adheres to | string | no |
 | [transition](#Transitions) | Next transition of the workflow after callback event has been received | object | yes |
-| [start](#Start-Definition) | Is this state a starting state | object | no |
-| [end](#End-Definition) | Is this state an end state | object | no |
+| [start](#Start-Definition) | Is this task a starting task | object | no |
+| [end](#End-Definition) | Is this task an end task | object | no |
 | [metadata](#Workflow-Metadata) | Metadata information| object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
@@ -2508,21 +2509,21 @@ defined in the orders array of its data input.
 ```json
 {
     "type": "object",
-    "description": "This state performs an action, then waits for the callback event that denotes completion of the action",
+    "description": "This task performs an action, then waits for the callback event that denotes completion of the action",
     "properties": {
         "id": {
             "type": "string",
-            "description": "Unique state id",
+            "description": "Unique task id",
             "minLength": 1
         },
         "name": {
             "type": "string",
-            "description": "State name"
+            "description": "Task name"
         },
         "type": {
             "type" : "string",
             "enum": ["callback"],
-            "description": "State type"
+            "description": "Task type"
         },
         "action": {
             "description": "Defines the action to be executed",
@@ -2540,13 +2541,13 @@ defined in the orders array of its data input.
           "description": "Callback event data filter definition",
           "$ref": "#/definitions/eventdatafilter"
         },
-        "stateDataFilter": {
-          "description": "State data filter definition",
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "description": "Task data filter definition",
+          "$ref": "#/definitions/taskdatafilter"
         },
         "retry": {
             "type": "array",
-            "description": "States retry definitions",
+            "description": "Tasks retry definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/retry"
@@ -2554,7 +2555,7 @@ defined in the orders array of its data input.
         },
         "onError": {
             "type": "array",
-            "description": "States error handling definitions",
+            "description": "Tasks error handling definitions",
             "items": {
                 "type": "object",
                 "$ref": "#/definitions/error"
@@ -2563,12 +2564,12 @@ defined in the orders array of its data input.
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
           },
         "transition": {
           "description": "Next transition of the workflow after all the actions have been performed",
@@ -2576,11 +2577,11 @@ defined in the orders array of its data input.
         },
          "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
@@ -2638,10 +2639,10 @@ defined in the orders array of its data input.
 
 Serverless orchestration can at times require manual steps/decisions to be made. While some work performed
 in a serverless workflow can be executed automatically, some decisions must involve manual steps (human decisions for example.
-Callback state allows you to explicitly model manual decision steps during workflow execution.
+Callback task allows you to explicitly model manual decision steps during workflow execution.
 
 The action property defines a function call which triggers an external activity/service. Once the action executes,
-the callback state will wait for a CloudEvent (defined via the eventRef property) which indicates the completion
+the Callback task will wait for a CloudEvent (defined via the eventRef property) which indicates the completion
 of the manual decision by the called service.
 
 Note that the called decision services is responsible for emitting the callback CloudEvent indicating the completion of the
@@ -2649,28 +2650,28 @@ decision and including the decision results as part of the event payload. This e
 workflow instance using the callback events context attribute defined in the correlationToken parameter of the
 referenced [Event Definition](#Event-Definition).
 
-Once the completion (callback) event is received, the callback state completes its execution and transitions to the next
-defined workflow state or completes workflow execution in case it is an end state.
+Once the completion (callback) event is received, the callback task completes its execution and transitions to the next
+defined workflow task or completes workflow execution in case it is an end task.
 
-The callback event payload is merged with the callback state data and can be filtered via the eventDataFilter definition.
+The callback event payload is merged with the Callback task data and can be filtered via the eventDataFilter definition.
 
-The callback state timeout parameter defines a time period from the action execution until the callback event should be received.
+The Callback task timeout parameter defines a time period from the action execution until the callback event should be received.
 
-If the defined callback event has not been received during this time period, the state should transition to the next state or end workflow execution (if it is an end state).
+If the defined callback event has not been received during this time period, the task should transition to the next task or end workflow execution (if it is an end task).
 
 #### Start Definition
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | kind | End kind ("default", "scheduled") | enum | yes |
-| [schedule](#Schedule-Definition) | If kind is "scheduled", define when the starting state is or becomes active | object | yes only if kind is "scheduled" |
+| [schedule](#Schedule-Definition) | If kind is "scheduled", define when the starting task is or becomes active | object | yes only if kind is "scheduled" |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
 {
   "type": "object",
-  "description": "State start definition",
+  "description": "Task start definition",
   "properties": {
     "kind": {
       "type": "string",
@@ -2681,7 +2682,7 @@ If the defined callback event has not been received during this time period, the
       "description": "Kind of start definition"
     },
     "schedule": {
-      "description": "If kind is scheduled, define when the starting state is or becomes active",
+      "description": "If kind is scheduled, define when the starting task is or becomes active",
       "$ref": "#/definitions/schedule"
     }
   },
@@ -2708,23 +2709,23 @@ If the defined callback event has not been received during this time period, the
 
 </details>
 
-Any state can declare to be the start state of the workflow, meaning that when a workflow intance is created it will be the initial
-state to be executed. A workflow definition can declare one workflow start state.
+Any task can declare to be the start task of the workflow, meaning that when a workflow intance is created it will be the initial
+task to be executed. A workflow definition can declare one workflow start task.
 
 The start definition provides a "kind" parameter which describes the starting options:
 
-- **default** - The start state is always "active" and there are no restrictions imposed on its execution.
-- **scheduled** -  The start state is only "active" as described in the schedule definition. Workflow instance creation can only be performed for this workflow
+- **default** - The start task is always "active" and there are no restrictions imposed on its execution.
+- **scheduled** -  The start task is only "active" as described in the schedule definition. Workflow instance creation can only be performed for this workflow
 as described by the provided schedule.
 
 Defining a schedule for the start definition allows you to model workflows which are only "active" during certain time intervals. For example let's say
 we have a workflow that orchestrates an online auction and should be valid only from when the auction starts until it ends. Before the auction starts or after
 it is completed, new submissions are allowed and thus no new workflow instances should be created.
 
-There are two cases to discuss when dealing with scheduled start states:
+There are two cases to discuss when dealing with scheduled start tasks:
 
-1. **Starting States in [Parallel](#Parallel-State) state [branches](#parallel-state-branch)**: if a state in a parallel state branch defines a scheduled start state which is not "active" at the time the branch is executed, the parent workflow should not wait until it becomes active and just complete execution of the branch.
-2. **Starting states in [SubFlow](#SubFlow-State) states**: if a state in a workflow definition (referenced by SubFlow state) defines a scheduled start state that is not "active" at the time the SubFlow state is executed, the parent workflow should not wait until it becomes active and simply complete execution of the SubFlow state.
+1. **Starting tasks in [Parallel](#Parallel-Task) task [branches](#parallel-task-branch)**: if a task in a parallel task branch defines a scheduled start task which is not "active" at the time the branch is executed, the parent workflow should not wait until it becomes active and just complete execution of the branch.
+2. **Starting tasks in [SubFlow](#SubFlow-Task) task**: if a task in a workflow definition (referenced by SubFlow task) defines a scheduled start task that is not "active" at the time the SubFlow task is executed, the parent workflow should not wait until it becomes active and simply complete execution of the SubFlow task.
 
 For more information about the schedule definition see the next section.
 
@@ -2732,18 +2733,18 @@ For more information about the schedule definition see the next section.
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| interval | Time interval describing when the workflow starting state is active. (ISO 8601 time interval format). | string | yes |
+| interval | Time interval describing when the workflow starting task is active. (ISO 8601 time interval format). | string | yes |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
 ```json
 {
   "type": "object",
-  "description": "Start state schedule definition",
+  "description": "Start task schedule definition",
   "properties": {
     "interval": {
       "type": "string",
-      "description":  "Time interval describing when the workflow starting state is active"
+      "description":  "Time interval describing when the workflow starting task is active"
     }
   },
   "required": [
@@ -2754,23 +2755,23 @@ For more information about the schedule definition see the next section.
 
 </details>
 
-The interval property uses the ISO 8601 time interval format to describe when the starting state is active.
+The interval property uses the ISO 8601 time interval format to describe when the starting task is active.
 There is a number of ways to express the time interval:
 
-1. **Start** + **End**: Defines the start and end time, for example "2020-03-20T13:00:00Z/2021-05-11T15:30:00Z", meaning this start state is active
+1. **Start** + **End**: Defines the start and end time, for example "2020-03-20T13:00:00Z/2021-05-11T15:30:00Z", meaning this start task is active
 from March 20th 2020 at 1PM UTC, to May 11th 2021 at 3:30pm UTC.
-2. **Start** + **Duration**: Defines the start time and the duration, for example: "2020-03-20T13:00:00Z/P1Y2M10DT2H30M", meaning this start state is ative
+2. **Start** + **Duration**: Defines the start time and the duration, for example: "2020-03-20T13:00:00Z/P1Y2M10DT2H30M", meaning this start task is ative
 from March 20th 2020 at 1pm UTC and is valid for 1 year, 2 months, 10 days 2 hours and 30 minutes.
-3. **Duration** + **End**: Defines the duration and an end, for example: "P1Y2M10DT2H30M/2020-05-11T15:30:00Z", meaning that this start state is active for
+3. **Duration** + **End**: Defines the duration and an end, for example: "P1Y2M10DT2H30M/2020-05-11T15:30:00Z", meaning that this start task is active for
 1 year, 2 months, 10 days 2 hours and 30 minutes, or until May 11th 2020 at 3:30PM UTC, whichever comes first.
-4. **Duration**: Defines the duration only, for example: ""P1Y2M10DT2H30M"", meaning this start state is active for 1 year, 2 months, 10 days 2 hours and 30 minutes.
+4. **Duration**: Defines the duration only, for example: ""P1Y2M10DT2H30M"", meaning this start task is active for 1 year, 2 months, 10 days 2 hours and 30 minutes.
 Implementations have to provide the context in this case on when the duration should start to be counted, as it may be the workflow deployment time or the first time this workflow instance is created, for example.
 
-A case to consider here is when an [Event](#Event-State) state is also a workflow start state and the schedule definition is defined. Let's say we have a starting exclusive [Event](#Event-State) state
+A case to consider here is when an [Event](#Event-Task) task is also a workflow start task and the schedule definition is defined. Let's say we have a starting exclusive [Event](#Event-Task) task
 which waits to consume event "X", meaning that the workflow instance should be created when event "X" occurs. If we also in the start schedule definition define
-a specific interval, the "waiting" for event "X" should only be started when the starting state becomes active.
+a specific interval, the "waiting" for event "X" should only be started when the starting task becomes active.
 
-Once a workflow instance is created, the start state schedule can be ignored for that particular workflow instance. States should from then on rely on their timeout properties for example to restrict the waiting time of incoming events, function executions, etc.  
+Once a workflow instance is created, the start task schedule can be ignored for that particular workflow instance. Tasks should from then on rely on their timeout properties for example to restrict the waiting time of incoming events, function executions, etc.  
 
 #### End Definition
 
@@ -2784,7 +2785,7 @@ Once a workflow instance is created, the start state schedule can be ignored for
 ```json
 {
   "type": "object",
-  "description": "State end definition",
+  "description": "Task end definition",
   "properties": {
     "kind": {
       "type": "string",
@@ -2823,13 +2824,13 @@ Once a workflow instance is created, the start state schedule can be ignored for
 
 </details>
 
-Any state with the exception of the [Switch](#Switch-State) state can declare to be the end state of the workflow, meaning that after the execution of this state is completed, workflow execution ends. Switch states require a transition to happen after their execution, thus cannot be workflow end states.
+Any task with the exception of the [Switch](#Switch-Task) task can declare to be the end task of the workflow, meaning that after the execution of this task is completed, workflow execution ends. Switch tasks require a transition to happen after their execution, thus cannot be a workflow end task.
 
 The end definitions provides different ways to complete workflow execution, which is set by the "kind" property:
 
 - **default** - Default workflow execution completion, no other special behavior
 - **terminate** - Completes all execution flows in the given workflow instance. All activities/actions being executed
-are completed. If a terminate end is reached inside a ForEach, Parallel, or SubFlow state, the entire workflow instance is terminated.
+are completed. If a terminate end is reached inside a ForEach, Parallel, or SubFlow task, the entire workflow instance is terminated.
 - **event** - Workflow executions completes, and a Cloud Event is produced according to the [produceEvent](#ProduceEvent-Definition) definition.
 
 #### ProduceEvent Definition
@@ -2837,7 +2838,7 @@ are completed. If a terminate end is reached inside a ForEach, Parallel, or SubF
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
 | eventRef | Reference to a defined unique event name in the [events](#Event-Definition) definition | string | yes |
-| data | If String, JSONPath expression which selects parts of the states data output to become the data of the produced event. If object a custom object to become the data of produced event. | string or object | no |
+| data | If String, JSONPath expression which selects parts of the tasks data output to become the data of the produced event. If object a custom object to become the data of produced event. | string or object | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -2852,7 +2853,7 @@ are completed. If a terminate end is reached inside a ForEach, Parallel, or SubF
     },
     "data": {
       "type": ["string", "object"],
-      "description": "JSONPath expression which selects parts of the states data output to become the data of the produced event"
+      "description": "JSONPath expression which selects parts of the tasks data output to become the data of the produced event"
     }
   },
   "required": [
@@ -2866,10 +2867,10 @@ are completed. If a terminate end is reached inside a ForEach, Parallel, or SubF
 Defines the CloudEvent to produce when workflow execution completes or during a workflow transition. 
 The "eventRef" property must match the name of
 one of the defined events in the [events](#Event-Definition) definition. From this the event type can be determined.
-The data property defines a JSONPath expression which selects elements of the states data output to be placed into the
+The data property defines a JSONPath expression which selects elements of the tasks data output to be placed into the
 data section of the produced CloudEvent.
 
-Being able to produce an event when workflow execution completes or during state transition
+Being able to produce an event when workflow execution completes or during task transition
 allows for event-based orchestration communication.
 
 For example, completion of an orchestration workflow can notify other orchestration workflows to decide if they need to act upon
@@ -2891,7 +2892,7 @@ For example, completion of an orchestration workflow can notify other orchestrat
   "properties": {
     "inputPath": {
       "type": "string",
-      "description": "Select input data of either Event, State or Action as JSONPath"
+      "description": "Select input data of either Event, Task or Action as JSONPath"
     },
     "resultPath": {
       "type": "string",
@@ -2899,7 +2900,7 @@ For example, completion of an orchestration workflow can notify other orchestrat
     },
     "outputPath": {
       "type": "string",
-      "description": "Specify output data of State or Action as JSONPath"
+      "description": "Specify output data of Task or Action as JSONPath"
     }
   },
   "required": ["inputPath"]
@@ -2908,43 +2909,43 @@ For example, completion of an orchestration workflow can notify other orchestrat
 
 </details>
 
-Filters are used for data flow through the workflow. This is described in detail in the [Information Passing](#Information-Passing-Between-States) section.
+Filters are used for data flow through the workflow. This is described in detail in the [Information Passing](#Information-Passing-Between-Tasks) section.
 
 #### Transitions
 
-Serverless workflow states can have one or more incoming and outgoing transitions (from/to other states).
-Each state has a "transition" definition that is used to determines which
-state to transition to next.
+Serverless workflow tasks can have one or more incoming and outgoing transitions (from/to other tasks).
+Each task has a "transition" definition that is used to determines which
+task to transition to next.
 
-To define a transition, set the "nextState" property in your transition definitions.
+To define a transition, set the "nextTask" property in your transition definitions.
 
-Implementers can choose to use the states "name" string property
+Implementers can choose to use the tasks "name" string property
 for determining the transition, however we realize that in most cases this is not an
-optimal solution that can lead to ambiguity. This is why each state also include an "id"
+optimal solution that can lead to ambiguity. This is why each task also include an "id"
 property. Implementers can choose their own id generation strategy to populate the id property
-for each of the states and use it as the unique state identifier that is to be used as the "nextState" value.
+for each of the tasks and use it as the unique task identifier that is to be used as the "nextTask" value.
 
-So the options for next state transitions are:
+So the options for next task transitions are:
 
-- Use the state name property
-- Use the state id property
+- Use the task name property
+- Use the task id property
 - Use a combination of name and id properties
 
-Events can be produced during state transitions. The "produceEvent" property allows you
-to reference one of the defined workflow events and select the state data to be sent as the event payload.
+Events can be produced during task transitions. The "produceEvent" property allows you
+to reference one of the defined workflow events and select the task data to be sent as the event payload.
 
-#### Restricting Transitions based on state output
+#### Restricting Transitions based on task output
 
-In addition to specifying the "nextState" property a transition also defines a boolean expression which must
+In addition to specifying the "nextTask" property a transition also defines a boolean expression which must
 evaluate to true for the transition to happen. Having this data-based restriction capabilities can help
  stop transitions within workflow execution that can have serious and harmful business impacts.
 
-State Transitions have access to the states data output. Expressions
-are evaluated against the states output data to make sure that this transition only happens
+Task transitions have access to the tasks data output. Expressions
+are evaluated against the tasks output data to make sure that this transition only happens
 if the expression evaluates to true.
 
-Here is an example of a restricted transition which only allows transition to the "highRiskState" if the
-output of the state to transition from includes an user with the title "MANAGER".
+Here is an example of a restricted transition which only allows transition to the "highRiskTask" if the
+output of the task to transition from includes an user with the title "MANAGER".
 
 <table>
 <tr>
@@ -2966,12 +2967,12 @@ output of the state to transition from includes an user with the title "MANAGER"
    "resource": "functionResourse"
   }
 ],
-"states":[  
+"tasks":[  
   {  
    "start": {
      "kind": "default"
    },
-   "name":"lowRiskState",
+   "name":"lowRiskTask",
    "type":"operation",
    "actionMode":"Sequential",
    "actions":[  
@@ -2982,15 +2983,15 @@ output of the state to transition from includes an user with the title "MANAGER"
     }
     ],
     "transition": {
-      "nextState":"highRiskState",
+      "nextTask":"highRiskTask",
       "expression": {
          "language": "spel",
-         "body": "#jsonPath(stateOutputData,'$..user.title') eq 'MANAGER'"
+         "body": "#jsonPath(taskOutputData,'$..user.title') eq 'MANAGER'"
       }
     }
   },
   {  
-   "name":"highRiskState",
+   "name":"highRiskTask",
    "type":"operation",
    "end": {
      "kind": "default"
@@ -3017,21 +3018,21 @@ functions:
   resource: functionResourse
 - name: doHighRistOperationFunction
   resource: functionResourse
-states:
+tasks:
 - start:
     kind: default
-  name: lowRiskState
+  name: lowRiskTask
   type: operation
   actionMode: Sequential
   actions:
   - functionRef:
       refName: doLowRistOperationFunction
   transition:
-    nextState: highRiskState
+    nextTask: highRiskTask
     expression:
       language: spel
-      body: "#jsonPath(stateOutputData,'$..user.title') eq 'MANAGER'"
-- name: highRiskState
+      body: "#jsonPath(taskOutputData,'$..user.title') eq 'MANAGER'"
+- name: highRiskTask
   type: operation
   end:
     kind: default
@@ -3057,8 +3058,8 @@ Flow of data during workflow execution can be divided into:
 - [Workfow data input](#Workflow-data-input)
 - [Event data](#Event-data)
 - [Action data](#Action-data)
-- [Information passing between states](#Information-passing-Between-States)
-- [State information filtering](#State-information-filtering)
+- [Information passing between tasks](#Information-passing-Between-Tasks)
+- [Task information filtering](#Task-information-filtering)
 - [Workflow data output](#Workflow-data-output)
 
 #### Workflow Data Input
@@ -3072,7 +3073,7 @@ If no input is provided the default data input is the empty object:
 }
 ```
 
-Workflow data input is passed to the workflow's [start state](#Start-Definition) state as data input.
+Workflow data input is passed to the workflow's [start task](#Start-Definition) task as data input.
 
 <p align="center">
 <img src="media/spec/workflowdatainput.png" height="350px" alt="Workflow data input"/>
@@ -3085,69 +3086,70 @@ decide to strictly enforce it.
 
 #### Event Data
 
-[Event states](#Event-State) wait for arrival of defined CloudEvents, and when consumed perform a number of defined actions.
+[Event tasks](#Event-Task) wait for arrival of defined CloudEvents, and when consumed perform a number of defined actions.
 CloudEvents can contain data which is needed to make further orchestration decisions. Data from consumed CloudEvents
-is merged with the data input of the Event state, so it can be used inside defined actions
-or be passed as data output to transition states.
+is merged with the data input of the Event task, so it can be used inside defined actions
+or be passed as data output to transition tasks.
 
 <p align="center">
-<img src="media/spec/eventdatamerged.png" height="350px" alt="Event data merged with state data input"/>
+<img src="media/spec/eventdatamerged.png" height="350px" alt="Event data merged with task data input"/>
 </p>
 
-Similarly for Callback states, the callback event data is merged with the data input of the Callback state.
+Similarly for Callback tasks, the callback event data is merged with the data input of the Callback task.
 
 #### Action Data
 
-[Event](#Event-State), [Callback](#Callback-State), and [Operation](#Operation-State) states can execute [actions](#Action-Definition). Actions can invoke different services (functions). Functions can return results that may be needed to make
-further orchestration decisions. Results data from function invocations is merged with the state data.
+[Event](#Event-Task), [Callback](#Callback-Task), and [Operation](#Operation-Task) tasks can execute [actions](#Action-Definition). 
+Actions can invoke different services (functions). Functions can return results that may be needed to make
+further orchestration decisions. Results data from function invocations is merged with the task data.
 
 <p align="center">
-<img src="media/spec/actionsdatamerged.png" height="350px" alt="Actions data merged with state data"/>
+<img src="media/spec/actionsdatamerged.png" height="350px" alt="Actions data merged with task data"/>
 </p>
 
-#### Information Passing Between States
+#### Information Passing Between Tasks
 
-States in Serverless workflow can receive data (data input) as well as produce a data result (data output). The states data input is
-typically the previous states data output.
-When a state completes its tasks, its data output is passed to the data input of the state it transitions to.
+Tasks in Serverless workflow can receive data (data input) as well as produce a data result (data output). The tasks data input is
+typically the previous tasks data output.
+When a task completes its tasks, its data output is passed to the data input of the task it transitions to.
 
 There are two of rules to consider here:
 
-- If the state is the starting state its data input is the [workflow data input](#Workflow-data-input).
-- If the state is an end state ("end" property is defined), its data output is the [workflow data output](#Workflow-data-output).  
+- If the task is the starting task its data input is the [workflow data input](#Workflow-data-input).
+- If the task is an end task ("end" property is defined), its data output is the [workflow data output](#Workflow-data-output).  
 
 <p align="center">
-<img src="media/spec/basic-state-data-passing.png" height="350px" alt="Basic state data passing"/>
+<img src="media/spec/basic-task-data-passing.png" height="350px" alt="Basic task data passing"/>
 </p>
 
-In order to define the structure of expected state data input and output you can use the workflow
+In order to define the structure of expected task data input and output you can use the workflow
 "dataInputSchema" and "dataOutputSchema" properties. These property allows you to link to [JSON Schema](https://json-schema.org/) definitions
 that describes the expected workflow data input/output. This can be used for documentation purposes or implementations may
 decide to strictly enforce it.
 
-#### State Information Filtering
+#### Task Information Filtering
 
-States can access and manipulate data via data filters. Since all data during workflow execution is described
+Tasks can access and manipulate data via data filters. Since all data during workflow execution is described
 in [JSON](https://tools.ietf.org/html/rfc7159) format, data filters use [JSONPath](https://github.com/json-path/JsonPath) queries
 to do data manipulation/selection.
 
 There are several types of data filters defined:
 
-- [State Data Filter](#state-data-filter)
+- [Task Data Filter](#task-data-filter)
 - [Action Data Filter](#action-data-filter)
 - [Event Data Filter](#event-data-filter)
 - [Error Data Filter](#error-data-filter)
 
-All states can define state and error data filters. States which can consume events ([Event states](#Event-State), [Callback states](#Callback-State)) can define event data filters, and states
-that can perform actions ([Event states](#Event-State), [Operation states](#Operation-State)) can define action data filters for each of the
+All tasks can define task and error data filters. Tasks which can consume events ([Event tasks](#Event-Task), [Callback tasks](#Callback-Task)) can define event data filters, and tasks
+that can perform actions ([Event tasks](#Event-Task), [Operation tasks](#Operation-Task)) can define action data filters for each of the
 actions they perform.
 
-#### <a name="state-data-filter"></a> State information filtering - State Data Filter
+#### <a name="task-data-filter"></a> Task information filtering - Task Data Filter
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| dataInputPath | JSONPath definition that selects parts of the states data input | string | no |
-| dataOutputPath | JSONPath definition that selects parts of the states data output | string | no |
+| dataInputPath | JSONPath definition that selects parts of the tasks data input | string | no |
+| dataOutputPath | JSONPath definition that selects parts of the tasks data output | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -3157,11 +3159,11 @@ actions they perform.
   "properties": {
     "dataInputPath": {
       "type": "string",
-      "description": "JSONPath definition that selects parts of the states data input"
+      "description": "JSONPath definition that selects parts of the tasks data input"
     },
     "dataOutputPath": {
       "type": "string",
-      "description": "JSONPath definition that selects parts of the states data output"
+      "description": "JSONPath definition that selects parts of the tasks data output"
     }
   },
   "required": []
@@ -3170,17 +3172,17 @@ actions they perform.
 
 </details>
 
-State data filters defines the states data input and data output filtering.
+Task data filters defines the tasks data input and data output filtering.
 
-The state data filters inputPath is applied when the workflow transitions to the current state and it receives its data input.
-It filters this data input selecting parts of it (only the selected data is considered part of the states data during its execution).
-If inputPath is not defined, or it does not select any parts of the states data input, the states data input is not filtered.
+The task data filters inputPath is applied when the workflow transitions to the current task and it receives its data input.
+It filters this data input selecting parts of it (only the selected data is considered part of the tasks data during its execution).
+If inputPath is not defined, or it does not select any parts of the tasks data input, the tasks data input is not filtered.
 
-The state data filter outputPath is applied right before the state transitions to the next state defined. It filters the states data
-output to be passed as data input to the transitioning state. If outputPath is not defined, or it does not
-select any parts of the states data output, the states data output is not filtered.
+The task data filter outputPath is applied right before the task transitions to the next task defined. It filters the task data
+output to be passed as data input to the transitioning task. If outputPath is not defined, or it does not
+select any parts of the task data output, the tasks data output is not filtered.
 
-Let's take a look at some examples of state filters. For our example the data input to our state is as follows:
+Let's take a look at some examples of task filters. For our example the data input to our task is as follows:
 
 ```json
 {
@@ -3198,75 +3200,75 @@ Let's take a look at some examples of state filters. For our example the data in
 }
 ```
 
-For the first example our state only cares about fruits data, and we want to disregard the vegetables. To do this
-we can define a state filter:
+For the first example our task only cares about fruits data, and we want to disregard the vegetables. To do this
+we can define a task filter:
 
 ```json
 {
-  "name": "FruitsOnlyState",
+  "name": "FruitsOnlyTask",
   "type": "inject",
-  "stateDataFilter": {
+  "taskDataFilter": {
     "dataInputPath": "$.fruits"
   },
   "transition": {
-     "nextState": "someNextState"
+     "nextTask": "someNextTask"
   }
 }
 ```
 
-The state data output then would include only the fruits data.
+The task data output then would include only the fruits data.
 
 <p align="center">
-<img src="media/spec/state-data-filter-example1.png" height="400px" alt="State Data Filter Example"/>
+<img src="media/spec/task-data-filter-example1.png" height="400px" alt="Task Data Filter Example"/>
 </p>
 
 For our second example lets say that we are interested in only vegetable that are "veggie like".
-Here we have two ways of filtering our data, depending on if actions within our state need access to all vegetables, or
+Here we have two ways of filtering our data, depending on if actions within our task need access to all vegetables, or
 only the ones that are "veggie like".
 The first way would be to use both dataInputPath, and dataOutputPath:
 
 ```json
 {
-  "name": "VegetablesOnlyState",
+  "name": "VegetablesOnlyTask",
   "type": "inject",
-  "stateDataFilter": {
+  "taskDataFilter": {
     "dataInputPath": "$.vegetables",
     "dataOutputPath": "$.[?(@.veggieLike)]"
   },
   "transition": {
-     "nextState": "someNextState"
+     "nextTask": "someNextTask"
   }
 }
 ```
 
-The states data input filter selects all the vegetables from the main data input. Once all actions have performed, before the state transition
-or workflow execution completion (if this is an end state), the dataOutputPath of the state filter selects only the vegetables which are "veggie like".
+The tasks data input filter selects all the vegetables from the main data input. Once all actions have performed, before the task transition
+or workflow execution completion (if this is an end task), the dataOutputPath of the task filter selects only the vegetables which are "veggie like".
 
 <p align="center">
-<img src="media/spec/state-data-filter-example2.png" height="400px" alt="State Data Filter Example"/>
+<img src="media/spec/task-data-filter-example2.png" height="400px" alt="Task Data Filter Example"/>
 </p>
 
 The second way would be to directly filter only the "veggie like" vegetables with just the data input path:
 
 ```json
 {
-  "name": "VegetablesOnlyState",
+  "name": "VegetablesOnlyTask",
   "type": "inject",
-  "stateDataFilter": {
+  "taskDataFilter": {
     "dataInputPath": "$.vegetables.[?(@.veggieLike)]"
   },
   "transition": {
-     "nextState": "someNextState"
+     "nextTask": "someNextTask"
   }
 }
 ```
 
-#### <a name="action-data-filter"></a> State information filtering - Action Data Filter
+#### <a name="action-data-filter"></a> Task information filtering - Action Data Filter
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| dataInputPath | JSONPath definition that selects parts of the states data input to be the action data | string | no |
-| dataResultsPath | JSONPath definition that selects parts of the actions data result, to be merged with the states data | string | no |
+| dataInputPath | JSONPath definition that selects parts of the tasks data input to be the action data | string | no |
+| dataResultsPath | JSONPath definition that selects parts of the actions data result, to be merged with the tasks data | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -3276,11 +3278,11 @@ The second way would be to directly filter only the "veggie like" vegetables wit
   "properties": {
     "dataInputPath": {
       "type": "string",
-      "description": "JSONPath definition that selects parts of the states data input to be the action data"
+      "description": "JSONPath definition that selects parts of the tasks data input to be the action data"
     },
     "dataResultsPath": {
       "type": "string",
-      "description": "JSONPath definition that selects parts of the actions data result, to be merged with the states data"
+      "description": "JSONPath definition that selects parts of the actions data result, to be merged with the tasks data"
     }
   },
   "required": []
@@ -3289,12 +3291,12 @@ The second way would be to directly filter only the "veggie like" vegetables wit
 
 </details>
 
-[Actions](#Action-Definition) have access to the state data. They can filter this data using an action data filter (dataInputPath) before executing any functions.
+[Actions](#Action-Definition) have access to the task data. They can filter this data using an action data filter (dataInputPath) before executing any functions.
 This is useful if you want to restrict the data to be passed as parameters to serverless functions during action executions.
 
 Actions can define [functions](#Function-Definition). The results data of these functions is considered the output of the action which is then after completion
-merged back into the state data. You can filter the results of actions with the dataResultsPath parameter, to only select
-parts of the action results that need to be merged back into the state data.
+merged back into the task data. You can filter the results of actions with the dataResultsPath parameter, to only select
+parts of the action results that need to be merged back into the task data.
 
 To give an example, let's say we have an action which returns a list of breads and we want to add this list our fruits and vegetables data:
 
@@ -3302,11 +3304,11 @@ To give an example, let's say we have an action which returns a list of breads a
 <img src="media/spec/action-data-filter-example1.png" height="450px" alt="Action Data Filter Example"/>
 </p>
 
-#### <a name="event-data-filter"></a> State information filtering - Event Data Filter
+#### <a name="event-data-filter"></a> Task information filtering - Event Data Filter
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| dataOutputPath | JSONPath definition that selects parts of the event data, to be merged with the states data | string | no |
+| dataOutputPath | JSONPath definition that selects parts of the event data, to be merged with the tasks data | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -3316,7 +3318,7 @@ To give an example, let's say we have an action which returns a list of breads a
   "properties": {
     "dataOutputPath": {
       "type": "string",
-      "description": "JSONPath definition that selects parts of the event data, to be merged with the states data"
+      "description": "JSONPath definition that selects parts of the event data, to be merged with the tasks data"
     }
   },
   "required": []
@@ -3325,10 +3327,10 @@ To give an example, let's say we have an action which returns a list of breads a
 
 </details>
 
-CloudEvents can be consumed by [Event states](#Event-State) and trigger one or more [actions](#Action-Definition) to be performed. CloudEvents
-can include data which needs to be merged with the state data before associated actions are executed.
+CloudEvents can be consumed by [Event tasks](#Event-Task) and trigger one or more [actions](#Action-Definition) to be performed. CloudEvents
+can include data which needs to be merged with the task data before associated actions are executed.
 You can filter the event data with the dataOutputPath parameter, selecting only the portion of the event data
-that you need to be merged with the state data.
+that you need to be merged with the task data.
 
 Here is an example using an event filter:
 
@@ -3336,14 +3338,14 @@ Here is an example using an event filter:
 <img src="media/spec/event-data-filter-example1.png" height="400px" alt="Event Data Filter Example"/>
 </p>
 
-Similarly the consumed callback CloudEvent in [Callback states](#Callback-State) can be filtered using
+Similarly the consumed callback CloudEvent in [Callback tasks](#Callback-Task) can be filtered using
 an event filter.
 
-#### <a name="error-data-filter"></a> State information filtering - Error Data Filter
+#### <a name="error-data-filter"></a> Task information filtering - Error Data Filter
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
-| dataOutputPath | JSONPath definition that selects parts of the error data, to be merged with the states data | string | no |
+| dataOutputPath | JSONPath definition that selects parts of the error data, to be merged with the tasks data | string | no |
 
 <details><summary><strong>Click to view JSON Schema</strong></summary>
 
@@ -3353,7 +3355,7 @@ an event filter.
   "properties": {
     "dataOutputPath": {
       "type": "string",
-      "description": "JSONPath definition that selects parts of the error data, to be merged with the states data"
+      "description": "JSONPath definition that selects parts of the error data, to be merged with the tasks data"
     }
   },
   "required": []
@@ -3362,9 +3364,9 @@ an event filter.
 
 </details>
 
-States can define [error handling](#Workflow-Error-Handling) with the onError property. The runtime error contains data
-which is merged with the states data. You can use the error data filter to select portion of the error data to be merged
-with the states data.
+Tasks can define [error handling](#Workflow-Error-Handling) with the onError property. The runtime error contains data
+which is merged with the tasks data. You can use the error data filter to select portion of the error data to be merged
+with the tasks data.
 
 Here is an example using an error filter:
 
@@ -3372,10 +3374,10 @@ Here is an example using an error filter:
 <img src="media/spec/error-data-filter-example1.png" height="400px" alt="Error Data Filter Example"/>
 </p>
 
-#### <a name="error-data-filter"></a> State information filtering - Using multiple filters
+#### <a name="error-data-filter"></a> Task information filtering - Using multiple filters
 
-As [Event states](#Event-State) can take advantage of all defined data filters, it is probably the best way to
-show how we can combine them all to filter state data.
+As [Event tasks](#Event-Task) can take advantage of all defined data filters, it is probably the best way to
+show how we can combine them all to filter task data.
 
 Let's say we have a workflow which consumes events defining a customer arrival (to your store for example),
 and then lets us know how to greet this customer in different languages. We could model this workflow as follows:
@@ -3392,7 +3394,7 @@ and then lets us know how to greet this customer in different languages. We coul
         "name": "greetingFunction",
         "resource": "functionResourse"
     }],
-    "states":[
+    "tasks":[
         {
             "start": {
                "kind": "default"
@@ -3420,7 +3422,7 @@ and then lets us know how to greet this customer in different languages. We coul
                     }
                 ]
             }],
-            "stateDataFilter": {
+            "taskDataFilter": {
                 "dataInputPath": "$.hello",
                 "dataOutputPath": "$.finalCustomerGreeting"
             },
@@ -3432,7 +3434,7 @@ and then lets us know how to greet this customer in different languages. We coul
 }
 ```
 
-The example workflow contains an event state which consumes CloudEvents of type "customer-arrival-type", and then
+The example workflow contains an event task which consumes CloudEvents of type "customer-arrival-type", and then
 calls the "greetingFunction" serverless function passing in the greeting in Spanish and the name of the customer to greet.
 
 The workflow data input when starting workflow execution is assumed to include greetings in different languages:
@@ -3454,7 +3456,7 @@ The workflow data input when starting workflow execution is assumed to include g
 }
 ```
 
-We also assume for this example that the CloudEvent that our event state is set to consume (has the "customer-arrival-type" type) include the data:
+We also assume for this example that the CloudEvent that our event task is set to consume (has the "customer-arrival-type" type) include the data:
 
 ```json
 {
@@ -3475,11 +3477,11 @@ workflow execution at which data filters are invoked and correspond to the numbe
 <img src="media/spec/using-multiple-filters-example.png" height="400px" alt="Using Multple Filters Example"/>
 </p>
 
-**(1) Workflow execution starts**: Workflow data is passed to our "WaitForCustomerToArrive" event state as data input.
-Workflow transitions to its starting state, namely the "WaitForCustomerToArrive" event state.
+**(1) Workflow execution starts**: Workflow data is passed to our "WaitForCustomerToArrive" event task as data input.
+Workflow transitions to its starting task, namely the "WaitForCustomerToArrive" event task.
 
-The event state **stateDataFilter** is invoked to filter this data input. Its "dataInputPath" is evaluated and filters
- only the "hello" greetings in different languages. At this point our event state data contains:
+The event task **taskDataFilter** is invoked to filter this data input. Its "dataInputPath" is evaluated and filters
+ only the "hello" greetings in different languages. At this point our event task data contains:
 
 ```json
 {
@@ -3493,9 +3495,9 @@ The event state **stateDataFilter** is invoked to filter this data input. Its "d
 ```
 
 **(2) CloudEvent of type "customer-arrival-type" is consumed**: First the eventDataFilter is triggered. Its "dataInputPath"
-expression selects the "customer" object from the events data and places it into the state data.
+expression selects the "customer" object from the events data and places it into the task data.
 
-At this point our event state data contains:
+At this point our event task data contains:
 
 ```json
 {
@@ -3513,10 +3515,10 @@ At this point our event state data contains:
 }
 ```
 
-**(3) Event state performs its actions**:
+**(3) Event task performs its actions**:
 Before the first action is executed, its actionDataFilter is invoked. Its "dataInputPath" expression selects
-the entire state data as the data available to functions that should be executed. Its "dataResultsPath" expression
-specifies that results of all functions executed in this action should be placed back to the state data as part
+the entire task data as the data available to functions that should be executed. Its "dataResultsPath" expression
+specifies that results of all functions executed in this action should be placed back to the task data as part
 of a new "finalCustomerGreeting" object.
 
 The action then calls the "greetingFunction" serverless function passing in as parameters the spanish greeting and the name of the customer that arrived.
@@ -3529,8 +3531,8 @@ We assume that for this example "greetingFunction" returns:
 
 Which becomes the result of the action.
 
-**(4) Event State Completes Workflow Execution**: The results of action executions as defined in the actionDataFilter are placed into the
-states data under the "finalCustomerGreeting" object. So at this point our event state data contains:
+**(4) Event Task Completes Workflow Execution**: The results of action executions as defined in the actionDataFilter are placed into the
+tasks data under the "finalCustomerGreeting" object. So at this point our event task data contains:
 
 ```json
 {
@@ -3549,25 +3551,25 @@ states data under the "finalCustomerGreeting" object. So at this point our event
 }
 ```
 
-Since our event state has performed all actions it is ready to either transition to the next state or end workflow execution if it is an end state.
-Before this happens though, the stateDataFilter is again invoked to filter this states data, specifically the "dataOutputPath" expression
-selects only the "finalCustomerGreeting" object to make it the data output of the state.
+Since our event task has performed all actions it is ready to either transition to the next task or end workflow execution if it is an end task.
+Before this happens though, the taskDataFilter is again invoked to filter this tasks data, specifically the "dataOutputPath" expression
+selects only the "finalCustomerGreeting" object to make it the data output of the task.
 
-Because our event state is also an end state, its data output becomes the final [workflow data output](#Workflow-data-output) namely:
+Because our event task is also an end task, its data output becomes the final [workflow data output](#Workflow-data-output) namely:
 
 ```text
 "Hola John Michaels!"
 ```
 
 Note that in case of multiple actions with each containing an actionDataFilter, you must be careful for their results
-not to overwrite each other after actions complete and their results are added to the state data.
-Also note that in case of parallel execution of actions, the results of only those that complete before the state
-transitions to the next one or ends workflow execution (end state) can be considered to be added to the state data.
+not to overwrite each other after actions complete and their results are added to the task data.
+Also note that in case of parallel execution of actions, the results of only those that complete before the task
+transitions to the next one or ends workflow execution (end task) can be considered to be added to the task data.
 
 #### Workflow data output
 
-Once a workflow instance reaches an end state (where the "end" parameter is defined) and the workflow finishes its execution
-the data output of that result state becomes the workflow data output. This output can be logged or indexed depending on the
+Once a workflow instance reaches an end task (where the "end" parameter is defined) and the workflow finishes its execution
+the data output of that result task becomes the workflow data output. This output can be logged or indexed depending on the
 implementation details.
 
 In order to define the structure of expected workflow data output you can use the workflow
@@ -3577,12 +3579,12 @@ decide to strictly enforce it.
 
 ### Workflow Error Handling
 
-Any state can encounter runtime errors. Errors can arise from state failures such as exceptions thrown during function
+Any task can encounter runtime errors. Errors can arise from task failures such as exceptions thrown during function
 execution, network errors, or errors in the workflow definition (incorrect paths for example).
-If a runtime error is not explicitly handled within the state definition, the default course of action should be to
+If a runtime error is not explicitly handled within the task definition, the default course of action should be to
 halt workflow execution.
 
-In the case of runtime errors, implementations should expose these errors to the workflow state via the "error" JSON object.
+In the case of runtime errors, implementations should expose these errors to the workflow task via the "error" JSON object.
 This object should include properties "name", "message", and "trace".
 Here is an example of such error object:
 
@@ -3596,11 +3598,11 @@ Here is an example of such error object:
 }
 ```
 
-Each state can explicitly "catch" runtime errors via its "onError" property. This property includes one or more
-definitions matching the error object properties and defining a transition to a workflow state representing the
+Each task can explicitly "catch" runtime errors via its "onError" property. This property includes one or more
+definitions matching the error object properties and defining a transition to a workflow task representing the
 workflow execution flow in case of that particular error.
 
-Let's take a look an an example "onError" definition inside a state:
+Let's take a look an an example "onError" definition inside a task:
 
 <table>
 <tr>
@@ -3619,7 +3621,7 @@ Let's take a look an an example "onError" definition inside a state:
       "body": "name eq 'FunctionExecutionError'"
     },
     "transition": {
-      "nextState": "afterFunctionErrorState"
+      "nextTask": "afterFunctionErrorTask"
     }
   },
   {
@@ -3628,7 +3630,7 @@ Let's take a look an an example "onError" definition inside a state:
       "body": "name ne 'FunctionExecutionError'"
     },
     "transition": {
-      "nextState": "afterAnyOtherErrorState"
+      "nextTask": "afterAnyOtherErrorTask"
     }
   }
 ]
@@ -3644,12 +3646,12 @@ onError:
     language: spel
     body: name eq 'FunctionExecutionError'
   transition:
-    nextState: afterFunctionErrorState
+    nextTask: afterFunctionErrorTask
 - expression:
     language: spel
     body: name ne 'FunctionExecutionError'
   transition:
-    nextState: afterAnyOtherErrorState
+    nextTask: afterAnyOtherErrorTask
 ```
 
 </td>
@@ -3657,15 +3659,15 @@ onError:
 </table>
 
 Here we define onError with two elements. The first one handles the error which name property is "FunctionExecutionError" and
-declares to transition to the "afterFunctionErrorState" state in case this error is encountered.
+declares to transition to the "afterFunctionErrorTask" task in case this error is encountered.
 The second element handles all errors except "FunctionExecutionError".
 
 #### <a name="workflow-retrying"></a> Workflow Error Handling - Retrying
 
-[Operation](#Operation-State), [Event](#Event-State), [Parallel](#Parallel-State), [ForEach](#ForEach-State), and [Callback](#Callback-State)
- states can define a retry policy in case of errors. A retry policy defines that execution
-of that state should be retried if an error occurs during its execution. The retry definition expression
-is evaluated against states data output. This assures that both execution errors as well as error results of actions can be evaluated against.
+[Operation](#Operation-Task), [Event](#Event-Task), [Parallel](#Parallel-Task), [ForEach](#ForEach-Task), and [Callback](#Callback-Task)
+ tasks can define a retry policy in case of errors. A retry policy defines that execution
+of that task should be retried if an error occurs during its execution. The retry definition expression
+is evaluated against tasks data output. This assures that both execution errors as well as error results of actions can be evaluated against.
 
 Let's take a look at a retry definition:
 
@@ -3724,7 +3726,7 @@ the maximum number of attempts to be 3. The interval value defines the amount of
 retry attempt, in this case two minutes. The second retry definition defines that for any errors other than "FunctionExecutionError",
 no retries should be performed (maxAttempts is set to zero).
 
-You can combine retry and onError definitions to define powerful error handling inside your state. For example:
+You can combine retry and onError definitions to define powerful error handling inside your task. For example:
 
 <table>
 <tr>
@@ -3761,7 +3763,7 @@ You can combine retry and onError definitions to define powerful error handling 
       "body": "name eq 'FunctionExecutionError'"
     },
     "transition": {
-      "nextState": "afterFunctionErrorState"
+      "nextTask": "afterFunctionErrorTask"
     }
   },
   {
@@ -3770,7 +3772,7 @@ You can combine retry and onError definitions to define powerful error handling 
       "body": "name ne 'FunctionExecutionError'"
     },
     "transition": {
-      "nextState": "afterAnyOtherErrorState"
+      "nextTask": "afterAnyOtherErrorTask"
     }
   }
 ]
@@ -3797,12 +3799,12 @@ onError:
     language: spel
     body: name eq 'FunctionExecutionError'
   transition:
-    nextState: afterFunctionErrorState
+    nextTask: afterFunctionErrorTask
 - expression:
     language: spel
     body: name ne 'FunctionExecutionError'
   transition:
-    nextState: afterAnyOtherErrorState
+    nextTask: afterAnyOtherErrorTask
 ```
 
 </td>
@@ -3811,9 +3813,9 @@ onError:
 
 In this example in case the "FunctionExecutionError" occurs, first it will be retried 3 times with 2 minute intervals.
 If the error occurs after the maxAttempts is reached, the onError definition kicks in transitioning the workflow to
-the "afterFunctionErrorState" state. In case of any other errors, they will be retried 2 times with 1 minute intervals.
-If those errors occur after two max 2 retries, the onError definition states that workflow should transition to the
-"afterAnyOtherErrorState" state.
+the "afterFunctionErrorTask" task. In case of any other errors, they will be retried 2 times with 1 minute intervals.
+If those errors occur after two max 2 retries, the onError definition tasks that workflow should transition to the
+"afterAnyOtherErrorTask" task.
 
 ### Workflow Metadata
 
@@ -3830,8 +3832,8 @@ Metadata can be added to:
 - [Core Workflow definition](#Workflow-Definition)
 - [Function definitions](#Function-Definition)
 - [Event definitions](#Event-Definition)
-- [State definitions](#State-Definition)
-- [Switch state conditions](#switch-state-conditions)
+- [Task definitions](#Task-Definition)
+- [Switch task conditions](#switch-task-conditions)
 
 Here is an example of metadata attached to the core workflow definition:
 
@@ -3850,7 +3852,7 @@ Here is an example of metadata attached to the core workflow definition:
     "team": "Team Name",
     ...
   },
-  "states": [
+  "tasks": [
     ...
   ]
 }

@@ -62,46 +62,46 @@
         "$ref": "#/definitions/function"
       }
     },
-    "states": {
+    "tasks": {
       "type": "array",
-      "description": "State definitions",
+      "description": "Task definitions",
       "items": {
         "anyOf": [
           {
-            "title": "Delay State",
-            "$ref": "#/definitions/delaystate"
+            "title": "Delay Task",
+            "$ref": "#/definitions/delaytask"
           },
           {
-            "title": "Event State",
-            "$ref": "#/definitions/eventstate"
+            "title": "Event Task",
+            "$ref": "#/definitions/eventtask"
           },
           {
-            "title": "Operation State",
-            "$ref": "#/definitions/operationstate"
+            "title": "Operation Task",
+            "$ref": "#/definitions/operationtask"
           },
           {
-            "title": "Parallel State",
-            "$ref": "#/definitions/parallelstate"
+            "title": "Parallel Task",
+            "$ref": "#/definitions/paralleltask"
           },
           {
-            "title": "Switch State",
-            "$ref": "#/definitions/switchstate"
+            "title": "Switch Task",
+            "$ref": "#/definitions/switchtask"
           },
           {
-            "title": "SubFlow State",
-            "$ref": "#/definitions/subflowstate"
+            "title": "SubFlow Task",
+            "$ref": "#/definitions/subflowtask"
           },
           {
-            "title": "Inject State",
-            "$ref": "#/definitions/injectstate"
+            "title": "Inject Task",
+            "$ref": "#/definitions/injecttask"
           },
           {
-            "title": "ForEach State",
-            "$ref": "#/definitions/foreachstate"
+            "title": "ForEach Task",
+            "$ref": "#/definitions/foreachtask"
           },
           {
-            "title": "Callback State",
-            "$ref": "#/definitions/callbackstate"
+            "title": "Callback Task",
+            "$ref": "#/definitions/callbacktask"
           }
         ]
       }
@@ -118,7 +118,7 @@
     "id",
     "name",
     "version",
-    "states"
+    "tasks"
   ],
   "definitions": {
     "metadata": {
@@ -129,28 +129,28 @@
       "type": "object",
       "properties": {
         "expression": {
-          "description": "Expression evaluated against state's data output. Must evaluate to true for the transition to be valid",
+          "description": "Expression evaluated against task's data output. Must evaluate to true for the transition to be valid",
           "$ref": "#/definitions/expression"
         },
         "produceEvent": {
           "description": "Reference one of the defined events by name and set its data",
           "$ref": "#/definitions/produceevent"
         },
-        "nextState": {
+        "nextTask": {
           "type": "string",
-          "description": "Name of state to transition to",
+          "description": "Name of task to transition to",
           "minLength": 1
         }
       },
       "required": [
-        "nextState"
+        "nextTask"
       ]
     },
     "error": {
       "type": "object",
       "properties": {
         "expression": {
-          "description": "Expression that matches against the error in the state data input",
+          "description": "Expression that matches against the error in the task data input",
           "$ref": "#/definitions/expression"
         },
         "errorDataFilter": {
@@ -258,7 +258,7 @@
       "description": "Retry Definition",
       "properties": {
         "expression": {
-          "description": "Expression that matches against state data output",
+          "description": "Expression that matches against task data output",
           "$ref": "#/definitions/expression"
         },
         "interval": {
@@ -330,42 +330,42 @@
           "type": "string",
           "description": "Branch name"
         },
-        "states": {
+        "tasks": {
           "type": "array",
-          "description": "State Definitions",
+          "description": "Task Definitions",
           "items": {
             "anyOf": [
               {
-                "title": "Delay State",
-                "$ref": "#/definitions/delaystate"
+                "title": "Delay Task",
+                "$ref": "#/definitions/delaytask"
               },
               {
-                "title": "Event State",
-                "$ref": "#/definitions/eventstate"
+                "title": "Event Task",
+                "$ref": "#/definitions/eventtask"
               },
               {
-                "title": "Operation State",
-                "$ref": "#/definitions/operationstate"
+                "title": "Operation Task",
+                "$ref": "#/definitions/operationtask"
               },
               {
-                "title": "Switch State",
-                "$ref": "#/definitions/switchstate"
+                "title": "Switch Task",
+                "$ref": "#/definitions/switchtask"
               },
               {
-                "title": "SubFlow State",
-                "$ref": "#/definitions/subflowstate"
+                "title": "SubFlow Task",
+                "$ref": "#/definitions/subflowtask"
               },
               {
-                "title": "Inject State",
-                "$ref": "#/definitions/injectstate"
+                "title": "Inject Task",
+                "$ref": "#/definitions/injecttask"
               },
               {
-                "title": "ForEach State",
-                "$ref": "#/definitions/foreachstate"
+                "title": "ForEach Task",
+                "$ref": "#/definitions/foreachtask"
               },
               {
-                "title": "Callback State",
-                "$ref": "#/definitions/callbackstate"
+                "title": "Callback Task",
+                "$ref": "#/definitions/callbacktask"
               }
             ]
           }
@@ -373,39 +373,39 @@
       },
       "required": [
         "name",
-        "states"
+        "tasks"
       ]
     },
-    "delaystate": {
+    "delaytask": {
       "type": "object",
       "description": "Causes the workflow execution to delay for a specified duration",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique State id",
+          "description": "Unique Task id",
           "minLength": 1
         },
         "name": {
           "type": "string",
-          "description": "State name"
+          "description": "Task name"
         },
         "type": {
           "type": "string",
           "enum": [
             "delay"
           ],
-          "description": "State type"
+          "description": "Task type"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "timeDelay": {
           "type": "string",
@@ -426,12 +426,12 @@
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
@@ -474,25 +474,25 @@
         }
       ]
     },
-    "eventstate": {
+    "eventtask": {
       "type": "object",
-      "description": "This state is used to wait for events from event sources, then consumes them and invoke one or more actions to run in sequence or parallel",
+      "description": "This task is used to wait for events from event sources, then consumes them and invoke one or more actions to run in sequence or parallel",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique State id",
+          "description": "Unique Task id",
           "minLength": 1
         },
         "name": {
           "type": "string",
-          "description": "State name"
+          "description": "Task name"
         },
         "type": {
           "type": "string",
           "enum": [
             "event"
           ],
-          "description": "State type"
+          "description": "Task type"
         },
         "exclusive": {
           "type": "boolean",
@@ -511,8 +511,8 @@
           "type": "string",
           "description": "Time period to wait for incoming events (ISO 8601 format)"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "retry": {
           "type": "array",
@@ -524,7 +524,7 @@
         },
         "onError": {
           "type": "array",
-          "description": "States error handling definitions",
+          "description": "Tasks error handling definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/error"
@@ -533,12 +533,12 @@
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "transition": {
           "description": "Next transition of the workflow after all the actions have been performed",
@@ -546,11 +546,11 @@
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
@@ -593,36 +593,36 @@
         }
       ]
     },
-    "operationstate": {
+    "operationtask": {
       "type": "object",
       "description": "Defines actions be performed. Does not wait for incoming events",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique State id",
+          "description": "Unique Task id",
           "minLength": 1
         },
         "name": {
           "type": "string",
-          "description": "State name"
+          "description": "Task name"
         },
         "type": {
           "type": "string",
           "enum": [
             "operation"
           ],
-          "description": "State type"
+          "description": "Task type"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "actionMode": {
           "type": "string",
@@ -651,7 +651,7 @@
         },
         "onError": {
           "type": "array",
-          "description": "States error handling definitions",
+          "description": "Tasks error handling definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/error"
@@ -664,12 +664,12 @@
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
@@ -716,36 +716,36 @@
         }
       ]
     },
-    "parallelstate": {
+    "paralleltask": {
       "type": "object",
-      "description": "Consists of a number of states that are executed in parallel",
+      "description": "Consists of a number of tasks that are executed in parallel",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique State id",
+          "description": "Unique Task id",
           "minLength": 1
         },
         "name": {
           "type": "string",
-          "description": "State name"
+          "description": "Task name"
         },
         "type": {
           "type": "string",
           "enum": [
             "parallel"
           ],
-          "description": "State type"
+          "description": "Task type"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "branches": {
           "type": "array",
@@ -777,7 +777,7 @@
         },
         "onError": {
           "type": "array",
-          "description": "States error handling definitions",
+          "description": "Tasks error handling definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/error"
@@ -790,12 +790,12 @@
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
@@ -839,7 +839,7 @@
         }
       ]
     },
-    "switchstate": {
+    "switchtask": {
       "oneOf": [
         {
           "$ref": "#/definitions/databasedswitch"
@@ -851,30 +851,30 @@
     },
     "eventbasedswitch": {
       "type": "object",
-      "description": "Permits transitions to other states based on events",
+      "description": "Permits transitions to other tasks based on events",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique State id",
+          "description": "Unique Task id",
           "minLength": 1
         },
         "name": {
           "type": "string",
-          "description": "State name"
+          "description": "Task name"
         },
         "type": {
           "type": "string",
           "enum": [
             "switch"
           ],
-          "description": "State type"
+          "description": "Task type"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "eventConditions": {
           "type": "array",
@@ -886,7 +886,7 @@
         },
         "onError": {
           "type": "array",
-          "description": "States error handling definitions",
+          "description": "Tasks error handling definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/error"
@@ -903,12 +903,12 @@
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
@@ -936,34 +936,34 @@
     },
     "databasedswitch": {
       "type": "object",
-      "description": "Permits transitions to other states based on data conditions",
+      "description": "Permits transitions to other tasks based on data conditions",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique State id",
+          "description": "Unique Task id",
           "minLength": 1
         },
         "name": {
           "type": "string",
-          "description": "State name"
+          "description": "Task name"
         },
         "type": {
           "type": "string",
           "enum": [
             "switch"
           ],
-          "description": "State type"
+          "description": "Task type"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "dataConditions": {
           "type": "array",
-          "description": "Defines conditions evaluated against state data",
+          "description": "Defines conditions evaluated against task data",
           "items": {
             "type": "object",
             "$ref": "#/definitions/datacondition"
@@ -971,7 +971,7 @@
         },
         "onError": {
           "type": "array",
-          "description": "States error handling definitions",
+          "description": "Tasks error handling definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/error"
@@ -984,12 +984,12 @@
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
@@ -1017,7 +1017,7 @@
     },
     "eventcondition": {
       "type": "object",
-      "description": "Switch state data event condition",
+      "description": "Switch task data event condition",
       "properties": {
         "eventRef": {
           "type" : "string",
@@ -1039,11 +1039,11 @@
     },
     "datacondition": {
       "type": "object",
-      "description": "Switch state data based condition",
+      "description": "Switch task data based condition",
       "properties": {
         "path": {
           "type": "string",
-          "description": "JSONPath expression that selects elements of state data"
+          "description": "JSONPath expression that selects elements of task data"
         },
         "value": {
           "type": "string",
@@ -1064,33 +1064,33 @@
       },
       "required": ["path", "value", "operator", "transition"]
     },
-    "subflowstate": {
+    "subflowtask": {
       "type": "object",
       "description": "Defines a sub-workflow to be executed",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique state id",
+          "description": "Unique task id",
           "minLength": 1
         },
         "name": {
           "type": "string",
-          "description": "State name"
+          "description": "Task name"
         },
         "type": {
           "type": "string",
           "enum": [
             "subflow"
           ],
-          "description": "State type"
+          "description": "Task type"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         },
         "waitForCompletion": {
           "type": "boolean",
@@ -1101,12 +1101,12 @@
           "type": "string",
           "description": "Sub-workflow unique id"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "onError": {
           "type": "array",
-          "description": "States error handling definitions",
+          "description": "Tasks error handling definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/error"
@@ -1119,12 +1119,12 @@
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
@@ -1167,40 +1167,40 @@
         }
       ]
     },
-    "injectstate": {
+    "injecttask": {
       "type": "object",
-      "description": "Inject static data into state data. Does not perform any actions",
+      "description": "Inject static data into task data. Does not perform any actions",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique state id",
+          "description": "Unique task id",
           "minLength": 1
         },
         "name": {
           "type": "string",
-          "description": "State name"
+          "description": "Task name"
         },
         "type": {
           "type": "string",
           "enum": [
             "inject"
           ],
-          "description": "State type"
+          "description": "Task type"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         },
         "data": {
           "type": "object",
-          "description": "JSON object which can be set as states data input and can be manipulated via filters"
+          "description": "JSON object which can be set as tasks data input and can be manipulated via filters"
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "transition": {
           "description": "Next transition of the workflow after subflow has completed",
@@ -1209,12 +1209,12 @@
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
@@ -1253,45 +1253,45 @@
         }
       ]
     },
-    "foreachstate": {
+    "foreachtask": {
       "type": "object",
-      "description": "Execute a set of defined states for each element of the data input array",
+      "description": "Execute a set of defined tasks for each element of the data input array",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique State id",
+          "description": "Unique Task id",
           "minLength": 1
         },
         "name": {
           "type": "string",
-          "description": "State name"
+          "description": "Task name"
         },
         "type": {
           "type": "string",
           "enum": [
             "foreach"
           ],
-          "description": "State type"
+          "description": "Task type"
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         },
         "inputCollection": {
           "type": "string",
-          "description": "JSONPath expression selecting a JSON array element of the states data input"
+          "description": "JSONPath expression selecting a JSON array element of the tasks data input"
         },
         "outputCollection": {
           "type": "string",
-          "description": "JSONPath expression specifying where in the states data output to place the final data output of each iteration of the executed states"
+          "description": "JSONPath expression specifying where in the tasks data output to place the final data output of each iteration of the executed tasks"
         },
         "inputParameter": {
           "type": "string",
-          "description": "JSONPath expression specifying a JSON object field of the states data input. For each parallel iteration, this field will get populated with a unique element of the inputCollection array"
+          "description": "JSONPath expression specifying a JSON object field of the tasks data input. For each parallel iteration, this field will get populated with a unique element of the inputCollection array"
         },
         "max": {
           "type": "integer",
@@ -1303,48 +1303,48 @@
           "type": "string",
           "description": "Amount of time (ISO 8601 format) to wait between each iteration "
         },
-        "states": {
+        "tasks": {
           "type": "array",
-          "description": "States to be executed for each of the elements of inputCollection",
+          "description": "Tasks to be executed for each of the elements of inputCollection",
           "items": {
             "anyOf": [
               {
-                "title": "Delay State",
-                "$ref": "#/definitions/delaystate"
+                "title": "Delay Task",
+                "$ref": "#/definitions/delaytask"
               },
               {
-                "title": "Event State",
-                "$ref": "#/definitions/eventstate"
+                "title": "Event Task",
+                "$ref": "#/definitions/eventtask"
               },
               {
-                "title": "Operation State",
-                "$ref": "#/definitions/operationstate"
+                "title": "Operation Task",
+                "$ref": "#/definitions/operationtask"
               },
               {
-                "title": "Switch State",
-                "$ref": "#/definitions/switchstate"
+                "title": "Switch Task",
+                "$ref": "#/definitions/switchtask"
               },
               {
-                "title": "SubFlow State",
-                "$ref": "#/definitions/subflowstate"
+                "title": "SubFlow Task",
+                "$ref": "#/definitions/subflowtask"
               },
               {
-                "title": "Inject State",
-                "$ref": "#/definitions/injectstate"
+                "title": "Inject Task",
+                "$ref": "#/definitions/injecttask"
               },
               {
-                "title": "ForEach State",
-                "$ref": "#/definitions/foreachstate"
+                "title": "ForEach Task",
+                "$ref": "#/definitions/foreachtask"
               },
               {
-                "title": "Callback State",
-                "$ref": "#/definitions/callbackstate"
+                "title": "Callback Task",
+                "$ref": "#/definitions/callbacktask"
               }
             ]
           }
         },
-        "stateDataFilter": {
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "$ref": "#/definitions/taskdatafilter"
         },
         "retry": {
           "type": "array",
@@ -1356,25 +1356,25 @@
         },
         "onError": {
           "type": "array",
-          "description": "States error handling definitions",
+          "description": "Tasks error handling definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/error"
           }
         },
         "transition": {
-          "description": "Next transition of the workflow after state has completed",
+          "description": "Next transition of the workflow after task has completed",
           "$ref": "#/definitions/transition"
         },
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
@@ -1387,7 +1387,7 @@
             "type",
             "inputCollection",
             "inputParameter",
-            "states",
+            "tasks",
             "end"
           ]
         },
@@ -1397,7 +1397,7 @@
             "type",
             "inputCollection",
             "inputParameter",
-            "states",
+            "tasks",
             "transition"
           ]
         },
@@ -1408,7 +1408,7 @@
             "type",
             "inputCollection",
             "inputParameter",
-            "states",
+            "tasks",
             "end"
           ]
         },
@@ -1419,29 +1419,29 @@
             "type",
             "inputCollection",
             "inputParameter",
-            "states",
+            "tasks",
             "transition"
           ]
         }
       ]
     },
-    "callbackstate": {
+    "callbacktask": {
       "type": "object",
-      "description": "This state performs an action, then waits for the callback event that denotes completion of the action",
+      "description": "This task performs an action, then waits for the callback event that denotes completion of the action",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique state id",
+          "description": "Unique task id",
           "minLength": 1
         },
         "name": {
           "type": "string",
-          "description": "State name"
+          "description": "Task name"
         },
         "type": {
           "type" : "string",
           "enum": ["callback"],
-          "description": "State type"
+          "description": "Task type"
         },
         "action": {
           "description": "Defines the action to be executed",
@@ -1459,13 +1459,13 @@
           "description": "Callback event data filter definition",
           "$ref": "#/definitions/eventdatafilter"
         },
-        "stateDataFilter": {
-          "description": "State data filter definition",
-          "$ref": "#/definitions/statedatafilter"
+        "taskDataFilter": {
+          "description": "Task data filter definition",
+          "$ref": "#/definitions/taskdatafilter"
         },
         "retry": {
           "type": "array",
-          "description": "States retry definitions",
+          "description": "Tasks retry definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/retry"
@@ -1473,7 +1473,7 @@
         },
         "onError": {
           "type": "array",
-          "description": "States error handling definitions",
+          "description": "Tasks error handling definitions",
           "items": {
             "type": "object",
             "$ref": "#/definitions/error"
@@ -1482,12 +1482,12 @@
         "dataInputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data input adheres to"
+          "description": "URI to JSON Schema that task data input adheres to"
         },
         "dataOutputSchema": {
           "type": "string",
           "format": "uri",
-          "description": "URI to JSON Schema that state data output adheres to"
+          "description": "URI to JSON Schema that task data output adheres to"
         },
         "transition": {
           "description": "Next transition of the workflow after all the actions have been performed",
@@ -1495,11 +1495,11 @@
         },
         "start": {
           "$ref": "#/definitions/start",
-          "description": "State start definition"
+          "description": "Task start definition"
         },
         "end": {
           "$ref": "#/definitions/end",
-          "description": "State end definition"
+          "description": "Task end definition"
         },
         "metadata": {
           "$ref": "#/definitions/metadata"
@@ -1569,7 +1569,7 @@
     },
     "start": {
       "type": "object",
-      "description": "State start definition",
+      "description": "Task start definition",
       "properties": {
         "kind": {
           "type": "string",
@@ -1580,7 +1580,7 @@
           "description": "Kind of start definition"
         },
         "schedule": {
-          "description": "If kind is scheduled, define when the starting state is or becomes active",
+          "description": "If kind is scheduled, define when the starting task is or becomes active",
           "$ref": "#/definitions/schedule"
         }
       },
@@ -1605,11 +1605,11 @@
     }, 
     "schedule": {
       "type": "object",
-      "description": "Start state schedule definition",
+      "description": "Start task schedule definition",
       "properties": {
         "interval": {
           "type": "string",
-          "description":  "Time interval describing when the workflow starting state is active"
+          "description":  "Time interval describing when the workflow starting task is active"
         }
       },
       "required": [
@@ -1618,7 +1618,7 @@
     },
     "end": {
       "type": "object",
-      "description": "State end definition",
+      "description": "Task end definition",
       "properties": {
         "kind": {
           "type": "string",
@@ -1663,23 +1663,23 @@
         },
         "data": {
           "type": ["string", "object"],
-          "description": "If String, JSONPath expression which selects parts of the states data output to become the data of the produced event. If object a custom object to become the data of produced event."
+          "description": "If String, JSONPath expression which selects parts of the tasks data output to become the data of the produced event. If object a custom object to become the data of produced event."
         }
       },
       "required": [
         "eventRef"
       ]
     },
-    "statedatafilter": {
+    "taskdatafilter": {
       "type": "object",
       "properties": {
         "dataInputPath": {
           "type": "string",
-          "description": "JSONPath definition that selects parts of the states data input"
+          "description": "JSONPath definition that selects parts of the tasks data input"
         },
         "dataOutputPath": {
           "type": "string",
-          "description": "JSONPath definition that selects parts of the states data output"
+          "description": "JSONPath definition that selects parts of the tasks data output"
         }
       },
       "required": []
@@ -1689,7 +1689,7 @@
       "properties": {
         "dataOutputPath": {
           "type": "string",
-          "description": "JSONPath definition that selects parts of the event data, to be merged with the states data"
+          "description": "JSONPath definition that selects parts of the event data, to be merged with the tasks data"
         }
       },
       "required": []
@@ -1699,11 +1699,11 @@
       "properties": {
         "dataInputPath": {
           "type": "string",
-          "description": "JSONPath definition that selects parts of the states data input to be the action data"
+          "description": "JSONPath definition that selects parts of the tasks data input to be the action data"
         },
         "dataResultsPath": {
           "type": "string",
-          "description": "JSONPath definition that selects parts of the actions data result, to be merged with the states data"
+          "description": "JSONPath definition that selects parts of the actions data result, to be merged with the tasks data"
         }
       },
       "required": []
@@ -1713,7 +1713,7 @@
       "properties": {
         "dataOutputPath": {
           "type": "string",
-          "description": "JSONPath definition that selects parts of the error data, to be merged with the states data"
+          "description": "JSONPath definition that selects parts of the error data, to be merged with the tasks data"
         }
       },
       "required": []

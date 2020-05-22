@@ -5,23 +5,23 @@
 - [Hello World](#Hello-World-Example)
 - [Greeting](#Greeting-Example)
 - [Event-based greeting](#Event-Based-Greeting-Example)
-- [Solving Math Problems (ForEach state)](#Solving-Math-Problems-Example)
+- [Solving Math Problems (ForEach task)](#Solving-Math-Problems-Example)
 - [Parallel Execution](#Parallel-Execution-Example)
 - [Event Based Transitions (Event-based Switch)](#Event-Based-Transitions-Example)
-- [Applicant Request Decision (Data-based Switch + SubFlow states)](#Applicant-Request-Decision-Example)
+- [Applicant Request Decision (Data-based Switch + SubFlow tasks)](#Applicant-Request-Decision-Example)
 - [Provision Orders (Error Handling)](#Provision-Orders-Example)
 - [Monitor Job for completion (Polling)](#Monitor-Job-Example)
 - [Send CloudEvent on Workflow Completion](#Send-CloudEvent-On-Workfow-Completion-Example)
-- [Monitor Patient Vital Signs (Event state)](#Monitor-Patient-Vital-Signs-Example)
-- [Finalize College Application (Event state)](#Finalize-College-Application-Example)
-- [Perform Customer Credit Check (Callback state)](#Perform-Customer-Credit-Check-Example)
-- [Handle Car Auction Bids (Scheduled start Event state)](#Handle-Car-Auction-Bids-Example)
+- [Monitor Patient Vital Signs (Event task)](#Monitor-Patient-Vital-Signs-Example)
+- [Finalize College Application (Event task)](#Finalize-College-Application-Example)
+- [Perform Customer Credit Check (Callback task)](#Perform-Customer-Credit-Check-Example)
+- [Handle Car Auction Bids (Scheduled start Event task)](#Handle-Car-Auction-Bids-Example)
 
 ### Hello World Example
 
 #### Description
 
-This example uses two inject states. The "Hello" state statically injects the following JSON into its data input:
+This example uses two inject tasks. The "Hello" task statically injects the following JSON into its data input:
 
 ```json
 {
@@ -29,9 +29,9 @@ This example uses two inject states. The "Hello" state statically injects the fo
 }
 ```
 
-which then becomes the data input of the transition "World" state.
-The "World" state merges its data input with it's injected JSON and uses a filter to set its data output to the
-value of the "result" property. Since it is an end state, it's data output becomes the workflow data output:
+which then becomes the data input of the transition "World" task.
+The "World" task merges its data input with it's injected JSON and uses a filter to set its data output to the
+value of the "result" property. Since it is an end task, it's data output becomes the workflow data output:
 
 ```text
 "Hello World!"
@@ -53,7 +53,7 @@ value of the "result" property. Since it is an end state, it's data output becom
 "version": "1.0",
 "name": "Hello World Workflow",
 "description": "Static Hello World",
-"states":[  
+"tasks":[  
   {  
      "name":"Hello",
      "type":"inject",
@@ -64,7 +64,7 @@ value of the "result" property. Since it is an end state, it's data output becom
         "result": "Hello"
      },
      "transition": {
-       "nextState": "World"
+       "nextTask": "World"
      }
   },
   {  
@@ -73,7 +73,7 @@ value of the "result" property. Since it is an end state, it's data output becom
      "data": {
         "result": " World!"
      },
-     "stateDataFilter": {
+     "taskDataFilter": {
        "dataOutputPath": "$.result"
      },
      "end": {
@@ -92,7 +92,7 @@ id: helloworld
 version: '1.0'
 name: Hello World Workflow
 description: Static Hello World
-states:
+tasks:
 - name: Hello
   type: inject
   start:
@@ -100,12 +100,12 @@ states:
   data:
     result: Hello
   transition:
-    nextState: World
+    nextTask: World
 - name: World
   type: inject
   data:
     result: " World!"
-  stateDataFilter:
+  taskDataFilter:
     dataOutputPath: "$.result"
   end:
     kind: default
@@ -125,7 +125,7 @@ states:
 
 #### Description
 
-This example shows a single Operation state with one action that calls the "greeting" function.
+This example shows a single Operation task with one action that calls the "greeting" function.
 The workflow data input is assumed to be the name of the person to greet:
 
 ```json
@@ -146,9 +146,9 @@ The results of the action is assumed to be the full greeting for the provided pe
 }
 ```
 
-The states action data filter selects the greeting object from the function return to be placed into the state data.
-Then the states state data filter selects only the greeting object to be returned as its data output, which
-becomes the workflow data output (as it is an end state):
+The tasks action data filter selects the greeting object from the function return to be placed into the task data.
+Then the tasks task data filter selects only the greeting object to be returned as its data output, which
+becomes the workflow data output (as it is an end task):
 
 ```text
    "Welcome to Serverless Workflow, John!"
@@ -176,7 +176,7 @@ becomes the workflow data output (as it is an end state):
      "resource": "functionResourse"
   }
 ],
-"states":[  
+"tasks":[  
   {  
      "name":"Greet",
      "type":"operation",
@@ -197,7 +197,7 @@ becomes the workflow data output (as it is an end state):
            }
         }
      ],
-     "stateDataFilter": {
+     "taskDataFilter": {
         "dataOutputPath": "$.greeting"
      },
      "end": {
@@ -219,7 +219,7 @@ description: Greet Someone
 functions:
 - name: greetingFunction
   resource: functionResourse
-states:
+tasks:
 - name: Greet
   type: operation
   start:
@@ -232,7 +232,7 @@ states:
         name: "$.greet.name"
     actionDataFilter:
       dataResultsPath: "$.payload.greeting"
-  stateDataFilter:
+  taskDataFilter:
     dataOutputPath: "$.greeting"
   end:
     kind: default
@@ -252,9 +252,9 @@ states:
 
 #### Description
 
-This example shows a single Event state with one action that calls the "greeting" function.
-The event state consumes cloud events of type "greetingEventType". When an even with this type
-is consumed, the Event state performs a single action that calls the defined "greeting" function.
+This example shows a single Event task with one action that calls the "greeting" function.
+The event task consumes cloud events of type "greetingEventType". When an even with this type
+is consumed, the Event task performs a single action that calls the defined "greeting" function.
 
 For the sake of the example we assume that the cloud event we will consume has the format:
 
@@ -292,19 +292,19 @@ Note that in the workflow definition you can see two filters defined. The event 
 ```
 
 which is triggered when the greeting event is consumed. It extracts its "data.greet" of the event and
-merges it with the states data.
+merges it with the tasks data.
 
-The second, a state data filter, which is defined on the event state itself:
+The second, a task data filter, which is defined on the event task itself:
 
 ```json
 {
-  "stateDataFilter": {
+  "taskDataFilter": {
      "dataOutputPath": "$.payload.greeting"
   }
 }
 ```
 
-filters what is selected to be the state data output which then becomes the workflow data output (as it is an end state):
+filters what is selected to be the task data output which then becomes the workflow data output (as it is an end task):
 
 ```text
    "Welcome to Serverless Workflow, John!"
@@ -339,7 +339,7 @@ filters what is selected to be the state data output which then becomes the work
      "resource": "functionResourse"
   }
 ],
-"states":[  
+"tasks":[  
   {  
      "name":"Greet",
      "type":"event",
@@ -362,7 +362,7 @@ filters what is selected to be the state data output which then becomes the work
             }
          ]
      }],
-     "stateDataFilter": {
+     "taskDataFilter": {
         "dataOutputPath": "$.payload.greeting"
      },
      "end": {
@@ -388,7 +388,7 @@ events:
 functions:
 - name: greetingFunction
   resource: functionResourse
-states:
+tasks:
 - name: Greet
   type: event
   start:
@@ -403,7 +403,7 @@ states:
         refName: greetingFunction
         parameters:
           name: "$.greet.name"
-  stateDataFilter:
+  taskDataFilter:
     dataOutputPath: "$.payload.greeting"
   end:
     kind: default
@@ -423,8 +423,8 @@ states:
 
 #### Description
 
-In this example we show how to iterate over some data input using the ForEach state.
-The state will iterate over a collection of simple math expressions which are
+In this example we show how to iterate over some data input using the ForEach task.
+The task will iterate over a collection of simple math expressions which are
 passed in as the workflow data input:
 
 ```json
@@ -433,11 +433,11 @@ passed in as the workflow data input:
     }
 ```
 
-The ForEach state will execute a single defined operation state for each math expression. The operation
-state contains an action which calls a serverless function which actually solves the expression
+The ForEach task will execute a single defined operation task for each math expression. The operation
+task contains an action which calls a serverless function which actually solves the expression
 and returns its result.
 
-Results of all math expressions are accumulated into the data output of the ForEach state which become the final
+Results of all math expressions are accumulated into the data output of the ForEach task which become the final
 result of the workflow execution.
 
 #### Workflow Definition
@@ -462,7 +462,7 @@ result of the workflow execution.
   "resource": "functionResourse"
 }
 ],
-"states":[  
+"tasks":[  
 {
  "name":"Solve",
  "start": {
@@ -472,7 +472,7 @@ result of the workflow execution.
  "inputCollection": "$.expressions",
  "inputParameter": "$.singleexpression",
  "outputCollection": "$.results",
- "states": [
+ "tasks": [
 {  
     "name":"GetResults",
     "type":"operation",
@@ -495,7 +495,7 @@ result of the workflow execution.
     }
 }
  ],
- "stateDataFilter": {
+ "taskDataFilter": {
     "dataOutputPath": "$.results"
  },
  "end": {
@@ -517,7 +517,7 @@ description: Solve math problems
 functions:
 - name: solveMathExpressionFunction
   resource: functionResourse
-states:
+tasks:
 - name: Solve
   start:
     kind: default
@@ -525,7 +525,7 @@ states:
   inputCollection: "$.expressions"
   inputParameter: "$.singleexpression"
   outputCollection: "$.results"
-  states:
+  tasks:
   - name: GetResults
     type: operation
     start:
@@ -538,7 +538,7 @@ states:
           expression: "$.singleexpression"
     end:
       kind: default
-  stateDataFilter:
+  taskDataFilter:
     dataOutputPath: "$.results"
   end:
     kind: default
@@ -558,9 +558,9 @@ states:
 
 #### Description
 
-This example uses a parallel state to execute two branches (simple wait states) at the same time.
-The completionType type is set to "and", which means the parallel state has to wait for both branches
-to finish execution before it can transition (end workflow execution in this case as it is an end state).
+This example uses a parallel task to execute two branches (simple wait tasks) at the same time.
+The completionType type is set to "and", which means the parallel task has to wait for both branches
+to finish execution before it can transition (end workflow execution in this case as it is an end task).
 
 #### Workflow Definition
 
@@ -578,7 +578,7 @@ to finish execution before it can transition (end workflow execution in this cas
 "version": "1.0",
 "name": "Parallel Execution Workflow",
 "description": "Executes two branches in parallel",
-"states":[  
+"tasks":[  
   {  
      "name":"ParallelExec",
      "type":"parallel",
@@ -589,7 +589,7 @@ to finish execution before it can transition (end workflow execution in this cas
      "branches": [
         {
           "name": "Branch1",
-          "states": [
+          "tasks": [
             {
                 "name":"ShortDelay",
                  "type":"delay",
@@ -605,7 +605,7 @@ to finish execution before it can transition (end workflow execution in this cas
         },
         {
           "name": "Branch2",
-          "states": [
+          "tasks": [
              {
                  "name":"LongDelay",
                   "type":"delay",
@@ -636,7 +636,7 @@ id: parallelexec
 version: '1.0'
 name: Parallel Execution Workflow
 description: Executes two branches in parallel
-states:
+tasks:
 - name: ParallelExec
   type: parallel
   start:
@@ -644,7 +644,7 @@ states:
   branches:
   completionType: and
   - name: Branch1
-    states:
+    tasks:
     - name: ShortDelay
       type: delay
       start:
@@ -653,7 +653,7 @@ states:
       end:
         kind: default
   - name: Branch2
-    states:
+    tasks:
     - name: LongDelay
       type: delay
       start:
@@ -681,10 +681,10 @@ states:
 
 #### Description
 
-In this example we use an Event-based Switch state to wait for arrival
+In this example we use an Event-based Switch task to wait for arrival
 of the "VisaApproved", or "VisaRejected" Cloud Events. Depending on which type of event happens,
 the workflow performs a different transition. If none of the events arrive in the defined 1 hour timeout
-period, the workflow transitions to the "HandleNoVisaDecision" state. 
+period, the workflow transitions to the "HandleNoVisaDecision" task. 
 
 #### Workflow Definition
 
@@ -714,7 +714,7 @@ period, the workflow transitions to the "HandleNoVisaDecision" state.
     "source": "visaCheckSource"
 }
 ],
-"states":[  
+"tasks":[  
   {  
      "name":"CheckVisaStatus",
      "type":"switch",
@@ -725,19 +725,19 @@ period, the workflow transitions to the "HandleNoVisaDecision" state.
         {
           "eventRef": "visaApprovedEvent",
           "transition": {
-            "nextState": "HandleApprovedVisa"
+            "nextTask": "HandleApprovedVisa"
           }
         },
         {
           "eventRef": "visaRejectedEvent",
           "transition": {
-            "nextState": "HandleRejectedVisa"
+            "nextTask": "HandleRejectedVisa"
           }
         }
      ],
      "eventTimeout": "PT1H",
      "default": {
-        "nextState": "HandleNoVisaDecision"
+        "nextTask": "HandleNoVisaDecision"
      }
   },
   {
@@ -783,7 +783,7 @@ events:
 - name: visaRejectedEvent
   type: VisaRejected
   source: visaCheckSource
-states:
+tasks:
 - name: CheckVisaStatus
   type: SWITCH
   start:
@@ -791,13 +791,13 @@ states:
   eventConditions:
   - eventRef: visaApprovedEvent
     transition:
-      nextState: HandleApprovedVisa
+      nextTask: HandleApprovedVisa
   - eventRef: visaRejectedEvent
     transition:
-      nextState: HandleRejectedVisa
+      nextTask: HandleRejectedVisa
   eventTimeout: PT1H
   default:
-    nextState: HandleNoVisaDecision
+    nextTask: HandleNoVisaDecision
 - name: HandleApprovedVisa
   type: SUBFLOW
   workflowId: handleApprovedVisaWorkflowID
@@ -830,7 +830,7 @@ states:
 
 #### Description
 
-This example shows off the switch state and the subflow state. The workflow is started with application information data as input:
+This example shows off the switch task and the subflow task. The workflow is started with application information data as input:
 
 ```json
     {
@@ -843,8 +843,8 @@ This example shows off the switch state and the subflow state. The workflow is s
     }
 ```
 
-We use the switch state with two conditions to determine if the application should be made based on the applicants age.
-If the applicants age is over 18 we start the application (subflow state). Otherwise the workflow notifies the
+We use the switch task with two conditions to determine if the application should be made based on the applicants age.
+If the applicants age is over 18 we start the application (subflow task). Otherwise the workflow notifies the
  applicant of the rejection.
 
 #### Workflow Definition
@@ -869,7 +869,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
         "resource": "functionResourse"
      }
    ],
-   "states":[  
+   "tasks":[  
       {  
          "name":"CheckApplication",
          "type":"switch",
@@ -882,7 +882,7 @@ If the applicants age is over 18 we start the application (subflow state). Other
               "value": "18",
               "operator": "greaterthanorequals",
               "transition": {
-                "nextState": "StartApplication"
+                "nextTask": "StartApplication"
               }
             },
             {
@@ -890,12 +890,12 @@ If the applicants age is over 18 we start the application (subflow state). Other
               "value": "18",
               "operator": "lessthan",
               "transition": {
-                "nextState": "RejectApplication"
+                "nextTask": "RejectApplication"
               }
             }
          ],
          "default": {
-            "nextState": "RejectApplication"
+            "nextTask": "RejectApplication"
          }
       },
       {
@@ -939,7 +939,7 @@ description: Determine if applicant request is valid
 functions:
 - name: sendRejectionEmailFunction
   resource: functionResourse
-states:
+tasks:
 - name: CheckApplication
   type: switch
   start:
@@ -949,14 +949,14 @@ states:
     value: '18'
     operator: greaterthanorequals
     transition:
-      nextState: StartApplication
+      nextTask: StartApplication
   - path: "$.applicant.age"
     value: '18'
     operator: lessthan
     transition:
-      nextState: RejectApplication
+      nextTask: RejectApplication
   default:
-    nextState: RejectApplication
+    nextTask: RejectApplication
 - name: StartApplication
   type: subflow
   workflowId: startApplicationWorkflowId
@@ -981,18 +981,18 @@ states:
 #### Workflow Diagram
 
 <p align="center">
-<img src="media/examples/example-switchstate.png" height="500px" alt="Switch State Example"/>
+<img src="media/examples/example-switchtask.png" height="500px" alt="Switch Task Example"/>
 </p>
 
 ### Provision Orders Example
 
 #### Description
 
-In this example we show off the states error handling capability. The workflow data input that's passed in contains
-missing order information that causes the function in the "ProvisionOrder" state to throw a runtime exception. With the "onError" expression we
-can transition the workflow to different error handling states depending on the error thrown. Each type of error
-in this example is handled by simple delay states, each including an error data filter which sets the exception info as their
-data output. If no error is caught the workflow can transition to the "ApplyOrder" state.
+In this example we show off the tasks error handling capability. The workflow data input that's passed in contains
+missing order information that causes the function in the "ProvisionOrder" task to throw a runtime exception. With the "onError" expression we
+can transition the workflow to different error handling tasks depending on the error thrown. Each type of error
+in this example is handled by simple delay tasks, each including an error data filter which sets the exception info as their
+data output. If no error is caught the workflow can transition to the "ApplyOrder" task.
 
 Workflow data is assumed to me:
 
@@ -1030,7 +1030,7 @@ The data output of the workflow contains the information of the exception caught
      "resource": "functionResourse"
   }
 ],
-"states":[  
+"tasks":[  
   {  
     "name":"ProvisionOrder",
     "type":"operation",
@@ -1055,7 +1055,7 @@ The data output of the workflow contains the information of the exception caught
             "body": "name eq 'MissingOrderIdException'"
          },
          "transition": {
-           "nextState": "MissingId"
+           "nextTask": "MissingId"
          }
        },
        {
@@ -1064,7 +1064,7 @@ The data output of the workflow contains the information of the exception caught
            "body": "name eq 'MissingOrderItemException'"
          },
          "transition": {
-           "nextState": "MissingItem"
+           "nextTask": "MissingItem"
          }
        },
        {
@@ -1073,15 +1073,15 @@ The data output of the workflow contains the information of the exception caught
           "body": "name eq 'MissingOrderQuantityException'"
         },
         "transition": {
-          "nextState": "MissingQuantity"
+          "nextTask": "MissingQuantity"
         }
        }
     ],
-    "stateDataFilter": {
+    "taskDataFilter": {
        "dataOutputPath": "$.exception"
     },
     "transition": {
-       "nextState":"ApplyOrder"
+       "nextTask":"ApplyOrder"
     }
 },
 {
@@ -1131,7 +1131,7 @@ description: Provision Orders and handle errors thrown
 functions:
 - name: provisionOrderFunction
   resource: functionResourse
-states:
+tasks:
 - name: ProvisionOrder
   type: operation
   start:
@@ -1147,21 +1147,21 @@ states:
       language: spel
       body: name eq 'MissingOrderIdException'
     transition:
-      nextState: MissingId
+      nextTask: MissingId
   - expression:
       language: spel
       body: name eq 'MissingOrderItemException'
     transition:
-      nextState: MissingItem
+      nextTask: MissingItem
   - expression:
       language: spel
       body: name eq 'MissingOrderQuantityException'
     transition:
-      nextState: MissingQuantity
-  stateDataFilter:
+      nextTask: MissingQuantity
+  taskDataFilter:
     dataOutputPath: "$.exception"
   transition:
-    nextState: ApplyOrder
+    nextTask: ApplyOrder
 - name: MissingId
   type: subflow
   workflowId: handleMissingIdExceptionWorkflow
@@ -1198,7 +1198,7 @@ states:
 
 #### Description
 
-In this example we submit a job via an operation state action (serverless function call). It is assumed that it takes some time for
+In this example we submit a job via an operation task action (serverless function call). It is assumed that it takes some time for
 the submitted job to complete and that it's completion can be checked via another separate serverless function call.
 
 To check for completion we first wait 5 seconds and then get the results of the "CheckJob" serverless function.
@@ -1206,7 +1206,7 @@ Depending on the results of this we either return the results or transition back
 This is done until the job submission returns "SUCCEEDED" or "FAILED" and the job submission results are reported before workflow
 finishes execution.
 
-In the case job submission raises a runtime error, we transition to a SubFlow state which handles the job submission issue.
+In the case job submission raises a runtime error, we transition to a SubFlow task which handles the job submission issue.
 
 
 #### Workflow Definition
@@ -1243,7 +1243,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
       "resource": "reportJobFailedResource"
     }
   ],
-  "states":[  
+  "tasks":[  
     {  
       "name":"SubmitJob",
       "type":"operation",
@@ -1274,15 +1274,15 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
           "dataOutputPath": "$.exception"
         },
         "transition": {
-          "nextState": "SubmitError"
+          "nextTask": "SubmitError"
         }
       }
       ],
-      "stateDataFilter": {
+      "taskDataFilter": {
           "dataOutputPath": "$.jobuid"
       },
       "transition": {
-          "nextState":"WaitForCompletion"
+          "nextTask":"WaitForCompletion"
       }
   },
   {
@@ -1298,7 +1298,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
       "type": "delay",
       "timeDelay": "PT5S",
       "transition": {
-        "nextState":"GetJobStatus"
+        "nextTask":"GetJobStatus"
       }
   },
   {  
@@ -1318,11 +1318,11 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
           }
       }
       ],
-      "stateDataFilter": {
+      "taskDataFilter": {
           "dataOutputPath": "$.jobstatus"
       },
       "transition": {
-          "nextState":"DetermineCompletion"
+          "nextTask":"DetermineCompletion"
       }
   },
   {  
@@ -1334,7 +1334,7 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
         "value": "SUCCEEDED",
         "operator": "equals",
         "transition": {
-          "nextState": "JobSucceeded"
+          "nextTask": "JobSucceeded"
         }
       },
       {
@@ -1342,12 +1342,12 @@ In the case job submission raises a runtime error, we transition to a SubFlow st
         "value": "FAILED",
         "operator": "equals",
         "transition": {
-          "nextState": "JobFailed"
+          "nextTask": "JobFailed"
         }
       }
     ],
     "default": {
-        "nextState": "WaitForCompletion"
+        "nextTask": "WaitForCompletion"
     }
   },
   {  
@@ -1407,7 +1407,7 @@ functions:
   resource: reportJobSuceededResource
 - name: reportJobFailed
   resource: reportJobFailedResource
-states:
+tasks:
 - name: SubmitJob
   type: operation
   start:
@@ -1427,11 +1427,11 @@ states:
     errorDataFilter:
       dataOutputPath: "$.exception"
     transition:
-      nextState: SubmitError
-  stateDataFilter:
+      nextTask: SubmitError
+  taskDataFilter:
     dataOutputPath: "$.jobuid"
   transition:
-    nextState: WaitForCompletion
+    nextTask: WaitForCompletion
 - name: SubmitError
   type: subflow
   workflowId: handleJobSubmissionErrorWorkflow
@@ -1441,7 +1441,7 @@ states:
   type: delay
   timeDelay: PT5S
   transition:
-    nextState: GetJobStatus
+    nextTask: GetJobStatus
 - name: GetJobStatus
   type: operation
   actionMode: sequential
@@ -1452,10 +1452,10 @@ states:
         name: "$.jobuid"
     actionDataFilter:
       dataResultsPath: "$.jobstatus"
-  stateDataFilter:
+  taskDataFilter:
     dataOutputPath: "$.jobstatus"
   transition:
-    nextState: DetermineCompletion
+    nextTask: DetermineCompletion
 - name: DetermineCompletion
   type: switch
   dataConditions:
@@ -1463,14 +1463,14 @@ states:
     value: SUCCEEDED
     operator: equals
     transition:
-      nextState: JobSucceeded
+      nextTask: JobSucceeded
   - path: "$.jobstatus"
     value: FAILED
     operator: equals
     transition:
-      nextState: JobFailed
+      nextTask: JobFailed
   default:
-    nextState: WaitForCompletion
+    nextTask: WaitForCompletion
 - name: JobSucceeded
   type: operation
   actionMode: sequential
@@ -1525,7 +1525,7 @@ workflow data:
 }
 ```
 
-Our workflow in this example uses a ForEach state to provision the orders in parallel. The "provisionOrder" function
+Our workflow in this example uses a ForEach task to provision the orders in parallel. The "provisionOrder" function
 used is assumed to have the following results:
 
 ```json
@@ -1539,7 +1539,7 @@ used is assumed to have the following results:
 }
 ```
 
-After orders have been provisioned the ForEach states defines the end property which stops workflow execution.
+After orders have been provisioned the ForEach tasks defines the end property which stops workflow execution.
 It defines its end definition to be of type "event" in which case a CloudEvent will be produced which can be consumed
 by other orchestration workflows or other interested consumers. 
 Note that we define the event to be produced in the workflows "events" property.
@@ -1595,9 +1595,9 @@ CloudEvent upon completion of the workflow could look like:
     "resource": "functionResourse"
 }
 ],
-"states": [
+"tasks": [
 {
-    "name": "ProvisionOrdersState",
+    "name": "ProvisionOrdersTask",
     "type": "foreach",
     "start": {
        "kind": "default"
@@ -1605,7 +1605,7 @@ CloudEvent upon completion of the workflow could look like:
     "inputCollection": "$.orders",
     "inputParameter": "$.singleorder",
     "outputCollection": "$.results",
-    "states": [
+    "tasks": [
     {
         "name": "DoProvision",
         "type": "operation",
@@ -1628,7 +1628,7 @@ CloudEvent upon completion of the workflow could look like:
         }
     }
     ],
-    "stateDataFilter": {
+    "taskDataFilter": {
         "dataOutputPath": "$.provisionedOrders"
     },
     "end": {
@@ -1657,15 +1657,15 @@ events:
 functions:
 - name: provisionOrderFunction
   resource: functionResourse
-states:
-- name: ProvisionOrdersState
+tasks:
+- name: ProvisionOrdersTask
   type: foreach
   start:
     kind: default
   inputCollection: "$.orders"
   inputParameter: "$.singleorder"
   outputCollection: "$.results"
-  states:
+  tasks:
   - name: DoProvision
     type: operation
     start:
@@ -1678,7 +1678,7 @@ states:
           order: "$.order"
     end:
       kind: default
-  stateDataFilter:
+  taskDataFilter:
     dataOutputPath: "$.provisionedOrders"
   end:
     kind: event
@@ -1781,7 +1781,7 @@ have the matching patient id.
     "resource": "callNurseResource"
 }
 ],
-"states": [
+"tasks": [
 {
 "name": "MonitorVitals",
 "type": "event",
@@ -1860,7 +1860,7 @@ functions:
 - name: callNurse
   type: function
   resource: callNurseResource
-states:
+tasks:
 - name: MonitorVitals
   type: event
   start:
@@ -1958,7 +1958,7 @@ when all three of these events happened (in no particular order).
     "resource": "finalizeApplicationResource"
 }
 ],
-"states": [
+"tasks": [
 {
     "name": "FinalizeApplication",
     "type": "event",
@@ -2017,7 +2017,7 @@ functions:
 - name: finalizeApplicationFunction
   type: function
   resource: finalizeApplicationResource
-states:
+tasks:
 - name: FinalizeApplication
   type: event
   start:
@@ -2151,7 +2151,7 @@ And for denied credit check, for example:
             "correlationToken": "customerId"
         }
     ],
-    "states": [
+    "tasks": [
         {
             "name": "CheckCredit",
             "type": "callback",
@@ -2169,7 +2169,7 @@ And for denied credit check, for example:
             "eventRef": "CreditCheckCompletedEvent",
             "timeout": "PT15M",
             "transition": {
-                "nextState": "EvaluateDecision"
+                "nextTask": "EvaluateDecision"
             }
         },
         {
@@ -2181,7 +2181,7 @@ And for denied credit check, for example:
                     "value": "Approved",
                     "operator": "equals",
                     "transition": {
-                        "nextState": "StartApplication"
+                        "nextTask": "StartApplication"
                     }
                 },
                 {
@@ -2189,12 +2189,12 @@ And for denied credit check, for example:
                     "value": "Denied",
                     "operator": "equals",
                     "transition": {
-                        "nextState": "RejectApplication"
+                        "nextTask": "RejectApplication"
                     }
                 }
             ],
             "default": {
-                "nextState": "RejectApplication"
+                "nextTask": "RejectApplication"
             }
         },
         {
@@ -2246,7 +2246,7 @@ events:
   type: creditCheckCompleteType
   source: creditCheckSource
   correlationToken: customerId
-states:
+tasks:
 - name: CheckCredit
   type: callback
   start:
@@ -2259,7 +2259,7 @@ states:
   eventRef: CreditCheckCompletedEvent
   timeout: PT15M
   transition:
-    nextState: EvaluateDecision
+    nextTask: EvaluateDecision
 - name: EvaluateDecision
   type: switch
   dataConditions:
@@ -2267,14 +2267,14 @@ states:
     value: Approved
     operator: equals
     transition:
-      nextState: StartApplication
+      nextTask: StartApplication
   - path: "$.creditCheck.decision"
     value: Denied
     operator: equals
     transition:
-      nextState: RejectApplication
+      nextTask: RejectApplication
   default:
-    nextState: RejectApplication
+    nextTask: RejectApplication
 - name: StartApplication
   type: subflow
   workflowId: startApplicationWorkflowId
@@ -2364,7 +2364,7 @@ Bidding is done via an online application and bids are received as events are as
             "source": "carBidEventSource"
         }
     ],
-    "states": [
+    "tasks": [
         {
           "name": "StoreCarAuctionBid",
           "type": "event",
@@ -2412,7 +2412,7 @@ events:
 - name: CarBidEvent
   type: carBidMadeType
   source: carBidEventSource
-states:
+tasks:
 - name: StoreCarAuctionBid
   type: event
   start:

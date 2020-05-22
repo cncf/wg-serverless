@@ -83,7 +83,7 @@ functions:
   type: container
   metadata:
     command: cowsay
-states:
+tasks:
 - name: whalesay
   type: operation
   start:
@@ -170,7 +170,7 @@ functions:
   type: container
   metadata:
     command: cowsay
-states:
+tasks:
 - name: hello1
   type: operation
   start:
@@ -181,13 +181,13 @@ states:
       parameters:
         message: hello1
   transition:
-    nextState: parallelhello
+    nextTask: parallelhello
 - name: parallelhello
   type: parallel
   completionType: and
   branches:
   - name: hello2a-branch
-    states:
+    tasks:
     - name: hello2a
       type: operation
       start:
@@ -200,7 +200,7 @@ states:
       end:
         kind: default
   - name: hello2b-branch
-    states:
+    tasks:
     - name: hello2b
       type: operation
       start:
@@ -290,7 +290,7 @@ functions:
   type: container
   metadata:
     command: '[echo, "{{inputs.parameters.message}}"]'
-states:
+tasks:
 - name: A
   type: operation
   start:
@@ -301,13 +301,13 @@ states:
       parameters:
         message: A
   transition:
-    nextState: parallelecho
+    nextTask: parallelecho
 - name: parallelecho
   type: parallel
   completionType: and
   branches:
   - name: B-branch
-    states:
+    tasks:
     - name: B
       type: operation
       start:
@@ -320,7 +320,7 @@ states:
       end:
         kind: default
   - name: C-branch
-    states:
+    tasks:
     - name: C
       type: operation
       start:
@@ -333,7 +333,7 @@ states:
       end:
         kind: default
   transition:
-    nextState: D
+    nextTask: D
 - name: D
   type: operation
   start:
@@ -455,7 +455,7 @@ functions:
   metadata:
     command: sh, -c
     source: 'echo result was: {{inputs.parameters.message}}'
-states:
+tasks:
 - name: generate
   type: operation
   start:
@@ -466,7 +466,7 @@ states:
     actionDataFilter:
       dataResultsPath: "$.results"
   transition:
-    nextState: print-message
+    nextTask: print-message
 - name: print-message
   type: operation
   actions:
@@ -537,7 +537,7 @@ functions:
   type: container
   metadata:
     command: cowsay
-states:
+tasks:
 - name: injectdata
   type: inject
   start:
@@ -547,12 +547,12 @@ states:
     - hello world
     - goodbye world
   transition:
-    nextState: printgreetings
+    nextTask: printgreetings
 - name: printgreetings
   type: foreach
   inputCollection: "$.greetings"
   inputParameter: "$.greeting"
-  states:
+  tasks:
   - name: foreach-print
     type: operation
     start:
@@ -649,7 +649,7 @@ functions:
   type: container
   metadata:
     command: sh, -c
-states:
+tasks:
 - name: flip-coin
   type: operation
   start:
@@ -660,7 +660,7 @@ states:
     actionDataFilter:
       dataResultsPath: "$.flip.result"
   transition:
-    nextState: show-flip-results
+    nextTask: show-flip-results
 - name: show-flip-results
   type: switch
   dataConditions:
@@ -668,12 +668,12 @@ states:
     value: heads
     operator: equals
     transition:
-      nextState: show-results-heads
+      nextTask: show-results-heads
   - path: "$.flip.result"
     value: tails
     operator: equals
     transition:
-      nextState: show-results-tails
+      nextTask: show-results-tails
 - name: show-results-heads
   type: operation
   actions:
@@ -747,7 +747,7 @@ functions:
   type: container
   metadata:
     command: python
-states:
+tasks:
 - name: retry-backoff
   type: operation
   start:
@@ -842,8 +842,8 @@ functions:
   metadata:
     command: python
     source: import random result = "heads" if random.randint(0,1) == 0 else "tail"  print(result)
-states:
-- name: flip-coin-state
+tasks:
+- name: flip-coin-task
   type: operation
   start:
     kind: default
@@ -853,7 +853,7 @@ states:
     actionDataFilter:
       dataResultsPath: "$.steps.flip-coin.outputs.result"
   transition:
-    nextState: flip-coin-check
+    nextTask: flip-coin-check
 - name: flip-coin-check
   type: switch
   dataConditions:
@@ -861,13 +861,13 @@ states:
     value: tails
     operator: equals
     transition:
-      nextState: flip-coin-state
+      nextTask: flip-coin-task
   - path: "$.steps.flip-coin.outputs.result"
     value: heads
     operator: equals
     transition:
-      nextState: heads-state
-- name: heads-state
+      nextTask: heads-task
+- name: heads-task
   type: operation
   actions:
   - functionRef:
@@ -971,8 +971,8 @@ functions:
   type: script
   metadata:
     command: "[sh, -c]"
-states:
-- name: intentional-fail-state
+tasks:
+- name: intentional-fail-task
   type: operation
   start:
     kind: default
@@ -988,8 +988,8 @@ states:
     errorDataFilter:
       dataOutputPath: "$.exit-code"
   transition:
-    nextState: send-email-state
-- name: send-email-state
+    nextTask: send-email-task
+- name: send-email-task
   type: operation
   actions:
   - functionRef:
@@ -997,21 +997,21 @@ states:
       parameters:
         args: 'echo send e-mail: $.workflow.name $.exit-code'
   transition:
-    nextState: emo-state
-- name: emo-state
+    nextTask: emo-task
+- name: emo-task
   type: switch
   dataConditions:
   - path: "$.exit-code"
     value: '1'
     operator: equals
     transition:
-      nextState: celebrate-state
+      nextTask: celebrate-task
   - path: "$.exit-code"
     value: '1'
     operator: notequals
     transition:
-      nextState: cry-state
-- name: celebrate-state
+      nextTask: cry-task
+- name: celebrate-task
   type: operation
   actions:
   - functionRef:
@@ -1020,7 +1020,7 @@ states:
         args: echo hooray!
   end:
     kind: default
-- name: cry-state
+- name: cry-task
   type: operation
   actions:
   - functionRef:

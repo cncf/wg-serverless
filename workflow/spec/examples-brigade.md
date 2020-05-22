@@ -74,8 +74,8 @@ functions:
   type: echo
 - name: consoleLogFunction
   type: console
-states:
-- name: GreetingState
+tasks:
+- name: GreetingTask
   type: EVENT
   start:
     kind: DEFAULT
@@ -154,8 +154,8 @@ functions:
   type: echo
 - name: consoleLogFunction
   type: console
-states:
-- name: GreetingState
+tasks:
+- name: GreetingTask
   type: EVENT
   start:
     kind: DEFAULT
@@ -183,10 +183,10 @@ states:
       language: spel
       body: "$.exception != null"
     transition:
-      nextState: HandleErrorState
+      nextTask: HandleErrorTask
   end:
     kind: DEFAULT
-- name: HandleErrorState
+- name: HandleErrorTask
   type: OPERATION
   actions:
   - name: logErrorAction
@@ -241,8 +241,8 @@ events:
 functions:
 - name: consoleLogFunction
   type: console
-states:
-- name: GreetingState
+tasks:
+- name: GreetingTask
   type: EVENT
   start:
     kind: DEFAULT
@@ -278,7 +278,7 @@ states:
 * Note: Serverless Workflow specification does not currently support grouping of actions. This 
 would be beneficial to have as then errors and retries could be done per group rather than all actions
 defined as a whole. This is definitely a feature we can add to the specification that would be beneficial
-and a great feature. For now until this is added, grouping needs to be handled by separate states,
+and a great feature. For now until this is added, grouping needs to be handled by separate tasks,
 where error checking could be performed in each.
 
 <table>
@@ -326,7 +326,7 @@ functions:
 - name: echoFunction
   resource: alpine:3.7
   type: echo
-states:
+tasks:
 - name: FirstGreetGroup
   type: EVENT
   start:
@@ -346,7 +346,7 @@ states:
         parameters:
           message: goodbye
   transition:
-    nextState: SecondGreetGroup
+    nextTask: SecondGreetGroup
 - name: SecondGreetGroup
   type: OPERATION
   actions:
@@ -405,7 +405,7 @@ events:
 functions:
 - name: consoleFunction
   type: console
-states:
+tasks:
 - name: LogEventData
   type: EVENT
   start:
@@ -486,7 +486,7 @@ functions:
 - name: storeToFileFunction
   resource: alpine:3.7
   type: filestore
-states:
+tasks:
 - name: ExecActionsAndStoreResults
   type: EVENT
   start:
@@ -530,7 +530,7 @@ states:
 
 [Brigade Example](https://github.com/brigadecore/brigade/blob/master/docs/content/examples/brigade-19.js)
 
-* Note: Events can be emitted in Serverless Workflow Specification on state transitions. This also shows that yes.
+* Note: Events can be emitted in Serverless Workflow Specification on task transitions. This also shows that yes.
 you can have eventsActions definition without any actions :)
 <table>
 <tr>
@@ -574,8 +574,8 @@ events:
 functions:
 - name: consoleLogFunction
   type: console
-states:
-- name: ExecEventState
+tasks:
+- name: ExecEventTask
   type: EVENT
   start:
     kind: DEFAULT
@@ -586,7 +586,7 @@ states:
     eventDataFilter:
       dataOutputPath: "$.execEvent"
   transition:
-    nextState: NextEventState
+    nextTask: NextEventTask
     produceEvent:
       eventRef: nextEvent
       data:
@@ -596,7 +596,7 @@ states:
         workerID: "$.execEvent.data.workerID"
         cause:
           event: "$.execEvent"
-- name: NextEventState
+- name: NextEventTask
   type: EVENT
   eventsActions:
   - eventRefs:
