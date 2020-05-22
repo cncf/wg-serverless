@@ -448,7 +448,7 @@ Tasks define building blocks of the Serverless Workflow. The specification defin
 
 Following is a detailed description of each of the defined tasks:
 
-#### Event tasks
+#### Event Task
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -1110,7 +1110,7 @@ Defines a transition from point A to point B in the serverless workflow. For mor
 Operation task defines a set of actions to be performed in sequence or in parallel.
 Once all actions have been performed, a transition to another task can occur.
 
-#### Switch task
+#### Switch Task
 
 | Parameter | Description | Type | Required |
 | --- | --- | --- | --- |
