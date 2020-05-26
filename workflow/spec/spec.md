@@ -1598,7 +1598,7 @@ The "completionType" enum specifies the different ways of completing branch exec
 * n_of_m: State can transition once N number of branches have completed execution. In this case you should also
 specify the "n" property to define this number.
 
-Exceptions may occur during execution of branches of the Parallel state, this is described in detail in [this section](#parallel-state-branch-exceptions).
+Exceptions may occur during execution of branches of the Parallel state, this is described in detail in [this section](#parallel-state-exceptions).
 
 #### <a name="parallel-state-branch"></a>Parallel State: Branch
 
@@ -1677,7 +1677,7 @@ Exceptions that occur during execution of Parallel state branch execution.
 By default exceptions that are not handled within states of branches stop branch execution and are propagated 
 to the Parallel state.
 
-Exceptions can be handled in following ways:
+Exceptions can be handled in the following ways:
 
 * Don't handle exceptions inside states of branches: in this case exceptions should be propagated to the 
 Parallel state and can be handled with the Parallel states "onError" definition, for example:
