@@ -1598,7 +1598,7 @@ The "completionType" enum specifies the different ways of completing branch exec
 * n_of_m: State can transition once N number of branches have completed execution. In this case you should also
 specify the "n" property to define this number.
 
-
+Exceptions may occur during execution of branches of the Parallel state, this is described in detail in [this section](#parallel-state-branch-exceptions).
 
 #### <a name="parallel-state-branch"></a>Parallel State: Branch
 
@@ -1670,6 +1670,178 @@ Each branch receives the same copy of the Parallel state's data input.
 States within each branch are only allowed to transition to states defined in the same branch.
 Transitions to other branches or workflow states are not allowed.
 States outside a parallel state cannot transition to a states declared within branches.
+
+#### <a name="parallel-state-exceptions"></a>Parallel State: Handling Exceptions
+
+Exceptions that occur during execution of Parallel state branch execution.
+By default exceptions that are not handled within states of branches stop branch execution and are propagated 
+to the Parallel state.
+
+Exceptions can be handled in following ways:
+
+* Don't handle exceptions inside states of branches: in this case exceptions should be propagated to the 
+Parallel state and can be handled with the Parallel states "onError" definition, for example:
+
+```json
+{
+  "id": "exceptionInParallelState",
+  "name": "Exception In Parallel State",
+  "version": "1.0",
+  "functions": [
+    {
+      "name": "throwsExceptionFunction",
+      "resource": "throwExceptionFunctionResource"
+    }
+  ],
+  "states": [
+    {
+      "name": "parallelState",
+      "type":"parallel",
+      "start": {
+        "kind":"default"
+      },
+      "completionType": "and",
+      "branches": [
+        {
+          "name": "invokeExceptionFunctionBranch",
+          "states": [
+            {
+              "name": "exceptionOperation",
+              "type":"operation",
+              "start": {
+                "kind":"default"
+              },
+              "actions": [
+                {
+                  "functionRef": {
+                    "refName": "throwsExceptionFunction"
+                  }
+                }
+              ],
+              "end": {
+                "kind":"default"
+              }
+            }
+          ]
+        }
+      ],
+      "onError": [
+        {
+          "expression": {
+            "language": "spel",
+            "body": "$.error ne null"
+          },
+          "transition": {
+            "nextState": "exceptionHandlingState"
+          }
+        }
+      ],
+      "end": {
+        "kind": "default"
+      }
+    },
+    {
+      "name": "exceptionHandlingState",
+      "type":"operation",
+      "actionMode": "sequential",
+      "actions": [
+
+      ],
+      "end": {
+        "kind":"default"
+      }
+    }
+  ]
+}
+```
+
+In this example our Parallel state branch the "throwsExceptionFunction" function execution throws an exception
+which is propagated to the Parallel state and handled with its "onError" definition.
+For the sake of the example we left the "actions" array of the "exceptionHandlingState" empty. In a real scenario
+it would include actions needed to be executed.
+
+* Handle exceptions inside branch states: States inside branches can define their own onError definition.
+In this case the exceptions can be handled by the states and they will not be propagated to the Parallel state.
+
+```json
+{
+  "id": "errorInParallelState",
+  "name": "Error In Parallel State",
+  "version": "1.0",
+  "functions": [
+    {
+      "name": "ThrowsErrorFunction",
+      "resource": "throwErrorFunctionResource"
+    }
+  ],
+  "states": [
+    {
+      "name": "parallelState",
+      "type":"parallel",
+      "start": {
+        "kind":"default"
+      },
+      "completionType": "and",
+      "branches": [
+        {
+          "name": "invokeFunctionBranch",
+          "states": [
+            {
+              "name": "exceptionOperation",
+              "type":"operation",
+              "start": {
+                "kind":"default"
+              },
+              "actions": [
+                {
+                  "functionRef": {
+                    "refName": "ThrowsErrorFunction"
+                  }
+                }
+              ],
+              "onError": [
+                {
+                  "expression": {
+                    "language": "spel",
+                    "body": "$.error ne null"
+                  },
+                  "transition": {
+                    "nextState": "errorHandlingBranchState"
+                  }
+                }
+              ],
+              "end": {
+                "kind":"default"
+              }
+            },
+            {
+              "name": "errorHandlingBranchState",
+              "type":"operation",
+              "actionMode": "sequential",
+              "actions": [
+        
+              ],
+              "end": {
+                "kind":"default"
+              }
+            }
+          ]
+        }
+      ],
+      "end": {
+        "kind": "default"
+      }
+    }
+  ]
+}
+```
+
+In this example the branches "exceptionOperation" state handles the thrown exception locally.
+For the sake of the example we left the "actions" array of the "errorHandlingBranchState" empty. In a real scenario
+it would include actions needed to be executed.
+
+Action timeouts follow the same rules as stated above. They can be handled either by the branch states themselves, otherwise are to be propagated to the Parallel state.
+For more information see the [workflow error handling and retrying section](#workflow-retrying).
 
 #### SubFlow State
 
