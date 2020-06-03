@@ -55,3 +55,4 @@ _Status description:_
 | ✔️| Add examples comparing Brigade workflow and spec markups | [examples doc](examples-brigade.md) |
 | ✔️| Update produceEvent data property | [spec doc](spec.md) |
 | ✔️| Change uppercase property and enum types to lowercase | [spec doc](spec.md) |
+| ✔️| Add Parallel State Exception Handling section | [spec doc](spec.md) |
