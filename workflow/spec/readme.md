@@ -1,5 +1,5 @@
 <p align="center">
-<img src="media/sw-logo.png" alt="Serverless Workflow Specification"/>
+<img src="media/repo-moved.png" alt="We Moved!"/>
 </p>
 
 Serverless applications are becoming increasingly complex.
