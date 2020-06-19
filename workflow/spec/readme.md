@@ -1,5 +1,5 @@
 <p align="center">
-<img src="media/repo-moved.png" alt="We Moved!"/>
+<a href="https://github.com/cncf/wg-serverless-workflow" target="_blank"><img src="media/repo-moved.png" alt="We Moved!"/></a> 
 </p>
 
 Serverless applications are becoming increasingly complex.
