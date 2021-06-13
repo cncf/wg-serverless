@@ -23,9 +23,9 @@ Kareem Amin (Clay Labs), Amir Chaudhry (Docker), Sarah Conway (Linux Foundation)
 
 ## What is serverless computing?
 
-Serverless computing refers to the concept of building and running applications that do not require server management. It describes a finer-grained deployment model where applications, bundled as one or more functions, are uploaded to a platform and then executed, scaled, and billed in response to the exact demand needed at the moment.
+Serverless computing refers to the concept of building and running applications that do not require server management. It describes a finer-grained deployment model where applications, bundled as one or more functions, are uploaded to a platform, and then executed, scaled, and billed in response to the exact demand needed at the moment.
 
-Serverless computing does not mean that we no longer use servers to host and run code; nor does it mean that operations engineers are no longer required. Rather, it refers to the idea that consumers of serverless computing no longer need to spend time and resources on server provisioning, maintenance, updates, scaling, and capacity planning. Instead, all of these tasks and capabilities are handled by a serverless platform and are completely abstracted away from the developers and IT/operations teams. As a result, developers focus on writing their applications’ business logic. Operations engineers are able to elevate their focus to more business critical tasks.
+Serverless computing does not mean that we no longer use servers to host and run code; nor does it mean that operations engineers are no longer required. Rather, it refers to the idea that consumers of serverless computing no longer need to spend time and resources on server provisioning, maintenance, updates, scaling, and capacity planning. Instead, all these tasks and capabilities are handled by a serverless platform and are completely abstracted away from the developers and IT/operations teams. As a result, developers focus on writing their applications’ business logic. Operations engineers can elevate their focus to more business-critical tasks.
 
 There are two primary serverless personas:
 
@@ -33,7 +33,7 @@ There are two primary serverless personas:
 
 2. **Provider**: deploys the serverless platform for an external or internal customer.
 
-Servers are still required to run a serverless platform. The **provider** will need to manage servers (or virtual machines or containers). The provider will have some cost for running the platform, even when idle. A self-hosted system can still be considered serverless: typically one team acts as the **provider** and another as the **developer**.
+Servers are still required to run a serverless platform. The **provider** will need to manage servers (or virtual machines or containers). The provider will have some cost for running the platform, even when idle. A self-hosted system can still be considered serverless: typically, one team acts as the **provider** and another as the **developer**.
 
 A serverless computing platform may provide one or both of the following:
 
@@ -48,7 +48,7 @@ Serverless products or platforms deliver the following benefits to developers:
 
     * **Flexible Scalability:** A serverless FaaS or BaaS product can instantly and precisely scale to handle each individual incoming request. For the developer, serverless platforms have no concept of "pre-planned capacity," nor do they require configuring “auto-scaling” triggers or rules. The scaling occurs automatically without intervention from the developer. Upon completion of the request processing, the serverless FaaS automatically scales down the compute resources so that there is never idle capacity.
 
-2. **No Compute Cost When Idle**: One of the greatest benefits of serverless products from a consumer perspective is that there are no costs resulting from idle capacity. For example, serverless compute services do not charge for idle virtual machines or containers; in other words, there is no charge when code is not running or no meaningful work is being done. For databases, there is no charge for database engine capacity waiting idly for queries. Of course this does not include other costs such as stateful storage costs or added capabilities/functionality/feature set.
+2. **No Compute Cost When Idle**: One of the greatest benefits of serverless products from a consumer perspective is that there are no costs resulting from idle capacity. For example, serverless compute services do not charge for idle virtual machines or containers; in other words, there is no charge when code is not running, or no meaningful work is being done. For databases, there is no charge for database engine capacity waiting idly for queries. Of course, this does not include other costs such as stateful storage costs or added capabilities/functionality/feature set.
 
 ## A short history of serverless technology
 
@@ -70,7 +70,7 @@ While serverless computing is widely available, it is still relatively new. In g
 
 * Highly dynamic in terms of changing business requirements that drive a need for accelerated developer velocity
 
-For example, for common HTTP-based applications, there are clear upsides in terms of automated scale and a finer-grained cost model. That said, there can be some tradeoffs in using a serverless platform. For example, function startup after a period of inactivity may result in performance declines if the number of instances of the function drops down to zero. Therefore, choosing whether to adopt a serverless architecture requires a careful look at both the functional and nonfunctional aspects of the compute model.
+For example, for common HTTP-based applications, there are clear upsides in terms of automated scale and a finer-grained cost model. That said, there can be some trade-offs in using a serverless platform. For example, function start-up after a period of inactivity may result in performance declines if the number of instances of the function drops down to zero. Therefore, choosing whether to adopt a serverless architecture requires a careful look at both the functional and non-functional aspects of the compute model.
 
 Non-HTTP-centric and non-elastic scale workloads that weren’t good fits for an IaaS, PaaS, or CaaS solution can now take advantage of the on-demand nature and efficient cost model of a serverless architecture. Some of these workloads include:
 
@@ -94,7 +94,7 @@ This section describes existing and emerging workloads and use cases where serve
 
 Each of these scenarios show how serverless architectures have addressed a technical problem where it would be inefficient or impossible with IaaS, PaaS, or CaaS. These examples:
 
-* Solved a brand new problem efficiently where an on-demand model wasn’t available
+* Solved a brand-new problem efficiently where an on-demand model wasn’t available
 
 * Solved a traditional cloud problem much more efficiently (performance, cost)
 
@@ -108,11 +108,11 @@ The workloads listed in this section can be run on a public cloud (hosted server
 
 ### Multimedia processing
 
-A common use case, and one of the earliest to crystallize, is the implementation of functions that execute some transformational process in response to a new file upload. For example, if an image is uploaded to an object storage service such as Amazon S3, that event triggers a function to create a thumbnail version of the image and store it back to another object storage bucket or Database-as-a-Service. This is an example of a fairly atomic, parallelizable compute task that runs infrequently and scales in response to demand.
+A common use case, and one of the earliest to crystallize, is the implementation of functions that execute some transformational process in response to a new file upload. For example, if an image is uploaded to an object storage service such as Amazon S3, that event triggers a function to create a thumbnail version of the image and store it back to another object storage bucket or Database-as-a-Service. This is an example of an atomic, parallelizable compute task that runs infrequently and scales in response to demand.
 
 Examples include:
 
-* [Santander](https://www.google.com/url?q=https://www.slideshare.net/DanielKrook/optimize-existing-banking-applications-and-build-new-ones-faster-with-ibm-cloud-functions&sa=D&ust=1515189586080000&usg=AFQjCNHFOCjEEqR4s6ZzkCO3Wy0t79wfOw) built a proof of concept using serverless functions to process mobile check deposits using optical character recognition. This type of workload is quite variable, and processing demand on payday—once every two weeks—can be several times larger than the most idle time of the pay period. 
+* [Santander](https://www.google.com/url?q=https://www.slideshare.net/DanielKrook/optimize-existing-banking-applications-and-build-new-ones-faster-with-ibm-cloud-functions&sa=D&ust=1515189586080000&usg=AFQjCNHFOCjEEqR4s6ZzkCO3Wy0t79wfOw) built a proof of concept using serverless functions to process mobile check deposits using optical character recognition. This type of workload is quite variable, and processing demand on payday—once every two weeks—can be several times larger than the idlest time of the pay period. 
 
 * Categorizing a film automatically by [passing each video frame through an image recognition service](https://github.com/IBM-Bluemix/openwhisk-darkvisionapp) to extract actor, sentiment, and objects; or processing drone footage of a disaster area to estimate the extent of damage.
 
@@ -122,7 +122,7 @@ In this scenario, a function is invoked when data is inserted, modified, or dele
 
 Examples include:
 
-* Auditing changes to a database, or ensuring that they meet a particular quality or analytics standard for acceptable changes.
+* Auditing changes to a database or ensuring that they meet a particular quality or analytics standard for acceptable changes.
 
 * Automatically translating data to another language as or shortly after it’s entered.
 
@@ -138,7 +138,7 @@ Examples include:
 
 ### Stream processing at scale
 
-Another non-transactional, non-request/response type of workload is processing data within a potentially infinite stream of messages. Functions can be connected to a source of messages that must each be read and processed from an event stream. Given the high performance, highly elastic, and compute intensive processing workload, this can be an important fit for serverless. In many cases, stream processing requires comparing data against a set of context objects (in a NoSQL or in-mem DB) or aggregating and storing data from streams into a object or a database system. 
+Another non-transactional, non-request/response type of workload is processing data within a potentially infinite stream of messages. Functions can be connected to a source of messages that must each be read and processed from an event stream. Given the high performance, highly elastic, and compute intensive processing workload, this can be an important fit for serverless. In many cases, stream processing requires comparing data against a set of context objects (in a NoSQL or in-mem DB) or aggregating and storing data from streams into an object or a database system. 
 
 Examples include:
 
@@ -148,7 +148,7 @@ Examples include:
 
 ### Chat bots
 
-Interacting with humans doesn’t necessarily require millisecond response time, and in many ways a bot that replies to humans may actually benefit from a slight delay to make the conversation feel more natural. Because of this, a degree of initial latency from waiting for the function to be loaded from a cold start may be acceptable. A bot may also need to be extremely scalable when added to a popular social network like Facebook, WhatsApp, or Slack, so pre-provisioning an always-on daemon in a PaaS or IaaS model in anticipation of sudden or peak demand may not be as efficient or cost-effective as a serverless approach.
+Interacting with humans doesn’t necessarily require millisecond response time, and in many ways a bot that replies to humans may benefit from a slight delay to make the conversation feel more natural. Because of this, a degree of initial latency from waiting for the function to be loaded from a cold start may be acceptable. A bot may also need to be extremely scalable when added to a popular social network like Facebook, WhatsApp, or Slack, so pre-provisioning an always-on daemon in a PaaS or IaaS model in anticipation of sudden or peak demand may not be as efficient or cost-effective as a serverless approach.
 
 Examples include:
 
@@ -170,7 +170,7 @@ Examples include:
 
 ### HTTP REST APIs and web applications
 
-Traditional request/response workloads are still quite a good fit for serverless whether the workload is a static web site or one that uses a programming language like JavaScript or Python to generate a response on demand. Even though they may incur a startup cost for the first user, there is precedent for that type of delay in other compute models, such as the initial compilation of a JavaServer Page into a servlet, or starting up a new JVM to handle additional load. The benefit is that individual REST calls (each of the 4 GET, POST, UPDATE, and DELETE endpoints in a microservice, for example) can scale independently and be billed separately, even if they share a common data backend.
+Traditional request/response workloads are still quite a good fit for serverless whether the workload is a static web site or one that uses a programming language like JavaScript or Python to generate a response on demand. Even though they may incur a start-up cost for the first user, there is precedent for that type of delay in other compute models, such as the initial compilation of a JavaServer Page into a servlet, or starting up a new JVM to handle additional load. The benefit is that individual REST calls (each of the 4 GET, POST, UPDATE, and DELETE endpoints in a microservice, for example) can scale independently and be billed separately, even if they share a common data backend.
 
 Examples include:
 
@@ -180,11 +180,11 @@ Examples include:
 
 * AutoDesk example: ["Costs a small fraction (~1%) of the traditional cloud approach."](https://www.infoq.com/news/2016/08/serverless-autodesk)
 
-* Online coding/education (exam, test, etc.) runs exercise code in an event-driven environment, and provides feedback to the user based on a comparison with expected results for that exercise. The serverless platform runs the answer-checking on demand and scale as needed, paying for only the time during which code is running.
+* Online coding/education (exam, test, etc.) runs exercise code in an event-driven environment and provides feedback to the user based on a comparison with expected results for that exercise. The serverless platform runs the answer-checking on demand and scale as needed, paying for only the time during which code is running.
 
 ### Mobile backends
 
-Using serverless for mobile backend tasks is also attractive. It allows developers to build on the REST API backend workload above the BaaS APIs, so they can spend time optimizing a mobile app and less on scaling its backend. Examples include: optimizing graphics for a video game and not investing in servers when the game becomes a viral hit; or for consumer business applications that need quick iterations to find product/market fit, or when time-to-market is critical. Another example is in batching notifications to users or processing other asynchronous tasks for an offline-first experience. 
+Using serverless for mobile backend tasks is also attractive. It allows developers to build on the REST API backend workload above the BaaS APIs, so they can spend time optimizing a mobile app and less on scaling its backend. Examples include optimizing graphics for a video game and not investing in servers when the game becomes a viral hit; or for consumer business applications that need quick iterations to find product/market fit, or when time-to-market is critical. Another example is in batching notifications to users or processing other asynchronous tasks for an offline-first experience. 
 
 Examples include:
 
@@ -214,9 +214,9 @@ Examples include:
 
 There are three primary development and deployment models that most application developers might consider when looking for a platform to host their cloud-native applications. Each model has its own set of differing implementations (whether an open source project, hosted platform, or on-premises product). These three models are commonly built upon container technology for its density, performance, isolation, and packaging features, but containerization is not a requirement.
 
-In order of increasing abstraction away from the actual infrastructure that is running their code, and toward a greater focus on only the business logic that’s developed, they are Container Orchestration (or Containers-as-a-Service), Platform-as-a-Service, and Serverless (Functions-as-a-Service). All of these approaches provide a way to deploy cloud-native application, but they prioritize different functional and non-functional aspects based on their intended developer audience and workload type. The following section lists some of the key characteristics of each.
+In order of increasing abstraction away from the actual infrastructure that is running their code, and toward a greater focus on only the business logic that’s developed, they are Container Orchestration (or Containers-as-a-Service), Platform-as-a-Service, and Serverless (Functions-as-a-Service). All these approaches provide a way to deploy cloud-native application, but they prioritize different functional and non-functional aspects based on their intended developer audience and workload type. The following section lists some of the key characteristics of each.
 
-Keep in mind that no single approach is a silver bullet for all cloud-native development and deployment challenges. It’s important to match the needs of your particular workload against the benefits and drawbacks of each of these common cloud-native development technologies. It’s also important to consider that subcomponents of your application may be more suitable for one approach versus another, so a hybrid approach is possible.
+Keep in mind that no single approach is a silver bullet for all cloud-native development and deployment challenges. It’s important to match the needs of your workload against the benefits and drawbacks of each of these common cloud-native development technologies. It’s also important to consider that subcomponents of your application may be more suitable for one approach versus another, so a hybrid approach is possible.
 
 ## Container Orchestration
 
@@ -224,13 +224,13 @@ Keep in mind that no single approach is a silver bullet for all cloud-native dev
 
 Container orchestration platforms like Kubernetes, Swarm, and Mesos allow teams to build and deploy portable applications, with flexibility and control over configuration, which can run anywhere without the need to reconfigure and deploy for different environments. 
 
-Benefits include maximum control, flexibility, reusability and ease of bringing existing containerized apps into the cloud, all of which is possible because of the degree of freedom provided by a less-opinionated application deployment model. 
+Benefits include maximum control, flexibility, reusability, and ease of bringing existing containerized apps into the cloud, all of which is possible because of the degree of freedom provided by a less-opinionated application deployment model. 
 
-Drawbacks of CaaS include significantly more added developer responsibility for the operating systems (including security patches), load balancing, capacity management, scaling, logging and monitoring.
+Drawbacks of CaaS include significantly more added developer responsibility for the operating systems (including security patches), load balancing, capacity management, scaling, logging, and monitoring.
 
 ### Target audience
 
-* Developers and operations teams who want control over how their application and all of its dependencies are packaged and versioned, ensuring portability and reuse across deployment platforms.
+* Developers and operations teams who want control over how their application and all its dependencies are packaged and versioned, ensuring portability and reuse across deployment platforms.
 
 * Developers looking for high performance among a cohesive set of interdependent, independently scaled microservices.
 
@@ -262,17 +262,17 @@ Drawbacks of CaaS include significantly more added developer responsibility for 
 
 * More responsibility for the filesystem image and execution environment, including security patches and distribution optimizations.
 
-* More responsibility for managing load balancing and scaling behavior.
+* More responsibility for managing load balancing and scaling behaviour.
 
-* Typically more responsibility for capacity management.
+* Typically, more responsibility for capacity management.
 
-* Typically longer startup times, today.
+* Typically, longer start-up times, today.
 
-* Typically less opinionated about application structure, so there are fewer guide rails.
+* Typically, less opinionated about application structure, so there are fewer guide rails.
 
-* Typically more responsibility for build and deployment mechanisms.
+* Typically, more responsibility for build and deployment mechanisms.
 
-* Typically more responsibility for integration of monitoring, logging, and other common services.
+* Typically, more responsibility for integration of monitoring, logging, and other common services.
 
 ## Platform-as-a-Service
 
@@ -282,7 +282,7 @@ Examples: Cloud Foundry, OpenShift, Deis, Heroku
 
 Platform-as-a-Service implementations enable teams to deploy and scale applications using a broad set of runtimes, binding to a catalog of data, AI, IoT, and security services through injection of configuration information into the application, without having to manually configure and manage a container and OS. It is a great fit for existing web apps that have a stable programming model. 
 
-Benefits include easier management and deployment of applications, auto-scaling and pre-configured services for the most common application needs. 
+Benefits include easier management and deployment of applications, auto scaling and pre-configured services for the most common application needs. 
 
 Drawbacks include lack of OS control, granular container portability and load balancing and application optimization as well as potential vendor lock-in and needing to build and manage monitoring and logging capabilities on most PaaS platforms. 
 
@@ -296,7 +296,7 @@ Drawbacks include lack of OS control, granular container portability and load ba
 
 ### Developer/Operator experience
 
-* Iterate on applications, build and test in local web development environment.
+* Iterate on applications, build, and test in local web development environment.
 
 * Push application to PaaS, where it is built and runs.
 
@@ -348,7 +348,7 @@ Drawbacks include less comprehensive and stable documentation, samples, tools, a
 
 #### Developer/Operator experience
 
-* Iterate on function, build and test in local web development environment.
+* Iterate on function, build, and test in local web development environment.
 
 * Upload individual functions to the serverless platform.
 
@@ -364,13 +364,13 @@ Drawbacks include less comprehensive and stable documentation, samples, tools, a
 
 * The developer gets automated scaling based on demand/workload.
 
-* Leverages a new "pay-as-you-go" cost model that charges only for the time code is actually running.
+* Leverages a new "pay-as-you-go" cost model that charges only for the time code is running.
 
 * OS, runtime, and even container lifecycle is completely abstracted (serverless).
 
 * Better fit for emerging event-driven and unpredictable workloads involving IoT, data, messages.
 
-* Typically stateless, immutable and ephemeral deployments. Each function runs with a specified role and well-defined/limited access to resources.
+* Typically, stateless, immutable, and ephemeral deployments. Each function runs with a specified role and well-defined/limited access to resources.
 
 * Middleware layers will get tuned/optimized, will improve application performance over time.
 
@@ -394,7 +394,7 @@ Drawbacks include less comprehensive and stable documentation, samples, tools, a
 
 ## Which Cloud Native Deployment Model Should You Use?
 
-In order to determine which model is best for your particular needs, a thorough evaluation of each approach (and several model implementations) should be made. This section will provide some suggestions for areas of consideration as there is no one-size-fits-all solution.
+To determine which model is best for your needs, a thorough evaluation of each approach (and several model implementations) should be made. This section will provide some suggestions for areas of consideration as there is no one-size-fits-all solution.
 
 ### Evaluate Features and Capabilities
 
@@ -450,7 +450,7 @@ This covers both development costs and runtime resource costs.
 
 * Not everyone will have the luxury of starting their development activities from scratch. Therefore, the cost of migrating existing applications to one of the cloud native models needs to be carefully considered. While a lift-and-shift model to containers may seem the cheapest, it may not be the most cost effective in the long run. Likewise, the on-demand model of serverless is very attractive from a cost perspective, but the development effort needed to split a monolithic application into functions could be daunting.
 
-* How much will integration with dependent services cost? Serverless compute may appear the most economical at first, but it may require more expensive third party service costs, or autoscale very quickly which may result in greater usage fees.
+* How much will integration with dependent services cost? Serverless compute may appear the most economical at first, but it may require more expensive third-party service costs, or auto scale very quickly which may result in greater usage fees.
 
 * Which features/services do the platforms offer for free? Am I willing to buy into a vendor’s ecosystem at the potential cost of portability?
 
@@ -466,7 +466,7 @@ Think about matching the right technology to the right job, for example an IoT d
 
 ### Design for More Than One Deployment Target
 
-Another design choice is to make your code as generic as possible, allow it to be tested locally, and rely on contextual information, such as environment variables, to influence how it runs in particular environments. For example, a set of plain old Java objects might be able to run within any of the three major environments, and exact behavior tailored based on available environment variables, class libraries, or bound services.
+Another design choice is to make your code as generic as possible, allow it to be tested locally, and rely on contextual information, such as environment variables, to influence how it runs environments. For example, a set of plain old Java objects might be able to run within any of the three major environments, and exact behaviour tailored based on available environment variables, class libraries, or bound services.
 
 ### Continue to Use DevOps Pipelines for Any of the Approaches
 
@@ -474,7 +474,7 @@ Most container orchestration platforms, PaaS implementations, and serverless fra
 
 ### Consider Abstractions to ease Portability Between Models
 
-There is a growing ecosystem of third party projects that bridge the gap for porting HTTP-based web applications that currently run on a PaaS or a CaaS to serverless platforms. These include several tools from Serverless, Inc. and the Zappa Framework.
+There is a growing ecosystem of third-party projects that bridge the gap for porting HTTP-based web applications that currently run on a PaaS or a CaaS to serverless platforms. These include several tools from Serverless, Inc. and the Zappa Framework.
 
 Serverless frameworks provide adaptors that enable applications written using popular web application frameworks such as Python WSGi and JAX-RS REST API to run on serverless platforms. These frameworks can also provide portability and abstraction of the difference between multiple serverless platforms.
 
@@ -496,7 +496,7 @@ We can generalize a FaaS solution as having several key elements shown in the fo
 
 Let’s start by looking at the lifecycle of a function in a serverless environment.
 
-## Function LifeCycle
+## Function Lifecycle
 
 The following sections describe the various aspects of a function’s lifecycle and how serverless frameworks/runtimes typically manage them.
 
@@ -534,19 +534,19 @@ Serverless frameworks may allow the following actions and methods to define and 
 
 ![function operations](image_2.png)
 
-When creating a function, providing its metadata (as described later under function spec) as part of the function creation, it will be compiled and possibly published. A function may be started, disabled and enabled later on. Function deployments need to be able to support the following usecases: 
+When creating a function, providing its metadata (as described later under function spec) as part of the function creation, it will be compiled and possibly published. A function may be started, disabled, and enabled later. Function deployments need to be able to support the following use cases: 
 
 * Event streaming, in this use case there may always be events in queue however the processing may need to be paused/resumed through an explicit request
 
 * Warm startup - function that has minimal number of instances at any time, such that the "first" event received has a warm start since the function is already deployed and is ready to serve the event (as opposed to a cold start where the function gets deployed on the first invocation by an “incoming” event) 
 
-A user can **Publish** a function, this will create a new version (copy of the "latest" version), the published version may be tagged/labeled or have aliases, see more below. 
+A user can **Publish** a function, this will create a new version (copy of the "latest" version), the published version may be tagged/labelled or have aliases, see more below. 
 
 A user may want to **Execute/Invoke** a function directly (bypass the event source or API gateway) for debug and development processes. A user may specify invocation parameters such as desired version, Sync/Async operation, Verbosity level, etc. 
 
 Users may want to obtain function **Statistics** (e.g. number of invocations, average runtime, average delay, failures, retries, etc.), statistics can be the current metric values or a time-series of values (e.g. stored in Prometheus or cloud provider facility such as AWS Cloud Watch).
 
-Users may want to retrive function **Log** data. This may be filtered by severity level and/or time range, and/or content. The Log data is per function, it include events such as function creation and deletion, explicit errors, warnings, or debug messages, and optionally the Stdout or Stderr of a function. It would be preferred to have one log entry per invocation or a way to associate log entries with a specific invocation (to allow simpler tracking of the function execution flow).
+Users may want to retrieve function **Log** data. This may be filtered by severity level and/or time range, and/or content. The Log data is per function, it includes events such as function creation and deletion, explicit errors, warnings, or debug messages, and optionally the Stdout or Stderr of a function. It would be preferred to have one log entry per invocation or a way to associate log entries with a specific invocation (to allow simpler tracking of the function execution flow).
 
 ### Function Versioning and Aliases
 
@@ -574,7 +574,7 @@ After creating a function, or at a later point in time, one would need to associ
 
 #### Event Sources
 
-Different types of event sources includes: 
+Different types of event sources include: 
 
 * Event and messaging services, e.g.: RabbitMQ, MQTT, SES, SNS, Google Pub/Sub
 
@@ -602,7 +602,7 @@ The following list describes the set of common requirements that functions, and 
 
 * Event source may invoke multiple functions
 
-* Functions may require a mechanism for long-lasting bindings with underlying platform services, which may be cross function invocations. Functions could be short-lived but the bootstrap may be expensive if it needs to be done on every invocation, such as in the case of logging, connecting, mounting external data sources.
+* Functions may require a mechanism for long-lasting bindings with underlying platform services, which may be cross function invocations. Functions could be short-lived, but the bootstrap may be expensive if it needs to be done on every invocation, such as in the case of logging, connecting, mounting external data sources.
 
 * Each function can be written in a different code language from other functions that are using within the same application
 
@@ -620,7 +620,7 @@ Workflow related requirements:
 
 * In the middle of the workflow, different events or function results might be received, which would trigger branching to different functions
 
-* Part or all of a function’s result needs to be passed as input to another function
+* Part or all a function’s result needs to be passed as input to another function
 
 * Functions may require a mechanism for long-lasting bindings with underlying platform services, which may be cross function invocations or function could be short lived.
 
@@ -658,7 +658,7 @@ Functions can be invoked from different event sources depending on the different
 
 ## Function Code
 
-Function code and dependencies and/or binaries may reside in an external repository such as S3 object bucket or Git repository, or provided directly by the user. If the code is in an external repository the user will need to specify the path and credentials. 
+Function code and dependencies and/or binaries may reside in an external repository such as S3 object bucket or Git repository or provided directly by the user. If the code is in an external repository the user will need to specify the path and credentials. 
 
 The serverless framework may also allow the user to watch the code repository for changes (e.g. using a web hook) and build the function image/binary automatically on every commit.
 
@@ -708,9 +708,9 @@ Serverless function definitions may contain the following specifications and met
 
 Function frameworks may include the following metadata for functions:
 
-* **Version**- each function version should have a unique identifier, in addition versions can be labeled using one or more aliases (e.g. "latest", “production”, “beta”). API gateways and event sources would route traffic/events to a specific function version.
+* **Version**- each function version should have a unique identifier, in addition versions can be labelled using one or more aliases (e.g. "latest", “production”, “beta”). API gateways and event sources would route traffic/events to a specific function version.
 
-* **Environment Variables** - the user may specify Environment variables that will be provided to the function at runtime. Environment variables can also be derived from secrets and encrypted content, or derived from platform variables (e.g. like Kubernetes EnvVar definition). Environment variables enable developers to control function behavior and parameters without the need to modify code and/or rebuild the function allowing better developer experience and function reuse. 
+* **Environment Variables** - the user may specify Environment variables that will be provided to the function at runtime. Environment variables can also be derived from secrets and encrypted content or derived from platform variables (e.g. like Kubernetes EnvVar definition). Environment variables enable developers to control function behaviour and parameters without the need to modify code and/or rebuild the function allowing better developer experience and function reuse. 
 
 * **Execution Role** - the function should run under a specific user or role identity that grants and audits its access to platform resources.
 
@@ -732,7 +732,7 @@ Bound data can be in the form of files, objects, records, messages etc., the fun
 
 ## Function Input 
 
-Function input includes event data and metadata, and may include a context object.
+Function input includes event data and metadata and may include a context object.
 
 ### Event data and metadata
 
@@ -740,7 +740,7 @@ Event details should be passed to the function handler, different events may hav
 
 It can be desirable to decouple the event classes from the implementation, for example: a function processing a message stream would work the same regardless if the streaming storage is Kafka or Kinesis. In both cases, it will receive a message body and event metadata, the message may be routed between different frameworks.
 
-An event may include a single record (e.g. in Request/Response model), or accept multiple records or micro-batch (e.g. in Streaming modes). 
+An event may include a single record (e.g. in Request/Response model) or accept multiple records or micro-batch (e.g. in Streaming modes). 
 
 Examples for common event data and metadata used by FaaS solutions:
 
@@ -834,11 +834,11 @@ In the serverless domain, use cases fall into one of the following categories:
 
 4. The result of the function could be a trigger of another function
 
-5. N events (in and/or) triggers m functions, i.e. an event-function interleaved workflow, eg. event1 triggers function1, completion of function1 together with event2 and event 3 trigger function2, then different result of function2 triggers branching to function3 or function4.
+5. N events (in and/or) triggers m functions, i.e. an event-function interleaved workflow, e.g. event1 triggers function1, completion of function1 together with event2 and event 3 trigger function2, then different result of function2 triggers branching to function3 or function4.
 
 A user needs a way to specify their serverless use case or workflow. For example, one use case could be "do face recognition on a photo when a photo is uploaded onto the cloud storage (photo storage event happens)." Another IoT use case could be “do motion analysis” when a motion detection event is received, then depending on the result of the analysis function, either “trigger the house alarm plus call to the police department” or just “send the motion image to the house owner.” Refer to the use cases section for more detailed information.
 
-AWS provides "step function" primitives (state machine based primitives) for the user to specify its workflow, but Step Functions does not allow specification of what event/events will trigger what functions in the workflow. Please refer to [https://aws.amazon.com/step-functions/](https://aws.amazon.com/step-functions/). 
+AWS provides "step function" primitives (state machine-based primitives) for the user to specify its workflow, but Step Functions does not allow specification of what event/events will trigger what functions in the workflow. Please refer to [https://aws.amazon.com/step-functions/](https://aws.amazon.com/step-functions/). 
 
 The following graph is an example of a user’s workflow that involves events and functions. Using such a function graph, the user can easily specify the interaction between events and functions as well as how information can be passed between functions in the workflow.
 
@@ -850,7 +850,7 @@ Event State	This state allows for waiting for events from event sources, and the
 
 Operation/Task State	This state allows the run of one or more functions in sequence or in parallel without waiting for any event.
 
-Switch/Choice State	This state permits transitions to multiple other states (eg. a previous function result triggers branching/transition to different next states).
+Switch/Choice State	This state permits transitions to multiple other states (e.g. a previous function result triggers branching/transition to different next states).
 
 End/Stop State	This state terminates the workflow with Fail/Success.
 
@@ -864,7 +864,7 @@ In addition to providing a way to specify function interaction (often with a vis
 
 The workflow tool might also provide historic data from all prior executions of the workflow, documenting which branches were taken, which data was referenced for a decision to take a certain branch, and so on. This data can be used as an audit log (for example, in industries with strict regulatory requirements) or to analyze and improve performance of the multi-function workflow.
 
-Esentri, a software consultancy, [built a proof-of-concept with Fn Project and Zeebe to demonstrate how to orchestrate serverless functions with a horizontally-scalable workflow engine](https://www.esentri.com/zeebe-and-fn-project-integrated-a-proof-of-concept/).
+Esentri, a software consultancy, [built a proof-of-concept with Fn Project and Zeebe to demonstrate how to orchestrate serverless functions with a horizontally scalable workflow engine](https://www.esentri.com/zeebe-and-fn-project-integrated-a-proof-of-concept/).
 
 # Conclusion
 
@@ -872,7 +872,7 @@ Serverless architectures provide an exciting new deployment option for cloud nat
 
 However, serverless technology is not a perfect fit for all cases and careful consideration should be given to when it is appropriate. Short-lived, event-driven processing is driving early adoption and use cases for businesses that expect a high rate of change with unpredictable capacity and infrastructure needs are emerging. See the [Additional References](#heading=h.nkn4basctyj) section for more reading material and insights into serverless computing.
 
-The CNCF Serverless Working Group, in partnership with [Redpoint Ventures](http://www.redpoint.com/), recently published a [Serverless Landscape](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0). It illustrates some of the major serverless projects, tooling and services that are available in the ecosystem. It is not intended to represent a comprehensive, fully inclusive serverless ecosystem, nor is it an endorsement, rather just an overview of the landscape. It is expected that owners of each will provide updates in an attempt to keep it up to date.
+The CNCF Serverless Working Group, in partnership with [Redpoint Ventures](http://www.redpoint.com/), recently published a [Serverless Landscape](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0). It illustrates some of the major serverless projects, tooling and services that are available in the ecosystem. It is not intended to represent a comprehensive, fully inclusive serverless ecosystem, nor is it an endorsement, rather just an overview of the landscape. It is expected that owners of each will provide updates to keep it up to date.
 
 # Next Steps for the CNCF
 
@@ -880,9 +880,9 @@ With respect to what, if anything, the CNCF should consider doing in this space,
 
 * **Encourage more serverless technology vendors and open source developers to join the CNCF** to share ideas and build upon each other’s innovation. For example, keep the open source projects listed in the [Serverless Landscape](https://docs.google.com/spreadsheets/d/10rSQ8rMhYDgf_ib3n6kfzwEuoE88qr0amUPRxKbwVCk/edit#gid=0) document updated and the matrix of capabilities maintained.
 
-* **Foster an open ecosystem by establishing interoperable APIs, ensuring interoperable implementations with vendor commitments and open source tools**. New interoperability and portability efforts similar to [CSI](https://github.com/cncf/wg-storage) and [CNI](https://github.com/cncf/wg-networking) with the help of both platform providers and third-party developer library creators. Some of these may merit their own CNCF working group, or may continue as an initiative of the Serverless WG. For example:
+* **Foster an open ecosystem by establishing interoperable APIs, ensuring interoperable implementations with vendor commitments and open source tools**. New interoperability and portability efforts similar to [CSI](https://github.com/cncf/wg-storage) and [CNI](https://github.com/cncf/wg-networking) with the help of both platform providers and third-party developer library creators. Some of these may merit their own CNCF working group or may continue as an initiative of the Serverless WG. For example:
 
-    * **Events:** define a common event format and API along with metadata. Some initial proposals can be found in the [Serverless WG github repo](https://github.com/cncf/wg-serverless/tree/master/proposals).
+    * **Events:** define a common event format and API along with metadata. Some initial proposals can be found in the [Serverless WG GitHub repo](https://github.com/cncf/wg-serverless/tree/master/proposals).
 
     * **Deployment**: leveraging the existing CNCF members that are also serverless providers, start a new working group to explore possible small steps that can be taken to harmonize on a common set of function definitions, metadata. For example:
 
@@ -894,7 +894,7 @@ With respect to what, if anything, the CNCF should consider doing in this space,
 
     * Instrumentation
 
-    * Debugability
+    * Debuggability
 
 * Education: provide a set of design patterns, reference architectures, and common vocabulary for new users.
 
@@ -908,7 +908,7 @@ With respect to what, if anything, the CNCF should consider doing in this space,
 
     * Sample applications and open source tools in the CNCF GitHub repo, with a preference for highlighting the interoperability aspects or linking to external resources for each provider.
 
-* Provide guidance on how to evaluate functional and nonfunctional characteristics of serverless architectures relative to CaaS or PaaS. This could take the form of a decision tree or recommend a set of tools from within the CNCF project family.
+* Provide guidance on how to evaluate functional and non-functional characteristics of serverless architectures relative to CaaS or PaaS. This could take the form of a decision tree or recommend a set of tools from within the CNCF project family.
 
 * Provide guidance on serverless security topics such as: secure serverless development guidelines, hardening serverless deployments, adequate security logging and monitoring as well as relevant tools & procedures (see [The Ten Most Critical Security Risks in Serverless Architectures](https://github.com/puresec/sas-top-10)).
 
@@ -932,7 +932,7 @@ A Serverless platform typically provides a Context object as an input parameter 
 
 **Data Binding**
 
-Function may require data bindings for long lasting connections to data such as backend storage (such as mount points/volumes/object store), databases, etc. The data binding may include secure information such as secrets that can not be preserved within the function itself. The data binding may be used across several Function invocations.
+Function may require data bindings for long lasting connections to data such as backend storage (such as mount points/volumes/object store), databases, etc. The data binding may include secure information such as secrets that cannot be preserved within the function itself. The data binding may be used across several Function invocations.
 
 **Development Framework**
 
@@ -944,7 +944,7 @@ The notification of something that happened.
 
 **Event Association**
 
-Mapping between event sources and the the specific Functions that are meant to be executed as a result of the event
+Mapping between event sources and the specific Functions that are meant to be executed as a result of the event
 
 **Event Data**
 
@@ -960,7 +960,7 @@ The code that is executed as a result of a Trigger.
 
 **Function Graph/Workflow**
 
-A developer’s Serverless scenario usually involves definition of an Event, Function, Event-Function interaction and coordination between Functions. In some use cases, there are multiple Events and multiple Functions. A Function Graph/Workflow describes the Event-Function interaction and Function coordination. It provides a way for the user to specify what Events trigger what Functions, whether the Functions are executed in sequence or in parallel, transition between Functions, and how information is passed from one Function to the next Function in the workflow. Function Graphs can be viewed as a collection of workflow states and the transition between these states, with each state having its associated Events and Functions. An example of the Function Graph/Workflow is AWS’s step function.
+A developer’s Serverless scenario usually involves definition of an Event, Function, Event-Function interaction, and coordination between Functions. In some use cases, there are multiple Events and multiple Functions. A Function Graph/Workflow describes the Event-Function interaction and Function coordination. It provides a way for the user to specify what Events trigger what Functions, whether the Functions are executed in sequence or in parallel, transition between Functions, and how information is passed from one Function to the next Function in the workflow. Function Graphs can be viewed as a collection of workflow states and the transition between these states, with each state having its associated Events and Functions. An example of the Function Graph/Workflow is AWS’s step function.
 
 **Function Parameters**
 
@@ -968,7 +968,7 @@ When a Function is invoked, the Runtime Framework will typically provide metadat
 
 **Functions-as-a-Service**
 
-FaaS describes the core functionality of a platform to run functions provided by the end user on demand. It’s a core component of a serverless platform, which includes the additional quality-of-service features that manage functions on behalf of the user including autoscale and billing.
+FaaS describes the core functionality of a platform to run functions provided by the end user on demand. It’s a core component of a serverless platform, which includes the additional quality-of-service features that manage functions on behalf of the user including auto scale and billing.
 
 **Invocation**
 
@@ -1013,4 +1013,3 @@ The following references are provided for those looking for additional resources
 * [Microservice Orchestration for Serverless Computing](https://conferences.oreilly.com/oscon/oscon-tx/public/schedule/detail/61681) by Cathy Zhang, Louis Fourie
 
 * [The Ten Most Critical Security Risks in Serverless Architectures](https://github.com/puresec/sas-top-10) by PureSec
-
