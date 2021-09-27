@@ -16,8 +16,8 @@ specification. That work is being done in a separate github repo:
 In addition to [CloudEvents](https://github.com/cloudevents/spec/blob/master/spec.md)
 specification, the Serverless WG has agreed to form a sub working group to
 work on a separate stream called "Serverless Workflow". This work is
-being done in the [Workflow](https://github.com/cncf/wg-serverless/tree/master/workflow/spec)
-directory.
+being done in the [Workflow](https://github.com/serverlessworkflow)
+github repository.
 
 Additional work streams can be suggested, see the proposal directory's
 [README](proposals/README.md) for more information.
@@ -57,7 +57,7 @@ Please see https://cloudevents.io/.
 
 ## Serverless Workflow
 
-Proposed [specification](https://github.com/cncf/wg-serverless/blob/master/workflow/spec/spec.md)
+Proposed [specification](https://github.com/serverlessworkflow/specification/blob/main/specification.md)
 
 ## Meeting Time
 
