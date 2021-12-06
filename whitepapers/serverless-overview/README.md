@@ -88,7 +88,7 @@ Non-HTTP-centric and non-elastic scale workloads that weren’t good fits for an
 
 * Serving machine learning and AI models (retrieving one or more data elements such as tables, NLP, or images and matching against a pre-learned data model to identify text, faces, anomalies, etc.)
 
-* Continuous integration pipelines that provision resources for build jobs on-demand, instead of keeping a pool of build slave hosts waiting for jobs to be dispatched
+* Continuous integration pipelines that provision resources for build jobs on-demand, instead of keeping a pool of build worker hosts waiting for jobs to be dispatched
 
 This section describes existing and emerging workloads and use cases where serverless architectures excels. It also includes details on early results, patterns, and best practices distilled from early success stories.
 
@@ -204,7 +204,7 @@ A trading desk that handles stock market transactions and processes trade orders
 
 ### Continuous Integration Pipeline
 
-A traditional CI pipeline includes a pool of build slave hosts waiting idle for jobs to be dispatched. Serverless is a good pattern to remove the need for pre-provisioned hosts and reduce costs. Build jobs are triggered by new code commit or PR merged. A function call is invoked to run the build and test case, executing only for the time needed, and not incurring costs while unused. This lowers costs and can reduce bottlenecks through autoscaling to meet demand.
+A traditional CI pipeline includes a pool of build worker hosts waiting idle for jobs to be dispatched. Serverless is a good pattern to remove the need for pre-provisioned hosts and reduce costs. Build jobs are triggered by new code commit or PR merged. A function call is invoked to run the build and test case, executing only for the time needed, and not incurring costs while unused. This lowers costs and can reduce bottlenecks through autoscaling to meet demand.
 
 Examples include:
 
