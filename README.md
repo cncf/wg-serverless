@@ -44,7 +44,7 @@ You can open up suggestions and issues with the landscape here: https://github.c
 
 ## Interactive Landscape
 
-Please see the new interactive [version](https://landscape.cncf.io/format=serverless) of the landscape. The easy-to-remember URL is [s.cncf.io](https://s.cncf.io).
+Please see the new interactive [version](https://landscape.cncf.io/serverless) of the landscape. The easy-to-remember URL is [s.cncf.io](https://s.cncf.io).
 
 ## Serverless Overview Whitepaper
 
