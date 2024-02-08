@@ -51,6 +51,11 @@ Please see the new interactive [version](https://landscape.cncf.io/serverless) o
 The current version of the whitepaper can be found 
 [here](https://github.com/cncf/wg-serverless/tree/master/whitepapers/serverless-overview).
 
+## Docs
+
+[Presentations, notes and other misc shared 
+docs](https://drive.google.com/drive/folders/1QtC3vmmbGv8qjt9SznaKrSHDYVFles8e?usp=sharing)
+
 ## Meeting Time
 
 See the [CNCF public events calendar](https://www.cncf.io/community/calendar/).
